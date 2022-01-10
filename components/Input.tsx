@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from "react"
+import { InputHTMLAttributes, forwardRef } from "react"
 import clsx from "clsx"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -7,7 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   description?: string
 }
 
-const Input = (props: InputProps) => {
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const {
     label,
     type,
@@ -26,6 +26,7 @@ const Input = (props: InputProps) => {
       "border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500",
     className
   )
+
   return (
     <div>
       <div className="flex justify-between">
@@ -48,6 +49,7 @@ const Input = (props: InputProps) => {
           aria-describedby={`${name}-description`}
           className={inputClassName}
           {...delegated}
+          ref={ref}
         />
       </div>
       {description && (
@@ -62,6 +64,8 @@ const Input = (props: InputProps) => {
       )}
     </div>
   )
-}
+})
+
+Input.displayName = "Input"
 
 export default Input

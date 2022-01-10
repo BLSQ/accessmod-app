@@ -1,0 +1,78 @@
+"""Exposes a URL that specifies the behaviour of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behaviour of this scalar."""
+  url: String!
+) on SCALAR
+
+type Avatar {
+  initials: String!
+  color: String!
+}
+
+type Country {
+  code: String!
+  alpha3: String!
+  name: String!
+  flag: String!
+}
+
+input CountryInput {
+  code: String!
+  alpha3: String
+  name: String
+  flag: String
+}
+
+scalar Date
+
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginResult {
+  success: Boolean!
+  me: User
+}
+
+type LogoutResult {
+  success: Boolean!
+}
+
+type Mutation {
+  login(input: LoginInput!): LoginResult
+  logout: LogoutResult
+}
+
+type Organization {
+  id: String!
+  name: String!
+  type: String!
+  url: String!
+  contactInfo: String!
+}
+
+input OrganizationInput {
+  id: String!
+  name: String
+  type: String
+  url: String
+  contactInfo: String
+}
+
+type Query {
+  me: User
+  countries: [Country!]
+  organizations: [Organization!]
+}
+
+type User {
+  id: String!
+  email: String!
+  firstName: String
+  lastName: String
+  avatar: Avatar!
+}
+
