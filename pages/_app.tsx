@@ -8,7 +8,6 @@ import "../styles/globals.css"
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const apolloClient = useApollo(pageProps)
-  console.log(pageProps)
 
   const getHeader = Component.getHeader ?? (() => null)
   const getLayout =
