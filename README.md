@@ -1,4 +1,10 @@
-## Getting Started
+AccessMod app
+=============
+
+This repository contains the code of the frontend application of the AccessMod project.
+
+Local development
+-----------------
 
 First, install the dependencies
 
@@ -8,7 +14,13 @@ npm install
 yarn
 ```
 
-Then, run the development server:
+Then, copy the sample `.env.local.dist` and adapt it to your needs:
+
+```bash
+cp .env.local.dist .env.local
+```
+
+Finally, run the development server:
 
 ```bash
 npm run dev
