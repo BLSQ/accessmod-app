@@ -1,5 +1,7 @@
 FROM node:17-alpine
 
+ARG NEXT_PUBLIC_GRAPHQL_ENDPOINT
+
 RUN mkdir /code
 WORKDIR /code
 

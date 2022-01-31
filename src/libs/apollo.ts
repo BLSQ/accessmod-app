@@ -18,6 +18,9 @@ const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
+  console.log(
+    `Creating Apollo Client for "${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}"`
+  );
   const enhancedFetch = (url: RequestInfo, init: RequestInit) => {
     return fetch(url, {
       ...init,
