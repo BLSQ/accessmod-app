@@ -1,10 +1,10 @@
-import { InputHTMLAttributes, forwardRef } from "react"
-import clsx from "clsx"
+import { InputHTMLAttributes, forwardRef } from "react";
+import clsx from "clsx";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  error?: string
-  description?: string
+  label?: string;
+  error?: string;
+  description?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -18,14 +18,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     required,
     id,
     ...delegated
-  } = props
+  } = props;
 
   const inputClassName = clsx(
     "block py-1.5 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md focus:outline-none",
     error &&
       "border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500",
     className
-  )
+  );
 
   return (
     <div>
@@ -63,9 +63,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         </p>
       )}
     </div>
-  )
-})
+  );
+});
 
-Input.displayName = "Input"
+Input.displayName = "Input";
 
-export default Input
+export default Input;

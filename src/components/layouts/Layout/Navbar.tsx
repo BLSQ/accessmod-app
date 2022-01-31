@@ -1,7 +1,7 @@
-import clsx from "clsx"
-import Link from "next/link"
-import { Transition } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import clsx from "clsx";
+import Link from "next/link";
+import { Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
 
 const ITEMS = [
   {
@@ -26,16 +26,16 @@ const ITEMS = [
       { label: "Team 1", link: "/teams/1" },
     ],
   },
-]
+];
 
 type NavEntry = {
-  label: string
-  link: string
-  items?: { label: string; link: string }[]
-}
+  label: string;
+  link: string;
+  items?: { label: string; link: string }[];
+};
 
 const NavEntry = (props: NavEntry) => {
-  const { label, link, items } = props
+  const { label, link, items } = props;
 
   return (
     <div
@@ -66,8 +66,8 @@ const NavEntry = (props: NavEntry) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const Navbar = () => {
   return (
@@ -76,7 +76,7 @@ const Navbar = () => {
         <NavEntry key={itemProps.link} {...itemProps} />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

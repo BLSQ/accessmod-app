@@ -1,8 +1,8 @@
-import { Fragment } from "react"
-import { Menu, Transition } from "@headlessui/react"
-import MenuLink from "components/MenuLink"
-import clsx from "clsx"
-import { UserIcon } from "@heroicons/react/solid"
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import MenuLink from "components/MenuLink";
+import clsx from "clsx";
+import { UserIcon } from "@heroicons/react/solid";
 
 const UserMenu = () => {
   return (
@@ -63,7 +63,7 @@ const UserMenu = () => {
         </Menu.Items>
       </Transition>
     </Menu>
-  )
-}
+  );
+};
 
-export default UserMenu
+export default UserMenu;

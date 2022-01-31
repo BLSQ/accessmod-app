@@ -1,10 +1,8 @@
-AccessMod app
-=============
+# AccessMod app
 
 This repository contains the code of the frontend application of the AccessMod project.
 
-Local development
------------------
+## Local development
 
 First, install the dependencies
 

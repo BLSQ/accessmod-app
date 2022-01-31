@@ -1,14 +1,14 @@
-import { FormEvent, ReactElement, useState } from "react"
-import Button from "components/Button"
-import Input from "components/Input"
-import { gql, useMutation } from "@apollo/client"
-import { useRouter } from "next/router"
-import useForm from "hooks/useForm"
+import { FormEvent, ReactElement, useState } from "react";
+import Button from "components/Button";
+import Input from "components/Input";
+import { gql, useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
+import useForm from "hooks/useForm";
 
 type FormInputs = {
-  email?: string
-  password?: string
-}
+  email?: string;
+  password?: string;
+};
 
 const LOGIN = gql`
   mutation Login($input: LoginInput!) {
@@ -20,27 +20,27 @@ const LOGIN = gql`
       }
     }
   }
-`
+`;
 
 interface Props {
-  redirectTo?: string
+  redirectTo?: string;
 }
 
 const Login = (props: Props) => {
-  const [login, { data, loading }] = useMutation(LOGIN)
-  const router = useRouter()
+  const [login, { data, loading }] = useMutation(LOGIN);
+  const router = useRouter();
   const { formData, isValid, handleInputChange } = useForm<FormInputs>({
     initialState: {},
     validate: (values) => Boolean(values.email && values.password),
-  })
+  });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const payload = await login({ variables: { input: formData } })
+    event.preventDefault();
+    const payload = await login({ variables: { input: formData } });
     if (payload.data.login.success) {
-      router.push(props.redirectTo ?? "/")
+      router.push(props.redirectTo ?? "/");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
@@ -80,9 +80,9 @@ const Login = (props: Props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-Login.getLayout = (page: ReactElement) => page
+Login.getLayout = (page: ReactElement) => page;
 
-export default Login
+export default Login;

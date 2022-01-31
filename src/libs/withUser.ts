@@ -2,30 +2,30 @@ import {
   GetServerSidePropsContext,
   GetServerSideProps,
   GetServerSidePropsResult,
-} from "next"
-import { gql } from "@apollo/client"
-import { ParsedUrlQuery } from "querystring"
+} from "next";
+import { gql } from "@apollo/client";
+import { ParsedUrlQuery } from "querystring";
 
-import { getApolloClient } from "libs/apollo"
+import { getApolloClient } from "libs/apollo";
 
 type WithUserRequiredOptions<
   P = any,
   Q extends ParsedUrlQuery = ParsedUrlQuery
 > = {
-  getServerSideProps?: GetServerSideProps<P, Q>
-  returnTo?: string
-}
+  getServerSideProps?: GetServerSideProps<P, Q>;
+  returnTo?: string;
+};
 
 export type GetServerSidePropsResultWithUser<P = any> =
-  GetServerSidePropsResult<P & { user?: null }>
+  GetServerSidePropsResult<P & { user?: null }>;
 
 export function withUserRequired(options: WithUserRequiredOptions = {}) {
-  const { getServerSideProps, returnTo } = options
+  const { getServerSideProps, returnTo } = options;
 
   return async (
     ctx: GetServerSidePropsContext
   ): Promise<GetServerSidePropsResultWithUser> => {
-    const client = getApolloClient({ headers: ctx.req?.headers })
+    const client = getApolloClient({ headers: ctx.req?.headers });
     const payload = await client.query({
       query: gql`
         query MeQuery {
@@ -35,7 +35,7 @@ export function withUserRequired(options: WithUserRequiredOptions = {}) {
           }
         }
       `,
-    })
+    });
 
     if (!payload.data.me) {
       return {
@@ -46,11 +46,11 @@ export function withUserRequired(options: WithUserRequiredOptions = {}) {
           )}`,
           permanent: false,
         },
-      }
+      };
     } else {
-      let ret: any = { props: {} }
+      let ret: any = { props: {} };
       if (getServerSideProps) {
-        ret = await getServerSideProps(ctx)
+        ret = await getServerSideProps(ctx);
       }
 
       return {
@@ -59,7 +59,7 @@ export function withUserRequired(options: WithUserRequiredOptions = {}) {
           ...ret.props,
           user: payload.data.me,
         },
-      }
+      };
     }
-  }
+  };
 }

@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
 type ClientOnlyProps = {
-  children: JSX.Element
-}
+  children: JSX.Element;
+};
 
 const ClientOnly = (props: ClientOnlyProps) => {
-  const [isMounted, setMounted] = useState(false)
+  const [isMounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!isMounted) {
-    return null
+    return null;
   }
 
-  return props.children
-}
+  return props.children;
+};
 
-export default ClientOnly
+export default ClientOnly;

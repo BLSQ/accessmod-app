@@ -1,14 +1,14 @@
-import { ReactElement, useEffect } from "react"
-import { logout } from "libs/auth"
+import { ReactElement, useEffect } from "react";
+import { logout } from "libs/auth";
 
 const Logout = () => {
   useEffect(() => {
-    logout()
-  }, [])
+    logout();
+  }, []);
 
-  return null
-}
+  return null;
+};
 
-Logout.getLayout = (page: ReactElement) => page
+Logout.getLayout = (page: ReactElement) => page;
 
-export default Logout
+export default Logout;

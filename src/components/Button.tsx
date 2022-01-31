@@ -1,10 +1,10 @@
-import clsx from "clsx"
-import { ButtonHTMLAttributes } from "react"
+import clsx from "clsx";
+import { ButtonHTMLAttributes } from "react";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "pill" | "white" | "outlined"
-  size?: "sm" | "md" | "lg" | "xl" | "xxl"
-  className?: string
+  variant?: "primary" | "secondary" | "pill" | "white" | "outlined";
+  size?: "sm" | "md" | "lg" | "xl" | "xxl";
+  className?: string;
 }
 
 const Button = (props: Props) => {
@@ -14,7 +14,7 @@ const Button = (props: Props) => {
     className,
     disabled,
     ...delegated
-  } = props
+  } = props;
 
   const classes = clsx(
     "btn",
@@ -36,8 +36,8 @@ const Button = (props: Props) => {
     size === "xxl" && "btn-xxl",
     disabled && "btn-disabled",
     className
-  )
-  return <button className={classes} disabled={disabled} {...delegated} />
-}
+  );
+  return <button className={classes} disabled={disabled} {...delegated} />;
+};
 
-export default Button
+export default Button;

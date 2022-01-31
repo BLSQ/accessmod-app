@@ -1,18 +1,18 @@
-import { InputHTMLAttributes } from "react"
-import clsx from "clsx"
+import { InputHTMLAttributes } from "react";
+import clsx from "clsx";
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  description?: string
+  label?: string;
+  description?: string;
 }
 
 const Checkbox = (props: CheckboxProps) => {
-  const { id, name, label, description, className, ...delegated } = props
+  const { id, name, label, description, className, ...delegated } = props;
 
   const inputClassName = clsx(
     "h-4 w-4 text-indigo-600 border-gray-300 rounded focus:outline-none",
     className
-  )
+  );
   return (
     <div className="relative flex items-start">
       <div className="flex items-center h-5">
@@ -39,7 +39,7 @@ const Checkbox = (props: CheckboxProps) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Checkbox
+export default Checkbox;

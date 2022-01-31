@@ -1,9 +1,9 @@
-import Router from "next/router"
-import { getApolloClient } from "./apollo"
-import { gql } from "@apollo/client"
+import Router from "next/router";
+import { getApolloClient } from "./apollo";
+import { gql } from "@apollo/client";
 
 export async function logout(redirectTo: string = "/login") {
-  const client = getApolloClient()
+  const client = getApolloClient();
   const res: any = await client.mutate({
     mutation: gql`
       mutation Logout {
@@ -12,8 +12,8 @@ export async function logout(redirectTo: string = "/login") {
         }
       }
     `,
-  })
+  });
   if (res?.data?.logout?.success) {
-    Router.push(redirectTo)
+    Router.push(redirectTo);
   }
 }

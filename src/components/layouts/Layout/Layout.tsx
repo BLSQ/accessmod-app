@@ -1,23 +1,23 @@
-import type { ReactElement } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import Button from "components/Button"
-import UserMenu from "./UserMenu"
-import Footer from "./Footer"
-import Main from "./Main"
-import Navbar from "./Navbar"
+import type { ReactElement } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import Button from "components/Button";
+import UserMenu from "./UserMenu";
+import Footer from "./Footer";
+import Main from "./Main";
+import Navbar from "./Navbar";
 
 type LayoutProps = {
-  children: ReactElement
-  header?: ReactElement | null
-}
+  children: ReactElement;
+  header?: ReactElement | null;
+};
 
 type HeaderProps = {
-  children?: ReactElement | null
-}
+  children?: ReactElement | null;
+};
 
 const Header = (props: HeaderProps) => {
-  const { children } = props
+  const { children } = props;
   return (
     <div className="bg-who-blue-main pb-32">
       <nav>
@@ -57,18 +57,18 @@ const Header = (props: HeaderProps) => {
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
       </header>
     </div>
-  )
-}
+  );
+};
 
 const Layout = (props: LayoutProps) => {
-  const { children, header } = props
+  const { children, header } = props;
   return (
     <div className="min-h-screen flex flex-col">
       <Header>{header}</Header>
       <Main>{children}</Main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

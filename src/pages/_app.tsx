@@ -1,18 +1,18 @@
-import Head from "next/head"
-import { ApolloProvider } from "@apollo/client"
-import { useApollo } from "libs/apollo"
-import Layout from "components/layouts/Layout"
-import { AppPropsWithLayout } from "libs/types"
+import Head from "next/head";
+import { ApolloProvider } from "@apollo/client";
+import { useApollo } from "libs/apollo";
+import Layout from "components/layouts/Layout";
+import { AppPropsWithLayout } from "libs/types";
 
-import "../styles/globals.css"
+import "../styles/globals.css";
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
-  const apolloClient = useApollo(pageProps)
+  const apolloClient = useApollo(pageProps);
 
-  const getHeader = Component.getHeader ?? (() => null)
+  const getHeader = Component.getHeader ?? (() => null);
   const getLayout =
     Component.getLayout ??
-    ((page) => <Layout header={getHeader(page)}>{page}</Layout>)
+    ((page) => <Layout header={getHeader(page)}>{page}</Layout>);
 
   return (
     <ApolloProvider client={apolloClient}>
@@ -22,7 +22,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       </Head>
       {getLayout(<Component {...pageProps} />)}
     </ApolloProvider>
-  )
+  );
 }
 
-export default App
+export default App;
