@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none;
+  }
+
+  .btn-primary {
+    @apply text-white bg-who-blue-dark;
+  }
+
+  .btn-secondary {
+    @apply text-white bg-who-blue-main;
+  }
+
+  .btn-white {
+    @apply border-white text-who-blue-dark bg-white hover:bg-who-blue-light hover:border-who-blue-light hover:text-white;
+  }
+
+  .btn-pill {
+    @apply text-white bg-who-blue-dark rounded-full;
+  }
+
+  .btn-outlined {
+    @apply text-white hover:bg-white hover:text-who-blue-dark border-white;
+  }
+
+  .btn-sm {
+    @apply text-xs px-2.5 py-1.5;
+  }
+
+  .btn-md {
+    @apply text-sm px-3 py-2 leading-4;
+  }
+
+  .btn-lg {
+    @apply text-sm px-4 py-2;
+  }
+
+  .btn-xl {
+    @apply text-base px-4 py-2;
+  }
+
+  .btn-xxl {
+    @apply text-base px-6 py-3;
+  }
+
+  .btn-disabled {
+    @apply opacity-40 cursor-not-allowed;
+  }
+}
