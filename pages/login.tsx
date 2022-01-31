@@ -1,5 +1,4 @@
-import { FormEvent, useState } from "react"
-import type { NextPage } from "next"
+import { FormEvent, ReactElement, useState } from "react"
 import Button from "components/Button"
 import Input from "components/Input"
 import { gql, useMutation } from "@apollo/client"
@@ -27,7 +26,7 @@ interface Props {
   redirectTo?: string
 }
 
-const Login: NextPage<Props> = (props) => {
+const Login = (props: Props) => {
   const [login, { data, loading }] = useMutation(LOGIN)
   const router = useRouter()
   const { formData, isValid, handleInputChange } = useForm<FormInputs>({
@@ -83,5 +82,7 @@ const Login: NextPage<Props> = (props) => {
     </div>
   )
 }
+
+Login.getLayout = (page: ReactElement) => page
 
 export default Login
