@@ -8,7 +8,7 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  modulePaths: ["<rootDir>/"],
+  modulePaths: ["<rootDir>/src/"],
   testEnvironment: "jest-environment-jsdom",
 }
 
