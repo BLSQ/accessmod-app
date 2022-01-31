@@ -32,7 +32,6 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   };
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    console.log(event.target.value);
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,

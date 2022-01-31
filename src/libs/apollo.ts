@@ -33,13 +33,13 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
       onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
           graphQLErrors.forEach(({ message, locations, path }) =>
-            console.log(
+            console.error(
               `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
             )
           );
         }
         if (networkError) {
-          console.log(
+          console.error(
             `[Network error]: ${networkError}. Backend is unreachable. Is it running?`
           );
         }
