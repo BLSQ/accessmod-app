@@ -7,8 +7,7 @@ WORKDIR /code
 
 COPY . .
 
-# RUN npm ci --only=production
-RUN npm ci
+RUN npm ci --only=production
 
 # https://nextjs.org/docs/messages/sharp-missing-in-production
 RUN npm i sharp
