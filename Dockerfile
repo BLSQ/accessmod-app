@@ -5,10 +5,10 @@ ARG NEXT_PUBLIC_GRAPHQL_ENDPOINT
 RUN mkdir /code
 WORKDIR /code
 
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+RUN npm ci --only=production
 COPY . .
-
-# RUN npm ci --only=production
-RUN npm ci
 
 # https://nextjs.org/docs/messages/sharp-missing-in-production
 RUN npm i sharp
