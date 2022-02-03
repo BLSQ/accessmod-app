@@ -1,8 +1,4 @@
-import {
-  GetServerSidePropsContext,
-  GetServerSideProps,
-  GetServerSidePropsResult,
-} from "next";
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { gql } from "@apollo/client";
 import { ParsedUrlQuery } from "querystring";
 
@@ -12,7 +8,7 @@ type WithUserRequiredOptions<
   P = any,
   Q extends ParsedUrlQuery = ParsedUrlQuery
 > = {
-  getServerSideProps?: GetServerSideProps<P, Q>;
+  getServerSideProps?: (ctx: any) => any;
   returnTo?: string;
 };
 
