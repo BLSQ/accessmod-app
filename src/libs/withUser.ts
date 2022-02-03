@@ -52,8 +52,8 @@ export function withUserRequired(options: WithUserRequiredOptions = {}) {
       return {
         ...ret,
         props: {
-          ...ret.props,
           user: payload.data.me,
+          ...ret.props,
         },
       };
     }
