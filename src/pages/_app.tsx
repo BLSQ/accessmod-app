@@ -9,10 +9,7 @@ import "../styles/globals.css";
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const apolloClient = useApollo(pageProps);
 
-  const getHeader = Component.getHeader ?? (() => null);
-  const getLayout =
-    Component.getLayout ??
-    ((page) => <Layout header={getHeader(page)}>{page}</Layout>);
+  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>);
 
   return (
     <ApolloProvider client={apolloClient}>
