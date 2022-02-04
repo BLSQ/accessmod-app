@@ -21,9 +21,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   } = props;
 
   const inputClassName = clsx(
-    "block py-1.5 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md focus:outline-none",
+    "block py-1.5 shadow-sm focus:ring-who-blue-main focus:border-who-blue-main block w-full sm:text-sm border-gray-300 rounded-md focus:outline-none",
     error &&
-      "border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500",
+      "border-red-300 text-red-900 placeholder-red-300 focus:ring-who-blue-main focus:border-who-blue-main",
     className
   );
 
@@ -33,7 +33,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         {label && (
           <label
             htmlFor={name}
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-500"
           >
             {label}
           </label>

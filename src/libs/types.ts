@@ -4,7 +4,6 @@ import type { ReactElement } from "react";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactElement;
-  getHeader?: (page: ReactElement) => ReactElement;
 };
 
 export type AppPropsWithLayout = AppProps & {

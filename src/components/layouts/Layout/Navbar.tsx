@@ -1,38 +1,16 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
-
-const ITEMS = [
-  {
-    label: "Dashboard",
-    link: "/",
-  },
-  {
-    label: "Projects",
-    link: "/projects",
-    items: [
-      { label: "Project 1", link: "/projects/1" },
-      { label: "Project 1", link: "/projects/1" },
-      { label: "Project 1", link: "/projects/1" },
-    ],
-  },
-  {
-    label: "Teams",
-    link: "/teams",
-    items: [
-      { label: "Team 1", link: "/teams/1" },
-      { label: "Team 1", link: "/teams/1" },
-      { label: "Team 1", link: "/teams/1" },
-    ],
-  },
-];
+import { gql } from "@apollo/client";
+import { useEffect, useState } from "react";
+import { useNavbarQuery } from "libs/graphql";
 
 type NavEntry = {
   label: string;
   link: string;
   items?: { label: string; link: string }[];
 };
+
+type NavState = NavEntry[];
 
 const NavEntry = (props: NavEntry) => {
   const { label, link, items } = props;
@@ -69,10 +47,53 @@ const NavEntry = (props: NavEntry) => {
   );
 };
 
+const QUERY = gql`
+  query Navbar {
+    accessmodProjects(page: 1, perPage: 5) {
+      items {
+        id
+        name
+      }
+      totalPages
+    }
+  }
+`;
+
 const Navbar = () => {
+  const { data } = useNavbarQuery();
+  const [items, setItems] = useState<NavState>([
+    {
+      label: "Dashboard",
+      link: "/",
+    },
+    {
+      label: "Projects",
+      link: "/projects",
+    },
+  ]);
+
+  useEffect(() => {
+    if (data) {
+      const projects = data.accessmodProjects.items.map((project) => ({
+        label: project.name,
+        link: `/projects/${encodeURIComponent(project.id)}`,
+      }));
+      setItems([
+        {
+          label: "Dashboard",
+          link: "/",
+        },
+        {
+          label: "Projects",
+          link: "/projects",
+          items: [...projects, { label: "See all", link: "/projects" }],
+        },
+      ]);
+    }
+  }, [data]);
   return (
     <div className="flex gap-2 uppercase text-white h-full items-stretch">
-      {ITEMS.map((itemProps) => (
+      {items.map((itemProps) => (
         <NavEntry key={itemProps.link} {...itemProps} />
       ))}
     </div>
