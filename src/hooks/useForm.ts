@@ -8,6 +8,7 @@ type UseFormResult<T> = {
   formData: T;
   formErrors: { string?: string };
   handleInputChange: ChangeEventHandler<HTMLInputElement>;
+  setFieldValue: (fieldName: string, value: any) => void;
   setFormErrors: (errors: { string?: string }) => void;
   reset: () => void;
   isValid: Boolean;
@@ -37,6 +38,13 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     });
   };
 
+  const setFieldValue = (field: string, value: any) => {
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
+  };
+
   const isValid = useMemo(
     () => (validate ? validate(formData) : true),
     [formData]
@@ -49,6 +57,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     formErrors,
     handleInputChange,
     setFormErrors,
+    setFieldValue,
     reset,
     isValid,
     hasErrors,
