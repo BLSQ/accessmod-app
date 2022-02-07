@@ -1,8 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./select.css";
 
 @layer components {
+  /* Button styles */
   .btn {
     @apply inline-flex items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none;
   }
