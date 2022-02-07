@@ -1,6 +1,6 @@
 import { FormEvent, ReactElement, useState } from "react";
 import Button from "components/Button";
-import Input from "components/Input";
+import Input from "components/forms/Input";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
