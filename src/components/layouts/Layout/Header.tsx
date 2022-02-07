@@ -8,7 +8,7 @@ import CreateProjectDialog from "features/CreateProjectDialog";
 import { useState } from "react";
 
 const Header = () => {
-  const [showProjectDialog, setProjectDialog] = useState(true);
+  const [showProjectDialog, setProjectDialog] = useState(false);
   return (
     <>
       <div className="bg-who-blue-main pb-48">
