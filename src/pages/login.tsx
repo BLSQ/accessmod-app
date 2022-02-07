@@ -1,6 +1,7 @@
 import { FormEvent, ReactElement, useState } from "react";
 import Button from "components/Button";
 import Input from "components/forms/Input";
+import Field from "components/forms/Field";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
@@ -47,22 +48,24 @@ const Login = (props: Props) => {
       <div className="p-10 xs:p-0 mx-auto md: w-full md:max-w-md">
         <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200 p-5">
           <form className="space-y-4" onSubmit={onSubmit}>
-            <Input
-              label="Email"
-              type="text"
-              required
-              name="email"
-              value={formData.email ?? ""}
-              onChange={handleInputChange}
-            />
-            <Input
-              required
-              type="password"
-              label="Password"
-              name="password"
-              value={formData.password ?? ""}
-              onChange={handleInputChange}
-            />
+            <Field name="email" required>
+              <Input
+                type="text"
+                required
+                name="email"
+                value={formData.email ?? ""}
+                onChange={handleInputChange}
+              />
+            </Field>
+            <Field name="password" required>
+              <Input
+                required
+                type="password"
+                name="password"
+                value={formData.password ?? ""}
+                onChange={handleInputChange}
+              />
+            </Field>
 
             {data?.login && !data?.login?.success && (
               <div className={"text-red-600"}>

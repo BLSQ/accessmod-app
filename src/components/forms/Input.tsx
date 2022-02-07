@@ -2,7 +2,6 @@ import { InputHTMLAttributes, forwardRef } from "react";
 import clsx from "clsx";
 
 type InputProps = {
-  label?: string;
   error?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
