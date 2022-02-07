@@ -359,6 +359,8 @@ export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodPr
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
+export type ProjectNavbar_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
 export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
@@ -378,6 +380,20 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResult', success: boolean, me?: { __typename?: 'User', id: string, email: string } | null } | null };
 
+export type ProjectAnalysisPageQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ProjectAnalysisPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+
+export type ProjectDataPageQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -390,6 +406,11 @@ export type ProjectsPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
+export const ProjectNavbar_ProjectFragmentDoc = gql`
+    fragment ProjectNavbar_project on AccessmodProject {
+  id
+}
+    `;
 export const ProjectCard_ProjectFragmentDoc = gql`
     fragment ProjectCard_project on AccessmodProject {
   id
@@ -599,14 +620,89 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ProjectAnalysisPageDocument = gql`
+    query ProjectAnalysisPage($id: String!) {
+  accessmodProject(id: $id) {
+    id
+    name
+    ...ProjectNavbar_project
+  }
+}
+    ${ProjectNavbar_ProjectFragmentDoc}`;
+
+/**
+ * __useProjectAnalysisPageQuery__
+ *
+ * To run a query within a React component, call `useProjectAnalysisPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectAnalysisPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectAnalysisPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProjectAnalysisPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>(ProjectAnalysisPageDocument, options);
+      }
+export function useProjectAnalysisPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>(ProjectAnalysisPageDocument, options);
+        }
+export type ProjectAnalysisPageQueryHookResult = ReturnType<typeof useProjectAnalysisPageQuery>;
+export type ProjectAnalysisPageLazyQueryHookResult = ReturnType<typeof useProjectAnalysisPageLazyQuery>;
+export type ProjectAnalysisPageQueryResult = Apollo.QueryResult<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>;
+export const ProjectDataPageDocument = gql`
+    query ProjectDataPage($id: String!) {
+  accessmodProject(id: $id) {
+    id
+    name
+    ...ProjectNavbar_project
+  }
+}
+    ${ProjectNavbar_ProjectFragmentDoc}`;
+
+/**
+ * __useProjectDataPageQuery__
+ *
+ * To run a query within a React component, call `useProjectDataPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectDataPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectDataPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProjectDataPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectDataPageQuery, ProjectDataPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectDataPageQuery, ProjectDataPageQueryVariables>(ProjectDataPageDocument, options);
+      }
+export function useProjectDataPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectDataPageQuery, ProjectDataPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectDataPageQuery, ProjectDataPageQueryVariables>(ProjectDataPageDocument, options);
+        }
+export type ProjectDataPageQueryHookResult = ReturnType<typeof useProjectDataPageQuery>;
+export type ProjectDataPageLazyQueryHookResult = ReturnType<typeof useProjectDataPageLazyQuery>;
+export type ProjectDataPageQueryResult = Apollo.QueryResult<ProjectDataPageQuery, ProjectDataPageQueryVariables>;
 export const ProjectPageDocument = gql`
     query ProjectPage($id: String!) {
   accessmodProject(id: $id) {
     id
     name
+    ...ProjectNavbar_project
   }
 }
-    `;
+    ${ProjectNavbar_ProjectFragmentDoc}`;
 
 /**
  * __useProjectPageQuery__

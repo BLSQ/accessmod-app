@@ -66,7 +66,7 @@ function Dialog(props: DialogProps) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <BaseDialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" />
+            <BaseDialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-80 transition-opacity backdrop-blur-sm" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}

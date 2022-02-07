@@ -103,7 +103,6 @@ const CreateProjectDialog = (props: Props) => {
               type="number"
               onChange={handleInputChange}
               name="spatialResolution"
-              label="Spatial Resolution"
               required
             />
           </Field>

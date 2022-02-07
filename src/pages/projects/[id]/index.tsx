@@ -6,17 +6,20 @@ import { withUserRequired } from "libs/withUser";
 import { useProjectPageQuery } from "libs/graphql";
 import { PageHeader } from "components/layouts/Layout";
 import Block from "components/Block";
+import ProjectNavbar from "features/ProjectNavbar";
 
 const QUERY = gql`
   query ProjectPage($id: String!) {
     accessmodProject(id: $id) {
       id
       name
+      ...ProjectNavbar_project
     }
   }
+  ${ProjectNavbar.fragments.project}
 `;
 
-const ProjectsPage: NextPageWithLayout = () => {
+const ProjectPage: NextPageWithLayout = (props) => {
   const router = useRouter();
   const { loading, data } = useProjectPageQuery({
     variables: { id: router.query.id as string },
@@ -30,14 +33,22 @@ const ProjectsPage: NextPageWithLayout = () => {
     );
   }
 
+  if (!data.accessmodProject) {
+    // Unknonwn project or not authorized
+    return null;
+  }
+
   return (
     <>
-      <PageHeader>
+      <PageHeader className="pb-4">
         <h1 className="text-3xl font-bold text-white">
           {data.accessmodProject?.name}
         </h1>
       </PageHeader>
-      <Block>zzz</Block>
+      <div className="flex flex-1 space-x-6">
+        <ProjectNavbar project={data.accessmodProject} />
+        <div className="flex-1" />
+      </div>
     </>
   );
 };
@@ -54,4 +65,4 @@ export const getServerSideProps = withUserRequired({
   },
 });
 
-export default ProjectsPage;
+export default ProjectPage;
