@@ -78,6 +78,9 @@ const Navbar = () => {
         label: project.name,
         link: `/projects/${encodeURIComponent(project.id)}`,
       }));
+      if (projects.length > 0) {
+        projects.push({ label: "See all", link: "/projects" });
+      }
       setItems([
         {
           label: "Dashboard",
@@ -86,7 +89,7 @@ const Navbar = () => {
         {
           label: "Projects",
           link: "/projects",
-          items: [...projects, { label: "See all", link: "/projects" }],
+          items: projects,
         },
       ]);
     }
