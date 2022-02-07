@@ -3,6 +3,24 @@
 @tailwind utilities;
 @import "./select.css";
 
+@layer base {
+  h1 {
+    @apply text-3xl text-who-blue-dark;
+  }
+
+  h2 {
+    @apply text-2xl text-who-blue-dark;
+  }
+
+  h3 {
+    @apply text-xl text-who-blue-main;
+  }
+
+  h4 {
+    @apply text-lg text-who-blue-main;
+  }
+}
+
 @layer components {
   /* Button styles */
   .btn {
