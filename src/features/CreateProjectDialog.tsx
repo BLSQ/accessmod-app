@@ -74,7 +74,12 @@ const CreateProjectDialog = (props: Props) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      closeOnEsc={false}
+      closeOnOutsideClick={false}
+    >
       <form onSubmit={onSubmit}>
         <Dialog.Title>Create a new Project</Dialog.Title>
 

@@ -1,11 +1,11 @@
-const { useCallback } = require("react");
+import { KeyboardEvent, useCallback } from "react";
 
 interface UseInputKeyDownProps {
   onEscape: () => void;
   onCommandShiftEnter: () => void;
 }
 
-function useInputKeyDown({
+export default function useInputKeyDown({
   onEscape,
   onCommandShiftEnter,
 }: UseInputKeyDownProps) {
@@ -21,5 +21,3 @@ function useInputKeyDown({
     [onEscape, onCommandShiftEnter]
   );
 }
-
-export default useInputKeyDown;
