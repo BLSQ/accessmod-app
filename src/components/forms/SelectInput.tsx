@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
-import Select from "react-select";
+import Select, { GroupBase, OptionsOrGroups } from "react-select";
 import CreatableSelect from "react-select/creatable";
 import { get } from "lodash/fp";
 import useInputKeyDown from "hooks/useInputKeyDown";
+
 export default function SelectInput({
   options,
   value,
@@ -69,7 +70,7 @@ export default function SelectInput({
 type Option = { [key: string]: string };
 
 interface SelectInputProps {
-  options: Option[];
+  options: OptionsOrGroups<Option, GroupBase<Option>>;
   value: any;
   onChange: (value: any) => void;
   multiple?: boolean;

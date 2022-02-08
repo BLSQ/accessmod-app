@@ -5,10 +5,10 @@ import Input from "components/forms/Input";
 import Field from "components/forms/Field";
 import SelectInput from "components/forms/SelectInput";
 import useForm from "hooks/useForm";
-import { FormEvent, MouseEventHandler } from "react";
+import { FormEvent, MouseEventHandler, useMemo } from "react";
 import { useCreateProjectMutation } from "libs/graphql";
 import { useRouter } from "next/router";
-import { countries, Country } from "libs/countries";
+import { countries, Country, regions } from "libs/countries";
 import Spinner from "components/Spinner";
 
 type Props = {
@@ -46,6 +46,22 @@ const CreateProjectDialog = (props: Props) => {
     }
   );
 
+  const countryOptions: { label: string; options: Country[] }[] =
+    useMemo(() => {
+      const groups = [];
+      for (const [regionKey, regionLabel] of Object.entries(regions)) {
+        groups.push({
+          label: regionLabel,
+          options: countries.filter((country) => country.region === regionKey),
+        });
+      }
+      groups.push({
+        label: "No Region",
+        options: countries.filter((country) => !country.region),
+      });
+      return groups;
+    }, []);
+
   const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     onClose();
@@ -59,7 +75,7 @@ const CreateProjectDialog = (props: Props) => {
         input: {
           spatialResolution: parseInt(formData.spatialResolution, 10),
           name: formData.name,
-          country: formData.country,
+          country: { code: formData.country.code },
         },
       },
     });
@@ -95,7 +111,7 @@ const CreateProjectDialog = (props: Props) => {
           <Field label="Country" required name="country">
             <SelectInput
               required
-              options={countries}
+              options={countryOptions}
               labelKey="name"
               valueKey="code"
               value={formData.country}
