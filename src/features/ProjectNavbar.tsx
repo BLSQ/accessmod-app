@@ -8,19 +8,19 @@ const ProjectNavbar = (props: { project: ProjectNavbar_ProjectFragment }) => {
   return (
     <Block as="nav" className="bg-who-blue-dark text-white basis-56 px-3 py-4">
       <ul className="list-none">
-        <li className="px-3 py-2 w-full transition-all hover:bg-who-blue-light rounded-md">
+        <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
           <Link href={`/projects/${encodeURIComponent(project.id)}/`}>
-            <a className="flex">Project Summary</a>
+            <a className="flex px-3 py-2 ">Project Summary</a>
           </Link>
         </li>
-        <li className="px-3 py-2 w-full transition-all hover:bg-who-blue-light rounded-md">
+        <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
           <Link href={`/projects/${encodeURIComponent(project.id)}/analysis`}>
-            <a className="flex">Analyses</a>
+            <a className="flex px-3 py-2 ">Analyses</a>
           </Link>
         </li>
-        <li className="px-3 py-2 w-full transition-all hover:bg-who-blue-light rounded-md">
+        <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
           <Link href={`/projects/${encodeURIComponent(project.id)}/data`}>
-            <a className="flex">Data</a>
+            <a className="flex px-3 py-2 ">Data</a>
           </Link>
         </li>
       </ul>
