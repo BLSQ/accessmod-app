@@ -25,7 +25,7 @@ const NavEntry = (props: NavEntry) => {
         <a className="h-full flex items-center">{label}</a>
       </Link>
 
-      {items && (
+      {items && items.length > 0 && (
         <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100">
           <div
             className={clsx(
