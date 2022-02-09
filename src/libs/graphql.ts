@@ -357,9 +357,19 @@ export type CreateProjectMutationVariables = Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject?: { __typename?: 'CreateAccessmodProjectResult', success: boolean, project?: { __typename?: 'AccessmodProject', id: string } | null } | null };
 
+export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles?: { __typename?: 'AccessmodFilesetRolePage', items: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> } | null };
+
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectNavbar_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string } }> } };
 
 export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
 
@@ -516,6 +526,89 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const FilesetRolePickerDocument = gql`
+    query FilesetRolePicker {
+  accessmodFilesetRoles {
+    items {
+      id
+      name
+      format
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFilesetRolePickerQuery__
+ *
+ * To run a query within a React component, call `useFilesetRolePickerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFilesetRolePickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFilesetRolePickerQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFilesetRolePickerQuery(baseOptions?: Apollo.QueryHookOptions<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>(FilesetRolePickerDocument, options);
+      }
+export function useFilesetRolePickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>(FilesetRolePickerDocument, options);
+        }
+export type FilesetRolePickerQueryHookResult = ReturnType<typeof useFilesetRolePickerQuery>;
+export type FilesetRolePickerLazyQueryHookResult = ReturnType<typeof useFilesetRolePickerLazyQuery>;
+export type FilesetRolePickerQueryResult = Apollo.QueryResult<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>;
+export const ProjectPickerDocument = gql`
+    query ProjectPicker {
+  accessmodProjects(page: 1, perPage: 40) {
+    items {
+      id
+      name
+      country {
+        flag
+        name
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useProjectPickerQuery__
+ *
+ * To run a query within a React component, call `useProjectPickerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectPickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectPickerQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProjectPickerQuery(baseOptions?: Apollo.QueryHookOptions<ProjectPickerQuery, ProjectPickerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectPickerQuery, ProjectPickerQueryVariables>(ProjectPickerDocument, options);
+      }
+export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectPickerQuery, ProjectPickerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectPickerQuery, ProjectPickerQueryVariables>(ProjectPickerDocument, options);
+        }
+export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
+export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
+export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout {
