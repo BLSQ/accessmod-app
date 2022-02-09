@@ -1,14 +1,25 @@
-import React, { useCallback } from "react";
-import Select, { GroupBase, OptionsOrGroups } from "react-select";
+import React, { ReactElement, useCallback } from "react";
+import Select, {
+  GroupBase,
+  OptionsOrGroups,
+  components as DefaultComponents,
+  SelectComponentsConfig,
+} from "react-select";
+import AsyncSelect from "react-select/async";
 import CreatableSelect from "react-select/creatable";
 import { get } from "lodash/fp";
 import useInputKeyDown from "hooks/useInputKeyDown";
 
+export { DefaultComponents };
 export default function SelectInput({
   options,
+  loadOptions,
+  cacheOptions,
+  defaultOptions,
   value,
   onChange,
   required,
+  components,
   multiple,
   valueKey,
   labelKey,
@@ -17,7 +28,7 @@ export default function SelectInput({
   onCommandShiftEnter = () => {},
   autoFocus,
   onCreateOption,
-}: SelectInputProps) {
+}: SelectInputProps<Option, boolean, GroupBase<Option>>) {
   const onKeyDown = useInputKeyDown({ onEscape, onCommandShiftEnter });
   const onSelectChange = useCallback(
     (newValue: any) => {
@@ -54,11 +65,23 @@ export default function SelectInput({
       ? (option: Option) => get(valueKey, option)
       : undefined,
     onKeyDown,
+    components,
     onBlur,
     autoFocus,
     openMenuOnFocus: true,
     defaultMenuIsOpen: false,
   };
+
+  if (loadOptions) {
+    return (
+      <AsyncSelect
+        {...selectProps}
+        loadOptions={loadOptions}
+        cacheOptions={cacheOptions}
+        defaultOptions={defaultOptions}
+      />
+    );
+  }
 
   return onCreateOption ? (
     <CreatableSelect {...selectProps} onCreateOption={onSelectCreateOption} />
@@ -69,8 +92,12 @@ export default function SelectInput({
 
 type Option = { [key: string]: string };
 
-interface SelectInputProps {
-  options: OptionsOrGroups<Option, GroupBase<Option>>;
+interface SelectInputProps<
+  Option,
+  IsMulti extends boolean,
+  Group extends GroupBase<Option>
+> {
+  options?: OptionsOrGroups<Option, Group>;
   value: any;
   onChange: (value: any) => void;
   multiple?: boolean;
@@ -82,4 +109,8 @@ interface SelectInputProps {
   onCreateOption?: (value: any) => void;
   labelKey?: string;
   valueKey?: string;
+  loadOptions?: (str: string) => OptionsOrGroups<Option, Group>;
+  cacheOptions?: boolean;
+  defaultOptions?: boolean | OptionsOrGroups<Option, Group>;
+  components?: SelectComponentsConfig<Option, IsMulti, Group>;
 }
