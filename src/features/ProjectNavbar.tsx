@@ -6,7 +6,10 @@ import Link from "next/link";
 const ProjectNavbar = (props: { project: ProjectNavbar_ProjectFragment }) => {
   const { project } = props;
   return (
-    <Block as="nav" className="bg-who-blue-dark text-white basis-56 px-3 py-4">
+    <Block
+      as="nav"
+      className="bg-who-blue-dark text-white basis-56 px-3 py-4 min-w-fit"
+    >
       <ul className="list-none">
         <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
           <Link href={`/projects/${encodeURIComponent(project.id)}/`}>
