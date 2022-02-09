@@ -1,12 +1,15 @@
-import { Fragment, ReactElement } from "react";
+import { Fragment, ReactElement, useRef } from "react";
 import { Dialog as BaseDialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
+import useEventListener from "hooks/useEventListener";
 
 type DialogProps = {
   open: boolean;
   onClose: (value: any) => void;
   children: ReactElement | ReactElement[];
+  closeOnOutsideClick?: boolean;
+  closeOnEsc?: boolean;
 };
 
 const DialogTitle = (props: {
@@ -47,12 +50,31 @@ const DialogActions = (props: { children: ReactElement | ReactElement[] }) => (
 );
 
 function Dialog(props: DialogProps) {
-  const { open, onClose, children } = props;
+  const {
+    open,
+    onClose,
+    children,
+    closeOnOutsideClick = true,
+    closeOnEsc = true,
+  } = props;
+
+  const dialogRef = useRef(null);
+
+  useEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape" && !closeOnEsc) {
+        event.stopImmediatePropagation();
+      }
+    },
+    dialogRef
+  );
 
   return (
     <Transition.Root show={open} as={Fragment}>
       <BaseDialog
         as="div"
+        ref={dialogRef}
         className="fixed z-10 inset-0 overflow-y-auto"
         onClose={onClose}
       >
@@ -66,7 +88,12 @@ function Dialog(props: DialogProps) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <BaseDialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" />
+            <BaseDialog.Overlay
+              className={clsx(
+                "fixed inset-0 bg-gray-500 bg-opacity-80 transition-opacity backdrop-blur-sm",
+                !closeOnOutsideClick && "pointer-events-none" // Let's prevent mouse events to be triggered to ensure the dialog stay open.
+              )}
+            />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}

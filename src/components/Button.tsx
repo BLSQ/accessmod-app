@@ -1,10 +1,11 @@
 import clsx from "clsx";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, ReactElement } from "react";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "pill" | "white" | "outlined";
   size?: "sm" | "md" | "lg" | "xl" | "xxl";
   className?: string;
+  leadingIcon?: ReactElement;
 }
 
 const Button = (props: Props) => {
@@ -12,6 +13,8 @@ const Button = (props: Props) => {
     variant = "primary",
     size = "md",
     className,
+    children,
+    leadingIcon,
     disabled,
     ...delegated
   } = props;
@@ -25,19 +28,31 @@ const Button = (props: Props) => {
 
     variant === "white" && "btn-white",
 
-    variant === "pill" && "btn-pill",
-
     variant === "outlined" && "btn-outlined",
 
-    size === "sm" && "bn-sm",
+    size === "sm" && "btn-sm",
     size === "md" && "btn-md",
     size === "lg" && "btn-lg",
     size === "xl" && "btn-xl",
     size === "xxl" && "btn-xxl",
+    variant === "pill" && "btn-pill",
     disabled && "btn-disabled",
     className
   );
-  return <button className={classes} disabled={disabled} {...delegated} />;
+  return (
+    <button className={classes} disabled={disabled} {...delegated}>
+      {leadingIcon ? <LeadingIcon>{leadingIcon}</LeadingIcon> : null}
+      {children}
+    </button>
+  );
+};
+
+const LeadingIcon = (props: { children: ReactElement }) => {
+  return (
+    <div className="-ml-1 mr-2 " aria-hidden="true">
+      {props.children}
+    </div>
+  );
 };
 
 export default Button;

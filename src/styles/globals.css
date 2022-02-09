@@ -1,30 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./select.css";
+
+@layer base {
+  h1 {
+    @apply text-3xl text-who-blue-dark;
+  }
+
+  h2 {
+    @apply text-2xl text-who-blue-dark;
+  }
+
+  h3 {
+    @apply text-xl text-who-blue-main;
+  }
+
+  h4 {
+    @apply text-lg text-who-blue-main;
+  }
+}
 
 @layer components {
+  /* Button styles */
   .btn {
     @apply inline-flex items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none;
   }
 
   .btn-primary {
-    @apply text-white bg-who-blue-dark;
+    @apply text-white bg-midnight-blue-500 hover:bg-midnight-blue-600;
   }
 
   .btn-secondary {
-    @apply text-white bg-who-blue-main;
+    @apply text-white bg-lochmara hover:bg-lochmara-600;
   }
 
   .btn-white {
-    @apply border-white text-who-blue-dark bg-white hover:bg-who-blue-light hover:border-who-blue-light hover:text-white;
-  }
-
-  .btn-pill {
-    @apply text-white bg-who-blue-dark rounded-full;
+    @apply border-white text-gray-800 bg-white hover:bg-lochmara-200 hover:border-lochmara-200 hover:text-white;
   }
 
   .btn-outlined {
-    @apply text-white hover:bg-white hover:text-who-blue-dark border-white;
+    @apply text-white hover:bg-white hover:text-gray-800 border-white;
   }
 
   .btn-sm {
@@ -45,6 +61,10 @@
 
   .btn-xxl {
     @apply text-base px-6 py-3;
+  }
+
+  .btn-pill {
+    @apply text-white bg-midnight-blue rounded-3xl px-1.5 py-0.5 h-full;
   }
 
   .btn-disabled {

@@ -25,7 +25,7 @@ const NavEntry = (props: NavEntry) => {
         <a className="h-full flex items-center">{label}</a>
       </Link>
 
-      {items && (
+      {items && items.length > 0 && (
         <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100">
           <div
             className={clsx(
@@ -78,6 +78,9 @@ const Navbar = () => {
         label: project.name,
         link: `/projects/${encodeURIComponent(project.id)}`,
       }));
+      if (projects.length > 0) {
+        projects.push({ label: "See all", link: "/projects" });
+      }
       setItems([
         {
           label: "Dashboard",
@@ -86,7 +89,7 @@ const Navbar = () => {
         {
           label: "Projects",
           link: "/projects",
-          items: [...projects, { label: "See all", link: "/projects" }],
+          items: projects,
         },
       ]);
     }

@@ -1,22 +1,26 @@
 import clsx from "clsx";
-import { ReactElement } from "react";
+import {
+  ComponentClass,
+  createElement,
+  FunctionComponent,
+  ReactElement,
+} from "react";
 
 type Props = {
   className?: string;
+  as?: string | FunctionComponent | ComponentClass;
   children: ReactElement | ReactElement[] | string | undefined | null;
 };
 
 const Block = (props: Props) => {
   const { children, className } = props;
-  return (
-    <article
-      className={clsx(
-        "bg-white rounded-lg shadow px-5 py-6 sm:px-6",
-        className
-      )}
-    >
-      {children}
-    </article>
+
+  return createElement<{ className?: string }>(
+    props.as ?? "article",
+    {
+      className: clsx("bg-white rounded-lg shadow px-5 py-6", className),
+    },
+    children
   );
 };
 

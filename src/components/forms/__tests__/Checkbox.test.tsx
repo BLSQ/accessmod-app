@@ -1,4 +1,4 @@
-import Checkbox from "components/Checkbox";
+import Checkbox from "components/forms/Checkbox";
 import { render, screen, fireEvent } from "@testing-library/react";
 
 const CHECKBOX_ID = "checkbox";
