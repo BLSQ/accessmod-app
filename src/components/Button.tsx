@@ -28,15 +28,14 @@ const Button = (props: Props) => {
 
     variant === "white" && "btn-white",
 
-    variant === "pill" && "btn-pill",
-
     variant === "outlined" && "btn-outlined",
 
-    size === "sm" && "bn-sm",
+    size === "sm" && "btn-sm",
     size === "md" && "btn-md",
     size === "lg" && "btn-lg",
     size === "xl" && "btn-xl",
     size === "xxl" && "btn-xxl",
+    variant === "pill" && "btn-pill",
     disabled && "btn-disabled",
     className
   );
