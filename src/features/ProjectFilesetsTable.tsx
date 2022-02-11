@@ -68,47 +68,49 @@ const ProjectFilesetsTable = (props: Props) => {
   const totalPages = (data || previousData)?.accessmodFilesets.totalPages ?? 0;
 
   return (
-    <div className="table-wrapper">
-      <table className="who table-fixed">
-        <thead>
-          <tr>
-            <th scope="column" className="whitespace-nowrap">
-              Dataset Name
-            </th>
-            <th scope="column">Role</th>
-            <th scope="column">Owner</th>
-            <th scope="column">Created At</th>
-            <th scope="column" className="whitespace-nowrap">
-              # Files
-            </th>
-            <th scope="column">
-              <span className="sr-only">Delete</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id} className="group">
-              <td className="min-w-fit">{row.name}</td>
-              <td>{row.role?.name ?? <i>Unknown</i>}</td>
-              <td>
-                {[row.owner.firstName, row.owner.lastName]
-                  .filter(Boolean)
-                  .join(" ") || row.owner.email}
-              </td>
-              <td>
-                <Time datetime={row.createdAt} />
-              </td>
-              <td>{row.files.length ?? 0}</td>
-              <td className="">
-                <div className="invisible group-hover:visible">
-                  <Button>Add files</Button>
-                </div>
-              </td>
+    <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
+      <div className="overflow-x-auto rounded-md">
+        <table className="who">
+          <thead>
+            <tr>
+              <th scope="column" className="whitespace-nowrap">
+                Dataset Name
+              </th>
+              <th scope="column">Role</th>
+              <th scope="column">Owner</th>
+              <th scope="column">Created At</th>
+              <th scope="column" className="whitespace-nowrap">
+                # Files
+              </th>
+              <th scope="column">
+                <span className="sr-only">Delete</span>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id} className="group">
+                <td className="min-w-fit">{row.name}</td>
+                <td>{row.role?.name ?? <i>Unknown</i>}</td>
+                <td>
+                  {[row.owner.firstName, row.owner.lastName]
+                    .filter(Boolean)
+                    .join(" ") || row.owner.email}
+                </td>
+                <td>
+                  <Time datetime={row.createdAt} />
+                </td>
+                <td>{row.files.length ?? 0}</td>
+                <td className="">
+                  <div className="invisible group-hover:visible">
+                    <Button>Add files</Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="px-5 py-3">
         <Pagination
           loading={loading}

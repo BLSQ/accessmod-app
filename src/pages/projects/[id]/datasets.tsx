@@ -72,7 +72,7 @@ const ProjectDataPage: NextPageWithLayout = () => {
           {data.accessmodProject?.name}
         </h1>
       </PageHeader>
-      <div className="flex-1 grid grid-cols-12 gap-6 lg:gap-8 overflow-x-hidden">
+      <div className="flex-1 grid grid-cols-12 gap-6 lg:gap-8">
         <ProjectNavbar
           project={data.accessmodProject}
           className="col-span-3 xl:col-span-2"

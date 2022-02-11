@@ -4,12 +4,12 @@ type EventElement = HTMLElement | Window;
 
 export const useEmitter = <T = any>(
   eventName: string,
-  element: EventElement = window
+  element?: EventElement
 ) => {
   const callEvent = (data?: T) => {
     const event = new CustomEvent(eventName, { detail: data });
 
-    element.dispatchEvent(event);
+    (element || window).dispatchEvent(event);
   };
 
   return callEvent;
@@ -18,7 +18,7 @@ export const useEmitter = <T = any>(
 export const useListener = <T = any>(
   eventName: string,
   onEvent: (e: CustomEvent<T>) => void,
-  element: EventElement = window,
+  element?: EventElement,
   options: boolean | AddEventListenerOptions = {}
 ) => {
   useEffect(() => {
@@ -27,10 +27,14 @@ export const useListener = <T = any>(
         onEvent(e as CustomEvent);
       };
 
-      element.addEventListener(eventName, handleSignal, options);
+      (element || window).addEventListener(eventName, handleSignal, options);
 
       return () =>
-        element.removeEventListener(eventName, handleSignal, options);
+        (element || window).removeEventListener(
+          eventName,
+          handleSignal,
+          options
+        );
     }
   }, [element, eventName, onEvent, options]);
 };
