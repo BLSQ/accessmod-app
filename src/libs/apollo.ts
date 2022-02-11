@@ -15,7 +15,9 @@ import { useMemo } from "react";
 
 const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
-let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
+export type CustomApolloClient = ApolloClient<NormalizedCacheObject>;
+
+let apolloClient: CustomApolloClient | undefined;
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   console.log(

@@ -373,6 +373,17 @@ export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRol
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
+export type ProjectFilesetsTableQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  projectId: Scalars['String'];
+}>;
+
+
+export type ProjectFilesetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' } | null> }> } };
+
+export type ProjectFilesetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
 export type ProjectNavbar_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
@@ -443,6 +454,11 @@ export const CreateDatasetDialog_ProjectFragmentDoc = gql`
     fragment CreateDatasetDialog_project on AccessmodProject {
   id
   name
+}
+    `;
+export const ProjectFilesetsTable_ProjectFragmentDoc = gql`
+    fragment ProjectFilesetsTable_project on AccessmodProject {
+  id
 }
     `;
 export const ProjectNavbar_ProjectFragmentDoc = gql`
@@ -631,6 +647,68 @@ export function useFilesetRolePickerLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FilesetRolePickerQueryHookResult = ReturnType<typeof useFilesetRolePickerQuery>;
 export type FilesetRolePickerLazyQueryHookResult = ReturnType<typeof useFilesetRolePickerLazyQuery>;
 export type FilesetRolePickerQueryResult = Apollo.QueryResult<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>;
+export const ProjectFilesetsTableDocument = gql`
+    query ProjectFilesetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
+  accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
+    items {
+      id
+      name
+      role {
+        name
+        id
+        format
+      }
+      owner {
+        id
+        firstName
+        lastName
+        email
+        avatar {
+          initials
+          color
+        }
+      }
+      files {
+        __typename
+      }
+      createdAt
+    }
+    pageNumber
+    totalPages
+    totalItems
+  }
+}
+    `;
+
+/**
+ * __useProjectFilesetsTableQuery__
+ *
+ * To run a query within a React component, call `useProjectFilesetsTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectFilesetsTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectFilesetsTableQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useProjectFilesetsTableQuery(baseOptions: Apollo.QueryHookOptions<ProjectFilesetsTableQuery, ProjectFilesetsTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectFilesetsTableQuery, ProjectFilesetsTableQueryVariables>(ProjectFilesetsTableDocument, options);
+      }
+export function useProjectFilesetsTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectFilesetsTableQuery, ProjectFilesetsTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectFilesetsTableQuery, ProjectFilesetsTableQueryVariables>(ProjectFilesetsTableDocument, options);
+        }
+export type ProjectFilesetsTableQueryHookResult = ReturnType<typeof useProjectFilesetsTableQuery>;
+export type ProjectFilesetsTableLazyQueryHookResult = ReturnType<typeof useProjectFilesetsTableLazyQuery>;
+export type ProjectFilesetsTableQueryResult = Apollo.QueryResult<ProjectFilesetsTableQuery, ProjectFilesetsTableQueryVariables>;
 export const ProjectPickerDocument = gql`
     query ProjectPicker {
   accessmodProjects(page: 1, perPage: 40) {
@@ -891,10 +969,12 @@ export const ProjectDataPageDocument = gql`
     name
     ...ProjectNavbar_project
     ...CreateDatasetDialog_project
+    ...ProjectFilesetsTable_project
   }
 }
     ${ProjectNavbar_ProjectFragmentDoc}
-${CreateDatasetDialog_ProjectFragmentDoc}`;
+${CreateDatasetDialog_ProjectFragmentDoc}
+${ProjectFilesetsTable_ProjectFragmentDoc}`;
 
 /**
  * __useProjectDataPageQuery__

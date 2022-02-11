@@ -56,7 +56,7 @@ type FilesetFile = JobFile & {
 
 const CreateDatasetDialog = (props: Props) => {
   const { open, onClose, project } = props;
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [createFileset] = useCreateFilesetMutation();
   const { formData, isValid, handleInputChange, setFieldValue, resetForm } =
@@ -83,12 +83,12 @@ const CreateDatasetDialog = (props: Props) => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (loading || !isValid) {
+    if (submitting || !isValid) {
       // It should not happen but...
-      console.warn("Form submitted while loading or invalid");
+      console.warn("Form submitted while submitting or invalid");
       return;
     }
-    setLoading(true);
+    setSubmitting(true);
 
     // Create Fileset
     const { data } = await createFileset({
@@ -129,11 +129,11 @@ const CreateDatasetDialog = (props: Props) => {
         },
       });
       resetForm();
-      setLoading(false);
+      setSubmitting(false);
       onClose("submit");
     } catch (err) {
       console.error(err);
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -152,19 +152,21 @@ const CreateDatasetDialog = (props: Props) => {
             <Input
               name="name"
               required
+              disabled={submitting}
               onChange={handleInputChange}
               value={formData.name}
             />
           </Field>
           <Field label="Project" required name="project">
             <ProjectPicker
-              disabled={Boolean(project)}
+              disabled={Boolean(project) || submitting}
               onChange={(value) => setFieldValue("project", value)}
               value={formData.project}
             />
           </Field>
           <Field label="Role" required name="role">
             <FilesetRolePicker
+              disabled={submitting}
               onChange={(value) => setFieldValue("role", value)}
               value={formData.role}
             />
@@ -183,18 +185,18 @@ const CreateDatasetDialog = (props: Props) => {
           <Button
             role="button"
             onClick={onCancel}
-            disabled={loading}
+            disabled={submitting}
             variant="outlined"
           >
             Cancel
           </Button>
           <Button
-            disabled={!isValid || loading}
+            disabled={!isValid || submitting}
             role="submit"
             className="space-x-2"
           >
-            {loading && <Spinner size="xs" />}
-            {loading ? (
+            {submitting && <Spinner size="xs" />}
+            {submitting ? (
               <span>Uploading ({progress}%)</span>
             ) : (
               <span>Create</span>
