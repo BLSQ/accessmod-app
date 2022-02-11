@@ -11,7 +11,7 @@ const Header = () => {
   const [showProjectDialog, setProjectDialog] = useState(false);
   return (
     <>
-      <div className="bg-who-blue-main pb-48">
+      <div className="bg-who-blue-main pb-32">
         <nav className="mb-10">
           <div className="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div className="border-b border-white">

@@ -20,7 +20,7 @@ const UserMenu = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-36 rounded shadow-lg py-1 bg-white text-who-black focus:outline-none text-right">
+        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-36 rounded shadow-lg py-1 bg-white text-gray-900 focus:outline-none text-right">
           <Menu.Item>
             {({ active }) => (
               <MenuLink

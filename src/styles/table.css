@@ -1,0 +1,31 @@
+.table-wrapper {
+  @apply shadow overflow-hidden border-b border-gray-200 rounded-lg w-full;
+}
+
+table.who {
+  @apply divide-y divide-gray-200 min-w-full;
+}
+
+table.who thead {
+  @apply bg-midnight-blue;
+}
+
+table.who th {
+  @apply px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider;
+}
+
+table.who td {
+  @apply px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right;
+}
+
+table.who tbody tr:nth-child(odd) {
+  @apply bg-gray-50;
+}
+
+table.who tbody tr:hover {
+  @apply bg-gray-200;
+}
+
+table.who tr:first-of-type(th) {
+  @apply text-left;
+}

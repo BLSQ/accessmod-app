@@ -15,7 +15,9 @@ import { useMemo } from "react";
 
 const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
-let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
+export type CustomApolloClient = ApolloClient<NormalizedCacheObject>;
+
+let apolloClient: CustomApolloClient | undefined;
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   console.log(
@@ -58,6 +60,12 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
       }),
     ]),
     cache: new InMemoryCache({
+      typePolicies: {
+        Country: {
+          // Country code are unique (at least it should). Let's use that for the cache key
+          keyFields: ["code", "name"],
+        },
+      },
       possibleTypes: {
         authenticatedItem: ["User"],
       },

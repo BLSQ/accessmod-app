@@ -1,14 +1,21 @@
 import { gql } from "@apollo/client";
+import clsx from "clsx";
 import Block from "components/Block";
 import { ProjectNavbar_ProjectFragment } from "libs/graphql";
 import Link from "next/link";
 
-const ProjectNavbar = (props: { project: ProjectNavbar_ProjectFragment }) => {
-  const { project } = props;
+const ProjectNavbar = (props: {
+  project: ProjectNavbar_ProjectFragment;
+  className?: string;
+}) => {
+  const { project, className } = props;
   return (
     <Block
-      as="nav"
-      className="bg-who-blue-dark text-white basis-56 px-3 py-4 min-w-fit"
+      as="aside"
+      className={clsx(
+        "bg-who-blue-dark text-white w-full py-4 md:px-4 xl:px-7 sticky",
+        className
+      )}
     >
       <ul className="list-none">
         <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
@@ -22,8 +29,8 @@ const ProjectNavbar = (props: { project: ProjectNavbar_ProjectFragment }) => {
           </Link>
         </li>
         <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
-          <Link href={`/projects/${encodeURIComponent(project.id)}/data`}>
-            <a className="flex px-3 py-2 ">Data</a>
+          <Link href={`/projects/${encodeURIComponent(project.id)}/datasets`}>
+            <a className="flex px-3 py-2 ">Datasets</a>
           </Link>
         </li>
       </ul>
