@@ -1,8 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { ReactElement } from "react";
 import clsx from "clsx";
+import Spinner from "./Spinner";
 
 type Props = {
+  loading?: boolean;
   page: number;
   perPage: number;
   totalPages: number;
@@ -33,7 +35,7 @@ const PaginationItem = (props: {
 };
 
 const Pagination = (props: Props) => {
-  const { page, perPage, totalPages, totalItems, onChange } = props;
+  const { loading, page, perPage, totalPages, totalItems, onChange } = props;
   return (
     <div className="py-3 flex items-center justify-between border-t border-gray-200">
       <div className="flex-1 flex justify-between sm:hidden">
@@ -49,16 +51,23 @@ const Pagination = (props: Props) => {
         )}
       </div>
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-700">
-            Showing{" "}
-            <span className="font-medium">{(page - 1) * perPage + 1}</span> to{" "}
-            <span className="font-medium">
-              {Math.min(page + 1 * perPage, totalItems)}
-            </span>{" "}
-            of <span className="font-medium">{totalItems}</span> results
-          </p>
-        </div>
+        {loading ? (
+          <div className="inline-flex items-center">
+            <Spinner size="xs" className="mr-2" />
+            Loading...
+          </div>
+        ) : (
+          <div>
+            <p className="text-sm text-gray-700">
+              Showing{" "}
+              <span className="font-medium">{(page - 1) * perPage + 1}</span> to{" "}
+              <span className="font-medium">
+                {Math.min((page + 1) * perPage, totalItems)}
+              </span>{" "}
+              of <span className="font-medium">{totalItems}</span> results
+            </p>
+          </div>
+        )}
         {totalPages > 1 && (
           <div>
             <nav
