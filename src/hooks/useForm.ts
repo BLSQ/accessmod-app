@@ -10,16 +10,14 @@ type UseFormResult<T> = {
   handleInputChange: ChangeEventHandler<HTMLInputElement>;
   setFieldValue: (fieldName: string, value: any) => void;
   setFormErrors: (errors: { string?: string }) => void;
-  reset: () => void;
-  isValid: Boolean;
-  hasErrors: Boolean;
+  resetForm: () => void;
+  isValid: boolean;
+  hasErrors: boolean;
 };
-
-type Validate<T> = (values: T) => Boolean;
 
 type UseFormOptions<T> = {
   initialState?: T;
-  validate?: Validate<T>;
+  validate?: (values: T) => boolean;
 };
 
 function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
@@ -27,7 +25,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   const [formData, setFormData] = useState<T>(initialState as T);
   const [formErrors, setFormErrors] = useState<{ string?: string }>({});
 
-  const reset = () => {
+  const resetForm = () => {
     setFormData(initialState);
   };
 
@@ -58,7 +56,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     handleInputChange,
     setFormErrors,
     setFieldValue,
-    reset,
+    resetForm,
     isValid,
     hasErrors,
   };

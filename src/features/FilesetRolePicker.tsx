@@ -8,6 +8,7 @@ import { useFilesetRolePickerQuery } from "libs/graphql";
 type Props = {
   value: { [key: string]: string };
   onChange: (value: any) => void;
+  disabled?: boolean;
 };
 
 const RoleOption = (props: any) => {
@@ -49,7 +50,7 @@ const QUERY = gql`
 `;
 
 const FilesetRolePicker = (props: Props) => {
-  const { value, onChange } = props;
+  const { value, onChange, disabled } = props;
   const { data } = useFilesetRolePickerQuery();
 
   return (
@@ -59,6 +60,7 @@ const FilesetRolePicker = (props: Props) => {
       onChange={onChange}
       labelKey="name"
       valueKey="id"
+      disabled={disabled}
       components={COMPONENTS}
     />
   );

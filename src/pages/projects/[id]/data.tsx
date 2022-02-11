@@ -9,6 +9,8 @@ import Table from "components/Table";
 import Button from "components/Button";
 import { UploadIcon } from "@heroicons/react/outline";
 import { useProjectDataPageQuery } from "libs/graphql";
+import CreateDatasetDialog from "features/CreateDatasetDialog";
+import { useCallback, useState } from "react";
 
 const QUERY = gql`
   query ProjectDataPage($id: String!) {
@@ -16,16 +18,29 @@ const QUERY = gql`
       id
       name
       ...ProjectNavbar_project
+      ...CreateDatasetDialog_project
     }
   }
   ${ProjectNavbar.fragments.project}
+  ${CreateDatasetDialog.fragments.project}
 `;
 
-const ProjectDataPage: NextPageWithLayout = (props) => {
+const ProjectDataPage: NextPageWithLayout = () => {
+  const [showUploadDialog, toggleUploadDialog] = useState(true);
   const router = useRouter();
   const { loading, data } = useProjectDataPageQuery({
     variables: { id: router.query.id as string },
   });
+
+  const onDialogClose = useCallback(
+    (reason?: string) => {
+      if (reason === "submit") {
+        // Reload filesets
+      }
+      toggleUploadDialog(false);
+    },
+    [showUploadDialog]
+  );
 
   if (loading || !data) {
     return (
@@ -42,6 +57,11 @@ const ProjectDataPage: NextPageWithLayout = (props) => {
 
   return (
     <>
+      <CreateDatasetDialog
+        project={data.accessmodProject}
+        open={showUploadDialog}
+        onClose={onDialogClose}
+      />
       <PageHeader className="pb-4">
         <h1 className="text-3xl font-bold text-white">
           {data.accessmodProject?.name}
@@ -54,6 +74,7 @@ const ProjectDataPage: NextPageWithLayout = (props) => {
             <span>Data</span>
             <Button
               variant="primary"
+              onClick={() => toggleUploadDialog(true)}
               leadingIcon={<UploadIcon className="h-4 w-4" />}
             >
               Upload Data

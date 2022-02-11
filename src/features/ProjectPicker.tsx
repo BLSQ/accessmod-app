@@ -4,6 +4,7 @@ import { useProjectPickerQuery } from "libs/graphql";
 
 type Props = {
   value: { [key: string]: string };
+  disabled?: boolean;
   onChange: (value: any) => void;
 };
 
@@ -16,6 +17,7 @@ const QUERY = gql`
         country {
           flag
           name
+          code
         }
         createdAt
         updatedAt
@@ -25,13 +27,14 @@ const QUERY = gql`
 `;
 
 const ProjectPicker = (props: Props) => {
-  const { value, onChange } = props;
+  const { value, onChange, disabled } = props;
   const { data } = useProjectPickerQuery();
 
   return (
     <SelectInput
       options={(data?.accessmodProjects?.items as any) ?? []}
       value={value}
+      disabled={disabled}
       onChange={onChange}
       labelKey="name"
       valueKey="id"

@@ -9,9 +9,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { type, name, error, className, required, ...delegated } = props;
 
   const inputClassName = clsx(
-    "block hover:border-gray-400 form-input shadow-sm py-1.5 focus:ring-who-blue-main focus:border-who-blue-main block w-full sm:text-sm border-gray-300 rounded-md focus:outline-none",
+    "block w-full form-input shadow-sm rounded-md py-1.5 sm:text-sm border-gray-300",
+    "hover:border-gray-400 focus:ring-lochmara focus:border-lochmara focus:outline-none",
+    "disabled:bg-gray-50 disabled:pointer-events-none",
     error &&
-      "border-red-300 text-red-900 placeholder-red-300 focus:ring-who-blue-main focus:border-who-blue-main",
+      "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara",
     className
   );
 

@@ -350,6 +350,15 @@ export type NavbarQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type NavbarQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
+export type CreateFilesetMutationVariables = Exact<{
+  input?: InputMaybe<CreateAccessmodFilesetInput>;
+}>;
+
+
+export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset?: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, fileset?: { __typename?: 'AccessmodFileset', id: string } | null } | null };
+
+export type CreateDatasetDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
 export type CreateProjectMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodProjectInput>;
 }>;
@@ -369,7 +378,7 @@ export type ProjectNavbar_ProjectFragment = { __typename?: 'AccessmodProject', i
 export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string } }> } };
+export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
 
 export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
 
@@ -377,6 +386,20 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout?: { __typename?: 'LogoutResult', success: boolean } | null };
+
+export type GetUploadUrlMutationVariables = Exact<{
+  input?: InputMaybe<PrepareAccessmodFileUploadInput>;
+}>;
+
+
+export type GetUploadUrlMutation = { __typename?: 'Mutation', prepareAccessmodFileUpload?: { __typename?: 'PrepareAccessmodFileUploadResult', success: boolean, uploadUrl?: string | null, fileUri?: string | null } | null };
+
+export type CreateFileMutationVariables = Exact<{
+  input?: InputMaybe<CreateAccessmodFileInput>;
+}>;
+
+
+export type CreateFileMutation = { __typename?: 'Mutation', createFile?: { __typename?: 'CreateAccessmodFileResult', success: boolean } | null };
 
 export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -416,6 +439,12 @@ export type ProjectsPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
+export const CreateDatasetDialog_ProjectFragmentDoc = gql`
+    fragment CreateDatasetDialog_project on AccessmodProject {
+  id
+  name
+}
+    `;
 export const ProjectNavbar_ProjectFragmentDoc = gql`
     fragment ProjectNavbar_project on AccessmodProject {
   id
@@ -490,6 +519,42 @@ export function useNavbarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Nav
 export type NavbarQueryHookResult = ReturnType<typeof useNavbarQuery>;
 export type NavbarLazyQueryHookResult = ReturnType<typeof useNavbarLazyQuery>;
 export type NavbarQueryResult = Apollo.QueryResult<NavbarQuery, NavbarQueryVariables>;
+export const CreateFilesetDocument = gql`
+    mutation CreateFileset($input: CreateAccessmodFilesetInput) {
+  createAccessmodFileset(input: $input) {
+    success
+    fileset {
+      id
+    }
+  }
+}
+    `;
+export type CreateFilesetMutationFn = Apollo.MutationFunction<CreateFilesetMutation, CreateFilesetMutationVariables>;
+
+/**
+ * __useCreateFilesetMutation__
+ *
+ * To run a mutation, you first call `useCreateFilesetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFilesetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFilesetMutation, { data, loading, error }] = useCreateFilesetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateFilesetMutation(baseOptions?: Apollo.MutationHookOptions<CreateFilesetMutation, CreateFilesetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFilesetMutation, CreateFilesetMutationVariables>(CreateFilesetDocument, options);
+      }
+export type CreateFilesetMutationHookResult = ReturnType<typeof useCreateFilesetMutation>;
+export type CreateFilesetMutationResult = Apollo.MutationResult<CreateFilesetMutation>;
+export type CreateFilesetMutationOptions = Apollo.BaseMutationOptions<CreateFilesetMutation, CreateFilesetMutationVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($input: CreateAccessmodProjectInput) {
   createAccessmodProject(input: $input) {
@@ -575,6 +640,7 @@ export const ProjectPickerDocument = gql`
       country {
         flag
         name
+        code
       }
       createdAt
       updatedAt
@@ -641,6 +707,74 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const GetUploadUrlDocument = gql`
+    mutation GetUploadUrl($input: PrepareAccessmodFileUploadInput) {
+  prepareAccessmodFileUpload(input: $input) {
+    success
+    uploadUrl
+    fileUri
+  }
+}
+    `;
+export type GetUploadUrlMutationFn = Apollo.MutationFunction<GetUploadUrlMutation, GetUploadUrlMutationVariables>;
+
+/**
+ * __useGetUploadUrlMutation__
+ *
+ * To run a mutation, you first call `useGetUploadUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGetUploadUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [getUploadUrlMutation, { data, loading, error }] = useGetUploadUrlMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetUploadUrlMutation(baseOptions?: Apollo.MutationHookOptions<GetUploadUrlMutation, GetUploadUrlMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GetUploadUrlMutation, GetUploadUrlMutationVariables>(GetUploadUrlDocument, options);
+      }
+export type GetUploadUrlMutationHookResult = ReturnType<typeof useGetUploadUrlMutation>;
+export type GetUploadUrlMutationResult = Apollo.MutationResult<GetUploadUrlMutation>;
+export type GetUploadUrlMutationOptions = Apollo.BaseMutationOptions<GetUploadUrlMutation, GetUploadUrlMutationVariables>;
+export const CreateFileDocument = gql`
+    mutation CreateFile($input: CreateAccessmodFileInput) {
+  createFile: createAccessmodFile(input: $input) {
+    success
+  }
+}
+    `;
+export type CreateFileMutationFn = Apollo.MutationFunction<CreateFileMutation, CreateFileMutationVariables>;
+
+/**
+ * __useCreateFileMutation__
+ *
+ * To run a mutation, you first call `useCreateFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFileMutation, { data, loading, error }] = useCreateFileMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateFileMutation(baseOptions?: Apollo.MutationHookOptions<CreateFileMutation, CreateFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFileMutation, CreateFileMutationVariables>(CreateFileDocument, options);
+      }
+export type CreateFileMutationHookResult = ReturnType<typeof useCreateFileMutation>;
+export type CreateFileMutationResult = Apollo.MutationResult<CreateFileMutation>;
+export type CreateFileMutationOptions = Apollo.BaseMutationOptions<CreateFileMutation, CreateFileMutationVariables>;
 export const MeQueryDocument = gql`
     query MeQuery {
   me {
@@ -756,9 +890,11 @@ export const ProjectDataPageDocument = gql`
     id
     name
     ...ProjectNavbar_project
+    ...CreateDatasetDialog_project
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}`;
+    ${ProjectNavbar_ProjectFragmentDoc}
+${CreateDatasetDialog_ProjectFragmentDoc}`;
 
 /**
  * __useProjectDataPageQuery__
