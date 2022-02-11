@@ -15,6 +15,7 @@ export default function SelectInput({
   options,
   loadOptions,
   cacheOptions,
+  disabled,
   defaultOptions,
   value,
   onChange,
@@ -51,6 +52,7 @@ export default function SelectInput({
   const selectProps = {
     options,
     value,
+    isDisabled: disabled,
     onChange: onSelectChange,
     isClearable: !required,
     isMulti: multiple,
@@ -102,6 +104,7 @@ interface SelectInputProps<
   onChange: (value: any) => void;
   multiple?: boolean;
   required?: boolean;
+  disabled?: boolean;
   onBlur?: () => void;
   onEscape?: () => void;
   onCommandShiftEnter?: () => void;

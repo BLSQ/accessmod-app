@@ -4,15 +4,29 @@
   @apply relative w-full;
 }
 .react-select-container .react-select__control {
-  @apply relative mt-1 form-input p-0 shadow-sm focus:ring-who-blue-main focus:border-who-blue-main w-full sm:text-sm border-gray-300 rounded-md focus:outline-none;
+  @apply relative mt-1 form-input p-0 shadow-sm focus:ring-lochmara focus:border-lochmara w-full sm:text-sm border-gray-300 rounded-md focus:outline-none;
   min-height: 34px;
 }
-.react-select__control.react-select__control--is-focused {
-  @apply focus:ring-blue-500 focus:border-blue-500;
+
+.react-select-container
+  .react-select__control.react-select__control--is-disabled {
+  @apply bg-gray-50;
+}
+.react-select-container
+  .react-select__control.react-select__control--is-focused {
+  @apply ring-1 ring-lochmara border-lochmara;
 }
 
 .react-select-container .react-select__value-container {
   @apply py-0;
+}
+
+.react-select-container .react-select__option {
+  @apply text-sm;
+}
+
+.react-select-container .react-select__single-value {
+  @apply text-sm text-inherit;
 }
 
 .react-select-container .react-select__indicators .react-select__indicator {
