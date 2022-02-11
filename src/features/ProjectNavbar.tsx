@@ -3,12 +3,18 @@ import Block from "components/Block";
 import { ProjectNavbar_ProjectFragment } from "libs/graphql";
 import Link from "next/link";
 
-const ProjectNavbar = (props: { project: ProjectNavbar_ProjectFragment }) => {
-  const { project } = props;
+const ProjectNavbar = (props: {
+  project: ProjectNavbar_ProjectFragment;
+  className?: string;
+}) => {
+  const { project, className } = props;
   return (
     <Block
-      as="nav"
-      className="bg-who-blue-dark text-white basis-56 px-3 py-4 min-w-fit"
+      as="aside"
+      className={clsx(
+        "bg-who-blue-dark text-white w-full py-4 md:px-4 xl:px-7 sticky",
+        className
+      )}
     >
       <ul className="list-none">
         <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
