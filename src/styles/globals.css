@@ -27,8 +27,9 @@
 
 @layer components {
   /* Button styles */
+  @import "./table.css";
   .btn {
-    @apply inline-flex items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none;
+    @apply inline-flex bg-transparent items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none;
   }
 
   .btn-primary {
