@@ -58,7 +58,8 @@ const CreateDatasetDialog = (props: Props) => {
   const { open, onClose, project } = props;
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [createFileset] = useCreateFilesetMutation();
+  const [error, setError] = useState<null | string>(null);
+  const [createFileset, { error: filesetError }] = useCreateFilesetMutation();
   const { formData, isValid, handleInputChange, setFieldValue, resetForm } =
     useForm<Form>({
       initialState: {
@@ -88,6 +89,7 @@ const CreateDatasetDialog = (props: Props) => {
       console.warn("Form submitted while submitting or invalid");
       return;
     }
+    setError(null);
     setSubmitting(true);
 
     // Create Fileset
@@ -131,8 +133,9 @@ const CreateDatasetDialog = (props: Props) => {
       resetForm();
       setSubmitting(false);
       onClose("submit");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setError(err?.message);
       setSubmitting(false);
     }
   };
@@ -147,38 +150,46 @@ const CreateDatasetDialog = (props: Props) => {
       <form onSubmit={onSubmit}>
         <Dialog.Title>Create a dataset</Dialog.Title>
 
-        <Dialog.Content className="px-9 py-8 space-y-4">
-          <Field label="Name" required name="name">
-            <Input
-              name="name"
-              required
-              disabled={submitting}
-              onChange={handleInputChange}
-              value={formData.name}
-            />
-          </Field>
-          <Field label="Project" required name="project">
-            <ProjectPicker
-              disabled={Boolean(project) || submitting}
-              onChange={(value) => setFieldValue("project", value)}
-              value={formData.project}
-            />
-          </Field>
-          <Field label="Role" required name="role">
-            <FilesetRolePicker
-              disabled={submitting}
-              onChange={(value) => setFieldValue("role", value)}
-              value={formData.role}
-            />
-          </Field>
-          <Dropzone
-            label="Select your files"
-            onChange={(files) => setFieldValue("files", files)}
-          >
-            {formData.files?.length > 0 ? (
-              <div>{formData.files.map((f) => f.name).join(", ")}</div>
-            ) : undefined}
-          </Dropzone>
+        <Dialog.Content className="px-9 py-8 ">
+          <div className="space-y-4">
+            <Field label="Name" required name="name">
+              <Input
+                name="name"
+                required
+                disabled={submitting}
+                onChange={handleInputChange}
+                value={formData.name}
+              />
+            </Field>
+            <Field label="Project" required name="project">
+              <ProjectPicker
+                disabled={Boolean(project) || submitting}
+                onChange={(value) => setFieldValue("project", value)}
+                value={formData.project}
+              />
+            </Field>
+            <Field label="Role" required name="role">
+              <FilesetRolePicker
+                disabled={submitting}
+                onChange={(value) => setFieldValue("role", value)}
+                value={formData.role}
+              />
+            </Field>
+            <Dropzone
+              label="Select your files"
+              onChange={(files) => setFieldValue("files", files)}
+            >
+              {formData.files?.length > 0 ? (
+                <div>{formData.files.map((f) => f.name).join(", ")}</div>
+              ) : undefined}
+            </Dropzone>
+
+            {(error || filesetError) && (
+              <div className="text-danger mt-3 text-sm">
+                {error || filesetError}
+              </div>
+            )}
+          </div>
         </Dialog.Content>
 
         <Dialog.Actions>
