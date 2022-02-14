@@ -2,13 +2,13 @@ import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
-import { useListener } from "hooks/useEmitter";
+import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
   ProjectFilesetsTable_ProjectFragment,
   useProjectFilesetsTableQuery,
 } from "libs/graphql";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 const PROJECT_FILESETS_QUERY = gql`
   query ProjectFilesetsTable(
@@ -59,9 +59,7 @@ const ProjectFilesetsTable = (props: Props) => {
       variables: { projectId: props.project.id, ...pagination },
     }
   );
-  const onCacheReset = useCallback(() => refetch(), [refetch]);
-
-  useListener("ProjectFilesetsTable", onCacheReset);
+  useCacheKey(["filesets"], () => refetch());
 
   const rows = (data || previousData)?.accessmodFilesets.items ?? [];
   const totalItems = (data || previousData)?.accessmodFilesets.totalItems ?? 0;

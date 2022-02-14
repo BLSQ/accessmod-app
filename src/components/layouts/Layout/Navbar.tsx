@@ -3,6 +3,7 @@ import Link from "next/link";
 import { gql } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useNavbarQuery } from "libs/graphql";
+import useCacheKey from "hooks/useCacheKey";
 
 type NavEntry = {
   label: string;
@@ -60,7 +61,7 @@ const QUERY = gql`
 `;
 
 const Navbar = () => {
-  const { data } = useNavbarQuery();
+  const { data, refetch } = useNavbarQuery();
   const [items, setItems] = useState<NavState>([
     {
       label: "Dashboard",
@@ -71,6 +72,8 @@ const Navbar = () => {
       link: "/projects",
     },
   ]);
+
+  useCacheKey("projects", () => refetch());
 
   useEffect(() => {
     if (data) {

@@ -10,6 +10,7 @@ import { useCreateProjectMutation } from "libs/graphql";
 import { useRouter } from "next/router";
 import { countries, Country, regions } from "libs/countries";
 import Spinner from "components/Spinner";
+import useCacheKey from "hooks/useCacheKey";
 
 type Props = {
   onClose: () => void;
@@ -45,6 +46,8 @@ const CreateProjectDialog = (props: Props) => {
         ),
     }
   );
+
+  const clearCache = useCacheKey("projects");
 
   const countryOptions: { label: string; options: Country[] }[] =
     useMemo(() => {
@@ -85,6 +88,7 @@ const CreateProjectDialog = (props: Props) => {
           mutation.data.createAccessmodProject!.project!.id
         )}`
       );
+      clearCache();
       onClose();
     }
   };
