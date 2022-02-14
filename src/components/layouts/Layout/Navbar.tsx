@@ -18,7 +18,7 @@ const NavEntry = (props: NavEntry) => {
   return (
     <div
       className={
-        "hover:bg-who-blue-dark hover:text-white px-2 text-sm font-medium flex items-center relative group"
+        "hover:bg-who-blue-dark hover:text-white px-3 text-sm font-medium flex items-center relative group"
       }
     >
       <Link href={link}>
