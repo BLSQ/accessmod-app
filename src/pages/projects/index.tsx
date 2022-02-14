@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { addApolloState, getApolloClient } from "libs/apollo";
 import { NextPageWithLayout } from "libs/types";
 import { withUserRequired } from "libs/withUser";
@@ -8,10 +8,11 @@ import ProjectsList from "features/ProjectsList";
 import Pagination from "components/Pagination";
 import { PageHeader } from "components/layouts/Layout";
 import Block from "components/Block";
+import { useState } from "react";
 
 const QUERY = gql`
-  query ProjectsPage {
-    accessmodProjects(page: 1, perPage: 20) {
+  query ProjectsPage($page: Int = 1, $perPage: Int = 20) {
+    accessmodProjects(page: $page, perPage: $perPage) {
       ...ProjectsList_projects
       pageNumber
       totalPages
@@ -22,35 +23,33 @@ const QUERY = gql`
 `;
 
 const ProjectsPage: NextPageWithLayout = () => {
-  const { loading, data, error } = useProjectsPageQuery();
+  const [pagination, setPagination] = useState({ page: 1, perPage: 20 });
+  const { loading, data, previousData } = useProjectsPageQuery({
+    variables: pagination,
+  });
 
-  if (loading || !data) {
-    return (
-      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
-        Loading...
-      </div>
-    );
-  }
-
-  const onChangePage = (page: number) => {};
+  const projects = data?.accessmodProjects || previousData?.accessmodProjects;
 
   return (
     <>
       <PageHeader>
         <h1 className="text-3xl font-bold text-white">Projects</h1>
       </PageHeader>
-      <Block>
-        <ProjectsList projects={data.accessmodProjects} />
-        <footer className="mt-6">
-          <Pagination
-            perPage={20}
-            page={1}
-            onChange={onChangePage}
-            totalItems={data.accessmodProjects.totalItems}
-            totalPages={data.accessmodProjects.totalPages}
-          />
-        </footer>
-      </Block>
+      {projects && (
+        <Block>
+          <ProjectsList projects={projects} />
+          <footer className="mt-6">
+            <Pagination
+              perPage={20}
+              loading={loading}
+              page={1}
+              onChange={(page) => setPagination({ ...pagination, page })}
+              totalItems={projects.totalItems}
+              totalPages={projects.totalPages}
+            />
+          </footer>
+        </Block>
+      )}
     </>
   );
 };

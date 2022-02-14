@@ -1,6 +1,7 @@
 import ProjectCard from "./ProjectCard";
 import { gql } from "@apollo/client";
 import { ProjectsList_ProjectsFragment } from "libs/graphql";
+import { useRouter } from "next/router";
 
 type Props = {
   projects: ProjectsList_ProjectsFragment;
@@ -8,6 +9,7 @@ type Props = {
 
 const ProjectsList = (props: Props) => {
   const { projects } = props;
+  const router = useRouter();
 
   return (
     <ul
@@ -16,7 +18,12 @@ const ProjectsList = (props: Props) => {
     >
       {projects.items.map((project) => (
         <li key={project.id} className="col-span-1">
-          <ProjectCard project={project} />
+          <ProjectCard
+            project={project}
+            onClick={() =>
+              router.push(`/projects/${encodeURIComponent(project.id)}`)
+            }
+          />
         </li>
       ))}
     </ul>

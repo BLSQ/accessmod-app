@@ -51,12 +51,13 @@ const Pagination = (props: Props) => {
         )}
       </div>
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        {loading ? (
+        {loading && (
           <div className="inline-flex items-center">
             <Spinner size="xs" className="mr-2" />
             Loading...
           </div>
-        ) : (
+        )}
+        {!loading && totalItems > 0 && (
           <div>
             <p className="text-sm text-gray-700">
               Showing{" "}

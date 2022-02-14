@@ -371,7 +371,16 @@ export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles?: { __typename?: 'AccessmodFilesetRolePage', items: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> } | null };
 
-export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type DeleteProjectMutationVariables = Exact<{
+  input?: InputMaybe<DeleteAccessmodProjectInput>;
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject?: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } | null };
+
+export type ProjectActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectFilesetsTableQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -391,7 +400,9 @@ export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
 
-export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
+export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
+
+export type User_UserFragment = { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -443,17 +454,25 @@ export type ProjectPageQueryVariables = Exact<{
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+export type ProjectPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string } } | null };
 
-export type ProjectsPageQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProjectsPageQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
 
 
-export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
 export const CreateDatasetDialog_ProjectFragmentDoc = gql`
     fragment CreateDatasetDialog_project on AccessmodProject {
   id
   name
+}
+    `;
+export const ProjectActionsButton_ProjectFragmentDoc = gql`
+    fragment ProjectActionsButton_project on AccessmodProject {
+  id
 }
     `;
 export const ProjectFilesetsTable_ProjectFragmentDoc = gql`
@@ -464,6 +483,18 @@ export const ProjectFilesetsTable_ProjectFragmentDoc = gql`
 export const ProjectNavbar_ProjectFragmentDoc = gql`
     fragment ProjectNavbar_project on AccessmodProject {
   id
+}
+    `;
+export const User_UserFragmentDoc = gql`
+    fragment User_user on User {
+  firstName
+  lastName
+  email
+  id
+  avatar {
+    initials
+    color
+  }
 }
     `;
 export const ProjectCard_ProjectFragmentDoc = gql`
@@ -477,6 +508,7 @@ export const ProjectCard_ProjectFragmentDoc = gql`
     code
   }
   owner {
+    ...User_user
     firstName
     email
     lastName
@@ -486,7 +518,7 @@ export const ProjectCard_ProjectFragmentDoc = gql`
     }
   }
 }
-    `;
+    ${User_UserFragmentDoc}`;
 export const ProjectsList_ProjectsFragmentDoc = gql`
     fragment ProjectsList_projects on AccessmodProjectPage {
   items {
@@ -647,6 +679,39 @@ export function useFilesetRolePickerLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FilesetRolePickerQueryHookResult = ReturnType<typeof useFilesetRolePickerQuery>;
 export type FilesetRolePickerLazyQueryHookResult = ReturnType<typeof useFilesetRolePickerLazyQuery>;
 export type FilesetRolePickerQueryResult = Apollo.QueryResult<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>;
+export const DeleteProjectDocument = gql`
+    mutation DeleteProject($input: DeleteAccessmodProjectInput) {
+  deleteAccessmodProject(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+
+/**
+ * __useDeleteProjectMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
+      }
+export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const ProjectFilesetsTableDocument = gql`
     query ProjectFilesetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
   accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
@@ -1009,9 +1074,19 @@ export const ProjectPageDocument = gql`
     id
     name
     ...ProjectNavbar_project
+    ...ProjectActionsButton_project
+    country {
+      name
+      code
+      flag
+    }
+    owner {
+      email
+    }
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}`;
+    ${ProjectNavbar_ProjectFragmentDoc}
+${ProjectActionsButton_ProjectFragmentDoc}`;
 
 /**
  * __useProjectPageQuery__
@@ -1041,8 +1116,8 @@ export type ProjectPageQueryHookResult = ReturnType<typeof useProjectPageQuery>;
 export type ProjectPageLazyQueryHookResult = ReturnType<typeof useProjectPageLazyQuery>;
 export type ProjectPageQueryResult = Apollo.QueryResult<ProjectPageQuery, ProjectPageQueryVariables>;
 export const ProjectsPageDocument = gql`
-    query ProjectsPage {
-  accessmodProjects(page: 1, perPage: 20) {
+    query ProjectsPage($page: Int = 1, $perPage: Int = 20) {
+  accessmodProjects(page: $page, perPage: $perPage) {
     ...ProjectsList_projects
     pageNumber
     totalPages
@@ -1063,6 +1138,8 @@ export const ProjectsPageDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsPageQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */
