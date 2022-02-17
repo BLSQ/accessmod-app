@@ -25,7 +25,7 @@ const ProjectNavbar = (props: {
         </li>
         <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
           <Link href={`/projects/${encodeURIComponent(project.id)}/analysis`}>
-            <a className="flex px-3 py-2 ">Analyses</a>
+            <a className="flex px-3 py-2 ">Analysis</a>
           </Link>
         </li>
         <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
