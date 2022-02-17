@@ -1,14 +1,15 @@
-import React, { ReactElement, useCallback } from "react";
+import useInputKeyDown from "hooks/useInputKeyDown";
+import { get } from "lodash/fp";
+import React, { useCallback } from "react";
 import Select, {
-  GroupBase,
-  OptionsOrGroups,
   components as DefaultComponents,
+  GroupBase,
+  InputActionMeta,
+  OptionsOrGroups,
   SelectComponentsConfig,
 } from "react-select";
 import AsyncSelect from "react-select/async";
 import CreatableSelect from "react-select/creatable";
-import { get } from "lodash/fp";
-import useInputKeyDown from "hooks/useInputKeyDown";
 
 export { DefaultComponents };
 export default function SelectInput({
@@ -20,6 +21,9 @@ export default function SelectInput({
   value,
   onChange,
   required,
+  isLoading,
+  onInputChange,
+  onMenuScrollToBottom,
   components,
   multiple,
   valueKey,
@@ -69,6 +73,8 @@ export default function SelectInput({
     onKeyDown,
     components,
     onBlur,
+    onInputChange: onInputChange,
+    onMenuScrollToBottom: onMenuScrollToBottom,
     autoFocus,
     openMenuOnFocus: true,
     defaultMenuIsOpen: false,
@@ -78,6 +84,7 @@ export default function SelectInput({
     return (
       <AsyncSelect
         {...selectProps}
+        isLoading={isLoading}
         loadOptions={loadOptions}
         cacheOptions={cacheOptions}
         defaultOptions={defaultOptions}
@@ -92,7 +99,7 @@ export default function SelectInput({
   );
 }
 
-type Option = { [key: string]: string };
+type Option = { [key: string]: any };
 
 interface SelectInputProps<
   Option,
@@ -109,11 +116,14 @@ interface SelectInputProps<
   onEscape?: () => void;
   onCommandShiftEnter?: () => void;
   autoFocus?: boolean;
+  isLoading?: boolean;
   onCreateOption?: (value: any) => void;
   labelKey?: string;
+  onInputChange?: (value: any, actionMeta: InputActionMeta) => void;
   valueKey?: string;
   loadOptions?: (str: string) => OptionsOrGroups<Option, Group>;
   cacheOptions?: boolean;
   defaultOptions?: boolean | OptionsOrGroups<Option, Group>;
+  onMenuScrollToBottom?: (event: WheelEvent | TouchEvent) => void;
   components?: SelectComponentsConfig<Option, IsMulti, Group>;
 }

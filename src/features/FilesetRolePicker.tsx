@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import clsx from "clsx";
 import Button from "components/Button";
 import SelectInput, { DefaultComponents } from "components/forms/SelectInput";
@@ -9,6 +9,7 @@ type Props = {
   value: { [key: string]: string };
   onChange: (value: any) => void;
   disabled?: boolean;
+  required?: boolean;
 };
 
 const RoleOption = (props: any) => {
@@ -50,9 +51,9 @@ const QUERY = gql`
 `;
 
 const FilesetRolePicker = (props: Props) => {
-  const { value, onChange, disabled } = props;
+  const { value, onChange, disabled, required } = props;
   const { data } = useFilesetRolePickerQuery();
-
+  console.log("ROLE VALUE", value);
   return (
     <SelectInput
       options={data?.accessmodFilesetRoles?.items ?? []}
@@ -60,6 +61,7 @@ const FilesetRolePicker = (props: Props) => {
       onChange={onChange}
       labelKey="name"
       valueKey="id"
+      required={required}
       disabled={disabled}
       components={COMPONENTS}
     />

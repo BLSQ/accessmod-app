@@ -5,6 +5,7 @@ import { useProjectPickerQuery } from "libs/graphql";
 type Props = {
   value: { [key: string]: string };
   disabled?: boolean;
+  required?: boolean;
   onChange: (value: any) => void;
 };
 
@@ -27,7 +28,7 @@ const QUERY = gql`
 `;
 
 const ProjectPicker = (props: Props) => {
-  const { value, onChange, disabled } = props;
+  const { value, onChange, disabled, required } = props;
   const { data } = useProjectPickerQuery();
 
   return (
@@ -36,6 +37,7 @@ const ProjectPicker = (props: Props) => {
       value={value}
       disabled={disabled}
       onChange={onChange}
+      required={required}
       labelKey="name"
       valueKey="id"
     />
