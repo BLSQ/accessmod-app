@@ -10,7 +10,7 @@ import { UploadIcon } from "@heroicons/react/outline";
 import { useProjectDataPageQuery } from "libs/graphql";
 import CreateDatasetDialog from "features/CreateDatasetDialog";
 import { useCallback, useState } from "react";
-import ProjectFilesetsTable from "features/ProjectFilesetsTable";
+import ProjectDatasetsTable from "features/ProjectDatasetsTable";
 import useCacheKey from "hooks/useCacheKey";
 
 const QUERY = gql`
@@ -20,12 +20,12 @@ const QUERY = gql`
       name
       ...ProjectNavbar_project
       ...CreateDatasetDialog_project
-      ...ProjectFilesetsTable_project
+      ...ProjectDatasetsTable_project
     }
   }
   ${ProjectNavbar.fragments.project}
   ${CreateDatasetDialog.fragments.project}
-  ${ProjectFilesetsTable.fragments.project}
+  ${ProjectDatasetsTable.fragments.project}
 `;
 
 const ProjectDataPage: NextPageWithLayout = () => {
@@ -90,9 +90,9 @@ const ProjectDataPage: NextPageWithLayout = () => {
               Upload Data
             </Button>
           </h2>
-          <ProjectFilesetsTable
+          <ProjectDatasetsTable
             project={data.accessmodProject}
-          ></ProjectFilesetsTable>
+          ></ProjectDatasetsTable>
         </div>
       </div>
     </>
@@ -106,7 +106,7 @@ export const getServerSideProps = withUserRequired({
       query: QUERY,
       variables: { id: ctx.params.id },
     });
-    await ProjectFilesetsTable.prefetch(client, ctx.params.id);
+    await ProjectDatasetsTable.prefetch(client, ctx.params.id);
 
     return addApolloState(client);
   },

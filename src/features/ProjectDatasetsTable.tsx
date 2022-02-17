@@ -5,13 +5,13 @@ import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
-  ProjectFilesetsTable_ProjectFragment,
-  useProjectFilesetsTableQuery,
+  ProjectDatasetsTable_ProjectFragment,
+  useProjectDatasetsTableQuery,
 } from "libs/graphql";
 import { useState } from "react";
 
-const PROJECT_FILESETS_QUERY = gql`
-  query ProjectFilesetsTable(
+const PROJECT_DATASETS_QUERY = gql`
+  query ProjectDatasetsTable(
     $page: Int = 1
     $perPage: Int = 10
     $projectId: String!
@@ -48,13 +48,13 @@ const PROJECT_FILESETS_QUERY = gql`
 `;
 
 type Props = {
-  project: ProjectFilesetsTable_ProjectFragment;
+  project: ProjectDatasetsTable_ProjectFragment;
   cacheKey?: string; // Used to refetch query without loosing internal state completely (if we used the `key`)
 };
 
-const ProjectFilesetsTable = (props: Props) => {
+const ProjectDatasetsTable = (props: Props) => {
   const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
-  const { data, previousData, loading, refetch } = useProjectFilesetsTableQuery(
+  const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
       variables: { projectId: props.project.id, ...pagination },
     }
@@ -123,20 +123,20 @@ const ProjectFilesetsTable = (props: Props) => {
   );
 };
 
-ProjectFilesetsTable.fragments = {
+ProjectDatasetsTable.fragments = {
   project: gql`
-    fragment ProjectFilesetsTable_project on AccessmodProject {
+    fragment ProjectDatasetsTable_project on AccessmodProject {
       id
     }
   `,
 };
 
-ProjectFilesetsTable.prefetch = async (
+ProjectDatasetsTable.prefetch = async (
   client: CustomApolloClient,
   projectId: String
 ) => {
   await client.query({
-    query: PROJECT_FILESETS_QUERY,
+    query: PROJECT_DATASETS_QUERY,
     variables: {
       projectId,
       page: 1,
@@ -145,4 +145,4 @@ ProjectFilesetsTable.prefetch = async (
   });
 };
 
-export default ProjectFilesetsTable;
+export default ProjectDatasetsTable;
