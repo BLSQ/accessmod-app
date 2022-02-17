@@ -11,7 +11,7 @@ import { useProjectDataPageQuery } from "libs/graphql";
 import CreateDatasetDialog from "features/CreateDatasetDialog";
 import { useCallback, useState } from "react";
 import ProjectFilesetsTable from "features/ProjectFilesetsTable";
-import { useEmitter } from "hooks/useEmitter";
+import useCacheKey from "hooks/useCacheKey";
 
 const QUERY = gql`
   query ProjectDataPage($id: String!) {
@@ -34,13 +34,14 @@ const ProjectDataPage: NextPageWithLayout = () => {
   const { loading, data, refetch } = useProjectDataPageQuery({
     variables: { id: router.query.id as string },
   });
-  const refetchFilesets = useEmitter("ProjectFilesetsTable");
+
+  const clearFilesets = useCacheKey(["filesets"]);
 
   const onDialogClose = useCallback(
     (reason?: string) => {
       if (reason === "submit") {
         // Reload filesets
-        refetchFilesets();
+        clearFilesets();
       }
       toggleUploadDialog(false);
     },

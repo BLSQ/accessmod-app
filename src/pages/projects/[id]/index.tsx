@@ -38,15 +38,7 @@ const ProjectPage: NextPageWithLayout = (props) => {
     variables: { id: router.query.id as string },
   });
 
-  if (loading || !data) {
-    return (
-      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!data.accessmodProject) {
+  if (!data?.accessmodProject) {
     // Unknonwn project or not authorized
     return null;
   }
