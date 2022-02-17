@@ -45,6 +45,7 @@ const ProjectDataPage: NextPageWithLayout = () => {
       }
       toggleUploadDialog(false);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [showUploadDialog]
   );
 

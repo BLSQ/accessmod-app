@@ -30,6 +30,7 @@ const Dropzone = (props: Props) => {
     if (isMounted) {
       onChange(acceptedFiles, fileRejections);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [acceptedFiles, fileRejections]);
 
   return (
