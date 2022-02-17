@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import type { FileError, FileRejection } from "react-dropzone";
 import { UploadIcon } from "@heroicons/react/solid";
@@ -18,14 +18,20 @@ type Props = {
 
 const Dropzone = (props: Props) => {
   const { className, label, validator, accept, onChange, children } = props;
+  const [isMounted, setMounted] = useState(false);
   const { getInputProps, getRootProps, acceptedFiles, fileRejections } =
     useDropzone({ validator, accept });
 
   useEffect(() => {
-    onChange(acceptedFiles, fileRejections);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      onChange(acceptedFiles, fileRejections);
+    }
   }, [acceptedFiles, fileRejections]);
 
-  console.log(getRootProps(), getInputProps());
   return (
     <div
       className={clsx(
