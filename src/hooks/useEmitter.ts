@@ -24,7 +24,7 @@ export const useListener = <T = any>(
   useEffect(() => {
     if (typeof onEvent === "function") {
       const handleSignal = (e: Event) => {
-        onEvent(e as CustomEvent);
+        onEvent(e as CustomEvent<T>);
       };
 
       (element || window).addEventListener(eventName, handleSignal, options);

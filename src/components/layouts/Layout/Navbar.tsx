@@ -3,6 +3,7 @@ import Link from "next/link";
 import { gql } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useNavbarQuery } from "libs/graphql";
+import useCacheKey from "hooks/useCacheKey";
 
 type NavEntry = {
   label: string;
@@ -18,7 +19,7 @@ const NavEntry = (props: NavEntry) => {
   return (
     <div
       className={
-        "hover:bg-who-blue-dark hover:text-white px-2 text-sm font-medium flex items-center relative group"
+        "hover:bg-who-blue-dark hover:text-white px-3 text-sm font-medium flex items-center relative group"
       }
     >
       <Link href={link}>
@@ -26,7 +27,7 @@ const NavEntry = (props: NavEntry) => {
       </Link>
 
       {items && items.length > 0 && (
-        <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100">
+        <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100 z-40">
           <div
             className={clsx(
               "absolute left-0 top-full w-44 shadow-lg p-1 bg-who-blue-dark text-white focus:outline-none",
@@ -60,7 +61,7 @@ const QUERY = gql`
 `;
 
 const Navbar = () => {
-  const { data } = useNavbarQuery();
+  const { data, refetch } = useNavbarQuery();
   const [items, setItems] = useState<NavState>([
     {
       label: "Dashboard",
@@ -71,6 +72,8 @@ const Navbar = () => {
       link: "/projects",
     },
   ]);
+
+  useCacheKey("projects", () => refetch());
 
   useEffect(() => {
     if (data) {

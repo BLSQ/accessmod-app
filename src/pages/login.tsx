@@ -5,10 +5,11 @@ import Field from "components/forms/Field";
 import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
+import { useLoginMutation } from "libs/graphql";
 
 type FormInputs = {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 };
 
 const LOGIN = gql`
@@ -28,44 +29,58 @@ interface Props {
 }
 
 const Login = (props: Props) => {
-  const [login, { data, loading }] = useMutation(LOGIN);
+  const [login, { data }] = useLoginMutation();
   const router = useRouter();
-  const { formData, isValid, handleInputChange } = useForm<FormInputs>({
+  const form = useForm<FormInputs>({
     initialState: {},
-    validate: (values) => Boolean(values.email && values.password),
+    validate: (values) => {
+      const errors = {} as any;
+      if (!values.email) {
+        errors.email = "Enter your email";
+      }
+      if (!values.password) {
+        errors.password = "Enter your password";
+      }
+      return errors;
+    },
+    onSubmit: async (values) => {
+      const payload = await login({
+        variables: {
+          input: {
+            email: values.email,
+            password: values.password,
+          },
+        },
+      });
+      if (payload?.data?.login?.success) {
+        router.push(props.redirectTo ?? "/");
+      }
+    },
   });
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const payload = await login({ variables: { input: formData } });
-    if (payload.data.login.success) {
-      router.push(props.redirectTo ?? "/");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
       <div className="p-10 xs:p-0 mx-auto md: w-full md:max-w-md">
         <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200 p-5">
-          <form className="space-y-4" onSubmit={onSubmit}>
-            <Field name="email" required>
-              <Input
-                type="text"
-                required
-                name="email"
-                value={formData.email ?? ""}
-                onChange={handleInputChange}
-              />
-            </Field>
-            <Field name="password" required>
-              <Input
-                required
-                type="password"
-                name="password"
-                value={formData.password ?? ""}
-                onChange={handleInputChange}
-              />
-            </Field>
+          <form className="space-y-4" onSubmit={form.handleSubmit}>
+            <Field
+              name="email"
+              required
+              type="text"
+              label="Email"
+              disabled={form.isSubmitting}
+              error={form.touched.email && form.errors.email}
+              onChange={form.handleInputChange}
+            />
+            <Field
+              name="password"
+              required
+              type="password"
+              label="Password"
+              disabled={form.isSubmitting}
+              error={form.touched.password && form.errors.password}
+              onChange={form.handleInputChange}
+            />
 
             {data?.login && !data?.login?.success && (
               <div className={"text-red-600"}>
@@ -75,7 +90,7 @@ const Login = (props: Props) => {
             <Button
               type="submit"
               className="w-full"
-              disabled={!isValid || loading}
+              disabled={form.isSubmitting}
             >
               Login
             </Button>

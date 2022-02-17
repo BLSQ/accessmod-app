@@ -24,7 +24,7 @@ const ProjectCard = (props: Props) => {
     >
       <div className="w-full p-6 space-y-3">
         <div className="flex items-center space-x-3 justify-between">
-          <h3 className="text-gray-800 text-md font-normal truncate">
+          <h3 className="text-gray-800 text-base font-normal truncate">
             <Link href={`/projects/${encodeURIComponent(project.id)}`}>
               {project.name}
             </Link>

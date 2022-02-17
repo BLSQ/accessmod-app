@@ -6,7 +6,7 @@ const Label = (props: LabelHTMLAttributes<HTMLLabelElement>) => {
     <label
       {...props}
       className={clsx(
-        "block text-sm font-medium text-gray-500",
+        "block text-sm font-medium text-gray-600",
         props.className
       )}
     ></label>

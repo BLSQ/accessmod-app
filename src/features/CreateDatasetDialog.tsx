@@ -1,25 +1,33 @@
-import Button from "components/Button";
 import { gql } from "@apollo/client";
+import Button from "components/Button";
 import Dialog from "components/Dialog";
-import Input from "components/forms/Input";
+import Dropzone from "components/Dropzone";
 import Field from "components/forms/Field";
+import Spinner from "components/Spinner";
+import filesize from "filesize";
 import useForm from "hooks/useForm";
-import { FormEvent, MouseEventHandler, useCallback, useState } from "react";
+import { createFile, getPresignedURL } from "libs/fileset";
 import {
+  AccessmodFilesetRoleCode,
   CreateDatasetDialog_ProjectFragment,
   useCreateFilesetMutation,
 } from "libs/graphql";
-import Spinner from "components/Spinner";
+import uploader, { JobFile } from "libs/upload";
+import { MouseEventHandler, useEffect, useState } from "react";
 import FilesetRolePicker from "./FilesetRolePicker";
 import ProjectPicker from "./ProjectPicker";
-import Dropzone from "components/Dropzone";
-import filesize from "filesize";
-import uploader, { JobFile } from "libs/upload";
-import { createFile, getPresignedURL } from "libs/fileset";
 
 type Props = {
-  onClose: (reason?: string) => void;
+  onClose: (
+    reason?: string,
+    fileset?: {
+      id: string;
+      name: string;
+      [key: string]: any;
+    }
+  ) => void;
   open: boolean;
+  role?: { id: string; code: AccessmodFilesetRoleCode; name: string };
   project?: CreateDatasetDialog_ProjectFragment | { id: string; name: string };
 };
 
@@ -45,6 +53,12 @@ const CREATE_FILESET_MUTATION = gql`
       success
       fileset {
         id
+        name
+        role {
+          id
+          code
+          name
+        }
       }
     }
   }
@@ -55,148 +69,186 @@ type FilesetFile = JobFile & {
 };
 
 const CreateDatasetDialog = (props: Props) => {
-  const { open, onClose, project } = props;
-  const [submitting, setSubmitting] = useState(false);
+  const { open, onClose, project, role } = props;
   const [progress, setProgress] = useState(0);
-  const [createFileset] = useCreateFilesetMutation();
-  const { formData, isValid, handleInputChange, setFieldValue, resetForm } =
-    useForm<Form>({
-      initialState: {
-        role: null,
-        files: [],
-        name: "",
-        project,
-      },
-      validate: (values) =>
-        Boolean(
-          values.files?.length > 0 &&
-            values.name &&
-            values.project?.id &&
-            values.role?.id
-        ),
-    });
+  const [error, setError] = useState<null | string>(null);
+  const [createFileset, { error: filesetError }] = useCreateFilesetMutation();
+
+  const form = useForm<Form>({
+    initialState: {
+      role,
+      files: [],
+      name: "",
+      project,
+    },
+    validate: (values) => {
+      const errors = {} as any;
+      if (!values.files?.length) {
+        errors.files = "Select files";
+      }
+      if (!values.name) {
+        errors.name = "Enter a name";
+      }
+      if (!values.project) {
+        errors.project = "Select a project";
+      }
+      if (!values.role) {
+        errors.role = "Select a role";
+      }
+      return errors;
+    },
+    onSubmit: async () => {
+      setError(null);
+
+      // Create Fileset
+      const { data } = await createFileset({
+        variables: {
+          input: {
+            roleId: form.formData.role.id,
+            name: form.formData.name,
+            projectId: form.formData.project.id,
+          },
+        },
+      });
+      const fileset = data?.createAccessmodFileset?.fileset;
+      if (!fileset) {
+        throw new Error("Fileset not created");
+      }
+
+      try {
+        await uploader.createUploadJob({
+          files: form.formData.files,
+          axiosConfig: { method: "PUT" },
+          onProgress: setProgress,
+          onBeforeFileUpload: async (file: FilesetFile) => {
+            const data = await getPresignedURL(fileset.id, file.type);
+            if (!data || !data.fileUri) {
+              throw new Error("No URI returned");
+            }
+            file.uri = data.fileUri;
+
+            return {
+              url: data!.uploadUrl as string,
+            };
+          },
+          onAfterFileUpload: async (file: FilesetFile) => {
+            if (!file.uri) {
+              throw new Error("File has no URI");
+            }
+            await createFile(fileset.id, file.uri, file.type);
+          },
+        });
+        form.resetForm();
+        onClose("submit", fileset);
+      } catch (err: any) {
+        console.error(err);
+        setError(err?.message);
+      }
+    },
+  });
+
+  useEffect(() => {
+    form.setFieldValue("project", project);
+    form.setFieldValue("role", role);
+  }, [project, role]);
 
   const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     onClose("cancel");
   };
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (submitting || !isValid) {
-      // It should not happen but...
-      console.warn("Form submitted while submitting or invalid");
-      return;
-    }
-    setSubmitting(true);
-
-    // Create Fileset
-    const { data } = await createFileset({
-      variables: {
-        input: {
-          roleId: formData.role.id,
-          name: formData.name,
-          projectId: formData.project.id,
-        },
-      },
-    });
-    const fileset = data?.createAccessmodFileset?.fileset;
-    if (!fileset) {
-      throw new Error("Fileset not created");
-    }
-
-    try {
-      await uploader.createUploadJob({
-        files: formData.files,
-        axiosConfig: { method: "PUT" },
-        onProgress: setProgress,
-        onBeforeFileUpload: async (file: FilesetFile) => {
-          const data = await getPresignedURL(fileset.id, file.type);
-          if (!data || !data.fileUri) {
-            throw new Error("No URI returned");
-          }
-          file.uri = data.fileUri;
-
-          return {
-            url: data!.uploadUrl as string,
-          };
-        },
-        onAfterFileUpload: async (file: FilesetFile) => {
-          if (!file.uri) {
-            throw new Error("File has no URI");
-          }
-          await createFile(fileset.id, file.uri, file.type);
-        },
-      });
-      resetForm();
-      setSubmitting(false);
-      onClose("submit");
-    } catch (err) {
-      console.error(err);
-      setSubmitting(false);
-    }
-  };
-
   return (
     <Dialog
       open={open}
-      onClose={() => {}}
+      onClose={onClose}
       closeOnEsc={false}
       closeOnOutsideClick={false}
     >
-      <form onSubmit={onSubmit}>
+      <form onSubmit={form.handleSubmit}>
         <Dialog.Title>Create a dataset</Dialog.Title>
 
-        <Dialog.Content className="px-9 py-8 space-y-4">
-          <Field label="Name" required name="name">
-            <Input
-              name="name"
+        <Dialog.Content className="px-9 py-8 ">
+          <div className="space-y-4">
+            <Field
+              label="Name"
               required
-              disabled={submitting}
-              onChange={handleInputChange}
-              value={formData.name}
+              name="name"
+              onChange={form.handleInputChange}
+              value={form.formData.name}
+              disabled={form.isSubmitting}
+              error={form.touched.name && form.errors.name}
             />
-          </Field>
-          <Field label="Project" required name="project">
-            <ProjectPicker
-              disabled={Boolean(project) || submitting}
-              onChange={(value) => setFieldValue("project", value)}
-              value={formData.project}
-            />
-          </Field>
-          <Field label="Role" required name="role">
-            <FilesetRolePicker
-              disabled={submitting}
-              onChange={(value) => setFieldValue("role", value)}
-              value={formData.role}
-            />
-          </Field>
-          <Dropzone
-            label="Select your files"
-            onChange={(files) => setFieldValue("files", files)}
-          >
-            {formData.files?.length > 0 ? (
-              <div>{formData.files.map((f) => f.name).join(", ")}</div>
-            ) : undefined}
-          </Dropzone>
+            <Field
+              label="Project"
+              required
+              name="project"
+              error={form.touched.project && form.errors.project}
+            >
+              <ProjectPicker
+                disabled={Boolean(project) || form.isSubmitting}
+                onChange={(value) => form.setFieldValue("project", value)}
+                value={form.formData.project}
+                required
+              />
+            </Field>
+            <Field
+              label="Role"
+              required
+              name="role"
+              error={form.touched.role && form.errors.role}
+            >
+              <FilesetRolePicker
+                disabled={form.isSubmitting || Boolean(props.role)}
+                onChange={(value) => form.setFieldValue("role", value)}
+                value={form.formData.role}
+                required
+              />
+            </Field>
+            <Field
+              label="Files"
+              required
+              name="files"
+              error={form.touched.files && form.errors.files}
+            >
+              <Dropzone
+                className="mt-1"
+                label="Select your files"
+                onChange={(files) => form.setFieldValue("files", files)}
+              >
+                {form.formData.files?.length > 0 ? (
+                  <div>
+                    {form.formData.files
+                      .map((f) => `${f.name} (${filesize(f.size)})`)
+                      .join(", ")}
+                  </div>
+                ) : undefined}
+              </Dropzone>
+            </Field>
+
+            {(error || filesetError) && (
+              <div className="text-danger mt-3 text-sm">
+                {error || filesetError}
+              </div>
+            )}
+          </div>
         </Dialog.Content>
 
         <Dialog.Actions>
           <Button
             role="button"
             onClick={onCancel}
-            disabled={submitting}
+            disabled={form.isSubmitting}
             variant="outlined"
           >
             Cancel
           </Button>
           <Button
-            disabled={!isValid || submitting}
+            disabled={form.isSubmitting}
             role="submit"
             className="space-x-2"
           >
-            {submitting && <Spinner size="xs" />}
-            {submitting ? (
+            {form.isSubmitting && <Spinner size="xs" />}
+            {form.isSubmitting ? (
               <span>Uploading ({progress}%)</span>
             ) : (
               <span>Create</span>

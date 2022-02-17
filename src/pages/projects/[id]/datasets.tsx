@@ -10,8 +10,8 @@ import { UploadIcon } from "@heroicons/react/outline";
 import { useProjectDataPageQuery } from "libs/graphql";
 import CreateDatasetDialog from "features/CreateDatasetDialog";
 import { useCallback, useState } from "react";
-import ProjectFilesetsTable from "features/ProjectFilesetsTable";
-import { useEmitter } from "hooks/useEmitter";
+import ProjectDatasetsTable from "features/ProjectDatasetsTable";
+import useCacheKey from "hooks/useCacheKey";
 
 const QUERY = gql`
   query ProjectDataPage($id: String!) {
@@ -20,12 +20,12 @@ const QUERY = gql`
       name
       ...ProjectNavbar_project
       ...CreateDatasetDialog_project
-      ...ProjectFilesetsTable_project
+      ...ProjectDatasetsTable_project
     }
   }
   ${ProjectNavbar.fragments.project}
   ${CreateDatasetDialog.fragments.project}
-  ${ProjectFilesetsTable.fragments.project}
+  ${ProjectDatasetsTable.fragments.project}
 `;
 
 const ProjectDataPage: NextPageWithLayout = () => {
@@ -34,16 +34,18 @@ const ProjectDataPage: NextPageWithLayout = () => {
   const { loading, data, refetch } = useProjectDataPageQuery({
     variables: { id: router.query.id as string },
   });
-  const refetchFilesets = useEmitter("ProjectFilesetsTable");
+
+  const clearFilesets = useCacheKey(["filesets"]);
 
   const onDialogClose = useCallback(
     (reason?: string) => {
       if (reason === "submit") {
         // Reload filesets
-        refetchFilesets();
+        clearFilesets();
       }
       toggleUploadDialog(false);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [showUploadDialog]
   );
 
@@ -56,7 +58,7 @@ const ProjectDataPage: NextPageWithLayout = () => {
   }
 
   if (!data.accessmodProject) {
-    // Unknonwn project or not authorized
+    // Unknown project or not authorized
     return null;
   }
 
@@ -88,9 +90,9 @@ const ProjectDataPage: NextPageWithLayout = () => {
               Upload Data
             </Button>
           </h2>
-          <ProjectFilesetsTable
+          <ProjectDatasetsTable
             project={data.accessmodProject}
-          ></ProjectFilesetsTable>
+          ></ProjectDatasetsTable>
         </div>
       </div>
     </>
@@ -104,7 +106,7 @@ export const getServerSideProps = withUserRequired({
       query: QUERY,
       variables: { id: ctx.params.id },
     });
-    await ProjectFilesetsTable.prefetch(client, ctx.params.id);
+    await ProjectDatasetsTable.prefetch(client, ctx.params.id);
 
     return addApolloState(client);
   },
