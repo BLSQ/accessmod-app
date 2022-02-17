@@ -138,7 +138,7 @@ const CreateProjectDialog = (props: Props) => {
             role="submit"
             className="space-x-2"
           >
-            {loading && <Spinner size="sm" />}
+            {loading && <Spinner size="xs" />}
             <span>Create</span>
           </Button>
         </Dialog.Actions>

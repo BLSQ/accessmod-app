@@ -29,7 +29,7 @@
   /* Button styles */
   @import "./table.css";
   .btn {
-    @apply inline-flex bg-transparent items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none;
+    @apply relative inline-flex bg-transparent items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none h-fit;
   }
 
   .btn-primary {
@@ -41,7 +41,7 @@
   }
 
   .btn-white {
-    @apply border-white text-gray-800 bg-white hover:bg-lochmara-200 hover:border-lochmara-200 hover:text-white;
+    @apply text-gray-800 border-gray-300 bg-white  hover:bg-gray-50;
   }
 
   .btn-outlined {
