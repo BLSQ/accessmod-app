@@ -27,7 +27,7 @@ const NavEntry = (props: NavEntry) => {
       </Link>
 
       {items && items.length > 0 && (
-        <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100">
+        <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100 z-40">
           <div
             className={clsx(
               "absolute left-0 top-full w-44 shadow-lg p-1 bg-who-blue-dark text-white focus:outline-none",
