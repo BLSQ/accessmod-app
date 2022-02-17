@@ -1,6 +1,10 @@
-"""Exposes a URL that specifies the behaviour of this scalar."""
+"""
+Exposes a URL that specifies the behaviour of this scalar.
+"""
 directive @specifiedBy(
-  """The URL that specifies the behaviour of this scalar."""
+  """
+  The URL that specifies the behaviour of this scalar.
+  """
   url: String!
 ) on SCALAR
 
@@ -254,16 +258,36 @@ type LogoutResult {
 type Mutation {
   login(input: LoginInput!): LoginResult
   logout: LogoutResult
-  createAccessmodProject(input: CreateAccessmodProjectInput): CreateAccessmodProjectResult
-  updateAccessmodProject(input: UpdateAccessmodProjectInput): UpdateAccessmodProjectResult
-  deleteAccessmodProject(input: DeleteAccessmodProjectInput): DeleteAccessmodProjectResult
-  createAccessmodFileset(input: CreateAccessmodFilesetInput): CreateAccessmodFilesetResult
-  deleteAccessmodFileset(input: DeleteAccessmodFilesetInput): DeleteAccessmodFilesetResult
-  prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput): PrepareAccessmodFileUploadResult
-  createAccessmodFile(input: CreateAccessmodFileInput): CreateAccessmodFileResult
-  deleteAccessmodFile(input: DeleteAccessmodFileInput): DeleteAccessmodFileResult
-  createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult
-  updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult
+  createAccessmodProject(
+    input: CreateAccessmodProjectInput
+  ): CreateAccessmodProjectResult
+  updateAccessmodProject(
+    input: UpdateAccessmodProjectInput
+  ): UpdateAccessmodProjectResult
+  deleteAccessmodProject(
+    input: DeleteAccessmodProjectInput
+  ): DeleteAccessmodProjectResult
+  createAccessmodFileset(
+    input: CreateAccessmodFilesetInput
+  ): CreateAccessmodFilesetResult
+  deleteAccessmodFileset(
+    input: DeleteAccessmodFilesetInput
+  ): DeleteAccessmodFilesetResult
+  prepareAccessmodFileUpload(
+    input: PrepareAccessmodFileUploadInput
+  ): PrepareAccessmodFileUploadResult
+  createAccessmodFile(
+    input: CreateAccessmodFileInput
+  ): CreateAccessmodFileResult
+  deleteAccessmodFile(
+    input: DeleteAccessmodFileInput
+  ): DeleteAccessmodFileResult
+  createAccessmodAccessibilityAnalysis(
+    input: CreateAccessmodAccessibilityAnalysisInput
+  ): CreateAccessmodAccessibilityAnalysisResult
+  updateAccessmodAccessibilityAnalysis(
+    input: UpdateAccessmodAccessibilityAnalysisInput
+  ): UpdateAccessmodAccessibilityAnalysisResult
 }
 
 type Organization {
@@ -300,11 +324,21 @@ type Query {
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(page: Int, perPage: Int): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
-  accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
+  accessmodFilesets(
+    projectId: String!
+    roleId: String
+    term: String
+    page: Int
+    perPage: Int
+  ): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole
   accessmodFilesetRoles: [AccessmodFilesetRole!]!
   accessmodAnalysis(id: String): AccessmodAnalysis
-  accessmodAnalyses(projectId: String!, page: Int, perPage: Int): AccessmodAnalysisPage!
+  accessmodAnalyses(
+    projectId: String!
+    page: Int
+    perPage: Int
+  ): AccessmodAnalysisPage!
 }
 
 input UpdateAccessmodAccessibilityAnalysisInput {
@@ -348,4 +382,3 @@ type User {
   lastName: String
   avatar: Avatar!
 }
-
