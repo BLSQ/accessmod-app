@@ -58,7 +58,7 @@ const ProjectDataPage: NextPageWithLayout = () => {
   }
 
   if (!data.accessmodProject) {
-    // Unknonwn project or not authorized
+    // Unknown project or not authorized
     return null;
   }
 

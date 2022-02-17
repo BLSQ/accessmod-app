@@ -1,11 +1,4 @@
-import {
-  useState,
-  ChangeEventHandler,
-  useMemo,
-  useCallback,
-  useEffect,
-  FormEvent,
-} from "react";
+import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import usePrevious from "./usePrevious";
 
 type FormData = {
@@ -19,7 +12,7 @@ type UseFormResult<T> = {
   handleInputChange: ChangeEventHandler<HTMLInputElement>;
   setFieldValue: (fieldName: string, value: any) => void;
   resetForm: () => void;
-  handleSubmit: (event?: { preventDefault?: Function }) => void;
+  handleSubmit: (event: { preventDefault: Function }) => void;
   touched: { [key in keyof Partial<T>]: boolean };
   isValid: boolean;
   isSubmitting: boolean;
@@ -52,12 +45,14 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     setSubmitted(false);
     setTouched({});
     setFormData(initialState as T);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
       setFieldValue(event.target.name, event.target.value);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -79,6 +74,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
 
     const errors = validate(formData);
     return errors || {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]);
 
   const isValid = useMemo(
@@ -87,7 +83,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   );
 
   const handleSubmit = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
+    async (event: { preventDefault: Function }) => {
       event.preventDefault();
       if (isSubmitting) return;
 
@@ -104,6 +100,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
       }
       setSubmitting(false);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [formData, errors, isValid, touched]
   );
 
