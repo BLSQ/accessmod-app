@@ -37,15 +37,43 @@ const MUTATION = gql`
 const CreateProjectDialog = (props: Props) => {
   const { open, onClose } = props;
   const router = useRouter();
-  const [createProjectMutation, { loading }] = useCreateProjectMutation();
-  const { formData, isValid, handleInputChange, setFieldValue } = useForm<Form>(
-    {
-      validate: (values) =>
-        Boolean(
-          values.name?.length > 0 && values.country && values.spatialResolution
-        ),
-    }
-  );
+  const [createProjectMutation] = useCreateProjectMutation();
+  const form = useForm<Form>({
+    validate: (values) => {
+      const errors = {} as any;
+      if (!values.name) {
+        errors.name = "Enter a name";
+      }
+      if (!values.country) {
+        errors.country = "Select a country";
+      }
+      if (!values.spatialResolution) {
+        errors.spatialResolution = "Enter a spatial resolution";
+      }
+
+      return errors;
+    },
+    onSubmit: async (values) => {
+      const mutation = await createProjectMutation({
+        variables: {
+          input: {
+            spatialResolution: parseInt(values.spatialResolution, 10),
+            name: values.name,
+            country: { code: values.country.code },
+          },
+        },
+      });
+      if (mutation.data && mutation.data.createAccessmodProject!.success) {
+        router.push(
+          `/projects/${encodeURIComponent(
+            mutation.data.createAccessmodProject!.project!.id
+          )}`
+        );
+        clearCache();
+        onClose();
+      }
+    },
+  });
 
   const clearCache = useCacheKey("projects");
 
@@ -70,29 +98,6 @@ const CreateProjectDialog = (props: Props) => {
     onClose();
   };
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const mutation = await createProjectMutation({
-      variables: {
-        input: {
-          spatialResolution: parseInt(formData.spatialResolution, 10),
-          name: formData.name,
-          country: { code: formData.country.code },
-        },
-      },
-    });
-    if (mutation.data && mutation.data.createAccessmodProject!.success) {
-      router.push(
-        `/projects/${encodeURIComponent(
-          mutation.data.createAccessmodProject!.project!.id
-        )}`
-      );
-      clearCache();
-      onClose();
-    }
-  };
-
   return (
     <Dialog
       open={open}
@@ -100,49 +105,64 @@ const CreateProjectDialog = (props: Props) => {
       closeOnEsc={false}
       closeOnOutsideClick={false}
     >
-      <form onSubmit={onSubmit}>
+      <form onSubmit={form.handleSubmit}>
         <Dialog.Title>Create a new Project</Dialog.Title>
 
         <Dialog.Content className="px-9 py-8 space-y-4">
-          <Field label="Project name" required name="name">
-            <Input
-              onChange={handleInputChange}
-              required
-              name="name"
-              type="text"
-            />
-          </Field>
-          <Field label="Country" required name="country">
+          <Field
+            label="Project name"
+            required
+            name="name"
+            disabled={form.isSubmitting}
+            type="text"
+            onChange={form.handleInputChange}
+            error={form.touched.name && form.errors.name}
+          />
+          <Field
+            label="Country"
+            required
+            name="country"
+            error={form.touched.country && form.errors.country}
+          >
             <SelectInput
               required
               options={countryOptions}
               labelKey="name"
+              disabled={form.isSubmitting}
               valueKey="code"
-              value={formData.country}
-              onChange={(value) => setFieldValue("country", value)}
+              value={form.formData.country}
+              onChange={(value) => form.setFieldValue("country", value)}
             />
           </Field>
 
-          <Field required label="Spatial Resolution" name="spatialResolution">
-            <Input
-              type="number"
-              onChange={handleInputChange}
-              name="spatialResolution"
-              required
-            />
-          </Field>
+          <Field
+            required
+            label="Spatial Resolution"
+            name="spatialResolution"
+            type="number"
+            onChange={form.handleInputChange}
+            disabled={form.isSubmitting}
+            error={
+              form.touched.spatialResolution && form.errors.spatialResolution
+            }
+          />
         </Dialog.Content>
 
         <Dialog.Actions>
-          <Button role="button" onClick={onCancel} variant="outlined">
+          <Button
+            role="button"
+            onClick={onCancel}
+            disabled={form.isSubmitting}
+            variant="outlined"
+          >
             Cancel
           </Button>
           <Button
-            disabled={!isValid || loading}
+            disabled={form.isSubmitting}
             role="submit"
             className="space-x-2"
           >
-            {loading && <Spinner size="xs" />}
+            {form.isSubmitting && <Spinner size="xs" />}
             <span>Create</span>
           </Button>
         </Dialog.Actions>
