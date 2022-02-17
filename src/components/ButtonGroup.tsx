@@ -32,7 +32,7 @@ const ButtonGroup = ({ items }: Props) => {
 
       <Menu as="span" className="-ml-px relative block">
         <span className="h-full border absolute border-gray-300"></span>
-        <Menu.Button>
+        <Menu.Button as="div">
           <Button variant="white" className="rounded-l-none px-2">
             <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
