@@ -38,10 +38,22 @@ type AccessmodFilesetPage {
 
 type AccessmodFilesetRole {
   id: String!
+  code: AccessmodFilesetRoleCode!
   name: String!
   format: AccessmodFilesetFormat!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum AccessmodFilesetRoleCode {
+  LAND_COVER
+  DEM
+  TRANSPORT_NETWORK
+  SLOPE
+  WATER
+  BARRIER
+  MOVING_SPEEDS
+  HEALTH_FACILITIES
 }
 
 type AccessmodFilesetRolePage {
@@ -209,7 +221,7 @@ type Query {
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(page: Int, perPage: Int): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
-  accessmodFilesets(projectId: String!, page: Int, perPage: Int): AccessmodFilesetPage!
+  accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole
   accessmodFilesetRoles(page: Int, perPage: Int): AccessmodFilesetRolePage
 }
