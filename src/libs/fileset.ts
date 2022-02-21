@@ -1,6 +1,10 @@
 import { gql } from "@apollo/client";
 import { getApolloClient } from "./apollo";
-import { CreateFileMutation, GetUploadUrlMutation } from "./graphql";
+import {
+  CreateFileMutation,
+  GetFilesetRolesQuery,
+  GetUploadUrlMutation,
+} from "./graphql";
 
 const GET_PRESIGNED_MUTATION = gql`
   mutation GetUploadUrl($input: PrepareAccessmodFileUploadInput) {
@@ -62,4 +66,27 @@ export async function createFile(
     throw new Error(`Cannot create file "${uri}" in fileset ${filesetId}`);
   }
   return true;
+}
+
+const GET_FILESET_ROLES = gql`
+  query GetFilesetRoles {
+    roles: accessmodFilesetRoles {
+      id
+      name
+      format
+      code
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export async function getFilesetRoles() {
+  const client = getApolloClient();
+  const response = await client.query<GetFilesetRolesQuery>({
+    query: GET_FILESET_ROLES,
+    fetchPolicy: "cache-first",
+  });
+
+  return response.data?.roles || [];
 }

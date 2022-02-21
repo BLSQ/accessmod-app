@@ -12,8 +12,9 @@ const ProjectNavbar = (props: {
   return (
     <Block
       as="nav"
+      background="bg-midnight-blue"
       className={clsx(
-        "bg-who-blue-dark text-white w-full py-4 md:px-4 xl:px-7 md:py-6 h-72",
+        "   text-white w-full py-4 md:px-4 xl:px-7 md:py-6 h-72",
         className
       )}
     >

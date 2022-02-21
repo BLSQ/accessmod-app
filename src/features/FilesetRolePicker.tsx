@@ -39,13 +39,11 @@ const COMPONENTS = {
 const QUERY = gql`
   query FilesetRolePicker {
     accessmodFilesetRoles {
-      items {
-        id
-        name
-        format
-        createdAt
-        updatedAt
-      }
+      id
+      name
+      format
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -56,7 +54,7 @@ const FilesetRolePicker = (props: Props) => {
   console.log("ROLE VALUE", value);
   return (
     <SelectInput
-      options={data?.accessmodFilesetRoles?.items ?? []}
+      options={data?.accessmodFilesetRoles ?? []}
       value={value}
       onChange={onChange}
       labelKey="name"

@@ -17,6 +17,56 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & {
+  __typename?: 'AccessmodAccessibilityAnalysis';
+  anisotropic?: Maybe<Scalars['Boolean']>;
+  barrier?: Maybe<AccessmodFileset>;
+  dem?: Maybe<AccessmodFileset>;
+  extent?: Maybe<AccessmodFileset>;
+  frictionSurface?: Maybe<AccessmodFileset>;
+  healthFacilities?: Maybe<AccessmodFileset>;
+  id: Scalars['String'];
+  landCover?: Maybe<AccessmodFileset>;
+  maxTravelTime?: Maybe<Scalars['Int']>;
+  movingSpeeds?: Maybe<AccessmodFileset>;
+  name: Scalars['String'];
+  slope?: Maybe<AccessmodFileset>;
+  status: AccessmodAnalysisStatus;
+  transportNetwork?: Maybe<AccessmodFileset>;
+  travelTimes?: Maybe<AccessmodFileset>;
+  type: AccessmodAnalysisType;
+  water?: Maybe<AccessmodFileset>;
+};
+
+export type AccessmodAnalysis = {
+  id: Scalars['String'];
+  name: Scalars['String'];
+  status: AccessmodAnalysisStatus;
+  type: AccessmodAnalysisType;
+};
+
+export type AccessmodAnalysisPage = {
+  __typename?: 'AccessmodAnalysisPage';
+  items: Array<AccessmodAnalysis>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export enum AccessmodAnalysisStatus {
+  Failed = 'FAILED',
+  Pending = 'PENDING',
+  Queued = 'QUEUED',
+  Ready = 'READY',
+  Running = 'RUNNING',
+  Success = 'SUCCESS'
+}
+
+export enum AccessmodAnalysisType {
+  Accessibility = 'ACCESSIBILITY',
+  GeographicCoverage = 'GEOGRAPHIC_COVERAGE'
+}
+
 export type AccessmodFile = {
   __typename?: 'AccessmodFile';
   createdAt: Scalars['DateTime'];
@@ -73,12 +123,21 @@ export enum AccessmodFilesetRoleCode {
   Water = 'WATER'
 }
 
-export type AccessmodFilesetRolePage = {
-  __typename?: 'AccessmodFilesetRolePage';
-  items: Array<AccessmodFilesetRole>;
-  pageNumber: Scalars['Int'];
-  totalItems: Scalars['Int'];
-  totalPages: Scalars['Int'];
+export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
+  __typename?: 'AccessmodGeographicCoverageAnalysis';
+  anisotropic?: Maybe<Scalars['Boolean']>;
+  catchmentAreas?: Maybe<AccessmodFileset>;
+  dem?: Maybe<AccessmodFileset>;
+  frictionSurface?: Maybe<AccessmodFileset>;
+  geographicCoverage?: Maybe<AccessmodFileset>;
+  healthFacilities?: Maybe<AccessmodFileset>;
+  hfProcessingOrder?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  maxTravelTime?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  population?: Maybe<AccessmodFileset>;
+  status: AccessmodAnalysisStatus;
+  type: AccessmodAnalysisType;
 };
 
 export type AccessmodProject = {
@@ -119,6 +178,16 @@ export type CountryInput = {
   code: Scalars['String'];
   flag?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateAccessmodAccessibilityAnalysisInput = {
+  name: Scalars['String'];
+};
+
+export type CreateAccessmodAccessibilityAnalysisResult = {
+  __typename?: 'CreateAccessmodAccessibilityAnalysisResult';
+  analysis: AccessmodAccessibilityAnalysis;
+  success: Scalars['Boolean'];
 };
 
 export type CreateAccessmodFileInput = {
@@ -202,6 +271,7 @@ export type LogoutResult = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createAccessmodAccessibilityAnalysis?: Maybe<CreateAccessmodAccessibilityAnalysisResult>;
   createAccessmodFile?: Maybe<CreateAccessmodFileResult>;
   createAccessmodFileset?: Maybe<CreateAccessmodFilesetResult>;
   createAccessmodProject?: Maybe<CreateAccessmodProjectResult>;
@@ -211,7 +281,13 @@ export type Mutation = {
   login?: Maybe<LoginResult>;
   logout?: Maybe<LogoutResult>;
   prepareAccessmodFileUpload?: Maybe<PrepareAccessmodFileUploadResult>;
+  updateAccessmodAccessibilityAnalysis?: Maybe<UpdateAccessmodAccessibilityAnalysisResult>;
   updateAccessmodProject?: Maybe<UpdateAccessmodProjectResult>;
+};
+
+
+export type MutationCreateAccessmodAccessibilityAnalysisArgs = {
+  input?: InputMaybe<CreateAccessmodAccessibilityAnalysisInput>;
 };
 
 
@@ -255,6 +331,11 @@ export type MutationPrepareAccessmodFileUploadArgs = {
 };
 
 
+export type MutationUpdateAccessmodAccessibilityAnalysisArgs = {
+  input?: InputMaybe<UpdateAccessmodAccessibilityAnalysisInput>;
+};
+
+
 export type MutationUpdateAccessmodProjectArgs = {
   input?: InputMaybe<UpdateAccessmodProjectInput>;
 };
@@ -290,15 +371,29 @@ export type PrepareAccessmodFileUploadResult = {
 
 export type Query = {
   __typename?: 'Query';
+  accessmodAnalyses: AccessmodAnalysisPage;
+  accessmodAnalysis?: Maybe<AccessmodAnalysis>;
   accessmodFileset?: Maybe<AccessmodFileset>;
   accessmodFilesetRole?: Maybe<AccessmodFilesetRole>;
-  accessmodFilesetRoles?: Maybe<AccessmodFilesetRolePage>;
+  accessmodFilesetRoles: Array<AccessmodFilesetRole>;
   accessmodFilesets: AccessmodFilesetPage;
   accessmodProject?: Maybe<AccessmodProject>;
   accessmodProjects: AccessmodProjectPage;
   countries?: Maybe<Array<Country>>;
   me?: Maybe<User>;
   organizations?: Maybe<Array<Organization>>;
+};
+
+
+export type QueryAccessmodAnalysesArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  projectId: Scalars['String'];
+};
+
+
+export type QueryAccessmodAnalysisArgs = {
+  id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -309,12 +404,6 @@ export type QueryAccessmodFilesetArgs = {
 
 export type QueryAccessmodFilesetRoleArgs = {
   id: Scalars['String'];
-};
-
-
-export type QueryAccessmodFilesetRolesArgs = {
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -335,6 +424,27 @@ export type QueryAccessmodProjectArgs = {
 export type QueryAccessmodProjectsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+};
+
+export type UpdateAccessmodAccessibilityAnalysisInput = {
+  anisotropic?: InputMaybe<Scalars['Boolean']>;
+  barrierId?: InputMaybe<Scalars['String']>;
+  extentId?: InputMaybe<Scalars['String']>;
+  healthFacilitiesId?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  landCoverId?: InputMaybe<Scalars['String']>;
+  maxTravelTime?: InputMaybe<Scalars['Int']>;
+  movingSpeedsId?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  slopeId?: InputMaybe<Scalars['String']>;
+  transportNetworkId?: InputMaybe<Scalars['String']>;
+  waterId?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateAccessmodAccessibilityAnalysisResult = {
+  __typename?: 'UpdateAccessmodAccessibilityAnalysisResult';
+  analysis: AccessmodAccessibilityAnalysis;
+  success: Scalars['Boolean'];
 };
 
 export type UpdateAccessmodProjectInput = {
@@ -397,7 +507,7 @@ export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', i
 export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles?: { __typename?: 'AccessmodFilesetRolePage', items: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> } | null };
+export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> };
 
 export type DeleteProjectMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodProjectInput>;
@@ -407,6 +517,17 @@ export type DeleteProjectMutationVariables = Exact<{
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject?: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } | null };
 
 export type ProjectActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type ProjectAnalysisTableQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  projectId: Scalars['String'];
+}>;
+
+
+export type ProjectAnalysisTableQuery = { __typename?: 'Query', analysis: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string } | { __typename?: 'AccessmodGeographicCoverageAnalysis', id: string, name: string }> } };
+
+export type ProjectAnalysisTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
@@ -432,6 +553,13 @@ export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage
 
 export type User_UserFragment = { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
+export type CreateAccessibilityAnalysisMutationVariables = Exact<{
+  input?: InputMaybe<CreateAccessmodAccessibilityAnalysisInput>;
+}>;
+
+
+export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response?: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, analysis: { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string, status: AccessmodAnalysisStatus } } | null };
+
 export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
@@ -456,7 +584,7 @@ export type CreateFileMutation = { __typename?: 'Mutation', createFile?: { __typ
 export type GetFilesetRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFilesetRolesQuery = { __typename?: 'Query', roles?: { __typename?: 'AccessmodFilesetRolePage', items: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode, createdAt: any, updatedAt: any }> } | null };
+export type GetFilesetRolesQuery = { __typename?: 'Query', roles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode, createdAt: any, updatedAt: any }> };
 
 export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -470,12 +598,21 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResult', success: boolean, me?: { __typename?: 'User', id: string, email: string } | null } | null };
 
-export type AnalysisPageQueryVariables = Exact<{
+export type AnalysisEditPageQueryVariables = Exact<{
   id: Scalars['String'];
+  analysisId: Scalars['String'];
 }>;
 
 
-export type AnalysisPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string } | { __typename?: 'AccessmodGeographicCoverageAnalysis', id: string, name: string } | null };
+
+export type AnalysisDetailPageQueryVariables = Exact<{
+  id: Scalars['String'];
+  analysisId: Scalars['String'];
+}>;
+
+
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string } | { __typename?: 'AccessmodGeographicCoverageAnalysis', id: string, name: string } | null };
 
 export type ProjectCreateAnalysisPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -520,6 +657,11 @@ export const ChooseAnalysisTypeDialog_ProjectFragmentDoc = gql`
     `;
 export const ProjectActionsButton_ProjectFragmentDoc = gql`
     fragment ProjectActionsButton_project on AccessmodProject {
+  id
+}
+    `;
+export const ProjectAnalysisTable_ProjectFragmentDoc = gql`
+    fragment ProjectAnalysisTable_project on AccessmodProject {
   id
 }
     `;
@@ -768,13 +910,11 @@ export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, Da
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
-    items {
-      id
-      name
-      format
-      createdAt
-      updatedAt
-    }
+    id
+    name
+    format
+    createdAt
+    updatedAt
   }
 }
     `;
@@ -838,6 +978,53 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const ProjectAnalysisTableDocument = gql`
+    query ProjectAnalysisTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
+  analysis: accessmodAnalyses(
+    projectId: $projectId
+    page: $page
+    perPage: $perPage
+  ) {
+    items {
+      id
+      name
+    }
+    pageNumber
+    totalPages
+    totalItems
+  }
+}
+    `;
+
+/**
+ * __useProjectAnalysisTableQuery__
+ *
+ * To run a query within a React component, call `useProjectAnalysisTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectAnalysisTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectAnalysisTableQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useProjectAnalysisTableQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>(ProjectAnalysisTableDocument, options);
+      }
+export function useProjectAnalysisTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>(ProjectAnalysisTableDocument, options);
+        }
+export type ProjectAnalysisTableQueryHookResult = ReturnType<typeof useProjectAnalysisTableQuery>;
+export type ProjectAnalysisTableLazyQueryHookResult = ReturnType<typeof useProjectAnalysisTableLazyQuery>;
+export type ProjectAnalysisTableQueryResult = Apollo.QueryResult<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>;
 export const ProjectDatasetsTableDocument = gql`
     query ProjectDatasetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
   accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
@@ -944,6 +1131,44 @@ export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
 export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
 export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
+export const CreateAccessibilityAnalysisDocument = gql`
+    mutation CreateAccessibilityAnalysis($input: CreateAccessmodAccessibilityAnalysisInput) {
+  response: createAccessmodAccessibilityAnalysis(input: $input) {
+    success
+    analysis {
+      id
+      name
+      status
+    }
+  }
+}
+    `;
+export type CreateAccessibilityAnalysisMutationFn = Apollo.MutationFunction<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
+
+/**
+ * __useCreateAccessibilityAnalysisMutation__
+ *
+ * To run a mutation, you first call `useCreateAccessibilityAnalysisMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAccessibilityAnalysisMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAccessibilityAnalysisMutation, { data, loading, error }] = useCreateAccessibilityAnalysisMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAccessibilityAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>(CreateAccessibilityAnalysisDocument, options);
+      }
+export type CreateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useCreateAccessibilityAnalysisMutation>;
+export type CreateAccessibilityAnalysisMutationResult = Apollo.MutationResult<CreateAccessibilityAnalysisMutation>;
+export type CreateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout {
@@ -1047,14 +1272,12 @@ export type CreateFileMutationOptions = Apollo.BaseMutationOptions<CreateFileMut
 export const GetFilesetRolesDocument = gql`
     query GetFilesetRoles {
   roles: accessmodFilesetRoles {
-    items {
-      id
-      name
-      format
-      code
-      createdAt
-      updatedAt
-    }
+    id
+    name
+    format
+    code
+    createdAt
+    updatedAt
   }
 }
     `;
@@ -1157,43 +1380,90 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const AnalysisPageDocument = gql`
-    query AnalysisPage($id: String!) {
-  accessmodProject(id: $id) {
+export const AnalysisEditPageDocument = gql`
+    query AnalysisEditPage($id: String!, $analysisId: String!) {
+  project: accessmodProject(id: $id) {
     id
     name
     ...ProjectNavbar_project
+  }
+  analysis: accessmodAnalysis(id: $analysisId) {
+    id
+    name
   }
 }
     ${ProjectNavbar_ProjectFragmentDoc}`;
 
 /**
- * __useAnalysisPageQuery__
+ * __useAnalysisEditPageQuery__
  *
- * To run a query within a React component, call `useAnalysisPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useAnalysisPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAnalysisEditPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAnalysisEditPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAnalysisPageQuery({
+ * const { data, loading, error } = useAnalysisEditPageQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      analysisId: // value for 'analysisId'
  *   },
  * });
  */
-export function useAnalysisPageQuery(baseOptions: Apollo.QueryHookOptions<AnalysisPageQuery, AnalysisPageQueryVariables>) {
+export function useAnalysisEditPageQuery(baseOptions: Apollo.QueryHookOptions<AnalysisEditPageQuery, AnalysisEditPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AnalysisPageQuery, AnalysisPageQueryVariables>(AnalysisPageDocument, options);
+        return Apollo.useQuery<AnalysisEditPageQuery, AnalysisEditPageQueryVariables>(AnalysisEditPageDocument, options);
       }
-export function useAnalysisPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnalysisPageQuery, AnalysisPageQueryVariables>) {
+export function useAnalysisEditPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnalysisEditPageQuery, AnalysisEditPageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AnalysisPageQuery, AnalysisPageQueryVariables>(AnalysisPageDocument, options);
+          return Apollo.useLazyQuery<AnalysisEditPageQuery, AnalysisEditPageQueryVariables>(AnalysisEditPageDocument, options);
         }
-export type AnalysisPageQueryHookResult = ReturnType<typeof useAnalysisPageQuery>;
-export type AnalysisPageLazyQueryHookResult = ReturnType<typeof useAnalysisPageLazyQuery>;
-export type AnalysisPageQueryResult = Apollo.QueryResult<AnalysisPageQuery, AnalysisPageQueryVariables>;
+export type AnalysisEditPageQueryHookResult = ReturnType<typeof useAnalysisEditPageQuery>;
+export type AnalysisEditPageLazyQueryHookResult = ReturnType<typeof useAnalysisEditPageLazyQuery>;
+export type AnalysisEditPageQueryResult = Apollo.QueryResult<AnalysisEditPageQuery, AnalysisEditPageQueryVariables>;
+export const AnalysisDetailPageDocument = gql`
+    query AnalysisDetailPage($id: String!, $analysisId: String!) {
+  project: accessmodProject(id: $id) {
+    id
+    name
+    ...ProjectNavbar_project
+  }
+  analysis: accessmodAnalysis(id: $analysisId) {
+    id
+    name
+  }
+}
+    ${ProjectNavbar_ProjectFragmentDoc}`;
+
+/**
+ * __useAnalysisDetailPageQuery__
+ *
+ * To run a query within a React component, call `useAnalysisDetailPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAnalysisDetailPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAnalysisDetailPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      analysisId: // value for 'analysisId'
+ *   },
+ * });
+ */
+export function useAnalysisDetailPageQuery(baseOptions: Apollo.QueryHookOptions<AnalysisDetailPageQuery, AnalysisDetailPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AnalysisDetailPageQuery, AnalysisDetailPageQueryVariables>(AnalysisDetailPageDocument, options);
+      }
+export function useAnalysisDetailPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnalysisDetailPageQuery, AnalysisDetailPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AnalysisDetailPageQuery, AnalysisDetailPageQueryVariables>(AnalysisDetailPageDocument, options);
+        }
+export type AnalysisDetailPageQueryHookResult = ReturnType<typeof useAnalysisDetailPageQuery>;
+export type AnalysisDetailPageLazyQueryHookResult = ReturnType<typeof useAnalysisDetailPageLazyQuery>;
+export type AnalysisDetailPageQueryResult = Apollo.QueryResult<AnalysisDetailPageQuery, AnalysisDetailPageQueryVariables>;
 export const ProjectCreateAnalysisPageDocument = gql`
     query ProjectCreateAnalysisPage($id: String!) {
   accessmodProject(id: $id) {

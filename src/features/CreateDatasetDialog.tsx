@@ -150,6 +150,7 @@ const CreateDatasetDialog = (props: Props) => {
   useEffect(() => {
     form.setFieldValue("project", project);
     form.setFieldValue("role", role);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, role]);
 
   const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {

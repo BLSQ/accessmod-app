@@ -10,16 +10,17 @@ import {
 type Props = {
   as?: string | FunctionComponent | ComponentClass;
   children: ReactElement | ReactElement[] | string | undefined | null;
+  background?: string;
 } & HTMLAttributes<HTMLElement>;
 
 const Block = (props: Props) => {
-  const { children, className, ...delegated } = props;
+  const { children, background = "bg-white", className, ...delegated } = props;
 
   return createElement<{ className?: string }>(
     props.as ?? "article",
     {
       ...delegated,
-      className: clsx("bg-white rounded-lg shadow px-5 py-6", className),
+      className: clsx("rounded-lg shadow px-5 py-6", background, className),
     },
     children
   );
