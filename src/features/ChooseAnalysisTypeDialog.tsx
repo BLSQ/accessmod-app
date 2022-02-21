@@ -14,17 +14,17 @@ const AnalysisCard = ({
   onClick: () => void;
 }) => {
   return (
-    <div className="flex w-full items-center rounded shadow px-5 py-4 bg-white hover:bg-gray-50  gap-4 group border border-gray-200">
+    <a
+      className="flex w-full items-center rounded shadow px-5 py-4 bg-white hover:bg-gray-50  gap-4 group border border-gray-200 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex-1">
         <h6 className="group-hover:text-gray-900">{label}</h6>
         <p className="text-sm mt-2 text-gray-500 group-hover:text-gray-700">
           {description}
         </p>
       </div>
-      <div>
-        <Button onClick={onClick}>Create</Button>
-      </div>
-    </div>
+    </a>
   );
 };
 
