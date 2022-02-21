@@ -1,14 +1,17 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
-import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
+import { getAnalysisTypeFromTypename } from "libs/analysis";
 import { CustomApolloClient } from "libs/apollo";
 import {
+  AccessmodAnalysisStatus,
   ProjectAnalysisTable_ProjectFragment,
   useProjectAnalysisTableQuery,
 } from "libs/graphql";
+import Link from "next/link";
 import { useState } from "react";
+import AnalysisStatus from "./analysis/AnalysisStatus";
 
 const PROJECT_ANALYSIS_QUERY = gql`
   query ProjectAnalysisTable(
@@ -22,14 +25,18 @@ const PROJECT_ANALYSIS_QUERY = gql`
       perPage: $perPage
     ) {
       items {
+        __typename
         id
         name
+        status
+        ...AnalysisStatus_analysis
       }
       pageNumber
       totalPages
       totalItems
     }
   }
+  ${AnalysisStatus.fragments.analysis}
 `;
 
 type Props = {
@@ -38,17 +45,19 @@ type Props = {
 };
 
 const ProjectAnalysisTable = (props: Props) => {
+  const { project } = props;
   const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
   const { data, previousData, loading, refetch } = useProjectAnalysisTableQuery(
     {
-      variables: { projectId: props.project.id, ...pagination },
+      variables: { projectId: project.id, ...pagination },
     }
   );
-  useCacheKey(["filesets"], () => refetch());
+  useCacheKey(["analysis"], () => refetch());
 
   const rows = (data || previousData)?.analysis.items ?? [];
   const totalItems = (data || previousData)?.analysis.totalItems ?? 0;
   const totalPages = (data || previousData)?.analysis.totalPages ?? 0;
+  console.log(rows);
 
   return (
     <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
@@ -59,8 +68,8 @@ const ProjectAnalysisTable = (props: Props) => {
               <th scope="column" className="whitespace-nowrap">
                 Analysis
               </th>
-              <th scope="column">Role</th>
-
+              <th scope="column">Type</th>
+              <th scope="column">Status</th>
               <th scope="column">
                 <span className="sr-only">Actions</span>
               </th>
@@ -70,9 +79,27 @@ const ProjectAnalysisTable = (props: Props) => {
             {rows.map((row) => (
               <tr key={row.id} className="group">
                 <td className="min-w-fit">{row.name}</td>
+                <td>{getAnalysisTypeFromTypename(row.__typename)}</td>
+                <td>
+                  <AnalysisStatus analysis={row} />
+                </td>
                 <td className="">
                   <div className="invisible group-hover:visible">
-                    <Button>Do something</Button>
+                    {[
+                      AccessmodAnalysisStatus.Ready,
+                      AccessmodAnalysisStatus.Pending,
+                      AccessmodAnalysisStatus.Queued,
+                    ].includes(row.status) && (
+                      <Link
+                        href={`/projects/${encodeURIComponent(
+                          project.id
+                        )}/analysis/${encodeURIComponent(row.id)}/edit`}
+                      >
+                        <a>
+                          <Button size="sm">Edit</Button>
+                        </a>
+                      </Link>
+                    )}
                   </div>
                 </td>
               </tr>

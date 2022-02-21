@@ -1,6 +1,9 @@
 import { gql } from "@apollo/client";
 import { PageHeader } from "components/layouts/Layout";
+import { ANALYSIS } from "features/analysis";
+import AccessibilityAnalysisForm from "features/analysis/AccessibilityAnalysisForm";
 import ProjectNavbar from "features/ProjectNavbar";
+import { getAnalysisComponentsFromTypename } from "libs/analysis";
 import { addApolloState, getApolloClient } from "libs/apollo";
 import { useAnalysisEditPageQuery } from "libs/graphql";
 import { NextPageWithLayout } from "libs/types";
@@ -13,18 +16,24 @@ const QUERY = gql`
       id
       name
       ...ProjectNavbar_project
+      ...AccessibilityAnalysisForm_project
     }
     analysis: accessmodAnalysis(id: $analysisId) {
+      __typename
       id
+      type
       name
+      ...AccessibilityAnalysisForm_analysis
     }
   }
+  ${AccessibilityAnalysisForm.fragments.project}
+  ${AccessibilityAnalysisForm.fragments.analysis}
   ${ProjectNavbar.fragments.project}
 `;
 
 const AnalysisEditPage: NextPageWithLayout = (props) => {
   const router = useRouter();
-  const { loading, data } = useAnalysisEditPageQuery({
+  const { data, loading } = useAnalysisEditPageQuery({
     variables: {
       id: router.query.id as string,
       analysisId: router.query.analysisId as string,
@@ -36,20 +45,26 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
     return null;
   }
 
+  const AnalysisComponents = ANALYSIS[data.analysis.type];
+  if (!AnalysisComponents) return <div>Unknown analysis type</div>;
+
   return (
     <>
       <PageHeader className="pb-4">
-        <h1 className="text-3xl font-bold text-white">{data.project?.name}</h1>
+        <h1 className="text-3xl font-bold text-white">{data.project.name}</h1>
       </PageHeader>
-      <div className="flex-1 grid grid-cols-12 gap-6 lg:gap-8">
-        <ProjectNavbar
-          className="col-span-3 xl:col-span-2"
-          project={data.project}
-        />
-        <div className="col-span-9 xl:col-span-10">
+      <div className=" relative flex-1 grid grid-cols-12 gap-6 lg:gap-8">
+        <div className="col-span-4 xl:col-span-3">
+          <AnalysisComponents.Aside />
+        </div>
+        <div className="col-span-8 xl:col-span-9">
           <h2 className="text-white mb-3 flex justify-between">
-            <span>Analysis: {data.analysis.name}</span>
+            Create a new {AnalysisComponents.label}
           </h2>
+          <AnalysisComponents.Form
+            project={data.project}
+            analysis={data.analysis}
+          />
         </div>
       </div>
     </>
@@ -61,7 +76,7 @@ export const getServerSideProps = withUserRequired({
     const client = getApolloClient({ headers: ctx.req?.headers });
     await client.query({
       query: QUERY,
-      variables: { id: ctx.params.id },
+      variables: { id: ctx.params.id, analysisId: ctx.params.analysisId },
     });
 
     return addApolloState(client);

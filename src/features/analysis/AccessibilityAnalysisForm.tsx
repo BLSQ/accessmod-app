@@ -5,9 +5,9 @@ import Field from "components/forms/Field";
 import useBeforeUnload from "hooks/useBeforeUnload";
 import useForm from "hooks/useForm";
 import {
+  AccessibilityAnalysisForm_AnalysisFragment,
   AccessibilityAnalysisForm_ProjectFragment,
   AccessmodFilesetRoleCode,
-  useCreateAccessibilityAnalysisMutation,
 } from "libs/graphql";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -21,70 +21,28 @@ type AccessibilityForm = {
   [key: string]: any;
 };
 
-const CREATE_ANALYSIS_MUTATION = gql`
-  mutation CreateAccessibilityAnalysis(
-    $input: CreateAccessmodAccessibilityAnalysisInput
-  ) {
-    response: createAccessmodAccessibilityAnalysis(input: $input) {
-      success
-      analysis {
-        id
-        name
-        status
-      }
-    }
-  }
-`;
-
 const validateForm = (values: Partial<AccessibilityForm>) => {
   const errors = {} as any;
 
   return errors;
 };
 
-const AccessibilityAnalysisForm = (props: {
+interface Props {
   project: AccessibilityAnalysisForm_ProjectFragment;
-}) => {
-  const { project } = props;
+  analysis: AccessibilityAnalysisForm_AnalysisFragment;
+}
 
-  const router = useRouter();
+const AccessibilityAnalysisForm = (props: Props) => {
+  const { project, analysis } = props;
 
   const form = useForm<AccessibilityForm>({
     validate: validateForm,
+    initialState: {
+      name: analysis.name,
+    },
     onSubmit: (values) => {},
   });
   useBeforeUnload(() => Object.keys(form.touched).length > 0);
-
-  const [createAnalysis, { loading }] =
-    useCreateAccessibilityAnalysisMutation();
-
-  const [analysis, setAnalysis] = useState<null | { [key: string]: any }>(null);
-
-  useEffect(() => {
-    if (form.formData.name !== form.previousFormData?.name && !analysis) {
-      // Create analysis once we changed the value of the name
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.formData]);
-
-  const onNameBlur = async () => {
-    console.log("Hey", form.formData);
-    if (!analysis && !loading) {
-      const response = await createAnalysis({
-        variables: { input: { name: form.formData.name } },
-      });
-      // FIXME: Handle Errors
-      const analysis = response.data?.response?.analysis ?? null;
-      if (analysis) {
-        setAnalysis(analysis);
-        router.push(
-          `/projects/${encodeURIComponent(project.id)}/analysis/${
-            analysis.id
-          }/edit`
-        );
-      }
-    }
-  };
 
   console.log(form.formData);
   return (
@@ -103,7 +61,6 @@ const AccessibilityAnalysisForm = (props: {
           type="text"
           value={form.formData.name}
           onChange={form.handleInputChange}
-          onBlur={onNameBlur}
         />
       </Block>
 
@@ -154,7 +111,13 @@ const AccessibilityAnalysisForm = (props: {
           />
         </Field>
         <div className="flex justify-end gap-4">
-          <Button variant="secondary">Save</Button>
+          <Button
+            disabled={form.isSubmitting}
+            onClick={form.handleSubmit}
+            variant="secondary"
+          >
+            Save
+          </Button>
         </div>
       </AnalysisStep>
 
@@ -179,7 +142,13 @@ const AccessibilityAnalysisForm = (props: {
           />
         </Field>
         <div className="flex justify-end gap-4">
-          <Button variant="secondary">Save</Button>
+          <Button
+            disabled={form.isSubmitting}
+            onClick={form.handleSubmit}
+            variant="secondary"
+          >
+            Save
+          </Button>
         </div>
       </AnalysisStep>
 
@@ -196,7 +165,13 @@ const AccessibilityAnalysisForm = (props: {
           error sit voluptatem
         </p>
         <div className="flex justify-end gap-4">
-          <Button variant="secondary">Save</Button>
+          <Button
+            disabled={form.isSubmitting}
+            onClick={form.handleSubmit}
+            variant="secondary"
+          >
+            Save
+          </Button>
         </div>
       </AnalysisStep>
 
@@ -213,7 +188,9 @@ const AccessibilityAnalysisForm = (props: {
           error sit voluptatem
         </p>
         <div className="flex justify-end gap-4">
-          <Button variant="secondary">Save</Button>
+          <Button onClick={form.handleSubmit} variant="secondary">
+            Save
+          </Button>
         </div>
       </AnalysisStep>
 
@@ -238,6 +215,48 @@ AccessibilityAnalysisForm.fragments = {
       ...DatasetPicker_project
     }
     ${DatasetPicker.fragments.project}
+  `,
+  analysis: gql`
+    fragment AccessibilityAnalysisForm_analysis on AccessmodAccessibilityAnalysis {
+      __typename
+      id
+      name
+      movingSpeeds {
+        id
+        name
+      }
+      healthFacilities {
+        id
+        name
+      }
+      anisotropic
+      maxTravelTime
+      status
+      landCover {
+        id
+        name
+      }
+      dem {
+        id
+        name
+      }
+      barrier {
+        id
+        name
+      }
+      water {
+        id
+        name
+      }
+      slope {
+        id
+        name
+      }
+      transportNetwork {
+        id
+        name
+      }
+    }
   `,
 };
 
