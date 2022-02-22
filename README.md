@@ -27,3 +27,13 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## I18N
+
+To extract new strings from the `src/` directory, run the extract command:
+
+```bash
+npm run i18n:extract
+```
+
+Translations are stored in `public/locales/[lang]/[ns].json`.

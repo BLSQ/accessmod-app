@@ -364,8 +364,6 @@ export type NavbarQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type NavbarQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
-export type ChooseAnalysisTypeDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
-
 export type CreateFilesetMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodFilesetInput>;
 }>;
@@ -381,18 +379,6 @@ export type CreateProjectMutationVariables = Exact<{
 
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject?: { __typename?: 'CreateAccessmodProjectResult', success: boolean, project?: { __typename?: 'AccessmodProject', id: string } | null } | null };
-
-export type DatasetPickerQueryVariables = Exact<{
-  projectId: Scalars['String'];
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
-  roleId?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role?: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } | null }> } };
-
-export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -432,7 +418,10 @@ export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage
 
 export type User_UserFragment = { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
-export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQueryQuery = { __typename?: 'Query', me?: { __typename?: 'User', email: string, id: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -453,15 +442,10 @@ export type CreateFileMutationVariables = Exact<{
 
 export type CreateFileMutation = { __typename?: 'Mutation', createFile?: { __typename?: 'CreateAccessmodFileResult', success: boolean } | null };
 
-export type GetFilesetRolesQueryVariables = Exact<{ [key: string]: never; }>;
+export type MeUserQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFilesetRolesQuery = { __typename?: 'Query', roles?: { __typename?: 'AccessmodFilesetRolePage', items: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode, createdAt: any, updatedAt: any }> } | null };
-
-export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQueryQuery = { __typename?: 'Query', me?: { __typename?: 'User', email: string, id: string } | null };
+export type MeUserQueryQuery = { __typename?: 'Query', me?: { __typename?: 'User', email: string, id: string } | null };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -469,27 +453,6 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'LoginResult', success: boolean, me?: { __typename?: 'User', id: string, email: string } | null } | null };
-
-export type AnalysisPageQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type AnalysisPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
-
-export type ProjectCreateAnalysisPageQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type ProjectCreateAnalysisPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
-
-export type ProjectAnalysisPageQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type ProjectAnalysisPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
 
 export type ProjectDataPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -513,9 +476,10 @@ export type ProjectsPageQueryVariables = Exact<{
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
-export const ChooseAnalysisTypeDialog_ProjectFragmentDoc = gql`
-    fragment ChooseAnalysisTypeDialog_project on AccessmodProject {
+export const CreateDatasetDialog_ProjectFragmentDoc = gql`
+    fragment CreateDatasetDialog_project on AccessmodProject {
   id
+  name
 }
     `;
 export const ProjectActionsButton_ProjectFragmentDoc = gql`
@@ -577,24 +541,6 @@ export const ProjectsList_ProjectsFragmentDoc = gql`
   totalPages
 }
     ${ProjectCard_ProjectFragmentDoc}`;
-export const CreateDatasetDialog_ProjectFragmentDoc = gql`
-    fragment CreateDatasetDialog_project on AccessmodProject {
-  id
-  name
-}
-    `;
-export const DatasetPicker_ProjectFragmentDoc = gql`
-    fragment DatasetPicker_project on AccessmodProject {
-  id
-  ...CreateDatasetDialog_project
-}
-    ${CreateDatasetDialog_ProjectFragmentDoc}`;
-export const AccessibilityAnalysisForm_ProjectFragmentDoc = gql`
-    fragment AccessibilityAnalysisForm_project on AccessmodProject {
-  id
-  ...DatasetPicker_project
-}
-    ${DatasetPicker_ProjectFragmentDoc}`;
 export const NavbarDocument = gql`
     query Navbar {
   accessmodProjects(page: 1, perPage: 5) {
@@ -711,60 +657,6 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
-export const DatasetPickerDocument = gql`
-    query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String) {
-  filesets: accessmodFilesets(
-    projectId: $projectId
-    page: $page
-    perPage: $perPage
-    roleId: $roleId
-  ) {
-    items {
-      id
-      name
-      role {
-        id
-        name
-        format
-      }
-      createdAt
-      updatedAt
-    }
-    totalItems
-  }
-}
-    `;
-
-/**
- * __useDatasetPickerQuery__
- *
- * To run a query within a React component, call `useDatasetPickerQuery` and pass it any options that fit your needs.
- * When your component renders, `useDatasetPickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDatasetPickerQuery({
- *   variables: {
- *      projectId: // value for 'projectId'
- *      page: // value for 'page'
- *      perPage: // value for 'perPage'
- *      roleId: // value for 'roleId'
- *   },
- * });
- */
-export function useDatasetPickerQuery(baseOptions: Apollo.QueryHookOptions<DatasetPickerQuery, DatasetPickerQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DatasetPickerQuery, DatasetPickerQueryVariables>(DatasetPickerDocument, options);
-      }
-export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetPickerQuery, DatasetPickerQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DatasetPickerQuery, DatasetPickerQueryVariables>(DatasetPickerDocument, options);
-        }
-export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
-export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
-export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -944,6 +836,47 @@ export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
 export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
 export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
+export const MeQueryDocument = gql`
+    query MeQuery {
+  me {
+    email
+    id
+    firstName
+    lastName
+    avatar {
+      initials
+      color
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeQueryQuery__
+ *
+ * To run a query within a React component, call `useMeQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQueryQuery(baseOptions?: Apollo.QueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+      }
+export function useMeQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+        }
+export type MeQueryQueryHookResult = ReturnType<typeof useMeQueryQuery>;
+export type MeQueryLazyQueryHookResult = ReturnType<typeof useMeQueryLazyQuery>;
+export type MeQueryQueryResult = Apollo.QueryResult<MeQueryQuery, MeQueryQueryVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout {
@@ -1044,49 +977,8 @@ export function useCreateFileMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateFileMutationHookResult = ReturnType<typeof useCreateFileMutation>;
 export type CreateFileMutationResult = Apollo.MutationResult<CreateFileMutation>;
 export type CreateFileMutationOptions = Apollo.BaseMutationOptions<CreateFileMutation, CreateFileMutationVariables>;
-export const GetFilesetRolesDocument = gql`
-    query GetFilesetRoles {
-  roles: accessmodFilesetRoles {
-    items {
-      id
-      name
-      format
-      code
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-
-/**
- * __useGetFilesetRolesQuery__
- *
- * To run a query within a React component, call `useGetFilesetRolesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFilesetRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetFilesetRolesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetFilesetRolesQuery(baseOptions?: Apollo.QueryHookOptions<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>(GetFilesetRolesDocument, options);
-      }
-export function useGetFilesetRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>(GetFilesetRolesDocument, options);
-        }
-export type GetFilesetRolesQueryHookResult = ReturnType<typeof useGetFilesetRolesQuery>;
-export type GetFilesetRolesLazyQueryHookResult = ReturnType<typeof useGetFilesetRolesLazyQuery>;
-export type GetFilesetRolesQueryResult = Apollo.QueryResult<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>;
-export const MeQueryDocument = gql`
-    query MeQuery {
+export const MeUserQueryDocument = gql`
+    query MeUserQuery {
   me {
     email
     id
@@ -1095,31 +987,31 @@ export const MeQueryDocument = gql`
     `;
 
 /**
- * __useMeQueryQuery__
+ * __useMeUserQueryQuery__
  *
- * To run a query within a React component, call `useMeQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMeUserQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeUserQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useMeQueryQuery({
+ * const { data, loading, error } = useMeUserQueryQuery({
  *   variables: {
  *   },
  * });
  */
-export function useMeQueryQuery(baseOptions?: Apollo.QueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+export function useMeUserQueryQuery(baseOptions?: Apollo.QueryHookOptions<MeUserQueryQuery, MeUserQueryQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+        return Apollo.useQuery<MeUserQueryQuery, MeUserQueryQueryVariables>(MeUserQueryDocument, options);
       }
-export function useMeQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+export function useMeUserQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeUserQueryQuery, MeUserQueryQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+          return Apollo.useLazyQuery<MeUserQueryQuery, MeUserQueryQueryVariables>(MeUserQueryDocument, options);
         }
-export type MeQueryQueryHookResult = ReturnType<typeof useMeQueryQuery>;
-export type MeQueryLazyQueryHookResult = ReturnType<typeof useMeQueryLazyQuery>;
-export type MeQueryQueryResult = Apollo.QueryResult<MeQueryQuery, MeQueryQueryVariables>;
+export type MeUserQueryQueryHookResult = ReturnType<typeof useMeUserQueryQuery>;
+export type MeUserQueryLazyQueryHookResult = ReturnType<typeof useMeUserQueryLazyQuery>;
+export type MeUserQueryQueryResult = Apollo.QueryResult<MeUserQueryQuery, MeUserQueryQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
@@ -1157,119 +1049,6 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const AnalysisPageDocument = gql`
-    query AnalysisPage($id: String!) {
-  accessmodProject(id: $id) {
-    id
-    name
-    ...ProjectNavbar_project
-  }
-}
-    ${ProjectNavbar_ProjectFragmentDoc}`;
-
-/**
- * __useAnalysisPageQuery__
- *
- * To run a query within a React component, call `useAnalysisPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useAnalysisPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAnalysisPageQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useAnalysisPageQuery(baseOptions: Apollo.QueryHookOptions<AnalysisPageQuery, AnalysisPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AnalysisPageQuery, AnalysisPageQueryVariables>(AnalysisPageDocument, options);
-      }
-export function useAnalysisPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnalysisPageQuery, AnalysisPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AnalysisPageQuery, AnalysisPageQueryVariables>(AnalysisPageDocument, options);
-        }
-export type AnalysisPageQueryHookResult = ReturnType<typeof useAnalysisPageQuery>;
-export type AnalysisPageLazyQueryHookResult = ReturnType<typeof useAnalysisPageLazyQuery>;
-export type AnalysisPageQueryResult = Apollo.QueryResult<AnalysisPageQuery, AnalysisPageQueryVariables>;
-export const ProjectCreateAnalysisPageDocument = gql`
-    query ProjectCreateAnalysisPage($id: String!) {
-  accessmodProject(id: $id) {
-    id
-    name
-    ...AccessibilityAnalysisForm_project
-  }
-}
-    ${AccessibilityAnalysisForm_ProjectFragmentDoc}`;
-
-/**
- * __useProjectCreateAnalysisPageQuery__
- *
- * To run a query within a React component, call `useProjectCreateAnalysisPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectCreateAnalysisPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useProjectCreateAnalysisPageQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useProjectCreateAnalysisPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectCreateAnalysisPageQuery, ProjectCreateAnalysisPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectCreateAnalysisPageQuery, ProjectCreateAnalysisPageQueryVariables>(ProjectCreateAnalysisPageDocument, options);
-      }
-export function useProjectCreateAnalysisPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectCreateAnalysisPageQuery, ProjectCreateAnalysisPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectCreateAnalysisPageQuery, ProjectCreateAnalysisPageQueryVariables>(ProjectCreateAnalysisPageDocument, options);
-        }
-export type ProjectCreateAnalysisPageQueryHookResult = ReturnType<typeof useProjectCreateAnalysisPageQuery>;
-export type ProjectCreateAnalysisPageLazyQueryHookResult = ReturnType<typeof useProjectCreateAnalysisPageLazyQuery>;
-export type ProjectCreateAnalysisPageQueryResult = Apollo.QueryResult<ProjectCreateAnalysisPageQuery, ProjectCreateAnalysisPageQueryVariables>;
-export const ProjectAnalysisPageDocument = gql`
-    query ProjectAnalysisPage($id: String!) {
-  accessmodProject(id: $id) {
-    id
-    name
-    ...ProjectNavbar_project
-    ...ChooseAnalysisTypeDialog_project
-  }
-}
-    ${ProjectNavbar_ProjectFragmentDoc}
-${ChooseAnalysisTypeDialog_ProjectFragmentDoc}`;
-
-/**
- * __useProjectAnalysisPageQuery__
- *
- * To run a query within a React component, call `useProjectAnalysisPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectAnalysisPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useProjectAnalysisPageQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useProjectAnalysisPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>(ProjectAnalysisPageDocument, options);
-      }
-export function useProjectAnalysisPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>(ProjectAnalysisPageDocument, options);
-        }
-export type ProjectAnalysisPageQueryHookResult = ReturnType<typeof useProjectAnalysisPageQuery>;
-export type ProjectAnalysisPageLazyQueryHookResult = ReturnType<typeof useProjectAnalysisPageLazyQuery>;
-export type ProjectAnalysisPageQueryResult = Apollo.QueryResult<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>;
 export const ProjectDataPageDocument = gql`
     query ProjectDataPage($id: String!) {
   accessmodProject(id: $id) {
