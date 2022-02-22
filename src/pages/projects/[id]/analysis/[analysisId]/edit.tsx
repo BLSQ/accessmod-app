@@ -53,7 +53,7 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
       <PageHeader className="pb-4">
         <h1 className="text-3xl font-bold text-white">{data.project.name}</h1>
       </PageHeader>
-      <div className=" relative flex-1 grid grid-cols-12 gap-6 lg:gap-8">
+      <div className=" relative flex-1 grid grid-cols-12 gap-4 lg:gap-8">
         <div className="col-span-4 xl:col-span-3">
           <AnalysisComponents.Aside />
         </div>
