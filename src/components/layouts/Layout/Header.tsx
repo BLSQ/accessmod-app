@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 
 import CreateProjectDialog from "features/CreateProjectDialog";
 import { useState } from "react";
+import { CustomApolloClient } from "libs/apollo";
 
 const Header = () => {
   const [showProjectDialog, setProjectDialog] = useState(false);
@@ -57,6 +58,10 @@ const Header = () => {
       />
     </>
   );
+};
+
+Header.prefetch = async (client: CustomApolloClient) => {
+  await Navbar.prefetch(client);
 };
 
 export default Header;

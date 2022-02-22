@@ -4,6 +4,7 @@ import { gql } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useNavbarQuery } from "libs/graphql";
 import useCacheKey from "hooks/useCacheKey";
+import { CustomApolloClient } from "libs/apollo";
 
 type NavEntry = {
   label: string;
@@ -47,18 +48,6 @@ const NavEntry = (props: NavEntry) => {
     </div>
   );
 };
-
-const QUERY = gql`
-  query Navbar {
-    accessmodProjects(page: 1, perPage: 5) {
-      items {
-        id
-        name
-      }
-      totalPages
-    }
-  }
-`;
 
 const Navbar = () => {
   const { data, refetch } = useNavbarQuery();
@@ -104,6 +93,22 @@ const Navbar = () => {
       ))}
     </div>
   );
+};
+
+Navbar.prefetch = async (client: CustomApolloClient) => {
+  await client.query({
+    query: gql`
+      query Navbar {
+        accessmodProjects(page: 1, perPage: 5) {
+          items {
+            id
+            name
+          }
+          totalPages
+        }
+      }
+    `,
+  });
 };
 
 export default Navbar;

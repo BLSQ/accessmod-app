@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
+import { CustomApolloClient } from "libs/apollo";
 
 type LayoutProps = {
   children: ReactElement;
@@ -18,6 +19,10 @@ const Layout = (props: LayoutProps) => {
       <Footer />
     </div>
   );
+};
+
+Layout.prefetch = async (client: CustomApolloClient) => {
+  await Header.prefetch(client);
 };
 
 export default Layout;
