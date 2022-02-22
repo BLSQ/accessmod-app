@@ -10,17 +10,29 @@ import {
 type Props = {
   as?: string | FunctionComponent | ComponentClass;
   children: ReactElement | ReactElement[] | string | undefined | null;
+  withPadding?: boolean;
   background?: string;
 } & HTMLAttributes<HTMLElement>;
 
 const Block = (props: Props) => {
-  const { children, background = "bg-white", className, ...delegated } = props;
+  const {
+    children,
+    background = "bg-white",
+    withPadding = true,
+    className,
+    ...delegated
+  } = props;
 
   return createElement<{ className?: string }>(
     props.as ?? "article",
     {
       ...delegated,
-      className: clsx("rounded-lg shadow px-5 py-6", background, className),
+      className: clsx(
+        "rounded-lg shadow",
+        withPadding && "px-5 py-5",
+        background,
+        className
+      ),
     },
     children
   );
