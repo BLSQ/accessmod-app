@@ -583,6 +583,11 @@ type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __
 
 export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
 
+export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQueryQuery = { __typename?: 'Query', me?: { __typename?: 'User', email: string, id: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
+
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -606,11 +611,6 @@ export type GetFilesetRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetFilesetRolesQuery = { __typename?: 'Query', roles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode, createdAt: any, updatedAt: any }> };
-
-export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQueryQuery = { __typename?: 'Query', me?: { __typename?: 'User', email: string, id: string } | null };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -1232,6 +1232,47 @@ export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
 export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
 export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
+export const MeQueryDocument = gql`
+    query MeQuery {
+  me {
+    email
+    id
+    firstName
+    lastName
+    avatar {
+      initials
+      color
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeQueryQuery__
+ *
+ * To run a query within a React component, call `useMeQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQueryQuery(baseOptions?: Apollo.QueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+      }
+export function useMeQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
+        }
+export type MeQueryQueryHookResult = ReturnType<typeof useMeQueryQuery>;
+export type MeQueryLazyQueryHookResult = ReturnType<typeof useMeQueryLazyQuery>;
+export type MeQueryQueryResult = Apollo.QueryResult<MeQueryQuery, MeQueryQueryVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout {
@@ -1371,41 +1412,6 @@ export function useGetFilesetRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetFilesetRolesQueryHookResult = ReturnType<typeof useGetFilesetRolesQuery>;
 export type GetFilesetRolesLazyQueryHookResult = ReturnType<typeof useGetFilesetRolesLazyQuery>;
 export type GetFilesetRolesQueryResult = Apollo.QueryResult<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>;
-export const MeQueryDocument = gql`
-    query MeQuery {
-  me {
-    email
-    id
-  }
-}
-    `;
-
-/**
- * __useMeQueryQuery__
- *
- * To run a query within a React component, call `useMeQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeQueryQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMeQueryQuery(baseOptions?: Apollo.QueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
-      }
-export function useMeQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQueryQuery, MeQueryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQueryQuery, MeQueryQueryVariables>(MeQueryDocument, options);
-        }
-export type MeQueryQueryHookResult = ReturnType<typeof useMeQueryQuery>;
-export type MeQueryLazyQueryHookResult = ReturnType<typeof useMeQueryLazyQuery>;
-export type MeQueryQueryResult = Apollo.QueryResult<MeQueryQuery, MeQueryQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
