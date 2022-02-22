@@ -11,21 +11,6 @@ import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
 import { useRouter } from "next/router";
 
-const QUERY = gql`
-  query ProjectAnalysisPage($id: String!) {
-    project: accessmodProject(id: $id) {
-      id
-      name
-      ...ProjectNavbar_project
-      ...CrateAnalysisDialog_project
-      ...ProjectAnalysisTable_project
-    }
-  }
-  ${ProjectNavbar.fragments.project}
-  ${ProjectAnalysisTable.fragments.project}
-  ${CrateAnalysisDialog.fragments.project}
-`;
-
 const ProjectDataPage: NextPageWithLayout = () => {
   const router = useRouter();
   const [isAnalysisDialogOpen, { toggle: toggleAnalysisDialog }] =
@@ -79,13 +64,26 @@ export const getServerSideProps = createGetServerSideProps({
       // Project id not given, we consider this as a 404
       return { notFound: true };
     }
-    await Layout.prefetch(client);
+    // await Layout.prefetch(client);
 
     await client.query({
-      query: QUERY,
+      query: gql`
+        query ProjectAnalysisPage($id: String!) {
+          project: accessmodProject(id: $id) {
+            id
+            name
+            ...ProjectNavbar_project
+            ...CrateAnalysisDialog_project
+            ...ProjectAnalysisTable_project
+          }
+        }
+        ${ProjectNavbar.fragments.project}
+        ${ProjectAnalysisTable.fragments.project}
+        ${CrateAnalysisDialog.fragments.project}
+      `,
       variables: { id: params.id },
     });
-    await ProjectAnalysisTable.prefetch(client, params.id as string);
+    // await ProjectAnalysisTable.prefetch(client, params.id as string);
   },
 });
 

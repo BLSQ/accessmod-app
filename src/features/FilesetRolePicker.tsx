@@ -51,7 +51,6 @@ const QUERY = gql`
 const FilesetRolePicker = (props: Props) => {
   const { value, onChange, disabled, required } = props;
   const { data } = useFilesetRolePickerQuery();
-  console.log("ROLE VALUE", value);
   return (
     <SelectInput
       options={data?.accessmodFilesetRoles ?? []}

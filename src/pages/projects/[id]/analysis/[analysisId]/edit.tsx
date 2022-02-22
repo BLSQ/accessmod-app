@@ -1,13 +1,11 @@
-import { gql } from "@apollo/client";
-import { PageHeader } from "components/layouts/Layout";
+import { gql, useQuery } from "@apollo/client";
+import Layout, { PageHeader } from "components/layouts/Layout";
 import { ANALYSIS } from "features/analysis";
 import AccessibilityAnalysisForm from "features/analysis/AccessibilityAnalysisForm";
 import ProjectNavbar from "features/ProjectNavbar";
-import { getAnalysisComponentsFromTypename } from "libs/analysis";
-import { addApolloState, getApolloClient } from "libs/apollo";
 import { useAnalysisEditPageQuery } from "libs/graphql";
+import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
-import { withUserRequired } from "libs/withUser";
 import { useRouter } from "next/router";
 
 const QUERY = gql`
@@ -71,15 +69,19 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
   );
 };
 
-export const getServerSideProps = withUserRequired({
-  getServerSideProps: async (ctx) => {
-    const client = getApolloClient({ headers: ctx.req?.headers });
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: true,
+  getServerSideProps: async ({ params }, client) => {
+    if (!params || !params.id || !params.analysisId) {
+      return {
+        notFound: true,
+      };
+    }
+    await Layout.prefetch(client);
     await client.query({
       query: QUERY,
-      variables: { id: ctx.params.id, analysisId: ctx.params.analysisId },
+      variables: { id: params.id, analysisId: params.analysisId },
     });
-
-    return addApolloState(client);
   },
 });
 

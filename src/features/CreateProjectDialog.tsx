@@ -1,16 +1,15 @@
-import Button from "components/Button";
 import { gql } from "@apollo/client";
+import Button from "components/Button";
 import Dialog from "components/Dialog";
-import Input from "components/forms/Input";
 import Field from "components/forms/Field";
 import SelectInput from "components/forms/SelectInput";
-import useForm from "hooks/useForm";
-import { FormEvent, MouseEventHandler, useMemo } from "react";
-import { useCreateProjectMutation } from "libs/graphql";
-import { useRouter } from "next/router";
-import { countries, Country, regions } from "libs/countries";
 import Spinner from "components/Spinner";
 import useCacheKey from "hooks/useCacheKey";
+import useForm from "hooks/useForm";
+import { countries, Country, regions } from "libs/countries";
+import { useCreateProjectMutation } from "libs/graphql";
+import { useRouter } from "next/router";
+import { MouseEventHandler, useMemo } from "react";
 
 type Props = {
   onClose: () => void;

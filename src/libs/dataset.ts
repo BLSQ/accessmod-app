@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
 import { getApolloClient } from "./apollo";
 import {
+  AccessmodFilesetFormat,
+  AccessmodFilesetRoleCode,
   CreateFileMutation,
   GetFilesetRolesQuery,
   GetUploadUrlMutation,
@@ -90,3 +92,17 @@ export async function getFilesetRoles() {
 
   return response.data?.roles || [];
 }
+
+export const ACCEPTED_MIMETYPES = {
+  [AccessmodFilesetFormat.Vector]: [
+    ".gpkg",
+    ".shp",
+    ".prj",
+    ".dbf",
+    ".shx",
+    ".json",
+    ".geojson",
+  ],
+  [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
+  [AccessmodFilesetFormat.Tabular]: [".csv"],
+};

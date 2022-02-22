@@ -3,8 +3,9 @@ import { PlusIcon } from "@heroicons/react/solid";
 import Button from "components/Button";
 import SelectInput, { DefaultComponents } from "components/forms/SelectInput";
 import useToggle from "hooks/useToggle";
-import { getFilesetRoles } from "libs/fileset";
+import { getFilesetRoles } from "libs/dataset";
 import {
+  AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
@@ -68,10 +69,20 @@ const CustomMenuList = ({ children, onCreate, ...props }: any) => {
   );
 };
 
+const RECOMMENDED_OPTION = {
+  id: null,
+  name: "Use recommended dataset",
+};
+
 const DatasetPicker = (props: Props) => {
   const { value, onChange, disabled, required, project, roleCode } = props;
   const [roles, setRoles] = useState<
-    { id: string; code: AccessmodFilesetRoleCode; name: string }[]
+    {
+      id: string;
+      code: AccessmodFilesetRoleCode;
+      name: string;
+      format: AccessmodFilesetFormat;
+    }[]
   >([]);
   const [isCreateDialogOpen, { toggle: toggleCreateDialog }] = useToggle(false);
   const [fetch, { data, loading }] = useDatasetPickerLazyQuery({
@@ -83,14 +94,6 @@ const DatasetPicker = (props: Props) => {
     () => roles.find((r) => r.code === roleCode),
     [roles, roleCode]
   );
-
-  // Initial load of the options once we have got the `role` with roleCode
-  useEffect(() => {
-    if (!role) return;
-
-    fetch({ variables: { roleId: role.id, projectId: project.id } });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [role]);
 
   // Load more items
   const onMenuScrollToBottom = useCallback(() => {
@@ -113,10 +116,7 @@ const DatasetPicker = (props: Props) => {
 
   // We add the `Recommended dataset` option in the list
   const options = useMemo(() => {
-    return [
-      { id: "AUTO", name: "Use recommended dataset" },
-      ...(data?.filesets?.items ?? []),
-    ];
+    return [RECOMMENDED_OPTION, ...(data?.filesets?.items ?? [])];
   }, [data]);
 
   const onCreateDialogClose = useCallback((reason?: string, fileset?: any) => {
@@ -126,6 +126,16 @@ const DatasetPicker = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onMenuOpen = useCallback(() => {
+    if (!role) return;
+    fetch({
+      variables: {
+        projectId: project.id,
+        roleId: role.id,
+      },
+    });
+  }, [role]);
 
   return (
     <>
@@ -137,7 +147,9 @@ const DatasetPicker = (props: Props) => {
       />
       <SelectInput
         options={options}
-        value={value}
+        value={value ?? RECOMMENDED_OPTION}
+        defaultValue={RECOMMENDED_OPTION}
+        onMenuOpen={onMenuOpen}
         disabled={
           disabled ||
           !role /* Do not allow edit if the roles are not yet fetched */ ||

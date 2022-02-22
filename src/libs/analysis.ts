@@ -1,13 +1,9 @@
 import { ANALYSIS, AnalysisComponents } from "features/analysis";
-import {
-  AccessmodAnalysisStatus,
-  AccessmodAnalysisType,
-  AnalysisDetailPageDocument,
-} from "./graphql";
+import { AccessmodAnalysisStatus, AccessmodAnalysisType } from "./graphql";
 
-export function getAnalysisTypeFromTypename(__typename: string): string {
-  switch (__typename) {
-    case "AccessmodAccessibilityAnalysis":
+export function getLabelFromAnalysisType(type: AccessmodAnalysisType): string {
+  switch (type) {
+    case AccessmodAnalysisType.Accessibility:
       return "Accessibility";
     default:
       return "Base Analysis";
