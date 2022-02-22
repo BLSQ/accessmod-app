@@ -37,7 +37,7 @@ const NavEntry = (props: NavEntry) => {
           >
             {items.map(({ link, label }, idx) => (
               <Link key={idx} href={link}>
-                <a className="h-full p-2 flex items-center hover:bg-who-blue-light">
+                <a className="h-full p-2 flex rounded items-center hover:bg-who-blue-light">
                   {label}
                 </a>
               </Link>
