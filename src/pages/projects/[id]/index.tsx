@@ -1,36 +1,13 @@
 import { gql } from "@apollo/client";
-import { addApolloState, getApolloClient } from "libs/apollo";
-import { useRouter } from "next/router";
-import { NextPageWithLayout } from "libs/types";
-import { withUserRequired } from "libs/withUser";
-import { useProjectPageQuery } from "libs/graphql";
-import { PageHeader } from "components/layouts/Layout";
 import Block from "components/Block";
-import ProjectNavbar from "features/ProjectNavbar";
-
 import Field from "components/forms/Field";
+import Layout, { PageHeader } from "components/layouts/Layout";
 import ProjectActionsButton from "features/ProjectActionsButton";
-
-const QUERY = gql`
-  query ProjectPage($id: String!) {
-    accessmodProject(id: $id) {
-      id
-      name
-      ...ProjectNavbar_project
-      ...ProjectActionsButton_project
-      country {
-        name
-        code
-        flag
-      }
-      owner {
-        email
-      }
-    }
-  }
-  ${ProjectActionsButton.fragments.project}
-  ${ProjectNavbar.fragments.project}
-`;
+import ProjectNavbar from "features/ProjectNavbar";
+import { useProjectPageQuery } from "libs/graphql";
+import { createGetServerSideProps } from "libs/page";
+import { NextPageWithLayout } from "libs/types";
+import { useRouter } from "next/router";
 
 const ProjectPage: NextPageWithLayout = (props) => {
   const router = useRouter();
@@ -78,15 +55,38 @@ const ProjectPage: NextPageWithLayout = (props) => {
   );
 };
 
-export const getServerSideProps = withUserRequired({
-  getServerSideProps: async (ctx) => {
-    const client = getApolloClient({ headers: ctx.req?.headers });
-    await client.query({
-      query: QUERY,
-      variables: { id: ctx.params.id },
-    });
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: true,
+  getServerSideProps: async ({ params }, client) => {
+    if (!params?.id) {
+      // Project id not given, we consider this as a 404
+      return { notFound: true };
+    }
+    await Layout.prefetch(client);
 
-    return addApolloState(client);
+    await client.query({
+      query: gql`
+        query ProjectPage($id: String!) {
+          accessmodProject(id: $id) {
+            id
+            name
+            ...ProjectNavbar_project
+            ...ProjectActionsButton_project
+            country {
+              name
+              code
+              flag
+            }
+            owner {
+              email
+            }
+          }
+        }
+        ${ProjectActionsButton.fragments.project}
+        ${ProjectNavbar.fragments.project}
+      `,
+      variables: { id: params.id },
+    });
   },
 });
 

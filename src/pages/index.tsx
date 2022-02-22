@@ -1,6 +1,6 @@
 import Block from "components/Block";
-import { PageHeader } from "components/layouts/Layout";
-import { withUserRequired } from "libs/withUser";
+import Layout, { PageHeader } from "components/layouts/Layout";
+import { createGetServerSideProps } from "libs/page";
 
 const HomePage = () => {
   return (
@@ -13,6 +13,11 @@ const HomePage = () => {
   );
 };
 
-export const getServerSideProps = withUserRequired();
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: true,
+  getServerSideProps: async (ctx, client) => {
+    await Layout.prefetch(client);
+  },
+});
 
 export default HomePage;

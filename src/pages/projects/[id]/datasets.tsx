@@ -1,32 +1,16 @@
 import { gql } from "@apollo/client";
-import { addApolloState, getApolloClient } from "libs/apollo";
-import { useRouter } from "next/router";
-import { NextPageWithLayout } from "libs/types";
-import { withUserRequired } from "libs/withUser";
-import { PageHeader } from "components/layouts/Layout";
-import ProjectNavbar from "features/ProjectNavbar";
-import Button from "components/Button";
 import { UploadIcon } from "@heroicons/react/outline";
-import { useProjectDataPageQuery } from "libs/graphql";
+import Button from "components/Button";
+import Layout, { PageHeader } from "components/layouts/Layout";
 import CreateDatasetDialog from "features/CreateDatasetDialog";
-import { useCallback, useState } from "react";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
+import ProjectNavbar from "features/ProjectNavbar";
 import useCacheKey from "hooks/useCacheKey";
-
-const QUERY = gql`
-  query ProjectDataPage($id: String!) {
-    accessmodProject(id: $id) {
-      id
-      name
-      ...ProjectNavbar_project
-      ...CreateDatasetDialog_project
-      ...ProjectDatasetsTable_project
-    }
-  }
-  ${ProjectNavbar.fragments.project}
-  ${CreateDatasetDialog.fragments.project}
-  ${ProjectDatasetsTable.fragments.project}
-`;
+import { useProjectDataPageQuery } from "libs/graphql";
+import { createGetServerSideProps } from "libs/page";
+import { NextPageWithLayout } from "libs/types";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 
 const ProjectDataPage: NextPageWithLayout = () => {
   const [showUploadDialog, toggleUploadDialog] = useState(false);
@@ -99,16 +83,34 @@ const ProjectDataPage: NextPageWithLayout = () => {
   );
 };
 
-export const getServerSideProps = withUserRequired({
-  getServerSideProps: async (ctx) => {
-    const client = getApolloClient({ headers: ctx.req?.headers });
-    await client.query({
-      query: QUERY,
-      variables: { id: ctx.params.id },
-    });
-    await ProjectDatasetsTable.prefetch(client, ctx.params.id);
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: true,
+  getServerSideProps: async ({ params }, client) => {
+    if (!params?.id) {
+      // Project id not given, we consider this as a 404
+      return { notFound: true };
+    }
+    await Layout.prefetch(client);
 
-    return addApolloState(client);
+    await client.query({
+      query: gql`
+        query ProjectDataPage($id: String!) {
+          accessmodProject(id: $id) {
+            id
+            name
+            ...ProjectNavbar_project
+            ...CreateDatasetDialog_project
+            ...ProjectDatasetsTable_project
+          }
+        }
+        ${ProjectNavbar.fragments.project}
+        ${CreateDatasetDialog.fragments.project}
+        ${ProjectDatasetsTable.fragments.project}
+      `,
+      variables: { id: params.id },
+    });
+
+    await ProjectDatasetsTable.prefetch(client, params.id as string);
   },
 });
 

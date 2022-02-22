@@ -1,15 +1,14 @@
 import { gql } from "@apollo/client";
 import { PlusIcon } from "@heroicons/react/solid";
 import Button from "components/Button";
-import { PageHeader } from "components/layouts/Layout";
+import Layout, { PageHeader } from "components/layouts/Layout";
 import CrateAnalysisDialog from "features/CreateAnalysisDialog";
 import ProjectAnalysisTable from "features/ProjectAnalysisTable";
 import ProjectNavbar from "features/ProjectNavbar";
 import useToggle from "hooks/useToggle";
-import { addApolloState, getApolloClient } from "libs/apollo";
 import { useProjectAnalysisPageQuery } from "libs/graphql";
+import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
-import { withUserRequired } from "libs/withUser";
 import { useRouter } from "next/router";
 
 const QUERY = gql`
@@ -73,15 +72,20 @@ const ProjectDataPage: NextPageWithLayout = () => {
   );
 };
 
-export const getServerSideProps = withUserRequired({
-  getServerSideProps: async (ctx) => {
-    const client = getApolloClient({ headers: ctx.req?.headers });
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: true,
+  getServerSideProps: async ({ params }, client) => {
+    if (!params?.id) {
+      // Project id not given, we consider this as a 404
+      return { notFound: true };
+    }
+    await Layout.prefetch(client);
+
     await client.query({
       query: QUERY,
-      variables: { id: ctx.params.id },
+      variables: { id: params.id },
     });
-    await ProjectAnalysisTable.prefetch(client, ctx.params.id);
-    return addApolloState(client);
+    await ProjectAnalysisTable.prefetch(client, params.id as string);
   },
 });
 

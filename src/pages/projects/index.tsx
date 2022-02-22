@@ -1,26 +1,12 @@
 import { gql } from "@apollo/client";
-import { addApolloState, getApolloClient } from "libs/apollo";
-import { NextPageWithLayout } from "libs/types";
-import { withUserRequired } from "libs/withUser";
-import { useProjectsPageQuery } from "libs/graphql";
-
-import ProjectsList from "features/ProjectsList";
-import Pagination from "components/Pagination";
-import { PageHeader } from "components/layouts/Layout";
 import Block from "components/Block";
+import Layout, { PageHeader } from "components/layouts/Layout";
+import Pagination from "components/Pagination";
+import ProjectsList from "features/ProjectsList";
+import { useProjectsPageQuery } from "libs/graphql";
+import { createGetServerSideProps } from "libs/page";
+import { NextPageWithLayout } from "libs/types";
 import { useState } from "react";
-
-const QUERY = gql`
-  query ProjectsPage($page: Int = 1, $perPage: Int = 20) {
-    accessmodProjects(page: $page, perPage: $perPage) {
-      ...ProjectsList_projects
-      pageNumber
-      totalPages
-      totalItems
-    }
-  }
-  ${ProjectsList.fragments.projects}
-`;
 
 const ProjectsPage: NextPageWithLayout = () => {
   const [pagination, setPagination] = useState({ page: 1, perPage: 20 });
@@ -54,14 +40,23 @@ const ProjectsPage: NextPageWithLayout = () => {
   );
 };
 
-export const getServerSideProps = withUserRequired({
-  getServerSideProps: async (ctx) => {
-    const client = getApolloClient({ headers: ctx.req?.headers });
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: true,
+  getServerSideProps: async (ctx, client) => {
+    await Layout.prefetch(client);
     await client.query({
-      query: QUERY,
+      query: gql`
+        query ProjectsPage($page: Int = 1, $perPage: Int = 20) {
+          accessmodProjects(page: $page, perPage: $perPage) {
+            ...ProjectsList_projects
+            pageNumber
+            totalPages
+            totalItems
+          }
+        }
+        ${ProjectsList.fragments.projects}
+      `,
     });
-
-    return addApolloState(client);
   },
 });
 
