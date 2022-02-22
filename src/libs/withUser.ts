@@ -24,7 +24,7 @@ export function withUserRequired(options: WithUserRequiredOptions = {}) {
     const client = getApolloClient({ headers: ctx.req?.headers });
     const payload = await client.query({
       query: gql`
-        query MeQuery {
+        query MeUserQuery {
           me {
             email
             id

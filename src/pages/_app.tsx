@@ -3,6 +3,7 @@ import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "libs/apollo";
 import Layout from "components/layouts/Layout";
 import { AppPropsWithLayout } from "libs/types";
+import { appWithTranslation } from "next-i18next";
 
 import "../styles/globals.css";
 
@@ -22,4 +23,4 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-export default App;
+export default appWithTranslation(App);
