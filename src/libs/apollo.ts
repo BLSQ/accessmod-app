@@ -20,10 +20,11 @@ export type CustomApolloClient = ApolloClient<NormalizedCacheObject>;
 let apolloClient: CustomApolloClient | undefined;
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
-  console.log(
-    `Creating Apollo Client for "${process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT}"`
-  );
   const enhancedFetch = (url: RequestInfo, init: RequestInit) => {
+    if (__DEV__) {
+      const body = JSON.parse(init.body as string);
+      console.log(`Fetch ${url}/${body.operationName}`);
+    }
     return fetch(url, {
       ...init,
       headers: {
