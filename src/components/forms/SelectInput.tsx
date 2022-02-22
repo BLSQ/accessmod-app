@@ -19,6 +19,8 @@ export default function SelectInput({
   disabled,
   defaultOptions,
   value,
+  defaultValue,
+  onMenuOpen,
   onChange,
   required,
   isLoading,
@@ -56,7 +58,9 @@ export default function SelectInput({
   const selectProps = {
     options,
     value,
+    defaultValue,
     isDisabled: disabled,
+    onMenuOpen,
     onChange: onSelectChange,
     isClearable: !required,
     isMulti: multiple,
@@ -108,12 +112,14 @@ interface SelectInputProps<
 > {
   options?: OptionsOrGroups<Option, Group>;
   value: any;
+  defaultValue?: any;
   onChange: (value: any) => void;
   multiple?: boolean;
   required?: boolean;
   disabled?: boolean;
   onBlur?: () => void;
   onEscape?: () => void;
+  onMenuOpen?: () => void;
   onCommandShiftEnter?: () => void;
   autoFocus?: boolean;
   isLoading?: boolean;
