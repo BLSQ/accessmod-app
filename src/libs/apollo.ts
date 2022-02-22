@@ -23,7 +23,7 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   const enhancedFetch = (url: RequestInfo, init: RequestInit) => {
     if (__DEV__) {
       const body = JSON.parse(init.body as string);
-      console.log(`Fetch ${url}/${body.operationName}`);
+      console.log(`Fetch ${url}${body.operationName}`);
     }
     return fetch(url, {
       ...init,
@@ -40,7 +40,9 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
         if (graphQLErrors) {
           graphQLErrors.forEach(({ message, locations, path }) =>
             console.error(
-              `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+              `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+                locations
+              )}, Path: ${path}`
             )
           );
         }
