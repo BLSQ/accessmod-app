@@ -18,6 +18,12 @@ Then, copy the sample `.env.local.dist` and adapt it to your needs:
 cp .env.local.dist .env.local
 ```
 
+Prepare the pre-commit git hooks
+
+```bash
+npm run prepare
+```
+
 Finally, run the development server:
 
 ```bash
