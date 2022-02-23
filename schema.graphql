@@ -134,6 +134,7 @@ type AccessmodProject {
   id: String!
   name: String!
   spatialResolution: Int!
+  crs: Int!
   country: Country!
   owner: User!
   createdAt: DateTime!
@@ -201,6 +202,7 @@ type CreateAccessmodFilesetResult {
 input CreateAccessmodProjectInput {
   name: String!
   spatialResolution: Int!
+  crs: Int!
   country: CountryInput!
 }
 

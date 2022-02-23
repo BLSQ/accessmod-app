@@ -154,6 +154,7 @@ export type AccessmodProject = {
   __typename?: 'AccessmodProject';
   country: Country;
   createdAt: Scalars['DateTime'];
+  crs: Scalars['Int'];
   id: Scalars['String'];
   name: Scalars['String'];
   owner: User;
@@ -227,6 +228,7 @@ export type CreateAccessmodFilesetResult = {
 
 export type CreateAccessmodProjectInput = {
   country: CountryInput;
+  crs: Scalars['Int'];
   name: Scalars['String'];
   spatialResolution: Scalars['Int'];
 };
@@ -671,7 +673,7 @@ export type ProjectPageQueryVariables = Exact<{
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string } } | null };
+export type ProjectPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -1741,6 +1743,7 @@ export const ProjectPageDocument = gql`
   accessmodProject(id: $id) {
     id
     name
+    crs
     ...ProjectNavbar_project
     ...ProjectActionsButton_project
     country {
@@ -1748,6 +1751,7 @@ export const ProjectPageDocument = gql`
       code
       flag
     }
+    spatialResolution
     owner {
       email
     }

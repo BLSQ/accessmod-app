@@ -20,6 +20,7 @@ type Form = {
   name: string;
   spatialResolution: string;
   country: Country;
+  crs: string;
 };
 
 const MUTATION = gql`
@@ -49,6 +50,9 @@ const CreateProjectDialog = (props: Props) => {
       if (!values.spatialResolution) {
         errors.spatialResolution = "Enter a spatial resolution";
       }
+      if (!values.crs) {
+        errors.crs = "Enter a Coordinate Reference System";
+      }
 
       return errors;
     },
@@ -59,6 +63,7 @@ const CreateProjectDialog = (props: Props) => {
             spatialResolution: parseInt(values.spatialResolution, 10),
             name: values.name,
             country: { code: values.country.code },
+            crs: parseInt(values.crs, 10),
           },
         },
       });
@@ -144,6 +149,15 @@ const CreateProjectDialog = (props: Props) => {
             error={
               form.touched.spatialResolution && form.errors.spatialResolution
             }
+          />
+          <Field
+            required
+            label="Coordinate Reference System"
+            name="crs"
+            type="number"
+            onChange={form.handleInputChange}
+            disabled={form.isSubmitting}
+            error={form.touched.crs && form.errors.crs}
           />
         </Dialog.Content>
 

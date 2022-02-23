@@ -36,17 +36,24 @@ const ProjectPage: NextPageWithLayout = (props) => {
             <ProjectActionsButton project={project} />
           </h2>
           <Block className="grid grid-cols-2 align-top gap-4">
-            <Field name="name" label="Project Name" required>
-              <span className="text-md">{project.name}</span>
-            </Field>
             <Field name="country" label="Country" required>
               <span className="text-md flex items-center gap-1">
-                <img className="h-3" src={project.country.flag} />
+                <img
+                  alt="Country Flag"
+                  className="h-3"
+                  src={project.country.flag}
+                />
                 <span>{project.country.name}</span>
               </span>
             </Field>
             <Field name="owner" label="Owner" required>
               <span className="text-md">{project.owner.email}</span>
+            </Field>
+            <Field name="spatialResolution" label="Spatial Resolution" required>
+              <span className="text-md">{project.spatialResolution}</span>
+            </Field>
+            <Field name="crs" label="Coordinate Reference System" required>
+              <span className="text-md">{project.crs}</span>
             </Field>
           </Block>
         </div>
@@ -70,6 +77,7 @@ export const getServerSideProps = createGetServerSideProps({
           accessmodProject(id: $id) {
             id
             name
+            crs
             ...ProjectNavbar_project
             ...ProjectActionsButton_project
             country {
@@ -77,6 +85,7 @@ export const getServerSideProps = createGetServerSideProps({
               code
               flag
             }
+            spatialResolution
             owner {
               email
             }
