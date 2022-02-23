@@ -30,7 +30,15 @@ jobs:
         run: npm ci
 
       - run: npm run lint
+        name: Lint Typescript files
 
       - run: npm run test:ci
+        name: Run Tests
+
+      - run: npm run i18n:extract
+        name: Check I18N strings
+        env:
+          CI: true
 
       - run: npm run build
+        name: Build

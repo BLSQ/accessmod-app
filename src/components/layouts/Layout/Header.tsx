@@ -7,9 +7,11 @@ import Navbar from "./Navbar";
 import CreateProjectDialog from "features/CreateProjectDialog";
 import { useState } from "react";
 import { CustomApolloClient } from "libs/apollo";
+import { useTranslation } from "next-i18next";
 
 const Header = () => {
   const [showProjectDialog, setProjectDialog] = useState(false);
+  const { t } = useTranslation();
   return (
     <>
       <div className="bg-who-blue-main pb-32">
@@ -31,7 +33,9 @@ const Header = () => {
                       </a>
                     </Link>
                   </div>
-                  <div className="text-xl text-bold uppercase ">Access Mod</div>
+                  <div className="text-xl text-bold uppercase ">
+                    {t("Access Mod")}
+                  </div>
                   <Navbar />
                 </div>
                 <div className="hidden md:block">
@@ -41,7 +45,7 @@ const Header = () => {
                       className="mr-4"
                       onClick={() => setProjectDialog(true)}
                     >
-                      New Project
+                      {t("New Project")}
                     </Button>
 
                     <UserMenu />

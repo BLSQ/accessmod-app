@@ -19,7 +19,7 @@ interface ServerSideProps {
 
 export function createGetServerSideProps(options: CreateGetServerSideProps) {
   const {
-    i18n = ["common"],
+    i18n = ["messages"],
     requireAuth = false,
     getServerSideProps,
   } = options;
@@ -27,9 +27,11 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
   return async function (
     ctx: GetServerSidePropsContext
   ): Promise<GetServerSidePropsResult<ServerSideProps>> {
+    const user = await getUser(ctx);
     const res = {
       props: {
-        user: await getUser(ctx),
+        user,
+        // Replace ctx.locale by user.lang when implemented
         ...(await serverSideTranslations(ctx.locale ?? "en", i18n)),
       },
     };

@@ -3,12 +3,14 @@ import { Menu, Transition } from "@headlessui/react";
 import MenuLink from "components/MenuLink";
 import clsx from "clsx";
 import { UserIcon } from "@heroicons/react/solid";
+import { useTranslation } from "next-i18next";
 
 const UserMenu = () => {
+  const { t } = useTranslation();
   return (
     <Menu as="div" className="ml-3 relative">
       <Menu.Button className="max-w-xs flex items-center text-sm focus:outline-none ">
-        <span className="sr-only">Open user menu</span>
+        <span className="sr-only">{t("Open user menu")}</span>
         <UserIcon className="h-6 w-6 text-white" />
       </Menu.Button>
       <Transition
@@ -30,7 +32,7 @@ const UserMenu = () => {
                   active && "bg-gray-200"
                 )}
               >
-                Settings
+                {t("Settings")}
               </MenuLink>
             )}
           </Menu.Item>
@@ -43,7 +45,7 @@ const UserMenu = () => {
                   active && "bg-gray-200"
                 )}
               >
-                Help
+                {t("Help")}
               </MenuLink>
             )}
           </Menu.Item>
@@ -56,7 +58,7 @@ const UserMenu = () => {
                   active && "bg-gray-200"
                 )}
               >
-                Logout
+                {t("Logout")}
               </MenuLink>
             )}
           </Menu.Item>
