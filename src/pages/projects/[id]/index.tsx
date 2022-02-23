@@ -1,8 +1,19 @@
 import { gql } from "@apollo/client";
+import {
+  ChevronRightIcon,
+  HomeIcon,
+  MapIcon,
+  PlusIcon,
+  UploadIcon,
+  UserIcon,
+} from "@heroicons/react/solid";
 import Block from "components/Block";
+import Button from "components/Button";
 import Field from "components/forms/Field";
 import Layout, { PageHeader } from "components/layouts/Layout";
 import ProjectActionsButton from "features/ProjectActionsButton";
+import ProjectAnalysisTable from "features/ProjectAnalysisTable";
+import ProjectDatasetsTable from "features/ProjectDatasetsTable";
 import ProjectNavbar from "features/ProjectNavbar";
 import { useProjectPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
@@ -23,19 +34,33 @@ const ProjectPage: NextPageWithLayout = (props) => {
 
   return (
     <>
-      <PageHeader className="pb-4">
-        <h1 className="text-3xl font-bold text-white">{project.name}</h1>
-      </PageHeader>
-      <div className="flex-1 grid grid-cols-12 gap-4 lg:gap-7">
-        <div className="col-span-3 xl:col-span-2">
-          <ProjectNavbar project={project} />
+      <PageHeader className="pb-8 space-y-3">
+        <div className="text-white/90 flex items-center gap-x-1 mb-1">
+          <HomeIcon className="h-5" />
+          <ChevronRightIcon className="h-5" /> Projects
         </div>
-        <div className="col-span-9 xl:col-span-10">
-          <h2 className="text-white mb-3 flex justify-between">
+        <h1 className="text-3xl font-bold text-white flex justify-between">
+          {project.name}
+          <ProjectActionsButton project={project} />
+        </h1>
+        <div className="mt-1 flex space-x-6 text-white text-sm">
+          <div className="flex space-x-2 items-center">
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <img className="h-4" src={project.country.flag} />
+            <span>{project.country.name}</span>
+          </div>
+          <div className="flex space-x-2 items-center">
+            <UserIcon className="h-5" />
+            <span>{project.owner.email}</span>
+          </div>
+        </div>
+      </PageHeader>
+      <div className="flex-1 space-y-6">
+        <Block className="space-y-4">
+          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between">
             <span>Project Information</span>
-            <ProjectActionsButton project={project} />
-          </h2>
-          <Block className="grid grid-cols-2 align-top gap-4">
+          </h3>
+          <div className="grid grid-cols-2 align-top gap-4">
             <Field name="name" label="Project Name" required>
               <span className="text-md">{project.name}</span>
             </Field>
@@ -48,8 +73,33 @@ const ProjectPage: NextPageWithLayout = (props) => {
             <Field name="owner" label="Owner" required>
               <span className="text-md">{project.owner.email}</span>
             </Field>
-          </Block>
-        </div>
+          </div>
+        </Block>
+        <Block>
+          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between">
+            <span>Analysis</span>
+            <Button
+              variant="primary"
+              leadingIcon={<PlusIcon className="h-4 w-4" />}
+            >
+              New Analysis
+            </Button>
+          </h3>
+          <ProjectAnalysisTable project={project}></ProjectAnalysisTable>
+        </Block>
+
+        <Block>
+          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center justify-between">
+            <span>Datasets</span>
+            <Button
+              variant="primary"
+              leadingIcon={<UploadIcon className="h-4 w-4" />}
+            >
+              Upload Data
+            </Button>
+          </h3>
+          <ProjectDatasetsTable project={project}></ProjectDatasetsTable>
+        </Block>
       </div>
     </>
   );
@@ -72,6 +122,9 @@ export const getServerSideProps = createGetServerSideProps({
             name
             ...ProjectNavbar_project
             ...ProjectActionsButton_project
+            ...ProjectDatasetsTable_project
+            ...ProjectAnalysisTable_project
+
             country {
               name
               code
@@ -84,9 +137,12 @@ export const getServerSideProps = createGetServerSideProps({
         }
         ${ProjectActionsButton.fragments.project}
         ${ProjectNavbar.fragments.project}
+        ${ProjectDatasetsTable.fragments.project}
+        ${ProjectAnalysisTable.fragments.project}
       `,
       variables: { id: params.id },
     });
+    await ProjectDatasetsTable.prefetch(client, params.id as string);
   },
 });
 

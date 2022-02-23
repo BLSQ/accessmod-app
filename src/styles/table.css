@@ -3,11 +3,11 @@ table.who {
 }
 
 table.who thead {
-  @apply bg-midnight-blue;
+  /* @apply bg-midnight-blue; */
 }
 
 table.who th {
-  @apply px-3 py-2.5 text-right text-xs font-medium text-white uppercase tracking-wider;
+  @apply px-3 py-2.5 text-right text-xs font-medium uppercase tracking-wider;
 }
 
 table.who td {

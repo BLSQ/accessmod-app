@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 
 type Props = {
-  children: ReactElement;
+  children: ReactNode;
   className?: string;
 };
 

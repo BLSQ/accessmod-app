@@ -35,7 +35,7 @@ const ProjectAnalysisTable = (props: Props) => {
   console.log(rows);
 
   return (
-    <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
+    <div className="overflow-hidden rounded-lg w-full">
       <div className="overflow-x-auto rounded-md">
         <table className="who">
           <thead>
@@ -91,7 +91,7 @@ const ProjectAnalysisTable = (props: Props) => {
           </tbody>
         </table>
       </div>
-      <div className="px-5 py-3">
+      <div className="py-3">
         <Pagination
           loading={loading}
           onChange={(page) => setPagination({ ...pagination, page })}

@@ -28,7 +28,7 @@ const Block = (props: Props) => {
     {
       ...delegated,
       className: clsx(
-        "rounded-lg shadow",
+        "rounded-lg shadow border ",
         withPadding && "px-5 py-5",
         background,
         className

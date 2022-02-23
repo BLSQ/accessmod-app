@@ -1733,6 +1733,8 @@ export const ProjectPageDocument = gql`
     name
     ...ProjectNavbar_project
     ...ProjectActionsButton_project
+    ...ProjectDatasetsTable_project
+    ...ProjectAnalysisTable_project
     country {
       name
       code
@@ -1744,7 +1746,9 @@ export const ProjectPageDocument = gql`
   }
 }
     ${ProjectNavbar_ProjectFragmentDoc}
-${ProjectActionsButton_ProjectFragmentDoc}`;
+${ProjectActionsButton_ProjectFragmentDoc}
+${ProjectDatasetsTable_ProjectFragmentDoc}
+${ProjectAnalysisTable_ProjectFragmentDoc}`;
 
 /**
  * __useProjectPageQuery__

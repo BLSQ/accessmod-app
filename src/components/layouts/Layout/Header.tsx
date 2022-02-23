@@ -14,9 +14,9 @@ const Header = () => {
   const { t } = useTranslation();
   return (
     <>
-      <div className="bg-who-blue-main pb-32">
+      <div className="bg-who-blue-main pb-28">
         <nav className="mb-10">
-          <div className="max-w-8xl mx-auto sm:px-4 lg:px-8">
+          <div className="max-w-7xl mx-auto sm:px-4 lg:px-8">
             <div className="border-b border-white">
               <div className="flex items-center justify-between h-16 px-4 sm:px-0">
                 <div className="flex items-center gap-5 text-white h-full">
