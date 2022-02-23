@@ -3,6 +3,7 @@ import clsx from "clsx";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import { useNavbarQuery } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -51,13 +52,14 @@ const NavEntry = (props: NavEntry) => {
 
 const Navbar = () => {
   const { data, refetch } = useNavbarQuery();
+  const { t } = useTranslation();
   const [items, setItems] = useState<NavState>([
     {
-      label: "Dashboard",
+      label: t("Dashboard"),
       link: "/",
     },
     {
-      label: "Projects",
+      label: t("Projects"),
       link: "/projects",
     },
   ]);
@@ -71,15 +73,15 @@ const Navbar = () => {
         link: `/projects/${encodeURIComponent(project.id)}`,
       }));
       if (projects.length > 0) {
-        projects.push({ label: "See all", link: "/projects" });
+        projects.push({ label: t("See all projects"), link: "/projects" });
       }
       setItems([
         {
-          label: "Dashboard",
+          label: t("Dashboard"),
           link: "/",
         },
         {
-          label: "Projects",
+          label: t("Projects"),
           link: "/projects",
           items: projects,
         },

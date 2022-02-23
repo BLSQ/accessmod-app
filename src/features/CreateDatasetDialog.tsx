@@ -14,6 +14,7 @@ import {
   useCreateFilesetMutation,
 } from "libs/graphql";
 import uploader, { JobFile } from "libs/upload";
+import { useTranslation } from "next-i18next";
 import { MouseEventHandler, useCallback, useEffect, useState } from "react";
 import FilesetRolePicker from "./FilesetRolePicker";
 import ProjectPicker from "./ProjectPicker";
@@ -79,7 +80,7 @@ const CreateDatasetDialog = (props: Props) => {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<null | string>(null);
   const [createFileset, { error: filesetError }] = useCreateFilesetMutation();
-
+  const { t } = useTranslation();
   const form = useForm<Form>({
     initialState: {
       role,
@@ -90,16 +91,16 @@ const CreateDatasetDialog = (props: Props) => {
     validate: (values) => {
       const errors = {} as any;
       if (!values.files?.length) {
-        errors.files = "Select files";
+        errors.files = t("Select files");
       }
       if (!values.name) {
-        errors.name = "Enter a name";
+        errors.name = t("Enter a name");
       }
       if (!values.project) {
-        errors.project = "Select a project";
+        errors.project = t("Select a project");
       }
       if (!values.role) {
-        errors.role = "Select a role";
+        errors.role = t("Select a role");
       }
       return errors;
     },
@@ -118,7 +119,7 @@ const CreateDatasetDialog = (props: Props) => {
       });
       const fileset = data?.createAccessmodFileset?.fileset;
       if (!fileset) {
-        throw new Error("Fileset not created");
+        throw new Error(t("Dataset not created"));
       }
 
       try {
@@ -159,11 +160,6 @@ const CreateDatasetDialog = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, role]);
 
-  const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.preventDefault();
-    onClose("cancel");
-  };
-
   const validator = useCallback(
     (file: File) => {
       if (!role) return null;
@@ -173,7 +169,7 @@ const CreateDatasetDialog = (props: Props) => {
       if (!ACCEPTED_MIMETYPES[role.format].includes(ext)) {
         return {
           code: "wrong-file-type",
-          message: `Filetype ${ext} is not a valid one.`,
+          message: t("Filetype {{ext}} is not a valid one.", { ext }),
         };
       }
       return null;
@@ -194,12 +190,12 @@ const CreateDatasetDialog = (props: Props) => {
       closeOnOutsideClick={false}
     >
       <form onSubmit={form.handleSubmit}>
-        <Dialog.Title>Create a dataset</Dialog.Title>
+        <Dialog.Title>{t("Create a dataset")}</Dialog.Title>
 
         <Dialog.Content className="px-9 py-8 ">
           <div className="space-y-4">
             <Field
-              label="Name"
+              label={t("Name")}
               required
               name="name"
               onChange={form.handleInputChange}
@@ -208,7 +204,7 @@ const CreateDatasetDialog = (props: Props) => {
               error={form.touched.name && form.errors.name}
             />
             <Field
-              label="Project"
+              label={t("Project")}
               required
               name="project"
               error={form.touched.project && form.errors.project}
@@ -221,7 +217,7 @@ const CreateDatasetDialog = (props: Props) => {
               />
             </Field>
             <Field
-              label="Role"
+              label={t("Role")}
               required
               name="role"
               error={form.touched.role && form.errors.role}
@@ -234,14 +230,14 @@ const CreateDatasetDialog = (props: Props) => {
               />
             </Field>
             <Field
-              label="Files"
+              label={t("Files")}
               required
               name="files"
               error={form.touched.files && form.errors.files}
             >
               <Dropzone
                 className="mt-1"
-                label="Select your files"
+                label={t("Select your files")}
                 onChange={(files) => form.setFieldValue("files", files)}
                 accept={
                   role ? ACCEPTED_MIMETYPES[role.format].join(", ") : undefined
@@ -282,9 +278,9 @@ const CreateDatasetDialog = (props: Props) => {
           >
             {form.isSubmitting && <Spinner size="xs" />}
             {form.isSubmitting ? (
-              <span>Uploading ({progress}%)</span>
+              <span>{t("Uploading ({{progress}}%)", { progress })}</span>
             ) : (
-              <span>Create</span>
+              <span>{t("Create")}</span>
             )}
           </Button>
         </Dialog.Actions>

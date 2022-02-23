@@ -6,16 +6,15 @@ import AnalysisStatus from "features/analysis/AnalysisStatus";
 import ProjectNavbar from "features/ProjectNavbar";
 import User from "features/User";
 import { getLabelFromAnalysisType } from "libs/analysis";
-import {
-  AccessmodAnalysisType,
-  useAnalysisDetailPageQuery,
-} from "libs/graphql";
+import { useAnalysisDetailPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 const AnalysisPage: NextPageWithLayout = (props) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const { loading, data } = useAnalysisDetailPageQuery({
     variables: {
       id: router.query.id as string,
@@ -50,27 +49,33 @@ const AnalysisPage: NextPageWithLayout = (props) => {
             <Block>
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
                 <div className="sm:col-span-1">
-                  <dt className="text-sm font-medium text-gray-500">Status</dt>
+                  <dt className="text-sm font-medium text-gray-500">
+                    {t("Status")}
+                  </dt>
                   <dd className="mt-1 text-sm text-gray-900 col-span-2">
                     <AnalysisStatus analysis={data.analysis} />
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="text-sm font-medium text-gray-500">
-                    Analysis Type
+                    {t("Analysis Type")}
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 col-span-2">
                     {getLabelFromAnalysisType(data.analysis.type)}
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
-                  <dt className="text-sm font-medium text-gray-500">Owner</dt>
+                  <dt className="text-sm font-medium text-gray-500">
+                    {t("Owner")}
+                  </dt>
                   <dd className="mt-1 text-sm text-gray-900 col-span-2">
                     <User user={data.analysis.owner} />
                   </dd>
                 </div>
                 <div className="sm:col-span-1">
-                  <dt className="text-sm font-medium text-gray-500">Name</dt>
+                  <dt className="text-sm font-medium text-gray-500">
+                    {t("Name")}
+                  </dt>
                   <dd className="mt-1 text-sm text-gray-900 col-span-2">
                     {data.analysis.name}
                   </dd>
@@ -82,13 +87,13 @@ const AnalysisPage: NextPageWithLayout = (props) => {
           {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
             <div>
               <h3 className="font-medium mb-2 flex justify-between">
-                Input Parameters
+                {t("Input Parameters")}
               </h3>
               <Block>
                 <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
                   <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">
-                      Land Cover
+                      {t("Land Cover")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.landCover?.name ?? "Automatic"}
@@ -96,35 +101,39 @@ const AnalysisPage: NextPageWithLayout = (props) => {
                   </div>
                   <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">
-                      Barrier
+                      {t("Barrier")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.barrier?.name ?? "Automatic"}
                     </dd>
                   </div>
                   <div className="sm:col-span-1">
-                    <dt className="text-sm font-medium text-gray-500">Water</dt>
+                    <dt className="text-sm font-medium text-gray-500">
+                      {t("Water")}
+                    </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.water?.name ?? "Automatic"}
                     </dd>
                   </div>
                   <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">
-                      Health Facilities
+                      {t("Health Facilities")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.healthFacilities?.name ?? "Automatic"}
                     </dd>
                   </div>
                   <div className="sm:col-span-1">
-                    <dt className="text-sm font-medium text-gray-500">Slope</dt>
+                    <dt className="text-sm font-medium text-gray-500">
+                      {t("Slope")}
+                    </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.slope?.name ?? "Automatic"}
                     </dd>
                   </div>
                   <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">
-                      Travel Scenario
+                      {t("Travel Scenario")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.movingSpeeds?.name ?? "Automatic"}
@@ -132,7 +141,7 @@ const AnalysisPage: NextPageWithLayout = (props) => {
                   </div>
                   <div className="sm:col-span-1">
                     <dt className="text-sm font-medium text-gray-500">
-                      Transport Network
+                      {t("Transport Network")}
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900 col-span-2">
                       {data.analysis.transportNetwork?.name ?? "Automatic"}
@@ -143,7 +152,9 @@ const AnalysisPage: NextPageWithLayout = (props) => {
             </div>
           )}
           <div>
-            <h3 className="font-medium mb-2 flex justify-between">Output</h3>
+            <h3 className="font-medium mb-2 flex justify-between">
+              {t("Output")}
+            </h3>
             <Block>
               <div className="w-full text-sm text-gray-500 text-center italic">
                 Nothing Yet

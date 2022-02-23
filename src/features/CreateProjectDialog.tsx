@@ -8,6 +8,7 @@ import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
 import { countries, Country, regions } from "libs/countries";
 import { useCreateProjectMutation } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { MouseEventHandler, useMemo } from "react";
 
@@ -38,20 +39,21 @@ const CreateProjectDialog = (props: Props) => {
   const { open, onClose } = props;
   const router = useRouter();
   const [createProjectMutation] = useCreateProjectMutation();
+  const { t } = useTranslation();
   const form = useForm<Form>({
     validate: (values) => {
       const errors = {} as any;
       if (!values.name) {
-        errors.name = "Enter a name";
+        errors.name = t("Enter a name");
       }
       if (!values.country) {
-        errors.country = "Select a country";
+        errors.country = t("Select a country");
       }
       if (!values.spatialResolution) {
-        errors.spatialResolution = "Enter a spatial resolution";
+        errors.spatialResolution = t("Enter a spatial resolution");
       }
       if (!values.crs) {
-        errors.crs = "Enter a Coordinate Reference System";
+        errors.crs = t("Enter a Coordinate Reference System");
       }
 
       return errors;
@@ -91,7 +93,7 @@ const CreateProjectDialog = (props: Props) => {
         });
       }
       groups.push({
-        label: "No Region",
+        label: t("No Region"),
         options: countries.filter((country) => !country.region),
       });
       return groups;
@@ -110,11 +112,11 @@ const CreateProjectDialog = (props: Props) => {
       closeOnOutsideClick={false}
     >
       <form onSubmit={form.handleSubmit}>
-        <Dialog.Title>Create a new Project</Dialog.Title>
+        <Dialog.Title>{t("Create a new Project")}</Dialog.Title>
 
         <Dialog.Content className="px-9 py-8 space-y-4">
           <Field
-            label="Project name"
+            label={t("Project name")}
             required
             name="name"
             disabled={form.isSubmitting}
@@ -123,7 +125,7 @@ const CreateProjectDialog = (props: Props) => {
             error={form.touched.name && form.errors.name}
           />
           <Field
-            label="Country"
+            label={t("Country")}
             required
             name="country"
             error={form.touched.country && form.errors.country}
@@ -152,7 +154,7 @@ const CreateProjectDialog = (props: Props) => {
           />
           <Field
             required
-            label="Coordinate Reference System"
+            label={t("Coordinate Reference System")}
             name="crs"
             type="number"
             onChange={form.handleInputChange}
@@ -168,7 +170,7 @@ const CreateProjectDialog = (props: Props) => {
             disabled={form.isSubmitting}
             variant="outlined"
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             disabled={form.isSubmitting}
@@ -176,7 +178,7 @@ const CreateProjectDialog = (props: Props) => {
             className="space-x-2"
           >
             {form.isSubmitting && <Spinner size="xs" />}
-            <span>Create</span>
+            <span>{t("Create")}</span>
           </Button>
         </Dialog.Actions>
       </form>

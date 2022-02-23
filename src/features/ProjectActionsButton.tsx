@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import ButtonGroup, { ButtonGroupOption } from "components/ButtonGroup";
 import { useDeleteProjectMutation } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
@@ -18,13 +19,16 @@ const DELETE_PROJECT_MUTATION = gql`
 
 const ProjectActionsButton = ({ project }: Props) => {
   const [deleteProject] = useDeleteProjectMutation();
+  const { t } = useTranslation();
   const router = useRouter();
 
   const onDeleteClick = async () => {
     // TODO: Implement permissions check
     if (
       window.confirm(
-        `Are you sure you want to delete the project "${project.name}"?`
+        t('Are you sure you want to delete the project "{{project.name}}"?', {
+          name: project.name,
+        })
       )
     ) {
       await deleteProject({ variables: { input: { id: project.id } } });
@@ -35,12 +39,12 @@ const ProjectActionsButton = ({ project }: Props) => {
   const items = useMemo<ButtonGroupOption[]>(() => {
     const actions = [
       {
-        label: "Edit",
+        label: t("Edit"),
         onClick: () => {
           console.log("onClick(edit)");
         },
       },
-      { label: "Delete", onClick: onDeleteClick },
+      { label: t("Delete"), onClick: onDeleteClick },
     ];
     return actions;
   }, [project]);

@@ -8,6 +8,7 @@ import {
   ProjectDatasetsTable_ProjectFragment,
   useProjectDatasetsTableQuery,
 } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 
 const PROJECT_DATASETS_QUERY = gql`
@@ -54,6 +55,7 @@ type Props = {
 
 const ProjectDatasetsTable = (props: Props) => {
   const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
+  const { t } = useTranslation();
   const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
       variables: { projectId: props.project.id, ...pagination },
@@ -72,16 +74,16 @@ const ProjectDatasetsTable = (props: Props) => {
           <thead>
             <tr>
               <th scope="column" className="whitespace-nowrap">
-                Dataset Name
+                {t("Dataset Name")}
               </th>
-              <th scope="column">Role</th>
-              <th scope="column">Owner</th>
-              <th scope="column">Created At</th>
+              <th scope="column">{t("Role")}</th>
+              <th scope="column">{t("Owner")}</th>
+              <th scope="column">{t("Created")} At</th>
               <th scope="column" className="whitespace-nowrap">
-                # Files
+                {t("# Files")}
               </th>
               <th scope="column">
-                <span className="sr-only">Delete</span>
+                <span className="sr-only">{t("Delete")}</span>
               </th>
             </tr>
           </thead>
@@ -89,7 +91,7 @@ const ProjectDatasetsTable = (props: Props) => {
             {rows.map((row) => (
               <tr key={row.id} className="group">
                 <td className="min-w-fit">{row.name}</td>
-                <td>{row.role?.name ?? <i>Unknown</i>}</td>
+                <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
                 <td>
                   {[row.owner.firstName, row.owner.lastName]
                     .filter(Boolean)
@@ -100,9 +102,7 @@ const ProjectDatasetsTable = (props: Props) => {
                 </td>
                 <td>{row.files.length ?? 0}</td>
                 <td className="">
-                  <div className="invisible group-hover:visible">
-                    <Button size="sm">Add files</Button>
-                  </div>
+                  <div className="invisible group-hover:visible"></div>
                 </td>
               </tr>
             ))}

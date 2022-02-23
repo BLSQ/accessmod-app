@@ -10,6 +10,7 @@ import {
   useProjectAnalysisTableQuery,
 } from "libs/graphql";
 import { routes } from "libs/router";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useState } from "react";
 import AnalysisStatus from "./analysis/AnalysisStatus";
@@ -27,12 +28,12 @@ const ProjectAnalysisTable = (props: Props) => {
       variables: { projectId: project.id, ...pagination },
     }
   );
+  const { t } = useTranslation();
   useCacheKey(["analysis"], () => refetch());
 
   const rows = (data || previousData)?.analysis.items ?? [];
   const totalItems = (data || previousData)?.analysis.totalItems ?? 0;
   const totalPages = (data || previousData)?.analysis.totalPages ?? 0;
-  console.log(rows);
 
   return (
     <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
@@ -41,12 +42,12 @@ const ProjectAnalysisTable = (props: Props) => {
           <thead>
             <tr>
               <th scope="column" className="whitespace-nowrap">
-                Analysis
+                {t("Analysis")}
               </th>
-              <th scope="column">Type</th>
-              <th scope="column">Status</th>
+              <th scope="column">{t("Type")}</th>
+              <th scope="column">{t("Status")}</th>
               <th scope="column">
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">{t("Actions")}</span>
               </th>
             </tr>
           </thead>
@@ -80,7 +81,7 @@ const ProjectAnalysisTable = (props: Props) => {
                         )}/analysis/${encodeURIComponent(row.id)}/edit`}
                       >
                         <a>
-                          <Button size="sm">Edit</Button>
+                          <Button size="sm">{t("Edit")}</Button>
                         </a>
                       </Link>
                     )}

@@ -1,18 +1,19 @@
 import { gql } from "@apollo/client";
 import { PlusIcon } from "@heroicons/react/solid";
 import Button from "components/Button";
-import Layout, { PageHeader } from "components/layouts/Layout";
+import { PageHeader } from "components/layouts/Layout";
 import CrateAnalysisDialog from "features/CreateAnalysisDialog";
 import ProjectAnalysisTable from "features/ProjectAnalysisTable";
 import ProjectNavbar from "features/ProjectNavbar";
 import useToggle from "hooks/useToggle";
 import { useProjectAnalysisPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
-import { NextPageWithLayout } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
-const ProjectDataPage: NextPageWithLayout = () => {
+const ProjectAnalysisListPage = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [isAnalysisDialogOpen, { toggle: toggleAnalysisDialog }] =
     useToggle(false);
   const { data } = useProjectAnalysisPageQuery({
@@ -36,13 +37,13 @@ const ProjectDataPage: NextPageWithLayout = () => {
         />
         <div className="col-span-9 xl:col-span-10">
           <h2 className="text-white mb-3 flex justify-between">
-            <span>Analysis</span>
+            <span>{t("Analysis")}</span>
             <Button
               variant="primary"
               onClick={toggleAnalysisDialog}
               leadingIcon={<PlusIcon className="h-4 w-4" />}
             >
-              New Analysis
+              {t("New Analysis")}
             </Button>
           </h2>
           <ProjectAnalysisTable project={data.project}></ProjectAnalysisTable>
@@ -83,8 +84,8 @@ export const getServerSideProps = createGetServerSideProps({
       `,
       variables: { id: params.id },
     });
-    // await ProjectAnalysisTable.prefetch(client, params.id as string);
+    await ProjectAnalysisTable.prefetch(client, params.id as string);
   },
 });
 
-export default ProjectDataPage;
+export default ProjectAnalysisListPage;

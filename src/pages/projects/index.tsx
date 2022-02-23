@@ -6,10 +6,12 @@ import ProjectsList from "features/ProjectsList";
 import { useProjectsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 
 const ProjectsPage: NextPageWithLayout = () => {
   const [pagination, setPagination] = useState({ page: 1, perPage: 20 });
+  const { t } = useTranslation();
   const { loading, data, previousData } = useProjectsPageQuery({
     variables: pagination,
   });
@@ -19,7 +21,7 @@ const ProjectsPage: NextPageWithLayout = () => {
   return (
     <>
       <PageHeader>
-        <h1 className="text-3xl font-bold text-white">Projects</h1>
+        <h1 className="text-3xl font-bold text-white">{t("Projects")}</h1>
       </PageHeader>
       {projects && (
         <Block>

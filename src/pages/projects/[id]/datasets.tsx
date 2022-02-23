@@ -9,12 +9,14 @@ import useCacheKey from "hooks/useCacheKey";
 import { useProjectDataPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 
 const ProjectDataPage: NextPageWithLayout = () => {
   const [showUploadDialog, toggleUploadDialog] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
   const { loading, data, refetch } = useProjectDataPageQuery({
     variables: { id: router.query.id as string },
   });
@@ -34,11 +36,7 @@ const ProjectDataPage: NextPageWithLayout = () => {
   );
 
   if (loading || !data) {
-    return (
-      <div className="bg-white rounded-lg shadow px-5 py-6 sm:px-6">
-        Loading...
-      </div>
-    );
+    return null;
   }
 
   if (!data.accessmodProject) {
@@ -65,13 +63,13 @@ const ProjectDataPage: NextPageWithLayout = () => {
         />
         <div className="col-span-9 xl:col-span-10">
           <h2 className="text-white mb-3 flex justify-between">
-            <span>Datasets</span>
+            <span>{t("Datasets")}</span>
             <Button
               variant="primary"
               onClick={() => toggleUploadDialog(true)}
               leadingIcon={<UploadIcon className="h-4 w-4" />}
             >
-              Upload Data
+              {t("Upload Data")}
             </Button>
           </h2>
           <ProjectDatasetsTable

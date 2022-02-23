@@ -2,6 +2,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { ReactElement } from "react";
 import clsx from "clsx";
 import Spinner from "./Spinner";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   loading?: boolean;
@@ -36,17 +37,18 @@ const PaginationItem = (props: {
 
 const Pagination = (props: Props) => {
   const { loading, page, perPage, totalPages, totalItems, onChange } = props;
+  const { t } = useTranslation();
   return (
     <div className="py-3 flex items-center justify-between border-t border-gray-200">
       <div className="flex-1 flex justify-between sm:hidden">
         {page > 1 && (
           <PaginationItem onClick={() => onChange(page - 1)}>
-            Previous
+            {t("Previous")}
           </PaginationItem>
         )}
         {page < totalPages && (
           <PaginationItem onClick={() => onChange(page + 1)}>
-            Next
+            {t("Next")}
           </PaginationItem>
         )}
       </div>
@@ -54,18 +56,17 @@ const Pagination = (props: Props) => {
         {loading && (
           <div className="inline-flex items-center">
             <Spinner size="xs" className="mr-2" />
-            Loading...
+            {t("Loading...")}
           </div>
         )}
         {!loading && totalItems > 0 && (
           <div>
             <p className="text-sm text-gray-700">
-              Showing{" "}
-              <span className="font-medium">{(page - 1) * perPage + 1}</span> to{" "}
-              <span className="font-medium">
-                {Math.min((page + 1) * perPage, totalItems)}
-              </span>{" "}
-              of <span className="font-medium">{totalItems}</span> results
+              {t("Showing {{start}} to {{end}} of {{count}} results", {
+                count: totalItems,
+                start: (page - 1) * perPage + 1,
+                end: Math.min((page + 1) * perPage, totalItems),
+              })}
             </p>
           </div>
         )}
@@ -79,7 +80,7 @@ const Pagination = (props: Props) => {
                 onClick={() => onChange(page - 1)}
                 disabled={page === 1}
               >
-                <span className="sr-only">Previous</span>
+                <span className="sr-only">{t("Previous")}</span>
                 <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
               </PaginationItem>
 
@@ -87,7 +88,7 @@ const Pagination = (props: Props) => {
                 onClick={() => onChange(page + 1)}
                 disabled={page + 1 === totalPages}
               >
-                <span className="sr-only">Next</span>
+                <span className="sr-only">{t("Next")}</span>
                 <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
               </PaginationItem>
             </nav>

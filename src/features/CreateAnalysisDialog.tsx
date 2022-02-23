@@ -8,33 +8,10 @@ import {
   CrateAnalysisDialog_ProjectFragment,
   CreateAccessibilityAnalysisMutation,
 } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import AnalysisTypePicker from "./analysis/AnalysisTypePicker";
-
-const AnalysisCard = ({
-  label,
-  description,
-  onClick,
-}: {
-  label: string;
-  description: string;
-  onClick: () => void;
-}) => {
-  return (
-    <a
-      className="flex w-full items-center rounded shadow px-5 py-4 bg-white hover:bg-gray-50  gap-4 group border border-gray-200 cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="flex-1">
-        <h6 className="group-hover:text-gray-900">{label}</h6>
-        <p className="text-sm mt-2 text-gray-500 group-hover:text-gray-700">
-          {description}
-        </p>
-      </div>
-    </a>
-  );
-};
 
 const CREATE_ANALYSIS_MUTATION = gql`
   mutation CreateAccessibilityAnalysis(
@@ -62,6 +39,7 @@ type Form = {
 
 const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const [error, setError] = useState<null | string>(null);
   const [createAnalysis, { loading }] =
     useMutation<CreateAccessibilityAnalysisMutation>(CREATE_ANALYSIS_MUTATION);
@@ -69,10 +47,10 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
     validate: (values: Partial<Form>) => {
       const errors = {} as any;
       if (!values.type) {
-        errors.type = "Select a analysis type";
+        errors.type = t("Select a analysis type");
       }
       if (!values.name) {
-        errors.name = "Enter a name";
+        errors.name = t("Enter a name");
       }
       return errors;
     },
@@ -83,15 +61,14 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
       const payload = await createAnalysis({
         variables: { input: { name: values.name, projectId: project.id } },
       });
-      console.log(payload);
       if (payload.data?.response?.success) {
         router.push(
           `/projects/${encodeURIComponent(project.id)}/analysis/${
-            payload.data.response.analysis.id
+            payload.data.response.analysis?.id
           }/edit`
         );
       } else {
-        setError("Unkown error");
+        setError(t("Unknown error"));
       }
     },
   });
@@ -99,11 +76,11 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
   return (
     <Dialog open={open} onClose={onClose} closeOnEsc closeOnOutsideClick>
       <form onSubmit={form.handleSubmit}>
-        <Dialog.Title>Create a new analysis</Dialog.Title>
+        <Dialog.Title>{t("Create a new analysis")}</Dialog.Title>
         <Dialog.Content>
           <div className="space-y-4">
             <Field
-              label="Analytics Name"
+              label={t("Analytics Name")}
               name="name"
               required
               onChange={form.handleInputChange}
@@ -111,7 +88,7 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
               error={form.touched.name && form.errors.name}
             />
             <Field
-              label="Analysis Type"
+              label={t("Analysis Type")}
               name="type"
               required
               error={form.touched.type && form.errors.type}
@@ -127,9 +104,9 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
         </Dialog.Content>
         <Dialog.Actions>
           <Button type="button" variant="white" onClick={onClose}>
-            Cancel
+            {t("Cancel")}
           </Button>
-          <Button type="submit">Create</Button>
+          <Button type="submit">{t("Create")}</Button>
         </Dialog.Actions>
       </form>
     </Dialog>

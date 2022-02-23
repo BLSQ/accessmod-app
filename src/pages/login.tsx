@@ -6,6 +6,7 @@ import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
 import { useLoginMutation } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 
 type FormInputs = {
   email: string;
@@ -31,15 +32,16 @@ interface Props {
 const Login = (props: Props) => {
   const [login, { data }] = useLoginMutation();
   const router = useRouter();
+  const { t } = useTranslation();
   const form = useForm<FormInputs>({
     initialState: {},
     validate: (values) => {
       const errors = {} as any;
       if (!values.email) {
-        errors.email = "Enter your email";
+        errors.email = t("Enter your email");
       }
       if (!values.password) {
-        errors.password = "Enter your password";
+        errors.password = t("Enter your password");
       }
       return errors;
     },
@@ -67,7 +69,7 @@ const Login = (props: Props) => {
               name="email"
               required
               type="text"
-              label="Email"
+              label={t("Email")}
               disabled={form.isSubmitting}
               error={form.touched.email && form.errors.email}
               onChange={form.handleInputChange}
@@ -76,7 +78,7 @@ const Login = (props: Props) => {
               name="password"
               required
               type="password"
-              label="Password"
+              label={t("Password")}
               disabled={form.isSubmitting}
               error={form.touched.password && form.errors.password}
               onChange={form.handleInputChange}
@@ -84,7 +86,9 @@ const Login = (props: Props) => {
 
             {data?.login && !data?.login?.success && (
               <div className={"text-red-600"}>
-                We were unable to log you in. Please verify your credentials.
+                {t(
+                  "We were unable to log you in. Please verify your credentials."
+                )}
               </div>
             )}
             <Button
@@ -92,7 +96,7 @@ const Login = (props: Props) => {
               className="w-full"
               disabled={form.isSubmitting}
             >
-              Login
+              {t("Login")}
             </Button>
           </form>
         </div>

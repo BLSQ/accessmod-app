@@ -10,6 +10,7 @@ import {
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
 } from "libs/graphql";
+import { i18n } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CreateDatasetDialog from "./CreateDatasetDialog";
 
@@ -71,7 +72,7 @@ const CustomMenuList = ({ children, onCreate, ...props }: any) => {
 
 const RECOMMENDED_OPTION = {
   id: null,
-  name: "Use recommended dataset",
+  get name() {return i18n!.t("Use recommended dataset")}
 };
 
 const DatasetPicker = (props: Props) => {

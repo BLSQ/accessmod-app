@@ -6,6 +6,7 @@ import ProjectNavbar from "features/ProjectNavbar";
 import { useAnalysisEditPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 const QUERY = gql`
@@ -31,6 +32,7 @@ const QUERY = gql`
 
 const AnalysisEditPage: NextPageWithLayout = (props) => {
   const router = useRouter();
+  const { t } = useTranslation();
   const { data, loading } = useAnalysisEditPageQuery({
     variables: {
       id: router.query.id as string,
@@ -44,7 +46,7 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
   }
 
   const AnalysisComponents = ANALYSIS[data.analysis.type];
-  if (!AnalysisComponents) return <div>Unknown analysis type</div>;
+  if (!AnalysisComponents) return <div>{t("Unknown analysis type")}</div>;
 
   return (
     <>
@@ -57,7 +59,7 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
         </div>
         <div className="col-span-8 xl:col-span-9">
           <h2 className="text-white mb-3 flex justify-between">
-            Create a new {AnalysisComponents.label}
+            {t("Create a new {{label}}", { label: AnalysisComponents.label })}
           </h2>
           <AnalysisComponents.Form
             project={data.project}

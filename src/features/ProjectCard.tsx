@@ -29,7 +29,7 @@ const ProjectCard = (props: Props) => {
               {project.name}
             </Link>
           </h3>
-          <img src={project.country.flag} className="h-4" />
+          <img alt="Country" src={project.country.flag} className="h-4" />
         </div>
         <User user={project.owner} />
       </div>
