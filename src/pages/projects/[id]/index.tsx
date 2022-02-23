@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import Block from "components/Block";
+import DescriptionList from "components/DescriptionList";
 import Field from "components/forms/Field";
 import Layout, { PageHeader } from "components/layouts/Layout";
 import ProjectActionsButton from "features/ProjectActionsButton";
@@ -35,26 +36,28 @@ const ProjectPage: NextPageWithLayout = (props) => {
             <span>Project Information</span>
             <ProjectActionsButton project={project} />
           </h2>
-          <Block className="grid grid-cols-2 align-top gap-4">
-            <Field name="country" label="Country" required>
-              <span className="text-md flex items-center gap-1">
-                <img
-                  alt="Country Flag"
-                  className="h-3"
-                  src={project.country.flag}
-                />
-                <span>{project.country.name}</span>
-              </span>
-            </Field>
-            <Field name="owner" label="Owner" required>
-              <span className="text-md">{project.owner.email}</span>
-            </Field>
-            <Field name="spatialResolution" label="Spatial Resolution" required>
-              <span className="text-md">{project.spatialResolution}</span>
-            </Field>
-            <Field name="crs" label="Coordinate Reference System" required>
-              <span className="text-md">{project.crs}</span>
-            </Field>
+          <Block>
+            <DescriptionList>
+              <DescriptionList.Item label="Country">
+                <span className="flex items-center">
+                  <img
+                    alt="Country Flag"
+                    className="h-3 mr-1"
+                    src={project.country.flag}
+                  />
+                  <span>{project.country.name}</span>
+                </span>
+              </DescriptionList.Item>
+              <DescriptionList.Item label="Owner">
+                <span className="text-md">{project.owner.email}</span>
+              </DescriptionList.Item>
+              <DescriptionList.Item label="Spatial Resolution">
+                <span className="text-md">{project.spatialResolution}</span>
+              </DescriptionList.Item>
+              <DescriptionList.Item label="Coordinate Reference System">
+                <span className="text-md">{project.crs}</span>
+              </DescriptionList.Item>
+            </DescriptionList>
           </Block>
         </div>
       </div>
