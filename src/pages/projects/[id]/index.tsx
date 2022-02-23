@@ -1,18 +1,19 @@
 import { gql } from "@apollo/client";
 import Block from "components/Block";
 import DescriptionList from "components/DescriptionList";
-import Field from "components/forms/Field";
 import Layout, { PageHeader } from "components/layouts/Layout";
 import ProjectActionsButton from "features/ProjectActionsButton";
 import ProjectNavbar from "features/ProjectNavbar";
 import { useProjectPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 const ProjectPage: NextPageWithLayout = (props) => {
   const router = useRouter();
-  const { loading, data } = useProjectPageQuery({
+  const { t } = useTranslation();
+  const { data } = useProjectPageQuery({
     variables: { id: router.query.id as string },
   });
 
@@ -33,28 +34,28 @@ const ProjectPage: NextPageWithLayout = (props) => {
         </div>
         <div className="col-span-9 xl:col-span-10">
           <h2 className="text-white mb-3 flex justify-between">
-            <span>Project Information</span>
+            <span>{t("Project Information")}</span>
             <ProjectActionsButton project={project} />
           </h2>
           <Block>
             <DescriptionList>
-              <DescriptionList.Item label="Country">
+              <DescriptionList.Item label={t("Country")}>
                 <span className="flex items-center">
                   <img
-                    alt="Country Flag"
+                    alt={t("Country Flag")}
                     className="h-3 mr-1"
                     src={project.country.flag}
                   />
                   <span>{project.country.name}</span>
                 </span>
               </DescriptionList.Item>
-              <DescriptionList.Item label="Owner">
+              <DescriptionList.Item label={t("Owner")}>
                 <span className="text-md">{project.owner.email}</span>
               </DescriptionList.Item>
-              <DescriptionList.Item label="Spatial Resolution">
+              <DescriptionList.Item label={t("Spatial Resolution")}>
                 <span className="text-md">{project.spatialResolution}</span>
               </DescriptionList.Item>
-              <DescriptionList.Item label="Coordinate Reference System">
+              <DescriptionList.Item label={t("Coordinate Reference System")}>
                 <span className="text-md">{project.crs}</span>
               </DescriptionList.Item>
             </DescriptionList>

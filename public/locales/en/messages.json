@@ -1,9 +1,15 @@
 {
   "Access Mod": "Access Mod",
   "Contact Support": "Contact Support",
+  "Coordinate Reference System": "Coordinate Reference System",
+  "Country": "Country",
+  "Country Flag": "Country Flag",
   "Help": "Help",
   "Logout": "Logout",
   "New Project": "New Project",
   "Open user menu": "Open user menu",
-  "Settings": "Settings"
+  "Owner": "Owner",
+  "Project Information": "Project Information",
+  "Settings": "Settings",
+  "Spatial Resolution": "Spatial Resolution"
 }
