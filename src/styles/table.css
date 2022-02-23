@@ -7,11 +7,11 @@ table.who thead {
 }
 
 table.who th {
-  @apply px-3 py-2.5 text-right text-xs font-medium text-white uppercase tracking-wider;
+  @apply px-3 py-2.5 text-xs font-medium text-white uppercase tracking-wider text-left;
 }
 
 table.who td {
-  @apply px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 text-right;
+  @apply px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900;
 }
 
 table.who tbody tr:nth-child(odd) {
@@ -20,8 +20,4 @@ table.who tbody tr:nth-child(odd) {
 
 table.who tbody tr:hover {
   @apply bg-gray-200;
-}
-
-table.who tr:first-of-type(th) {
-  @apply text-left;
 }
