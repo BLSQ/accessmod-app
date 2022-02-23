@@ -1,6 +1,12 @@
 import { gql } from "@apollo/client";
 import { getApolloClient } from "./apollo";
-import { CreateFileMutation, GetUploadUrlMutation } from "./graphql";
+import {
+  AccessmodFilesetFormat,
+  AccessmodFilesetRoleCode,
+  CreateFileMutation,
+  GetFilesetRolesQuery,
+  GetUploadUrlMutation,
+} from "./graphql";
 
 const GET_PRESIGNED_MUTATION = gql`
   mutation GetUploadUrl($input: PrepareAccessmodFileUploadInput) {
@@ -63,3 +69,40 @@ export async function createFile(
   }
   return true;
 }
+
+const GET_FILESET_ROLES = gql`
+  query GetFilesetRoles {
+    roles: accessmodFilesetRoles {
+      id
+      name
+      format
+      code
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export async function getFilesetRoles() {
+  const client = getApolloClient();
+  const response = await client.query<GetFilesetRolesQuery>({
+    query: GET_FILESET_ROLES,
+    fetchPolicy: "cache-first",
+  });
+
+  return response.data?.roles || [];
+}
+
+export const ACCEPTED_MIMETYPES = {
+  [AccessmodFilesetFormat.Vector]: [
+    ".gpkg",
+    ".shp",
+    ".prj",
+    ".dbf",
+    ".shx",
+    ".json",
+    ".geojson",
+  ],
+  [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
+  [AccessmodFilesetFormat.Tabular]: [".csv"],
+};

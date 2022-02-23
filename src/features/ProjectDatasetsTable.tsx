@@ -101,7 +101,7 @@ const ProjectDatasetsTable = (props: Props) => {
                 <td>{row.files.length ?? 0}</td>
                 <td className="">
                   <div className="invisible group-hover:visible">
-                    <Button>Add files</Button>
+                    <Button size="sm">Add files</Button>
                   </div>
                 </td>
               </tr>
@@ -133,7 +133,7 @@ ProjectDatasetsTable.fragments = {
 
 ProjectDatasetsTable.prefetch = async (
   client: CustomApolloClient,
-  projectId: String
+  projectId: string
 ) => {
   await client.query({
     query: PROJECT_DATASETS_QUERY,

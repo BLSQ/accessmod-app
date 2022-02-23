@@ -6,14 +6,15 @@ import Field from "components/forms/Field";
 import Spinner from "components/Spinner";
 import filesize from "filesize";
 import useForm from "hooks/useForm";
-import { createFile, getPresignedURL } from "libs/fileset";
+import { ACCEPTED_MIMETYPES, createFile, getPresignedURL } from "libs/dataset";
 import {
+  AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
   CreateDatasetDialog_ProjectFragment,
   useCreateFilesetMutation,
 } from "libs/graphql";
 import uploader, { JobFile } from "libs/upload";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, useCallback, useEffect, useState } from "react";
 import FilesetRolePicker from "./FilesetRolePicker";
 import ProjectPicker from "./ProjectPicker";
 
@@ -27,7 +28,12 @@ type Props = {
     }
   ) => void;
   open: boolean;
-  role?: { id: string; code: AccessmodFilesetRoleCode; name: string };
+  role?: {
+    id: string;
+    code: AccessmodFilesetRoleCode;
+    name: string;
+    format: AccessmodFilesetFormat;
+  };
   project?: CreateDatasetDialog_ProjectFragment | { id: string; name: string };
 };
 
@@ -150,6 +156,7 @@ const CreateDatasetDialog = (props: Props) => {
   useEffect(() => {
     form.setFieldValue("project", project);
     form.setFieldValue("role", role);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, role]);
 
   const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -157,10 +164,32 @@ const CreateDatasetDialog = (props: Props) => {
     onClose("cancel");
   };
 
+  const validator = useCallback(
+    (file: File) => {
+      if (!role) return null;
+
+      const ext = file.name.slice(file.name.lastIndexOf("."));
+
+      if (!ACCEPTED_MIMETYPES[role.format].includes(ext)) {
+        return {
+          code: "wrong-file-type",
+          message: `Filetype ${ext} is not a valid one.`,
+        };
+      }
+      return null;
+    },
+    [role]
+  );
+
+  const handleClose = () => {
+    form.resetForm();
+    onClose("cancel");
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       closeOnEsc={false}
       closeOnOutsideClick={false}
     >
@@ -214,6 +243,10 @@ const CreateDatasetDialog = (props: Props) => {
                 className="mt-1"
                 label="Select your files"
                 onChange={(files) => form.setFieldValue("files", files)}
+                accept={
+                  role ? ACCEPTED_MIMETYPES[role.format].join(", ") : undefined
+                }
+                validator={validator}
               >
                 {form.formData.files?.length > 0 ? (
                   <div>
@@ -235,8 +268,8 @@ const CreateDatasetDialog = (props: Props) => {
 
         <Dialog.Actions>
           <Button
-            role="button"
-            onClick={onCancel}
+            type="button"
+            onClick={handleClose}
             disabled={form.isSubmitting}
             variant="outlined"
           >
@@ -244,7 +277,7 @@ const CreateDatasetDialog = (props: Props) => {
           </Button>
           <Button
             disabled={form.isSubmitting}
-            role="submit"
+            type="submit"
             className="space-x-2"
           >
             {form.isSubmitting && <Spinner size="xs" />}

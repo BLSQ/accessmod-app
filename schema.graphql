@@ -4,6 +4,61 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
+type AccessmodAccessibilityAnalysis implements AccessmodAnalysis {
+  id: String!
+  type: AccessmodAnalysisType!
+  status: AccessmodAnalysisStatus!
+  name: String!
+  owner: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  extent: AccessmodFileset
+  landCover: AccessmodFileset
+  dem: AccessmodFileset
+  transportNetwork: AccessmodFileset
+  slope: AccessmodFileset
+  water: AccessmodFileset
+  barrier: AccessmodFileset
+  movingSpeeds: AccessmodFileset
+  healthFacilities: AccessmodFileset
+  anisotropic: Boolean
+  invertDirection: Boolean
+  maxTravelTime: Int
+  travelTimes: AccessmodFileset
+  frictionSurface: AccessmodFileset
+}
+
+interface AccessmodAnalysis {
+  id: String!
+  type: AccessmodAnalysisType!
+  status: AccessmodAnalysisStatus!
+  name: String!
+  owner: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AccessmodAnalysisPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [AccessmodAnalysis!]!
+}
+
+enum AccessmodAnalysisStatus {
+  PENDING
+  READY
+  QUEUED
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+enum AccessmodAnalysisType {
+  ACCESSIBILITY
+  GEOGRAPHIC_COVERAGE
+}
+
 type AccessmodFile {
   id: String!
   uri: String!
@@ -56,11 +111,23 @@ enum AccessmodFilesetRoleCode {
   HEALTH_FACILITIES
 }
 
-type AccessmodFilesetRolePage {
-  pageNumber: Int!
-  totalPages: Int!
-  totalItems: Int!
-  items: [AccessmodFilesetRole!]!
+type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis {
+  id: String!
+  type: AccessmodAnalysisType!
+  status: AccessmodAnalysisStatus!
+  name: String!
+  owner: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  population: AccessmodFileset
+  frictionSurface: AccessmodFileset
+  dem: AccessmodFileset
+  healthFacilities: AccessmodFileset
+  anisotropic: Boolean
+  maxTravelTime: Int
+  hfProcessingOrder: String
+  geographicCoverage: AccessmodFileset
+  catchmentAreas: AccessmodFileset
 }
 
 type AccessmodProject {
@@ -97,6 +164,16 @@ input CountryInput {
   alpha3: String
   name: String
   flag: String
+}
+
+input CreateAccessmodAccessibilityAnalysisInput {
+  projectId: String!
+  name: String!
+}
+
+type CreateAccessmodAccessibilityAnalysisResult {
+  success: Boolean!
+  analysis: AccessmodAccessibilityAnalysis!
 }
 
 input CreateAccessmodFileInput {
@@ -185,6 +262,8 @@ type Mutation {
   prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput): PrepareAccessmodFileUploadResult
   createAccessmodFile(input: CreateAccessmodFileInput): CreateAccessmodFileResult
   deleteAccessmodFile(input: DeleteAccessmodFileInput): DeleteAccessmodFileResult
+  createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult
+  updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult
 }
 
 type Organization {
@@ -223,7 +302,31 @@ type Query {
   accessmodFileset(id: String): AccessmodFileset
   accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole
-  accessmodFilesetRoles(page: Int, perPage: Int): AccessmodFilesetRolePage
+  accessmodFilesetRoles: [AccessmodFilesetRole!]!
+  accessmodAnalysis(id: String): AccessmodAnalysis
+  accessmodAnalyses(projectId: String!, page: Int, perPage: Int): AccessmodAnalysisPage!
+}
+
+input UpdateAccessmodAccessibilityAnalysisInput {
+  id: String!
+  name: String
+  extentId: String
+  landCoverId: String
+  demId: String
+  transportNetworkId: String
+  slopeId: String
+  waterId: String
+  barrierId: String
+  movingSpeedsId: String
+  healthFacilitiesId: String
+  anisotropic: Boolean
+  invertDirection: Boolean
+  maxTravelTime: Int
+}
+
+type UpdateAccessmodAccessibilityAnalysisResult {
+  success: Boolean!
+  analysis: AccessmodAccessibilityAnalysis!
 }
 
 input UpdateAccessmodProjectInput {

@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 
 import CreateProjectDialog from "features/CreateProjectDialog";
 import { useState } from "react";
+import { CustomApolloClient } from "libs/apollo";
 import { useTranslation } from "next-i18next";
 
 const Header = () => {
@@ -15,7 +16,7 @@ const Header = () => {
     <>
       <div className="bg-who-blue-main pb-32">
         <nav className="mb-10">
-          <div className="max-w-8xl mx-auto sm:px-6 lg:px-8">
+          <div className="max-w-8xl mx-auto sm:px-4 lg:px-8">
             <div className="border-b border-white">
               <div className="flex items-center justify-between h-16 px-4 sm:px-0">
                 <div className="flex items-center gap-5 text-white h-full">
@@ -61,6 +62,10 @@ const Header = () => {
       />
     </>
   );
+};
+
+Header.prefetch = async (client: CustomApolloClient) => {
+  await Navbar.prefetch(client);
 };
 
 export default Header;

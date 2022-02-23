@@ -1,4 +1,10 @@
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import {
+  ChangeEventHandler,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import usePrevious from "./usePrevious";
 
 type FormData = {
@@ -22,6 +28,7 @@ type FormFieldError = string;
 
 type UseFormOptions<T> = {
   initialState?: Partial<T>;
+  getInitialState?: () => Partial<T>;
   onSubmit: (formData: T) => void | Promise<any>;
   validate?: (values: Partial<T>) => {
     [key in keyof T]: FormFieldError;
@@ -29,24 +36,32 @@ type UseFormOptions<T> = {
 };
 
 function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
-  const { initialState = {}, validate, onSubmit } = options;
+  const { initialState = {}, getInitialState, validate, onSubmit } = options;
   const [touched, setTouched] = useState<
     | {
         [key in keyof Partial<T>]: boolean;
       }
     | {}
   >({});
+  const beforeMountInitialStateRef = useRef<T>();
+  if (!beforeMountInitialStateRef.current) {
+    beforeMountInitialStateRef.current = (
+      getInitialState ? getInitialState() : initialState
+    ) as T;
+  }
   const [isSubmitting, setSubmitting] = useState(false);
   const [hasBeenSubmitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState<T>(initialState as T);
+  const [formData, setFormData] = useState<T>(
+    beforeMountInitialStateRef.current
+  );
   const previousFormData = usePrevious<T>(formData);
 
   const resetForm = useCallback(() => {
     setSubmitted(false);
     setTouched({});
-    setFormData(initialState as T);
+    setFormData((getInitialState ? getInitialState() : initialState) as T);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getInitialState, initialState]);
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
