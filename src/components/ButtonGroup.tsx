@@ -17,23 +17,25 @@ type Props = {
 const ButtonGroup = ({ items }: Props) => {
   const [firstItem, ...listItems] = items;
   return (
-    <div className="relative z-0 flex shadow-sm rounded-md h-fit">
+    <div className="relative z-0 shadow-sm flex rounded-md items-center">
       <Button
         variant="white"
         size="md"
         onClick={firstItem.onClick}
         className={clsx(
-          "rounded-r-none rounded-br-none px-6  focus:z-10 h-fit",
+          "rounded-r-none rounded-br-none px-6 focus:z-10",
           firstItem.className
         )}
       >
         {firstItem.label}
       </Button>
-
-      <Menu as="span" className="-ml-px relative block">
-        <span className="h-full border absolute border-gray-300"></span>
-        <Menu.Button as="div">
-          <Button variant="white" className="rounded-l-none px-2">
+      <Menu as="div" className="-ml-px relative" style={{ lineHeight: 0 }}>
+        <Menu.Button as="div" className="block">
+          <Button
+            variant="white"
+            size="md"
+            className="rounded-l-none px-2 border-l-gray-300"
+          >
             <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
         </Menu.Button>
