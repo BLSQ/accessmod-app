@@ -21,7 +21,7 @@ let apolloClient: CustomApolloClient | undefined;
 
 const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   const enhancedFetch = (url: RequestInfo, init: RequestInit) => {
-    if (__DEV__) {
+    if (process.env.NODE_ENV === "development") {
       const body = JSON.parse(init.body as string);
       console.log(`Fetch ${url}${body.operationName}`);
     }
