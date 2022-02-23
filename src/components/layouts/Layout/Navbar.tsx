@@ -1,10 +1,10 @@
-import clsx from "clsx";
-import Link from "next/link";
 import { gql } from "@apollo/client";
-import { useEffect, useState } from "react";
-import { useNavbarQuery } from "libs/graphql";
+import clsx from "clsx";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
+import { useNavbarQuery } from "libs/graphql";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type NavEntry = {
   label: string;

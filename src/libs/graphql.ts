@@ -487,6 +487,8 @@ export type NavbarQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type NavbarQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
+export type UserMenu_UserFragment = { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } };
+
 export type CreateAccessibilityAnalysisMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodAccessibilityAnalysisInput>;
 }>;
@@ -679,6 +681,14 @@ export type ProjectsPageQueryVariables = Exact<{
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
+export const UserMenu_UserFragmentDoc = gql`
+    fragment UserMenu_user on User {
+  avatar {
+    initials
+    color
+  }
+}
+    `;
 export const CrateAnalysisDialog_ProjectFragmentDoc = gql`
     fragment CrateAnalysisDialog_project on AccessmodProject {
   id

@@ -8,8 +8,13 @@ import CreateProjectDialog from "features/CreateProjectDialog";
 import { useState } from "react";
 import { CustomApolloClient } from "libs/apollo";
 import { useTranslation } from "next-i18next";
+import { UserMenu_UserFragment } from "libs/graphql";
 
-const Header = () => {
+type Props = {
+  user: UserMenu_UserFragment;
+};
+
+const Header = ({ user }: Props) => {
   const [showProjectDialog, setProjectDialog] = useState(false);
   const { t } = useTranslation();
   return (
@@ -48,7 +53,7 @@ const Header = () => {
                       {t("New Project")}
                     </Button>
 
-                    <UserMenu />
+                    <UserMenu user={user} />
                   </div>
                 </div>
               </div>

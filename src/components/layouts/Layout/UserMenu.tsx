@@ -1,17 +1,28 @@
-import { Fragment } from "react";
+import { gql } from "@apollo/client";
 import { Menu, Transition } from "@headlessui/react";
-import MenuLink from "components/MenuLink";
 import clsx from "clsx";
-import { UserIcon } from "@heroicons/react/solid";
+import Avatar from "components/Avatar";
+import MenuLink from "components/MenuLink";
+import { UserMenu_UserFragment } from "libs/graphql";
 import { useTranslation } from "next-i18next";
+import { Fragment } from "react";
 
-const UserMenu = () => {
+type UserMenuProps = {
+  user: UserMenu_UserFragment;
+};
+
+const UserMenu = (props: UserMenuProps) => {
+  const { user } = props;
   const { t } = useTranslation();
   return (
     <Menu as="div" className="ml-3 relative">
       <Menu.Button className="max-w-xs flex items-center text-sm focus:outline-none ">
         <span className="sr-only">{t("Open user menu")}</span>
-        <UserIcon className="h-6 w-6 text-white" />
+        <Avatar
+          size="sm"
+          color={user.avatar.color}
+          initials={user.avatar.initials}
+        />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -66,6 +77,17 @@ const UserMenu = () => {
       </Transition>
     </Menu>
   );
+};
+
+UserMenu.fragments = {
+  user: gql`
+    fragment UserMenu_user on User {
+      avatar {
+        initials
+        color
+      }
+    }
+  `,
 };
 
 export default UserMenu;
