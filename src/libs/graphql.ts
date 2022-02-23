@@ -61,8 +61,8 @@ export type AccessmodAnalysisPage = {
 };
 
 export enum AccessmodAnalysisStatus {
+  Draft = 'DRAFT',
   Failed = 'FAILED',
-  Pending = 'PENDING',
   Queued = 'QUEUED',
   Ready = 'READY',
   Running = 'RUNNING',
@@ -198,7 +198,7 @@ export type CreateAccessmodAccessibilityAnalysisInput = {
 
 export type CreateAccessmodAccessibilityAnalysisResult = {
   __typename?: 'CreateAccessmodAccessibilityAnalysisResult';
-  analysis: AccessmodAccessibilityAnalysis;
+  analysis?: Maybe<AccessmodAccessibilityAnalysis>;
   success: Scalars['Boolean'];
 };
 
@@ -239,6 +239,15 @@ export type CreateAccessmodProjectResult = {
   success: Scalars['Boolean'];
 };
 
+export type DeleteAccessmodAnalysisInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteAccessmodAnalysisResult = {
+  __typename?: 'DeleteAccessmodAnalysisResult';
+  success: Scalars['Boolean'];
+};
+
 export type DeleteAccessmodFileInput = {
   id: Scalars['String'];
 };
@@ -266,6 +275,16 @@ export type DeleteAccessmodProjectResult = {
   success: Scalars['Boolean'];
 };
 
+export type LaunchAccessmodAnalysisInput = {
+  id: Scalars['String'];
+};
+
+export type LaunchAccessmodAnalysisResult = {
+  __typename?: 'LaunchAccessmodAnalysisResult';
+  analysis?: Maybe<AccessmodAnalysis>;
+  success: Scalars['Boolean'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -288,9 +307,11 @@ export type Mutation = {
   createAccessmodFile?: Maybe<CreateAccessmodFileResult>;
   createAccessmodFileset?: Maybe<CreateAccessmodFilesetResult>;
   createAccessmodProject?: Maybe<CreateAccessmodProjectResult>;
+  deleteAccessmodAnalysis?: Maybe<DeleteAccessmodAnalysisResult>;
   deleteAccessmodFile?: Maybe<DeleteAccessmodFileResult>;
   deleteAccessmodFileset?: Maybe<DeleteAccessmodFilesetResult>;
   deleteAccessmodProject?: Maybe<DeleteAccessmodProjectResult>;
+  launchAccessmodAnalysis?: Maybe<LaunchAccessmodAnalysisResult>;
   login?: Maybe<LoginResult>;
   logout?: Maybe<LogoutResult>;
   prepareAccessmodFileUpload?: Maybe<PrepareAccessmodFileUploadResult>;
@@ -319,6 +340,11 @@ export type MutationCreateAccessmodProjectArgs = {
 };
 
 
+export type MutationDeleteAccessmodAnalysisArgs = {
+  input?: InputMaybe<DeleteAccessmodAnalysisInput>;
+};
+
+
 export type MutationDeleteAccessmodFileArgs = {
   input?: InputMaybe<DeleteAccessmodFileInput>;
 };
@@ -331,6 +357,11 @@ export type MutationDeleteAccessmodFilesetArgs = {
 
 export type MutationDeleteAccessmodProjectArgs = {
   input?: InputMaybe<DeleteAccessmodProjectInput>;
+};
+
+
+export type MutationLaunchAccessmodAnalysisArgs = {
+  input?: InputMaybe<LaunchAccessmodAnalysisInput>;
 };
 
 
@@ -458,7 +489,7 @@ export type UpdateAccessmodAccessibilityAnalysisInput = {
 
 export type UpdateAccessmodAccessibilityAnalysisResult = {
   __typename?: 'UpdateAccessmodAccessibilityAnalysisResult';
-  analysis: AccessmodAccessibilityAnalysis;
+  analysis?: Maybe<AccessmodAccessibilityAnalysis>;
   success: Scalars['Boolean'];
 };
 
@@ -496,7 +527,7 @@ export type CreateAccessibilityAnalysisMutationVariables = Exact<{
 }>;
 
 
-export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response?: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, analysis: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } } | null };
+export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response?: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } | null } | null };
 
 export type CrateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -586,7 +617,7 @@ export type UpdateAccessibilityAnalysisMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis?: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, analysis: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } } | null };
+export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis?: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } | null };
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 

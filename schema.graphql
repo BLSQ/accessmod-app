@@ -46,7 +46,7 @@ type AccessmodAnalysisPage {
 }
 
 enum AccessmodAnalysisStatus {
-  PENDING
+  DRAFT
   READY
   QUEUED
   RUNNING
@@ -174,7 +174,7 @@ input CreateAccessmodAccessibilityAnalysisInput {
 
 type CreateAccessmodAccessibilityAnalysisResult {
   success: Boolean!
-  analysis: AccessmodAccessibilityAnalysis!
+  analysis: AccessmodAccessibilityAnalysis
 }
 
 input CreateAccessmodFileInput {
@@ -215,6 +215,14 @@ scalar Date
 
 scalar DateTime
 
+input DeleteAccessmodAnalysisInput {
+  id: String!
+}
+
+type DeleteAccessmodAnalysisResult {
+  success: Boolean!
+}
+
 input DeleteAccessmodFileInput {
   id: String!
 }
@@ -237,6 +245,15 @@ input DeleteAccessmodProjectInput {
 
 type DeleteAccessmodProjectResult {
   success: Boolean!
+}
+
+input LaunchAccessmodAnalysisInput {
+  id: String!
+}
+
+type LaunchAccessmodAnalysisResult {
+  success: Boolean!
+  analysis: AccessmodAnalysis
 }
 
 input LoginInput {
@@ -266,6 +283,8 @@ type Mutation {
   deleteAccessmodFile(input: DeleteAccessmodFileInput): DeleteAccessmodFileResult
   createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult
   updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult
+  launchAccessmodAnalysis(input: LaunchAccessmodAnalysisInput): LaunchAccessmodAnalysisResult
+  deleteAccessmodAnalysis(input: DeleteAccessmodAnalysisInput): DeleteAccessmodAnalysisResult
 }
 
 type Organization {
@@ -328,7 +347,7 @@ input UpdateAccessmodAccessibilityAnalysisInput {
 
 type UpdateAccessmodAccessibilityAnalysisResult {
   success: Boolean!
-  analysis: AccessmodAccessibilityAnalysis!
+  analysis: AccessmodAccessibilityAnalysis
 }
 
 input UpdateAccessmodProjectInput {

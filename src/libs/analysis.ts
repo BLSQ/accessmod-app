@@ -14,8 +14,8 @@ export function getAnalysisStatusLabel(
   status: AccessmodAnalysisStatus
 ): string {
   switch (status) {
-    case AccessmodAnalysisStatus.Pending:
-      return "Pending";
+    case AccessmodAnalysisStatus.Draft:
+      return "Draft";
     case AccessmodAnalysisStatus.Failed:
       return "Failed";
     case AccessmodAnalysisStatus.Queued:

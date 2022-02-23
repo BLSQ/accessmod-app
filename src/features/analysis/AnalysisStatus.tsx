@@ -9,7 +9,7 @@ interface Props {
 
 const Classes = {
   [AccessmodAnalysisStatus.Failed]: "bg-red-200 text-red-800",
-  [AccessmodAnalysisStatus.Pending]: "bg-gray-200 text-gray-800",
+  [AccessmodAnalysisStatus.Draft]: "bg-gray-200 text-gray-800",
   [AccessmodAnalysisStatus.Queued]: "bg-lime-200 text-lime-800",
   [AccessmodAnalysisStatus.Ready]: "bg-blue-200 text-blue-800",
   [AccessmodAnalysisStatus.Running]: "bg-purple-200 text-purple-800",

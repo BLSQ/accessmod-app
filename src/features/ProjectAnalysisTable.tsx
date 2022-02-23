@@ -71,7 +71,7 @@ const ProjectAnalysisTable = (props: Props) => {
                   <div className="invisible group-hover:visible">
                     {[
                       AccessmodAnalysisStatus.Ready,
-                      AccessmodAnalysisStatus.Pending,
+                      AccessmodAnalysisStatus.Draft,
                       AccessmodAnalysisStatus.Queued,
                     ].includes(row.status) && (
                       <Link
