@@ -1,3 +1,4 @@
+import _ from "lodash";
 import {
   ChangeEventHandler,
   useCallback,
@@ -12,15 +13,16 @@ type FormData = {
 };
 
 type UseFormResult<T> = {
-  formData: T;
-  previousFormData: T | undefined;
+  formData: Partial<T>;
+  previousFormData: Partial<T> | undefined;
   errors: { [key in keyof T]?: FormFieldError };
   handleInputChange: ChangeEventHandler<HTMLInputElement>;
   setFieldValue: (fieldName: string, value: any) => void;
   resetForm: () => void;
-  handleSubmit: (event: { preventDefault: Function }) => void;
+  handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
   touched: { [key in keyof Partial<T>]: boolean };
   isValid: boolean;
+  isDirty: boolean;
   isSubmitting: boolean;
 };
 
@@ -43,23 +45,30 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
       }
     | {}
   >({});
-  const beforeMountInitialStateRef = useRef<T>();
-  if (!beforeMountInitialStateRef.current) {
-    beforeMountInitialStateRef.current = (
+
+  const internalInitialState = useRef<Partial<T>>({});
+
+  const setInitialState = () => {
+    internalInitialState.current = (
       getInitialState ? getInitialState() : initialState
     ) as T;
+  };
+  if (!internalInitialState.current) {
+    setInitialState();
   }
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [hasBeenSubmitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState<T>(
-    beforeMountInitialStateRef.current
+  const [formData, setFormData] = useState<Partial<T>>(
+    internalInitialState.current
   );
-  const previousFormData = usePrevious<T>(formData);
+  const previousFormData = usePrevious<Partial<T>>(formData);
 
   const resetForm = useCallback(() => {
     setSubmitted(false);
     setTouched({});
-    setFormData((getInitialState ? getInitialState() : initialState) as T);
+    setInitialState();
+    setFormData(internalInitialState.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getInitialState, initialState]);
 
@@ -98,15 +107,16 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   );
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: Function }) => {
-      event.preventDefault();
+    async (event?: { preventDefault: Function }) => {
+      event?.preventDefault();
       if (isSubmitting) return;
 
       setSubmitting(true);
       setSubmitted(true);
       if (isValid) {
         try {
-          await onSubmit(formData);
+          await onSubmit(formData as T);
+          setInitialState();
         } catch (err) {
           throw err;
         } finally {
@@ -129,10 +139,16 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     });
   }, [touched, hasBeenSubmitted]);
 
+  const isDirty = useMemo(
+    () => !_.isEqual(formData, internalInitialState.current),
+    [formData, internalInitialState]
+  );
+
   return {
     formData,
     previousFormData,
     errors,
+    isDirty,
     touched: allTouched,
     handleInputChange,
     setFieldValue,
