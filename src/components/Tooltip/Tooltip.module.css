@@ -1,0 +1,37 @@
+.tooltip {
+  @apply shadow-md rounded bg-lochmara text-white z-50 px-2 py-1 flex flex-col text-xs;
+}
+
+.tooltip[data-popper-interactive="false"] {
+  @apply pointer-events-none;
+}
+
+.arrow,
+.arrow::before {
+  @apply absolute w-2 h-2 bg-inherit;
+}
+
+.arrow {
+  @apply invisible;
+}
+
+.arrow::before {
+  content: "";
+  @apply visible rotate-45;
+}
+
+.tooltip[data-popper-placement^="top"] > .arrow {
+  @apply -bottom-1;
+}
+
+.tooltip[data-popper-placement^="bottom"] > .arrow {
+  @apply -top-1;
+}
+
+.tooltip[data-popper-placement^="left"] > .arrow {
+  @apply -right-1;
+}
+
+.tooltip[data-popper-placement^="right"] > .arrow {
+  @apply -left-1;
+}

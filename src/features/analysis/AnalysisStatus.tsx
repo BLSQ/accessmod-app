@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import Badge from "components/Badge";
 import { getAnalysisStatusLabel } from "libs/analysis";
 import { AccessmodAnalysisStatus } from "libs/graphql";
+import Tooltip from "components/Tooltip/Tooltip";
 
 interface Props {
   analysis: { status: AccessmodAnalysisStatus };
@@ -18,9 +19,11 @@ const Classes = {
 
 const AnalysisStatus = ({ analysis }: Props) => {
   return (
-    <Badge size="xs" className={Classes[analysis.status]}>
-      {getAnalysisStatusLabel(analysis.status)}
-    </Badge>
+    <Tooltip label={`${getAnalysisStatusLabel(analysis.status)}: Description`}>
+      <Badge size="xs" className={Classes[analysis.status]}>
+        {getAnalysisStatusLabel(analysis.status)}
+      </Badge>
+    </Tooltip>
   );
 };
 
