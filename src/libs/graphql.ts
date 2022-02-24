@@ -532,6 +532,13 @@ export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', res
 
 export type CrateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
+export type CreateProjectMutationVariables = Exact<{
+  input?: InputMaybe<CreateAccessmodProjectInput>;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject?: { __typename?: 'CreateAccessmodProjectResult', success: boolean, project?: { __typename?: 'AccessmodProject', id: string } | null } | null };
+
 export type CreateFilesetMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodFilesetInput>;
 }>;
@@ -539,14 +546,9 @@ export type CreateFilesetMutationVariables = Exact<{
 
 export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset?: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role?: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } | null } | null } | null };
 
-export type CreateDatasetDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type CreateProjectMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodProjectInput>;
-}>;
-
-
-export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject?: { __typename?: 'CreateAccessmodProjectResult', success: boolean, project?: { __typename?: 'AccessmodProject', id: string } | null } | null };
+export type DatasetFormDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
 
 export type DatasetPickerQueryVariables = Exact<{
   projectId: Scalars['String'];
@@ -596,7 +598,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 
 export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' } | null> }> } };
 
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type ProjectNavbar_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -735,6 +737,12 @@ export const CrateAnalysisDialog_ProjectFragmentDoc = gql`
   id
 }
     `;
+export const DatasetFormDialog_DatasetFragmentDoc = gql`
+    fragment DatasetFormDialog_dataset on AccessmodFileset {
+  id
+  name
+}
+    `;
 export const ProjectActionsButton_ProjectFragmentDoc = gql`
     fragment ProjectActionsButton_project on AccessmodProject {
   id
@@ -745,11 +753,18 @@ export const ProjectAnalysisTable_ProjectFragmentDoc = gql`
   id
 }
     `;
+export const DatasetFormDialog_ProjectFragmentDoc = gql`
+    fragment DatasetFormDialog_project on AccessmodProject {
+  id
+  name
+}
+    `;
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
   id
+  ...DatasetFormDialog_project
 }
-    `;
+    ${DatasetFormDialog_ProjectFragmentDoc}`;
 export const ProjectNavbar_ProjectFragmentDoc = gql`
     fragment ProjectNavbar_project on AccessmodProject {
   id
@@ -799,18 +814,12 @@ export const ProjectsList_ProjectsFragmentDoc = gql`
   totalPages
 }
     ${ProjectCard_ProjectFragmentDoc}`;
-export const CreateDatasetDialog_ProjectFragmentDoc = gql`
-    fragment CreateDatasetDialog_project on AccessmodProject {
-  id
-  name
-}
-    `;
 export const DatasetPicker_ProjectFragmentDoc = gql`
     fragment DatasetPicker_project on AccessmodProject {
   id
-  ...CreateDatasetDialog_project
+  ...DatasetFormDialog_project
 }
-    ${CreateDatasetDialog_ProjectFragmentDoc}`;
+    ${DatasetFormDialog_ProjectFragmentDoc}`;
 export const AccessibilityAnalysisForm_ProjectFragmentDoc = gql`
     fragment AccessibilityAnalysisForm_project on AccessmodProject {
   id
@@ -958,6 +967,42 @@ export function useCreateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type CreateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useCreateAccessibilityAnalysisMutation>;
 export type CreateAccessibilityAnalysisMutationResult = Apollo.MutationResult<CreateAccessibilityAnalysisMutation>;
 export type CreateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
+export const CreateProjectDocument = gql`
+    mutation CreateProject($input: CreateAccessmodProjectInput) {
+  createAccessmodProject(input: $input) {
+    success
+    project {
+      id
+    }
+  }
+}
+    `;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const CreateFilesetDocument = gql`
     mutation CreateFileset($input: CreateAccessmodFilesetInput) {
   createAccessmodFileset(input: $input) {
@@ -1000,42 +1045,6 @@ export function useCreateFilesetMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateFilesetMutationHookResult = ReturnType<typeof useCreateFilesetMutation>;
 export type CreateFilesetMutationResult = Apollo.MutationResult<CreateFilesetMutation>;
 export type CreateFilesetMutationOptions = Apollo.BaseMutationOptions<CreateFilesetMutation, CreateFilesetMutationVariables>;
-export const CreateProjectDocument = gql`
-    mutation CreateProject($input: CreateAccessmodProjectInput) {
-  createAccessmodProject(input: $input) {
-    success
-    project {
-      id
-    }
-  }
-}
-    `;
-export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
-
-/**
- * __useCreateProjectMutation__
- *
- * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
-      }
-export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
-export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
-export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const DatasetPickerDocument = gql`
     query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String) {
   filesets: accessmodFilesets(
@@ -1216,6 +1225,7 @@ export const ProjectDatasetsTableDocument = gql`
     query ProjectDatasetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
   accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
     items {
+      ...DatasetFormDialog_dataset
       id
       name
       role {
@@ -1243,7 +1253,7 @@ export const ProjectDatasetsTableDocument = gql`
     totalItems
   }
 }
-    `;
+    ${DatasetFormDialog_DatasetFragmentDoc}`;
 
 /**
  * __useProjectDatasetsTableQuery__
@@ -1779,12 +1789,12 @@ export const ProjectDataPageDocument = gql`
     id
     name
     ...ProjectNavbar_project
-    ...CreateDatasetDialog_project
+    ...DatasetFormDialog_project
     ...ProjectDatasetsTable_project
   }
 }
     ${ProjectNavbar_ProjectFragmentDoc}
-${CreateDatasetDialog_ProjectFragmentDoc}
+${DatasetFormDialog_ProjectFragmentDoc}
 ${ProjectDatasetsTable_ProjectFragmentDoc}`;
 
 /**

@@ -12,7 +12,7 @@ import {
 } from "libs/graphql";
 import { i18n } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import CreateDatasetDialog from "./CreateDatasetDialog";
+import CreateDatasetDialog from "./DatasetFormDialog";
 
 type Props = {
   value: { [key: string]: any };
@@ -72,7 +72,9 @@ const CustomMenuList = ({ children, onCreate, ...props }: any) => {
 
 const RECOMMENDED_OPTION = {
   id: null,
-  get name() {return i18n!.t("Use recommended dataset")}
+  get name() {
+    return i18n!.t("Use recommended dataset");
+  },
 };
 
 const DatasetPicker = (props: Props) => {
@@ -176,7 +178,7 @@ DatasetPicker.fragments = {
   project: gql`
     fragment DatasetPicker_project on AccessmodProject {
       id
-      ...CreateDatasetDialog_project
+      ...DatasetFormDialog_project
     }
     ${CreateDatasetDialog.fragments.project}
   `,

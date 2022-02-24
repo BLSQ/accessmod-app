@@ -5,11 +5,13 @@ import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
+  DatasetFormDialog_DatasetFragment,
   ProjectDatasetsTable_ProjectFragment,
   useProjectDatasetsTableQuery,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
+import DatasetFormDialog from "./DatasetFormDialog";
 
 const PROJECT_DATASETS_QUERY = gql`
   query ProjectDatasetsTable(
@@ -19,6 +21,7 @@ const PROJECT_DATASETS_QUERY = gql`
   ) {
     accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
       items {
+        ...DatasetFormDialog_dataset
         id
         name
         role {
@@ -46,6 +49,7 @@ const PROJECT_DATASETS_QUERY = gql`
       totalItems
     }
   }
+  ${DatasetFormDialog.fragments.dataset}
 `;
 
 type Props = {
@@ -54,11 +58,15 @@ type Props = {
 };
 
 const ProjectDatasetsTable = (props: Props) => {
+  const { project } = props;
   const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
+  const [editedDataset, setEditedDataset] = useState<
+    undefined | DatasetFormDialog_DatasetFragment
+  >();
   const { t } = useTranslation();
   const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
-      variables: { projectId: props.project.id, ...pagination },
+      variables: { projectId: project.id, ...pagination },
     }
   );
   useCacheKey(["filesets"], () => refetch());
@@ -68,58 +76,72 @@ const ProjectDatasetsTable = (props: Props) => {
   const totalPages = (data || previousData)?.accessmodFilesets.totalPages ?? 0;
 
   return (
-    <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
-      <div className="overflow-x-auto rounded-md">
-        <table className="who">
-          <thead>
-            <tr>
-              <th scope="column" className="whitespace-nowrap">
-                {t("Dataset Name")}
-              </th>
-              <th scope="column">{t("Role")}</th>
-              <th scope="column">{t("Owner")}</th>
-              <th scope="column">{t("Created")} At</th>
-              <th scope="column" className="whitespace-nowrap">
-                {t("# Files")}
-              </th>
-              <th scope="column">
-                <span className="sr-only">{t("Delete")}</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className="group">
-                <td className="min-w-fit">{row.name}</td>
-                <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
-                <td>
-                  {[row.owner.firstName, row.owner.lastName]
-                    .filter(Boolean)
-                    .join(" ") || row.owner.email}
-                </td>
-                <td>
-                  <Time datetime={row.createdAt} />
-                </td>
-                <td>{row.files.length ?? 0}</td>
-                <td className="">
-                  <div className="invisible group-hover:visible"></div>
-                </td>
+    <>
+      <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
+        <div className="overflow-x-auto rounded-md">
+          <table className="who">
+            <thead>
+              <tr>
+                <th scope="column" className="whitespace-nowrap">
+                  {t("Dataset Name")}
+                </th>
+                <th scope="column">{t("Role")}</th>
+                <th scope="column">{t("Owner")}</th>
+                <th scope="column">{t("Created")} At</th>
+                <th scope="column" className="whitespace-nowrap">
+                  {t("# Files")}
+                </th>
+                <th scope="column">
+                  <span className="sr-only">{t("Delete")}</span>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id} className="group">
+                  <td className="min-w-fit">{row.name}</td>
+                  <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
+                  <td>
+                    {[row.owner.firstName, row.owner.lastName]
+                      .filter(Boolean)
+                      .join(" ") || row.owner.email}
+                  </td>
+                  <td>
+                    <Time datetime={row.createdAt} />
+                  </td>
+                  <td>{row.files.length ?? 0}</td>
+                  <td className="text-right">
+                    <div className="invisible group-hover:visible">
+                      <Button size="sm" onClick={() => setEditedDataset(row)}>
+                        {t("Add Files")}
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="px-5 py-3">
+          <Pagination
+            loading={loading}
+            onChange={(page) => setPagination({ ...pagination, page })}
+            page={pagination.page}
+            perPage={pagination.perPage}
+            totalItems={totalItems}
+            totalPages={totalPages}
+          />
+        </div>
       </div>
-      <div className="px-5 py-3">
-        <Pagination
-          loading={loading}
-          onChange={(page) => setPagination({ ...pagination, page })}
-          page={pagination.page}
-          perPage={pagination.perPage}
-          totalItems={totalItems}
-          totalPages={totalPages}
+      {editedDataset && (
+        <DatasetFormDialog
+          dataset={editedDataset}
+          project={project}
+          open={Boolean(editedDataset)}
+          onClose={() => setEditedDataset(undefined)}
         />
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
@@ -127,7 +149,9 @@ ProjectDatasetsTable.fragments = {
   project: gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
       id
+      ...DatasetFormDialog_project
     }
+    ${DatasetFormDialog.fragments.project}
   `,
 };
 

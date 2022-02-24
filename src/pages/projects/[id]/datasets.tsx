@@ -2,10 +2,9 @@ import { gql } from "@apollo/client";
 import { UploadIcon } from "@heroicons/react/outline";
 import Button from "components/Button";
 import Layout, { PageHeader } from "components/layouts/Layout";
-import CreateDatasetDialog from "features/CreateDatasetDialog";
+import CreateDatasetDialog from "features/DatasetFormDialog";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
 import ProjectNavbar from "features/ProjectNavbar";
-import useCacheKey from "hooks/useCacheKey";
 import { useProjectDataPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
@@ -21,14 +20,8 @@ const ProjectDataPage: NextPageWithLayout = () => {
     variables: { id: router.query.id as string },
   });
 
-  const clearFilesets = useCacheKey(["filesets"]);
-
   const onDialogClose = useCallback(
-    (reason?: string) => {
-      if (reason === "submit") {
-        // Reload filesets
-        clearFilesets();
-      }
+    () => {
       toggleUploadDialog(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,7 +90,7 @@ export const getServerSideProps = createGetServerSideProps({
             id
             name
             ...ProjectNavbar_project
-            ...CreateDatasetDialog_project
+            ...DatasetFormDialog_project
             ...ProjectDatasetsTable_project
           }
         }
