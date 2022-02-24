@@ -4,10 +4,13 @@ import Button from "components/Button";
 import Field from "components/forms/Field";
 import RadioGroup from "components/forms/RadioGroup";
 import useBeforeUnload from "hooks/useBeforeUnload";
+import useDebounce from "hooks/useDebounce";
 import useForm from "hooks/useForm";
+import { launchAnalysis } from "libs/analysis";
 import {
   AccessibilityAnalysisForm_AnalysisFragment,
   AccessibilityAnalysisForm_ProjectFragment,
+  AccessmodAnalysisStatus,
   AccessmodFilesetRoleCode,
   useUpdateAccessibilityAnalysisMutation,
 } from "libs/graphql";
@@ -31,7 +34,7 @@ type AccessibilityForm = {
   healthFacilities: any;
   travelDirection: string;
   analysisType: string;
-  [key: string]: any;
+  extent: any;
 };
 
 function getInitialFormState(
@@ -40,10 +43,10 @@ function getInitialFormState(
   return {
     name: analysis.name,
     maxTravelTime: analysis.maxTravelTime?.toString() ?? "120",
-    invertDirection: analysis.invertDirection ?? false,
     analysisType: !analysis?.anisotropic ? "isotropic" : "anisotropic",
     travelDirection: analysis?.invertDirection ? "from" : "towards",
     landCover: analysis?.landCover,
+    extent: analysis?.extent,
     transportNetwork: analysis?.transportNetwork,
     slope: analysis?.slope,
     barrier: analysis?.barrier,
@@ -55,9 +58,9 @@ function getInitialFormState(
 
 function datasetToInput(dataset?: { id: string }) {
   if (dataset?.id === "AUTO") {
-    return null;
+    return undefined;
   }
-  return dataset?.id;
+  return dataset?.id ?? undefined;
 }
 
 function getMutationInput(
@@ -70,6 +73,7 @@ function getMutationInput(
     maxTravelTime: parseInt(formData.maxTravelTime ?? "", 10),
     landCoverId: datasetToInput(formData.landCover),
     demId: datasetToInput(formData.dem),
+    extentId: datasetToInput(formData.extent),
     transportNetworkId: datasetToInput(formData.transportNetwork),
     slopeId: datasetToInput(formData.slope),
     waterId: datasetToInput(formData.water),
@@ -96,6 +100,9 @@ interface Props {
 
 const AccessibilityAnalysisForm = (props: Props) => {
   const { project, analysis } = props;
+  const router = useRouter();
+  const [isTriggering, setTriggering] = useState(false);
+  const [error, setError] = useState<null | string>(null);
   const [updateAnalysis] = useUpdateAccessibilityAnalysisMutation();
 
   const form = useForm<AccessibilityForm>({
@@ -105,19 +112,41 @@ const AccessibilityAnalysisForm = (props: Props) => {
       await updateAnalysis({
         variables: { input: getMutationInput(analysis, values) },
       });
-      // router.push({
-      //   pathname: routes.project_analysis,
-      //   query: { projectId: project.id, analysisId: analysis.id },
-      // });
     },
   });
+  const debouncedFormData = useDebounce(form.formData, 500);
 
   useEffect(() => {
     form.resetForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analysis]);
 
-  useBeforeUnload(() => Object.keys(form.touched).length > 0);
+  useEffect(() => {
+    console.log("Form has changed", form.isDirty);
+    if (form.isDirty) {
+      form.handleSubmit();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedFormData]);
+
+  useBeforeUnload(() => form.isDirty);
+
+  const onCompute = useCallback(async () => {
+    setTriggering(true);
+    if (form.isDirty) {
+      await form.handleSubmit();
+    }
+
+    if (await launchAnalysis(analysis)) {
+      router.push({
+        pathname: routes.project_analysis,
+        query: { projectId: project.id, analysisId: analysis.id },
+      });
+    } else {
+      setTriggering(false);
+      setError("Computation failed. Check your input data");
+    }
+  }, [form.formData]);
 
   return (
     <div className="space-y-5">
@@ -152,6 +181,15 @@ const AccessibilityAnalysisForm = (props: Props) => {
           ab illo inventore veritatis et quasi architecto beatae vitae dicta
           sunt explicabo.
         </p>
+        <Field label="Extent" name="extent" required>
+          <DatasetPicker
+            project={project}
+            roleCode={AccessmodFilesetRoleCode.Geometry}
+            value={form.formData.extent}
+            required
+            onChange={(value) => form.setFieldValue("extent", value)}
+          />
+        </Field>
         <Field label="Land Cover" name="landCover" required>
           <DatasetPicker
             project={project}
@@ -159,6 +197,15 @@ const AccessibilityAnalysisForm = (props: Props) => {
             value={form.formData.landCover}
             required
             onChange={(value) => form.setFieldValue("landCover", value)}
+          />
+        </Field>
+        <Field label="Slope" name="slope" required>
+          <DatasetPicker
+            project={project}
+            roleCode={AccessmodFilesetRoleCode.Slope}
+            value={form.formData.slope}
+            required
+            onChange={(value) => form.setFieldValue("slope", value)}
           />
         </Field>
         <Field label="Transport Network" name="transportNetwork" required>
@@ -170,13 +217,13 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={(value) => form.setFieldValue("transportNetwork", value)}
           />
         </Field>
-        <Field label="Barriers" name="barriers" required>
+        <Field label="Barriers" name="barrier" required>
           <DatasetPicker
             project={project}
             roleCode={AccessmodFilesetRoleCode.Barrier}
-            value={form.formData.barriers}
+            value={form.formData.barrier}
             required
-            onChange={(value) => form.setFieldValue("barriers", value)}
+            onChange={(value) => form.setFieldValue("barrier", value)}
           />
         </Field>
         <Field label="Water" name="water" required>
@@ -188,15 +235,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={(value) => form.setFieldValue("water", value)}
           />
         </Field>
-        <div className="flex justify-end gap-4">
-          <Button
-            disabled={form.isSubmitting}
-            onClick={form.handleSubmit}
-            variant="secondary"
-          >
-            Save
-          </Button>
-        </div>
       </AnalysisStep>
 
       {/* Step 2 */}
@@ -220,15 +258,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={(value) => form.setFieldValue("healthFacilities", value)}
           />
         </Field>
-        <div className="flex justify-end gap-4">
-          <Button
-            disabled={form.isSubmitting}
-            onClick={form.handleSubmit}
-            variant="secondary"
-          >
-            Save
-          </Button>
-        </div>
       </AnalysisStep>
 
       {/* Step 3 */}
@@ -252,15 +281,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={(value) => form.setFieldValue("movingSpeeds", value)}
           />
         </Field>
-        <div className="flex justify-end gap-4">
-          <Button
-            disabled={form.isSubmitting}
-            onClick={form.handleSubmit}
-            variant="secondary"
-          >
-            Save
-          </Button>
-        </div>
       </AnalysisStep>
 
       {/* Step 4 */}
@@ -305,12 +325,14 @@ const AccessibilityAnalysisForm = (props: Props) => {
           label="Max travel time"
           value={form.formData.maxTravelTime}
         />
-        <div className="flex justify-end gap-4">
-          <Button onClick={form.handleSubmit} variant="secondary">
-            Save
-          </Button>
-        </div>
       </AnalysisStep>
+
+      {error && <div className="text-sm text-danger text-right">{error}</div>}
+      {analysis.status !== AccessmodAnalysisStatus.Ready && (
+        <div className="text-sm font-medium text-gray-600 text-right">
+          All fields need to be filled in to be able to run the analysis.
+        </div>
+      )}
 
       <div className="flex justify-end gap-4">
         <Link
@@ -324,11 +346,15 @@ const AccessibilityAnalysisForm = (props: Props) => {
           </a>
         </Link>
         <Button
-          disabled={form.isSubmitting}
-          type="submit"
-          onClick={form.handleSubmit}
+          disabled={
+            form.isSubmitting ||
+            isTriggering ||
+            analysis.status !== AccessmodAnalysisStatus.Ready
+          }
+          type="button"
+          onClick={onCompute}
         >
-          Compute
+          {form.isSubmitting ? "Saving..." : "Compute"}
         </Button>
       </div>
     </div>
@@ -381,6 +407,10 @@ AccessibilityAnalysisForm.fragments = {
         name
       }
       transportNetwork {
+        id
+        name
+      }
+      extent {
         id
         name
       }

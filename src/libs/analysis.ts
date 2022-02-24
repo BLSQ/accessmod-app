@@ -1,5 +1,7 @@
+import { gql } from "@apollo/client";
 import { ANALYSIS, AnalysisComponents } from "features/analysis";
 import { i18n } from "next-i18next";
+import { getApolloClient } from "./apollo";
 import { AccessmodAnalysisStatus, AccessmodAnalysisType } from "./graphql";
 
 export function getLabelFromAnalysisType(type: AccessmodAnalysisType): string {
@@ -36,4 +38,24 @@ export function getAnalysisComponentsFromTypename(
   if (__typename === "AccessmodAccessibilityAnalysis") {
     return ANALYSIS[AccessmodAnalysisType.Accessibility];
   }
+}
+
+export async function launchAnalysis(analysis: {
+  id: string;
+}): Promise<boolean> {
+  const client = getApolloClient();
+
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
+        launchAccessmodAnalysis(input: $input) {
+          success
+        }
+      }
+    `,
+    variables: {
+      input: { id: analysis.id },
+    },
+  });
+  return data?.launchAccessmodAnalysis?.success ?? false;
 }

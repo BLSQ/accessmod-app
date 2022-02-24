@@ -39,18 +39,24 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
       });
     }
 
-    actions.push(
-      {
-        label: "Edit",
-        onClick: () => {
-          router.push({
-            pathname: routes.project_analysis_edit,
-            query: { projectId: project.id, analysisId: analysis.id },
-          });
-        },
+    actions.push({
+      label: "Edit",
+      onClick: () => {
+        router.push({
+          pathname: routes.project_analysis_edit,
+          query: { projectId: project.id, analysisId: analysis.id },
+        });
       },
-      { label: "Delete", onClick: onDeleteClick }
-    );
+    });
+
+    if (
+      ![
+        AccessmodAnalysisStatus.Running,
+        AccessmodAnalysisStatus.Queued,
+      ].includes(analysis.status)
+    ) {
+      actions.push({ label: "Delete", onClick: onDeleteClick });
+    }
 
     return actions;
   }, [analysis]);

@@ -112,7 +112,7 @@ const CreateDatasetDialog = (props: Props) => {
         variables: {
           input: {
             roleId: form.formData.role.id,
-            name: form.formData.name,
+            name: form.formData.name ?? "",
             projectId: form.formData.project.id,
           },
         },
@@ -123,28 +123,30 @@ const CreateDatasetDialog = (props: Props) => {
       }
 
       try {
-        await uploader.createUploadJob({
-          files: form.formData.files,
-          axiosConfig: { method: "PUT" },
-          onProgress: setProgress,
-          onBeforeFileUpload: async (file: FilesetFile) => {
-            const data = await getPresignedURL(fileset.id, file.type);
-            if (!data || !data.fileUri) {
-              throw new Error("No URI returned");
-            }
-            file.uri = data.fileUri;
+        if (form.formData.files && form.formData.files.length > 0) {
+          await uploader.createUploadJob({
+            files: form.formData.files,
+            axiosConfig: { method: "PUT" },
+            onProgress: setProgress,
+            onBeforeFileUpload: async (file: FilesetFile) => {
+              const data = await getPresignedURL(fileset.id, file.type);
+              if (!data || !data.fileUri) {
+                throw new Error("No URI returned");
+              }
+              file.uri = data.fileUri;
 
-            return {
-              url: data!.uploadUrl as string,
-            };
-          },
-          onAfterFileUpload: async (file: FilesetFile) => {
-            if (!file.uri) {
-              throw new Error("File has no URI");
-            }
-            await createFile(fileset.id, file.uri, file.type);
-          },
-        });
+              return {
+                url: data!.uploadUrl as string,
+              };
+            },
+            onAfterFileUpload: async (file: FilesetFile) => {
+              if (!file.uri) {
+                throw new Error("File has no URI");
+              }
+              await createFile(fileset.id, file.uri, file.type);
+            },
+          });
+        }
         form.resetForm();
         onClose("submit", fileset);
       } catch (err: any) {
@@ -244,7 +246,7 @@ const CreateDatasetDialog = (props: Props) => {
                 }
                 validator={validator}
               >
-                {form.formData.files?.length > 0 ? (
+                {form.formData.files ? (
                   <div>
                     {form.formData.files
                       .map((f) => `${f.name} (${filesize(f.size)})`)

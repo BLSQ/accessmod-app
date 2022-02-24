@@ -9,7 +9,7 @@ type OptionId = string;
 
 interface RadioGroupProps extends HTMLAttributes<HTMLInputElement> {
   options: RadioOption[];
-  value: OptionId;
+  value?: OptionId;
   name: string;
 }
 
