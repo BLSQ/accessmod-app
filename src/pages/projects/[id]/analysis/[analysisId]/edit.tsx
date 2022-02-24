@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import Layout, { PageHeader } from "components/layouts/Layout";
 import { ANALYSIS } from "features/analysis";
 import AccessibilityAnalysisForm from "features/analysis/AccessibilityAnalysisForm";
@@ -8,27 +8,6 @@ import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-
-const QUERY = gql`
-  query AnalysisEditPage($id: String!, $analysisId: String!) {
-    project: accessmodProject(id: $id) {
-      id
-      name
-      ...ProjectNavbar_project
-      ...AccessibilityAnalysisForm_project
-    }
-    analysis: accessmodAnalysis(id: $analysisId) {
-      __typename
-      id
-      type
-      name
-      ...AccessibilityAnalysisForm_analysis
-    }
-  }
-  ${AccessibilityAnalysisForm.fragments.project}
-  ${AccessibilityAnalysisForm.fragments.analysis}
-  ${ProjectNavbar.fragments.project}
-`;
 
 const AnalysisEditPage: NextPageWithLayout = (props) => {
   const router = useRouter();
@@ -58,9 +37,6 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
           <AnalysisComponents.Aside />
         </div>
         <div className="col-span-8 xl:col-span-9">
-          <h2 className="text-white mb-3 flex justify-between">
-            {t("Create a new {{label}}", { label: AnalysisComponents.label })}
-          </h2>
           <AnalysisComponents.Form
             project={data.project}
             analysis={data.analysis}
@@ -81,7 +57,26 @@ export const getServerSideProps = createGetServerSideProps({
     }
     await Layout.prefetch(client);
     await client.query({
-      query: QUERY,
+      query: gql`
+        query AnalysisEditPage($id: String!, $analysisId: String!) {
+          project: accessmodProject(id: $id) {
+            id
+            name
+            ...ProjectNavbar_project
+            ...AccessibilityAnalysisForm_project
+          }
+          analysis: accessmodAnalysis(id: $analysisId) {
+            __typename
+            id
+            type
+            name
+            ...AccessibilityAnalysisForm_analysis
+          }
+        }
+        ${AccessibilityAnalysisForm.fragments.project}
+        ${AccessibilityAnalysisForm.fragments.analysis}
+        ${ProjectNavbar.fragments.project}
+      `,
       variables: { id: params.id, analysisId: params.analysisId },
     });
   },

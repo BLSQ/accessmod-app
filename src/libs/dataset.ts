@@ -2,7 +2,6 @@ import { gql } from "@apollo/client";
 import { getApolloClient } from "./apollo";
 import {
   AccessmodFilesetFormat,
-  AccessmodFilesetRoleCode,
   CreateFileMutation,
   GetFilesetRolesQuery,
   GetUploadUrlMutation,
@@ -104,5 +103,5 @@ export const ACCEPTED_MIMETYPES = {
     ".geojson",
   ],
   [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
-  [AccessmodFilesetFormat.Tabular]: [".csv"],
+  [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],
 };

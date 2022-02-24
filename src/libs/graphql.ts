@@ -122,6 +122,7 @@ export type AccessmodFilesetRole = {
 export enum AccessmodFilesetRoleCode {
   Barrier = 'BARRIER',
   Dem = 'DEM',
+  Geometry = 'GEOMETRY',
   HealthFacilities = 'HEALTH_FACILITIES',
   LandCover = 'LAND_COVER',
   MovingSpeeds = 'MOVING_SPEEDS',
@@ -610,14 +611,14 @@ export type User_UserFragment = { __typename?: 'User', firstName?: string | null
 
 export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, extent?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
 export type UpdateAccessibilityAnalysisMutationVariables = Exact<{
   input?: InputMaybe<UpdateAccessmodAccessibilityAnalysisInput>;
 }>;
 
 
-export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis?: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } | null };
+export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis?: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, extent?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } | null };
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -632,6 +633,13 @@ type AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typen
 type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus };
 
 export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+
+export type LaunchAccessmodAnalysisMutationVariables = Exact<{
+  input?: InputMaybe<LaunchAccessmodAnalysisInput>;
+}>;
+
+
+export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchAccessmodAnalysis?: { __typename?: 'LaunchAccessmodAnalysisResult', success: boolean } | null };
 
 export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -675,7 +683,7 @@ export type AnalysisEditPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string } | null };
+export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, anisotropic?: boolean | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, extent?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string } | null };
 
 export type AnalysisDetailPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -847,6 +855,10 @@ export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
     name
   }
   transportNetwork {
+    id
+    name
+  }
+  extent {
     id
     name
   }
@@ -1342,6 +1354,39 @@ export function useUpdateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type UpdateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useUpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationResult = Apollo.MutationResult<UpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
+export const LaunchAccessmodAnalysisDocument = gql`
+    mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
+  launchAccessmodAnalysis(input: $input) {
+    success
+  }
+}
+    `;
+export type LaunchAccessmodAnalysisMutationFn = Apollo.MutationFunction<LaunchAccessmodAnalysisMutation, LaunchAccessmodAnalysisMutationVariables>;
+
+/**
+ * __useLaunchAccessmodAnalysisMutation__
+ *
+ * To run a mutation, you first call `useLaunchAccessmodAnalysisMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLaunchAccessmodAnalysisMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [launchAccessmodAnalysisMutation, { data, loading, error }] = useLaunchAccessmodAnalysisMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLaunchAccessmodAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<LaunchAccessmodAnalysisMutation, LaunchAccessmodAnalysisMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LaunchAccessmodAnalysisMutation, LaunchAccessmodAnalysisMutationVariables>(LaunchAccessmodAnalysisDocument, options);
+      }
+export type LaunchAccessmodAnalysisMutationHookResult = ReturnType<typeof useLaunchAccessmodAnalysisMutation>;
+export type LaunchAccessmodAnalysisMutationResult = Apollo.MutationResult<LaunchAccessmodAnalysisMutation>;
+export type LaunchAccessmodAnalysisMutationOptions = Apollo.BaseMutationOptions<LaunchAccessmodAnalysisMutation, LaunchAccessmodAnalysisMutationVariables>;
 export const MeQueryDocument = gql`
     query MeQuery {
   me {
