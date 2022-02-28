@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Block from "components/Block";
 import Button from "components/Button";
+import Checkbox from "components/forms/Checkbox";
 import Field from "components/forms/Field";
 import RadioGroup from "components/forms/RadioGroup";
 import useBeforeUnload from "hooks/useBeforeUnload";
@@ -10,8 +11,10 @@ import { launchAnalysis } from "libs/analysis";
 import {
   AccessibilityAnalysisForm_AnalysisFragment,
   AccessibilityAnalysisForm_ProjectFragment,
+  AccessmodAccessibilityAnalysisAlgorithm,
   AccessmodAnalysisStatus,
   AccessmodFilesetRoleCode,
+  UpdateAccessmodAccessibilityAnalysisInput,
   useUpdateAccessibilityAnalysisMutation,
 } from "libs/graphql";
 import { routes } from "libs/router";
@@ -33,19 +36,29 @@ type AccessibilityForm = {
   movingSpeeds: any;
   healthFacilities: any;
   travelDirection: string;
-  analysisType: string;
+  algorithm?: AccessmodAccessibilityAnalysisAlgorithm;
+  waterAllTouched?: boolean;
+  analysis: AccessmodAccessibilityAnalysisAlgorithm;
   extent: any;
+  maxSlope: string;
+  knightMove?: boolean;
+  priorityRoads?: boolean;
 };
 
 function getInitialFormState(
   analysis: AccessibilityAnalysisForm_AnalysisFragment
 ): Partial<AccessibilityForm> {
   return {
-    name: analysis.name,
-    maxTravelTime: analysis.maxTravelTime?.toString() ?? "120",
-    analysisType: !analysis?.anisotropic ? "isotropic" : "anisotropic",
+    name: analysis?.name,
+    maxTravelTime: analysis?.maxTravelTime?.toString() ?? "120",
+    algorithm:
+      analysis?.algorithm ??
+      AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
+    waterAllTouched: analysis?.waterAllTouched ?? undefined,
+    priorityRoads: analysis?.priorityRoads ?? undefined,
     travelDirection: analysis?.invertDirection ? "from" : "towards",
     landCover: analysis?.landCover,
+    knightMove: analysis?.knightMove ?? undefined,
     extent: analysis?.extent,
     transportNetwork: analysis?.transportNetwork,
     slope: analysis?.slope,
@@ -66,10 +79,11 @@ function datasetToInput(dataset?: { id: string }) {
 function getMutationInput(
   analysis: AccessibilityAnalysisForm_AnalysisFragment,
   formData: Partial<AccessibilityForm>
-) {
-  const input = {
+): UpdateAccessmodAccessibilityAnalysisInput {
+  return {
     id: analysis.id,
     name: formData.name,
+    knightMove: formData.knightMove ?? undefined,
     maxTravelTime: parseInt(formData.maxTravelTime ?? "", 10),
     landCoverId: datasetToInput(formData.landCover),
     demId: datasetToInput(formData.dem),
@@ -81,10 +95,11 @@ function getMutationInput(
     movingSpeedsId: datasetToInput(formData.movingSpeeds),
     healthFacilitiesId: datasetToInput(formData.healthFacilities),
     invertDirection: formData.travelDirection === "from",
-    anisotropic: formData.analysisType === "anisotropic",
+    algorithm: formData.algorithm,
+    waterAllTouched: formData.waterAllTouched,
+    priorityRoads: formData.priorityRoads,
+    maxSlope: formData.maxSlope ? parseInt(formData.maxSlope, 10) : undefined,
   };
-
-  return input;
 }
 
 const validateForm = (values: Partial<AccessibilityForm>) => {
@@ -208,6 +223,13 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={(value) => form.setFieldValue("slope", value)}
           />
         </Field>
+        <Field
+          label="Max Slope"
+          name="maxSlope"
+          value={form.formData.maxSlope}
+          onChange={form.handleInputChange}
+          type="number"
+        />
         <Field label="Transport Network" name="transportNetwork" required>
           <DatasetPicker
             project={project}
@@ -235,6 +257,18 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={(value) => form.setFieldValue("water", value)}
           />
         </Field>
+        <Checkbox
+          label="Roads have priority over water cells"
+          checked={form.formData.priorityRoads}
+          name="priorityRoads"
+          onChange={form.handleInputChange}
+        />
+        <Checkbox
+          label="All cells intersecting water are impassable"
+          checked={form.formData.waterAllTouched}
+          name="waterAllTouched"
+          onChange={form.handleInputChange}
+        />
       </AnalysisStep>
 
       {/* Step 2 */}
@@ -297,12 +331,18 @@ const AccessibilityAnalysisForm = (props: Props) => {
         </p>
         <Field name="analysisType" label="Travel Direction" required>
           <RadioGroup
-            name="analysisType"
+            name="algorithm"
             onChange={form.handleInputChange}
-            value={form.formData.analysisType}
+            value={form.formData.algorithm}
             options={[
-              { id: "isotropic", label: "Isotropic (no DEM)" },
-              { id: "anisotropic", label: "Anisotropic (use DEM)" },
+              {
+                id: AccessmodAccessibilityAnalysisAlgorithm.Isotropic,
+                label: "Isotropic (no DEM)",
+              },
+              {
+                id: AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
+                label: "Anisotropic (use DEM)",
+              },
             ]}
           />
         </Field>
@@ -317,6 +357,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             ]}
           />
         </Field>
+
         <Field
           name="maxTravelTime"
           onChange={form.handleInputChange}
@@ -324,6 +365,12 @@ const AccessibilityAnalysisForm = (props: Props) => {
           required
           label="Max travel time"
           value={form.formData.maxTravelTime}
+        />
+        <Checkbox
+          label="Use Knight’s move in cost distance analysis"
+          checked={form.formData.knightMove}
+          name="knightMove"
+          onChange={form.handleInputChange}
         />
       </AnalysisStep>
 
@@ -382,7 +429,13 @@ AccessibilityAnalysisForm.fragments = {
         id
         name
       }
-      anisotropic
+      maxSlope
+      priorityRoads
+      priorityLandCover
+      waterAllTouched
+
+      knightMove
+      algorithm
       invertDirection
       maxTravelTime
       status

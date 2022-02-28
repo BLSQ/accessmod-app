@@ -3,7 +3,11 @@ import Layout, { PageHeader } from "components/layouts/Layout";
 import { ANALYSIS } from "features/analysis";
 import AccessibilityAnalysisForm from "features/analysis/AccessibilityAnalysisForm";
 import ProjectNavbar from "features/ProjectNavbar";
-import { useAnalysisEditPageQuery } from "libs/graphql";
+import {
+  AccessmodAnalysisStatus,
+  AnalysisEditPageQuery,
+  useAnalysisEditPageQuery,
+} from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
 import { useTranslation } from "next-i18next";
@@ -56,7 +60,7 @@ export const getServerSideProps = createGetServerSideProps({
       };
     }
     await Layout.prefetch(client);
-    await client.query({
+    const response = await client.query<AnalysisEditPageQuery>({
       query: gql`
         query AnalysisEditPage($id: String!, $analysisId: String!) {
           project: accessmodProject(id: $id) {
@@ -70,6 +74,7 @@ export const getServerSideProps = createGetServerSideProps({
             id
             type
             name
+            status
             ...AccessibilityAnalysisForm_analysis
           }
         }
@@ -79,6 +84,19 @@ export const getServerSideProps = createGetServerSideProps({
       `,
       variables: { id: params.id, analysisId: params.analysisId },
     });
+
+    if (
+      [
+        AccessmodAnalysisStatus.Running,
+        AccessmodAnalysisStatus.Success,
+        AccessmodAnalysisStatus.Queued,
+        undefined,
+      ].includes(response.data?.analysis?.status)
+    ) {
+      return {
+        notFound: true,
+      };
+    }
   },
 });
 
