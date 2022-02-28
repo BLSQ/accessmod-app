@@ -39,15 +39,21 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
       });
     }
 
-    actions.push({
-      label: "Edit",
-      onClick: () => {
-        router.push({
-          pathname: routes.project_analysis_edit,
-          query: { projectId: project.id, analysisId: analysis.id },
-        });
-      },
-    });
+    if (
+      ![
+        AccessmodAnalysisStatus.Success,
+        AccessmodAnalysisStatus.Running,
+      ].includes(analysis.status)
+    )
+      actions.push({
+        label: "Edit",
+        onClick: () => {
+          router.push({
+            pathname: routes.project_analysis_edit,
+            query: { projectId: project.id, analysisId: analysis.id },
+          });
+        },
+      });
 
     if (
       ![
@@ -60,6 +66,10 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
 
     return actions;
   }, [analysis]);
+
+  if (!items.length) {
+    return null;
+  }
 
   return <ButtonGroup items={items} />;
 };

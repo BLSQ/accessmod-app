@@ -39,7 +39,6 @@ type AccessibilityForm = {
   algorithm?: AccessmodAccessibilityAnalysisAlgorithm;
   waterAllTouched?: boolean;
   analysis: AccessmodAccessibilityAnalysisAlgorithm;
-  extent: any;
   maxSlope: string;
   knightMove?: boolean;
   priorityRoads?: boolean;
@@ -59,7 +58,6 @@ function getInitialFormState(
     travelDirection: analysis?.invertDirection ? "from" : "towards",
     landCover: analysis?.landCover,
     knightMove: analysis?.knightMove ?? undefined,
-    extent: analysis?.extent,
     transportNetwork: analysis?.transportNetwork,
     slope: analysis?.slope,
     barrier: analysis?.barrier,
@@ -166,12 +164,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
   return (
     <div className="space-y-5">
       <Block className="space-y-4">
-        <p>
-          Description of the analysis. Sed ut perspiciatis unde omnis iste natus
-          error sit voluptatem accusantium doloremque laudantium, totam rem
-          aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
-          architecto beatae vitae dicta sunt explicabo.
-        </p>
+        <p>Description</p>
         <Field
           label="Analysis Name"
           name="name"
@@ -190,21 +183,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         defaultOpen
         className="space-y-4"
       >
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
-          ab illo inventore veritatis et quasi architecto beatae vitae dicta
-          sunt explicabo.
-        </p>
-        <Field label="Extent" name="extent" required>
-          <DatasetPicker
-            project={project}
-            roleCode={AccessmodFilesetRoleCode.Geometry}
-            value={form.formData.extent}
-            required
-            onChange={(value) => form.setFieldValue("extent", value)}
-          />
-        </Field>
+        <p>Description</p>
         <Field label="Land Cover" name="landCover" required>
           <DatasetPicker
             project={project}
@@ -302,10 +281,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         className="space-y-4"
         defaultOpen
       >
-        <p>
-          Description of the analysis. Sed ut perspiciatis unde omnis iste natus
-          error sit voluptatem
-        </p>
+        <p>Description</p>
         <Field name="movingSpeeds" required label="Scenario">
           <DatasetPicker
             project={project}
@@ -325,10 +301,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         className="space-y-4"
         defaultOpen
       >
-        <p>
-          Description of the analysis. Sed ut perspiciatis unde omnis iste natus
-          error sit voluptatem
-        </p>
+        <p>Description</p>
         <Field name="analysisType" label="Travel Direction" required>
           <RadioGroup
             name="algorithm"
@@ -460,10 +433,6 @@ AccessibilityAnalysisForm.fragments = {
         name
       }
       transportNetwork {
-        id
-        name
-      }
-      extent {
         id
         name
       }
