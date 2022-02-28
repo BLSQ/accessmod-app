@@ -1,17 +1,13 @@
 table.who {
-  @apply divide-y divide-gray-200 min-w-full;
-}
-
-table.who thead {
-  @apply bg-midnight-blue;
+  @apply divide-y divide-gray-200 w-full;
 }
 
 table.who th {
-  @apply px-3 py-2.5 text-xs font-medium text-white uppercase tracking-wider text-left;
+  @apply px-2 py-1 lg:px-3 lg:py-2.5 text-xs font-medium text-gray-500 uppercase tracking-wider text-left;
 }
 
 table.who td {
-  @apply px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900;
+  @apply px-2 py-1.5 lg:px-3 lg:py-2 whitespace-nowrap text-sm font-medium text-gray-800;
 }
 
 table.who tbody tr:nth-child(odd) {

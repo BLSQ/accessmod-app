@@ -8,6 +8,10 @@
     @apply text-gray-800;
   }
 
+  body {
+    @apply overflow-x-hidden;
+  }
+
   h1 {
     @apply text-3xl text-who-blue-dark;
   }
@@ -41,7 +45,7 @@
   }
 
   .btn-white {
-    @apply text-gray-800 border-gray-300 bg-white  hover:bg-gray-50;
+    @apply text-gray-800 border-gray-300 bg-white hover:bg-gray-50;
   }
 
   .btn-outlined {

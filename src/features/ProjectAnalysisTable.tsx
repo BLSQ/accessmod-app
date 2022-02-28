@@ -1,11 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
+import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
 import { getLabelFromAnalysisType } from "libs/analysis";
 import { CustomApolloClient } from "libs/apollo";
 import {
   AccessmodAnalysisStatus,
+  ProjectAnalysisTableQueryVariables,
   ProjectAnalysisTable_ProjectFragment,
   useDeleteAnalysisMutation,
   useProjectAnalysisTableQuery,
@@ -15,10 +17,11 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useState } from "react";
 import AnalysisStatus from "./analysis/AnalysisStatus";
+import User from "./User";
 
 type Props = {
   project: ProjectAnalysisTable_ProjectFragment;
-  cacheKey?: string; // Used to refetch query without loosing internal state completely (if we used the `key`)
+  perPage?: number;
 };
 
 const DELETE_ANALYSIS_MUTATION = gql`
@@ -30,9 +33,9 @@ const DELETE_ANALYSIS_MUTATION = gql`
 `;
 
 const ProjectAnalysisTable = (props: Props) => {
-  const { project } = props;
+  const { project, perPage = 10 } = props;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
+  const [pagination, setPagination] = useState({ page: 1, perPage });
   const [deleteAnalysis] = useDeleteAnalysisMutation();
   const { data, previousData, loading, refetch } = useProjectAnalysisTableQuery(
     {
@@ -56,8 +59,8 @@ const ProjectAnalysisTable = (props: Props) => {
   const totalPages = (data || previousData)?.analysis.totalPages ?? 0;
 
   return (
-    <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
-      <div className="overflow-x-auto rounded-md">
+    <div className="overflow-x-hidden">
+      <div className="overflow-x-auto">
         <table className="who">
           <thead>
             <tr>
@@ -65,6 +68,7 @@ const ProjectAnalysisTable = (props: Props) => {
                 {t("Analysis")}
               </th>
               <th scope="column">{t("Type")}</th>
+              <th scope="column">{t("Created")}</th>
               <th scope="column">{t("Status")}</th>
               <th scope="column">
                 <span className="sr-only">{t("Actions")}</span>
@@ -81,14 +85,17 @@ const ProjectAnalysisTable = (props: Props) => {
                       query: { projectId: project.id, analysisId: row.id },
                     }}
                   >
-                    <a>{row.name}</a>
+                    <a className="hover:underline">{row.name}</a>
                   </Link>
                 </td>
                 <td>{getLabelFromAnalysisType(row.type)}</td>
                 <td>
+                  <Time datetime={row.createdAt} />
+                </td>
+                <td>
                   <AnalysisStatus analysis={row} />
                 </td>
-                <td className="">
+                <td>
                   <div className="invisible group-hover:visible flex justify-end gap-1">
                     <Button
                       size="sm"
@@ -119,8 +126,9 @@ const ProjectAnalysisTable = (props: Props) => {
           </tbody>
         </table>
       </div>
-      <div className="px-5 py-3">
+      <div className="mt-3 border-t border-gray-200">
         <Pagination
+          className="px-2"
           loading={loading}
           onChange={(page) => setPagination({ ...pagination, page })}
           page={pagination.page}
@@ -143,7 +151,7 @@ ProjectAnalysisTable.fragments = {
 
 ProjectAnalysisTable.prefetch = async (
   client: CustomApolloClient,
-  projectId: String
+  variables: ProjectAnalysisTableQueryVariables
 ) => {
   await client.query({
     query: gql`
@@ -162,6 +170,7 @@ ProjectAnalysisTable.prefetch = async (
             id
             type
             name
+            createdAt
             status
             ...AnalysisStatus_analysis
           }
@@ -172,11 +181,7 @@ ProjectAnalysisTable.prefetch = async (
       }
       ${AnalysisStatus.fragments.analysis}
     `,
-    variables: {
-      projectId,
-      page: 1,
-      perPage: 10,
-    },
+    variables,
   });
 };
 

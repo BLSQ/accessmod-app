@@ -569,7 +569,9 @@ export type CreateAccessibilityAnalysisMutationVariables = Exact<{
 
 export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response?: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } | null } | null };
 
-export type CrateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type CreateAnalysisTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type CreateProjectMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodProjectInput>;
@@ -633,7 +635,7 @@ export type ProjectAnalysisTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectAnalysisTableQuery = { __typename?: 'Query', analysis: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus }> } };
+export type ProjectAnalysisTableQuery = { __typename?: 'Query', analysis: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
@@ -641,6 +643,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   projectId: Scalars['String'];
+  term?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -653,9 +656,7 @@ export type DeleteDatasetMutationVariables = Exact<{
 
 export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset?: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } | null };
 
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
-
-export type ProjectNavbar_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -783,14 +784,16 @@ export type ProjectDataPageQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string } } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -808,42 +811,10 @@ export const UserMenu_UserFragmentDoc = gql`
   }
 }
     `;
-export const CrateAnalysisDialog_ProjectFragmentDoc = gql`
-    fragment CrateAnalysisDialog_project on AccessmodProject {
-  id
-}
-    `;
 export const DatasetFormDialog_DatasetFragmentDoc = gql`
     fragment DatasetFormDialog_dataset on AccessmodFileset {
   id
   name
-}
-    `;
-export const ProjectActionsButton_ProjectFragmentDoc = gql`
-    fragment ProjectActionsButton_project on AccessmodProject {
-  id
-}
-    `;
-export const ProjectAnalysisTable_ProjectFragmentDoc = gql`
-    fragment ProjectAnalysisTable_project on AccessmodProject {
-  id
-}
-    `;
-export const DatasetFormDialog_ProjectFragmentDoc = gql`
-    fragment DatasetFormDialog_project on AccessmodProject {
-  id
-  name
-}
-    `;
-export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
-    fragment ProjectDatasetsTable_project on AccessmodProject {
-  id
-  ...DatasetFormDialog_project
-}
-    ${DatasetFormDialog_ProjectFragmentDoc}`;
-export const ProjectNavbar_ProjectFragmentDoc = gql`
-    fragment ProjectNavbar_project on AccessmodProject {
-  id
 }
     `;
 export const User_UserFragmentDoc = gql`
@@ -902,6 +873,12 @@ export const AnalysisActionsButton_AnalysisFragmentDoc = gql`
   name
   status
   type
+}
+    `;
+export const DatasetFormDialog_ProjectFragmentDoc = gql`
+    fragment DatasetFormDialog_project on AccessmodProject {
+  id
+  name
 }
     `;
 export const DatasetPicker_ProjectFragmentDoc = gql`
@@ -1009,6 +986,61 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
   status
 }
     `;
+export const ProjectActionsButton_ProjectFragmentDoc = gql`
+    fragment ProjectActionsButton_project on AccessmodProject {
+  id
+}
+    `;
+export const ProjectAnalysisTable_ProjectFragmentDoc = gql`
+    fragment ProjectAnalysisTable_project on AccessmodProject {
+  id
+}
+    `;
+export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
+    fragment ProjectDatasetsTable_project on AccessmodProject {
+  id
+  ...DatasetFormDialog_project
+  owner {
+    ...User_user
+  }
+}
+    ${DatasetFormDialog_ProjectFragmentDoc}
+${User_UserFragmentDoc}`;
+export const CreateAnalysisDialog_ProjectFragmentDoc = gql`
+    fragment CreateAnalysisDialog_project on AccessmodProject {
+  id
+}
+    `;
+export const CreateAnalysisTrigger_ProjectFragmentDoc = gql`
+    fragment CreateAnalysisTrigger_project on AccessmodProject {
+  ...CreateAnalysisDialog_project
+}
+    ${CreateAnalysisDialog_ProjectFragmentDoc}`;
+export const ProjectPage_ProjectFragmentDoc = gql`
+    fragment ProjectPage_project on AccessmodProject {
+  id
+  name
+  crs
+  ...ProjectActionsButton_project
+  ...ProjectAnalysisTable_project
+  ...ProjectDatasetsTable_project
+  ...CreateAnalysisTrigger_project
+  country {
+    name
+    code
+    flag
+  }
+  spatialResolution
+  owner {
+    ...User_user
+    email
+  }
+}
+    ${ProjectActionsButton_ProjectFragmentDoc}
+${ProjectAnalysisTable_ProjectFragmentDoc}
+${ProjectDatasetsTable_ProjectFragmentDoc}
+${CreateAnalysisTrigger_ProjectFragmentDoc}
+${User_UserFragmentDoc}`;
 export const NavbarDocument = gql`
     query Navbar {
   accessmodProjects(page: 1, perPage: 5) {
@@ -1331,6 +1363,7 @@ export const ProjectAnalysisTableDocument = gql`
       id
       type
       name
+      createdAt
       status
       ...AnalysisStatus_analysis
     }
@@ -1371,8 +1404,13 @@ export type ProjectAnalysisTableQueryHookResult = ReturnType<typeof useProjectAn
 export type ProjectAnalysisTableLazyQueryHookResult = ReturnType<typeof useProjectAnalysisTableLazyQuery>;
 export type ProjectAnalysisTableQueryResult = Apollo.QueryResult<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>;
 export const ProjectDatasetsTableDocument = gql`
-    query ProjectDatasetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
-  accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
+    query ProjectDatasetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!, $term: String) {
+  accessmodFilesets(
+    projectId: $projectId
+    page: $page
+    perPage: $perPage
+    term: $term
+  ) {
     items {
       ...DatasetFormDialog_dataset
       id
@@ -1419,6 +1457,7 @@ export const ProjectDatasetsTableDocument = gql`
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *      projectId: // value for 'projectId'
+ *      term: // value for 'term'
  *   },
  * });
  */
@@ -1835,7 +1874,6 @@ export const AnalysisEditPageDocument = gql`
   project: accessmodProject(id: $id) {
     id
     name
-    ...ProjectNavbar_project
     ...AnalysisForm_project
   }
   analysis: accessmodAnalysis(id: $analysisId) {
@@ -1847,8 +1885,7 @@ export const AnalysisEditPageDocument = gql`
     ...AnalysisForm_analysis
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}
-${AnalysisForm_ProjectFragmentDoc}
+    ${AnalysisForm_ProjectFragmentDoc}
 ${AnalysisForm_AnalysisFragmentDoc}`;
 
 /**
@@ -1884,7 +1921,6 @@ export const AnalysisDetailPageDocument = gql`
   project: accessmodProject(id: $id) {
     id
     name
-    ...ProjectNavbar_project
     ...AnalysisActionsButton_project
   }
   analysis: accessmodAnalysis(id: $analysisId) {
@@ -1926,8 +1962,7 @@ export const AnalysisDetailPageDocument = gql`
     }
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}
-${AnalysisActionsButton_ProjectFragmentDoc}
+    ${AnalysisActionsButton_ProjectFragmentDoc}
 ${AnalysisActionsButton_AnalysisFragmentDoc}
 ${AnalysisStatus_AnalysisFragmentDoc}
 ${AnalysisOutput_AnalysisFragmentDoc}
@@ -1966,13 +2001,11 @@ export const ProjectAnalysisPageDocument = gql`
   project: accessmodProject(id: $id) {
     id
     name
-    ...ProjectNavbar_project
-    ...CrateAnalysisDialog_project
+    ...CreateAnalysisTrigger_project
     ...ProjectAnalysisTable_project
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}
-${CrateAnalysisDialog_ProjectFragmentDoc}
+    ${CreateAnalysisTrigger_ProjectFragmentDoc}
 ${ProjectAnalysisTable_ProjectFragmentDoc}`;
 
 /**
@@ -2007,13 +2040,11 @@ export const ProjectDataPageDocument = gql`
   accessmodProject(id: $id) {
     id
     name
-    ...ProjectNavbar_project
     ...DatasetFormDialog_project
     ...ProjectDatasetsTable_project
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}
-${DatasetFormDialog_ProjectFragmentDoc}
+    ${DatasetFormDialog_ProjectFragmentDoc}
 ${ProjectDatasetsTable_ProjectFragmentDoc}`;
 
 /**
@@ -2045,25 +2076,11 @@ export type ProjectDataPageLazyQueryHookResult = ReturnType<typeof useProjectDat
 export type ProjectDataPageQueryResult = Apollo.QueryResult<ProjectDataPageQuery, ProjectDataPageQueryVariables>;
 export const ProjectPageDocument = gql`
     query ProjectPage($id: String!) {
-  accessmodProject(id: $id) {
-    id
-    name
-    crs
-    ...ProjectNavbar_project
-    ...ProjectActionsButton_project
-    country {
-      name
-      code
-      flag
-    }
-    spatialResolution
-    owner {
-      email
-    }
+  project: accessmodProject(id: $id) {
+    ...ProjectPage_project
   }
 }
-    ${ProjectNavbar_ProjectFragmentDoc}
-${ProjectActionsButton_ProjectFragmentDoc}`;
+    ${ProjectPage_ProjectFragmentDoc}`;
 
 /**
  * __useProjectPageQuery__

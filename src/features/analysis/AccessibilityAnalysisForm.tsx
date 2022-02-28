@@ -178,13 +178,8 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       <AnalysisStep id="friction" title="Generate Friction Map" defaultOpen>
         <p className="mb-4">Description</p>
-        <div className="space-y-4">
-          <Field
-            label="Land Cover"
-            name="landCover"
-            required
-            className="md:w-1/2 xl:w-1/3"
-          >
+        <div className="grid md:grid-cols-2 gap-4">
+          <Field label="Land Cover" name="landCover" required className="">
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.LandCover}
@@ -194,11 +189,40 @@ const AccessibilityAnalysisForm = (props: Props) => {
             />
           </Field>
           <Field
-            label="Slope"
-            name="slope"
+            label="Transport Network"
+            name="transportNetwork"
             required
-            className="md:w-1/2 xl:w-1/3"
+            className=""
           >
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.TransportNetwork}
+              value={form.formData.transportNetwork}
+              required
+              onChange={(value) =>
+                form.setFieldValue("transportNetwork", value)
+              }
+            />
+          </Field>
+          <Field label="Barriers" name="barrier" required className="">
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Barrier}
+              value={form.formData.barrier}
+              required
+              onChange={(value) => form.setFieldValue("barrier", value)}
+            />
+          </Field>
+          <Field label="Water" name="water" required className="">
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Water}
+              value={form.formData.water}
+              required
+              onChange={(value) => form.setFieldValue("water", value)}
+            />
+          </Field>
+          <Field label="Slope" name="slope" required className="">
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Slope}
@@ -213,52 +237,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
             value={form.formData.maxSlope}
             onChange={form.handleInputChange}
             type="number"
-            className="md:w-1/2 xl:w-1/3"
+            className=""
           />
-          <Field
-            label="Transport Network"
-            name="transportNetwork"
-            required
-            className="md:w-1/2 xl:w-1/3"
-          >
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.TransportNetwork}
-              value={form.formData.transportNetwork}
-              required
-              onChange={(value) =>
-                form.setFieldValue("transportNetwork", value)
-              }
-            />
-          </Field>
-          <Field
-            label="Barriers"
-            name="barrier"
-            required
-            className="md:w-1/2 xl:w-1/3"
-          >
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.Barrier}
-              value={form.formData.barrier}
-              required
-              onChange={(value) => form.setFieldValue("barrier", value)}
-            />
-          </Field>
-          <Field
-            label="Water"
-            name="water"
-            required
-            className="md:w-1/2 xl:w-1/3"
-          >
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.Water}
-              value={form.formData.water}
-              required
-              onChange={(value) => form.setFieldValue("water", value)}
-            />
-          </Field>
+
           <Checkbox
             label="Roads have priority over water cells"
             checked={form.formData.priorityRoads}
