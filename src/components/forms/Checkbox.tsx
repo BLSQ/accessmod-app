@@ -10,7 +10,7 @@ const Checkbox = (props: CheckboxProps) => {
   const { id, name, label, description, className, ...delegated } = props;
 
   const inputClassName = clsx(
-    "h-4 w-4 text-indigo-600 border-gray-300 rounded focus:outline-none",
+    "form-checkbox h-4 w-4 text-lochmara border-gray-300 rounded focus:ring-0 focus:ring-offset-0",
     className
   );
   return (

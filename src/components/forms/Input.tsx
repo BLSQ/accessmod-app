@@ -10,7 +10,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
 
   const inputClassName = clsx(
     "block w-full form-input shadow-sm rounded-md py-1.5 sm:text-sm border-gray-300",
-    "hover:border-gray-400 focus:ring-lochmara focus:border-lochmara focus:outline-none",
+    "hover:border-gray-400 focus:ring-transparent focus:border-lochmara focus:outline-none",
     "disabled:bg-gray-50 disabled:pointer-events-none",
     error &&
       "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara",
@@ -18,7 +18,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   );
 
   return (
-    <div className="mt-1 relative rounded-md">
+    <div className="relative rounded-md">
       <input
         id={name}
         name={name}
