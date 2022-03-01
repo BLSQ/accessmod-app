@@ -193,7 +193,6 @@ const DatasetFormDialog = (props: Props) => {
   const validator = useCallback(
     (file: File) => {
       if (!role) return null;
-      console.log("Invalid files");
       const ext = file.name.slice(file.name.lastIndexOf("."));
 
       if (!ACCEPTED_MIMETYPES[role.format].includes(ext)) {
@@ -211,8 +210,6 @@ const DatasetFormDialog = (props: Props) => {
     form.resetForm();
     onClose("cancel");
   };
-
-  console.log(form.touched);
 
   return (
     <Dialog
