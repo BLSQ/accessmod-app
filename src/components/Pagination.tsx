@@ -10,6 +10,7 @@ type Props = {
   perPage: number;
   totalPages: number;
   totalItems: number;
+  className?: string;
   onChange: (page: number) => void;
 };
 
@@ -36,10 +37,18 @@ const PaginationItem = (props: {
 };
 
 const Pagination = (props: Props) => {
-  const { loading, page, perPage, totalPages, totalItems, onChange } = props;
+  const {
+    loading,
+    page,
+    perPage,
+    totalPages,
+    totalItems,
+    onChange,
+    className,
+  } = props;
   const { t } = useTranslation();
   return (
-    <div className="py-3 flex items-center justify-between border-t border-gray-200">
+    <div className={clsx("py-3 flex items-center justify-between", className)}>
       <div className="flex-1 flex justify-between sm:hidden">
         {page > 1 && (
           <PaginationItem onClick={() => onChange(page - 1)}>

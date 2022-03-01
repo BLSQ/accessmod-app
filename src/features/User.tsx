@@ -7,10 +7,19 @@ import { useMemo } from "react";
 
 type Props = {
   user: User_UserFragment;
+  small?: boolean;
   className?: string;
+  textColor?: string;
+  subTextColor?: string;
 };
 
-const User = ({ user, className }: Props) => {
+const User = ({
+  user,
+  small,
+  textColor = "text-gray-700",
+  subTextColor = "text-gray-500",
+  className,
+}: Props) => {
   const name = useMemo(() => {
     if (!user.firstName && !user.lastName) {
       return "";
@@ -21,18 +30,18 @@ const User = ({ user, className }: Props) => {
     <div className={clsx("flex items-center group flex-shrink-0", className)}>
       <div>
         <Avatar
-          size="sm"
+          size={small ? "xs" : "sm"}
           initials={user.avatar.initials}
           color={user.avatar.color}
         />
       </div>
       <div className="ml-2">
-        <p className="text-sm font-medium text-gray-700 group-hover:text-gray-800">
-          {name}
-        </p>
-        <p className="text-xs font-medium text-gray-500 group-hover:text-gray-600">
-          {user.email}
-        </p>
+        <p className={clsx("text-sm font-medium", textColor)}>{name}</p>
+        {!small && (
+          <p className={clsx("text-xs font-medium", subTextColor)}>
+            {user.email}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { AccessmodAnalysisStatus, AccessmodAnalysisType } from "./graphql";
 export function getLabelFromAnalysisType(type: AccessmodAnalysisType): string {
   switch (type) {
     case AccessmodAnalysisType.Accessibility:
-      return i18n!.t("Accessibility");
+      return i18n!.t("Accessibility Analysis");
     default:
       return "Analysis";
   }

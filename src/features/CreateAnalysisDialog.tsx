@@ -5,7 +5,7 @@ import Field from "components/forms/Field";
 import useForm from "hooks/useForm";
 import {
   AccessmodAnalysisType,
-  CrateAnalysisDialog_ProjectFragment,
+  CreateAnalysisDialog_ProjectFragment,
   CreateAccessibilityAnalysisMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
@@ -29,7 +29,7 @@ const CREATE_ANALYSIS_MUTATION = gql`
 type Props = {
   onClose: () => void;
   open: boolean;
-  project: CrateAnalysisDialog_ProjectFragment;
+  project: CreateAnalysisDialog_ProjectFragment;
 };
 
 type Form = {
@@ -37,7 +37,7 @@ type Form = {
   name: string;
 };
 
-const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
+const CreateAnalysisDialog = ({ onClose, open, project }: Props) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [error, setError] = useState<null | string>(null);
@@ -80,7 +80,7 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
         <Dialog.Content>
           <div className="space-y-4">
             <Field
-              label={t("Analytics Name")}
+              label={t("Analysis Name")}
               name="name"
               required
               onChange={form.handleInputChange}
@@ -113,12 +113,12 @@ const CrateAnalysisDialog = ({ onClose, open, project }: Props) => {
   );
 };
 
-CrateAnalysisDialog.fragments = {
+CreateAnalysisDialog.fragments = {
   project: gql`
-    fragment CrateAnalysisDialog_project on AccessmodProject {
+    fragment CreateAnalysisDialog_project on AccessmodProject {
       id
     }
   `,
 };
 
-export default CrateAnalysisDialog;
+export default CreateAnalysisDialog;

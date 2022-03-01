@@ -1,15 +1,17 @@
 import { gql } from "@apollo/client";
 import Block from "components/Block";
-import Layout, { PageHeader } from "components/layouts/Layout";
+import Breadcrumbs from "components/Breadcrumbs";
+import Layout from "components/layouts/Layout";
+import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Pagination from "components/Pagination";
 import ProjectsList from "features/ProjectsList";
 import { useProjectsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
-import { NextPageWithLayout } from "libs/types";
+import { NextPageWithFragments } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 
-const ProjectsPage: NextPageWithLayout = () => {
+const ProjectsPage = () => {
   const [pagination, setPagination] = useState({ page: 1, perPage: 20 });
   const { t } = useTranslation();
   const { loading, data, previousData } = useProjectsPageQuery({
@@ -21,23 +23,28 @@ const ProjectsPage: NextPageWithLayout = () => {
   return (
     <>
       <PageHeader>
-        <h1 className="text-3xl font-bold text-white">{t("Projects")}</h1>
+        <Breadcrumbs>
+          <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
+        </Breadcrumbs>
+        <h1 className="mt-4 text-3xl font-bold text-white">{t("Projects")}</h1>
       </PageHeader>
-      {projects && (
-        <Block>
-          <ProjectsList projects={projects} />
-          <footer className="mt-6">
-            <Pagination
-              perPage={20}
-              loading={loading}
-              page={1}
-              onChange={(page) => setPagination({ ...pagination, page })}
-              totalItems={projects.totalItems}
-              totalPages={projects.totalPages}
-            />
-          </footer>
-        </Block>
-      )}
+      <PageContent>
+        {projects && (
+          <Block>
+            <ProjectsList projects={projects} />
+            <footer className="mt-6">
+              <Pagination
+                perPage={20}
+                loading={loading}
+                page={1}
+                onChange={(page) => setPagination({ ...pagination, page })}
+                totalItems={projects.totalItems}
+                totalPages={projects.totalPages}
+              />
+            </footer>
+          </Block>
+        )}
+      </PageContent>
     </>
   );
 };

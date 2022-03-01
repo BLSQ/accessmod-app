@@ -11,7 +11,11 @@ const Time = (props: Props) => {
   const datetime = DateTime.fromISO(props.datetime);
 
   return (
-    <time dateTime={datetime.toISO()} className={props.className}>
+    <time
+      title={datetime.toISO()}
+      dateTime={datetime.toISO()}
+      className={props.className}
+    >
       {datetime.toLocaleString(props.format ?? DateTime.DATETIME_SHORT)}
     </time>
   );

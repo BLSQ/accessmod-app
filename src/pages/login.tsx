@@ -1,12 +1,12 @@
-import { FormEvent, ReactElement, useState } from "react";
+import { gql } from "@apollo/client";
 import Button from "components/Button";
-import Input from "components/forms/Input";
 import Field from "components/forms/Field";
-import { gql, useMutation } from "@apollo/client";
-import { useRouter } from "next/router";
 import useForm from "hooks/useForm";
 import { useLoginMutation } from "libs/graphql";
 import { useTranslation } from "next-i18next";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { ReactElement } from "react";
 
 type FormInputs = {
   email: string;
@@ -61,45 +61,62 @@ const Login = (props: Props) => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
-      <div className="p-10 xs:p-0 mx-auto md: w-full md:max-w-md">
-        <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200 p-5">
-          <form className="space-y-4" onSubmit={form.handleSubmit}>
-            <Field
-              name="email"
-              required
-              type="text"
-              label={t("Email")}
-              disabled={form.isSubmitting}
-              error={form.touched.email && form.errors.email}
-              onChange={form.handleInputChange}
-            />
-            <Field
-              name="password"
-              required
-              type="password"
-              label={t("Password")}
-              disabled={form.isSubmitting}
-              error={form.touched.password && form.errors.password}
-              onChange={form.handleInputChange}
-            />
+    <div className="min-h-screen bg-lochmara flex flex-col justify-center sm:py-12">
+      <div className="p-5 md:p-10 mx-auto w-full md:max-w-md space-y-4">
+        <div className="text-center">
+          <Image
+            priority
+            alt="who logo"
+            src="/images/WHO-logo-watermark-white.png"
+            layout="fixed"
+            height="111"
+            width="363"
+          />
+        </div>
+        <h2 className="text-white font-medium text-center">AccessMod</h2>
+        <p className="text-white text-center">Description</p>
+        <form className="space-y-4 px-4" onSubmit={form.handleSubmit}>
+          <Field
+            name="email"
+            required
+            type="text"
+            labelColor="text-white"
+            errorColor="text-white"
+            label={t("Email")}
+            disabled={form.isSubmitting}
+            error={form.touched.email && form.errors.email}
+            onChange={form.handleInputChange}
+            placeholder="user@example.com"
+          />
+          <Field
+            name="password"
+            required
+            type="password"
+            label={t("Password")}
+            labelColor="text-white"
+            errorColor="text-white"
+            disabled={form.isSubmitting}
+            error={form.touched.password && form.errors.password}
+            onChange={form.handleInputChange}
+            placeholder="*************"
+          />
 
-            {data?.login && !data?.login?.success && (
-              <div className={"text-red-600"}>
-                {t(
-                  "We were unable to log you in. Please verify your credentials."
-                )}
-              </div>
-            )}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={form.isSubmitting}
-            >
+          {data?.login && !data?.login?.success && (
+            <div className={"text-red-600"}>
+              {t(
+                "We were unable to log you in. Please verify your credentials."
+              )}
+            </div>
+          )}
+          <div className="flex justify-between items-center">
+            <a href="" className="text-xs text-gray-100 hover:underline">
+              {t("Forgot your password ?")}
+            </a>
+            <Button type="submit" className="px-6" disabled={form.isSubmitting}>
               {t("Login")}
             </Button>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

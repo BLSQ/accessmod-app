@@ -1,22 +1,27 @@
 import { gql } from "@apollo/client";
 import { UploadIcon } from "@heroicons/react/outline";
+import Block from "components/Block";
+import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
-import Layout, { PageHeader } from "components/layouts/Layout";
+import Input from "components/forms/Input";
+import Layout from "components/layouts/Layout";
+import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
+import SearchInput from "components/SearchInput";
 import CreateDatasetDialog from "features/DatasetFormDialog";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
-import ProjectNavbar from "features/ProjectNavbar";
 import { useProjectDataPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
-import { NextPageWithLayout } from "libs/types";
+import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 
-const ProjectDataPage: NextPageWithLayout = () => {
+const ProjectDataPage = () => {
   const [showUploadDialog, toggleUploadDialog] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
-  const { loading, data, refetch } = useProjectDataPageQuery({
+
+  const { loading, data } = useProjectDataPageQuery({
     variables: { id: router.query.id as string },
   });
 
@@ -44,32 +49,40 @@ const ProjectDataPage: NextPageWithLayout = () => {
         open={showUploadDialog}
         onClose={onDialogClose}
       />
-      <PageHeader className="pb-4">
-        <h1 className="text-3xl font-bold text-white">
-          {data.accessmodProject?.name}
-        </h1>
-      </PageHeader>
-      <div className="flex-1 grid grid-cols-12 gap-4 lg:gap-7">
-        <ProjectNavbar
-          project={data.accessmodProject}
-          className="col-span-3 xl:col-span-2"
-        />
-        <div className="col-span-9 xl:col-span-10">
-          <h2 className="text-white mb-3 flex justify-between">
-            <span>{t("Datasets")}</span>
-            <Button
-              variant="primary"
-              onClick={() => toggleUploadDialog(true)}
-              leadingIcon={<UploadIcon className="h-4 w-4" />}
-            >
-              {t("Upload Data")}
-            </Button>
-          </h2>
-          <ProjectDatasetsTable
-            project={data.accessmodProject}
-          ></ProjectDatasetsTable>
+      <PageHeader>
+        <Breadcrumbs className="mb-3">
+          <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project,
+              query: { projectId: data.accessmodProject.id },
+            }}
+          >
+            {data.accessmodProject.name}
+          </Breadcrumbs.Part>
+        </Breadcrumbs>
+        <div className="flex justify-between items-center">
+          <div className="flex space-x-4">
+            <h1 className="text-3xl font-bold text-white">{t("Datasets")}</h1>
+          </div>
+          <Button
+            variant="primary"
+            onClick={() => toggleUploadDialog(true)}
+            leadingIcon={<UploadIcon className="h-4 w-4" />}
+          >
+            {t("Upload Data")}
+          </Button>
         </div>
-      </div>
+      </PageHeader>
+      <PageContent>
+        <Block>
+          <ProjectDatasetsTable
+            searchable
+            perPage={20}
+            project={data.accessmodProject}
+          />
+        </Block>
+      </PageContent>
     </>
   );
 };
@@ -89,19 +102,20 @@ export const getServerSideProps = createGetServerSideProps({
           accessmodProject(id: $id) {
             id
             name
-            ...ProjectNavbar_project
             ...DatasetFormDialog_project
             ...ProjectDatasetsTable_project
           }
         }
-        ${ProjectNavbar.fragments.project}
         ${CreateDatasetDialog.fragments.project}
         ${ProjectDatasetsTable.fragments.project}
       `,
       variables: { id: params.id },
     });
 
-    await ProjectDatasetsTable.prefetch(client, params.id as string);
+    await ProjectDatasetsTable.prefetch(client, {
+      projectId: params.id as string,
+      perPage: 20,
+    });
   },
 });
 

@@ -117,6 +117,7 @@ export const ACCEPTED_MIMETYPES = {
     ".json",
     ".cpg",
     ".geojson",
+    ".cpg",
   ],
   [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
   [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],

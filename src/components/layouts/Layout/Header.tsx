@@ -19,48 +19,47 @@ const Header = ({ user }: Props) => {
   const { t } = useTranslation();
   return (
     <>
-      <div className="bg-who-blue-main pb-32">
-        <nav className="mb-10">
-          <div className="max-w-5xl mx-auto sm:px-4 lg:px-8">
-            <div className="border-b border-white">
-              <div className="flex items-center justify-between h-16 px-4 sm:px-0">
-                <div className="flex items-center gap-5 text-white h-full">
-                  <div className="flex-shrink-0">
-                    <Link href="/">
-                      <a className="flex">
-                        <Image
-                          alt="who logo"
-                          src="/images/WHO-logo-watermark-white.png"
-                          layout="fixed"
-                          height="37"
-                          width="121"
-                        />
-                      </a>
-                    </Link>
-                  </div>
-                  <div className="text-xl text-bold uppercase ">
-                    {t("Access Mod")}
-                  </div>
-                  <Navbar />
+      <nav className="bg-lochmara">
+        <div className="max-w-5xl mx-auto sm:px-4 md:px-8">
+          <div className="border-b border-white">
+            <div className="flex items-center justify-between h-16 px-4 sm:px-0">
+              <div className="flex items-center gap-5 text-white h-full">
+                <div className="flex-shrink-0">
+                  <Link href="/">
+                    <a className="flex">
+                      <Image
+                        priority
+                        alt="who logo"
+                        src="/images/WHO-logo-watermark-white.png"
+                        layout="fixed"
+                        height="37"
+                        width="121"
+                      />
+                    </a>
+                  </Link>
                 </div>
-                <div className="hidden md:block">
-                  <div className="ml-4 flex items-center md:ml-6">
-                    <Button
-                      variant="primary"
-                      className="mr-4"
-                      onClick={() => setProjectDialog(true)}
-                    >
-                      {t("New Project")}
-                    </Button>
+                <div className="text-xl text-bold uppercase ">
+                  {t("Access Mod")}
+                </div>
+                <Navbar />
+              </div>
+              <div className="hidden md:block">
+                <div className="ml-4 flex items-center md:ml-6">
+                  <Button
+                    variant="primary"
+                    className="mr-4"
+                    onClick={() => setProjectDialog(true)}
+                  >
+                    {t("New Project")}
+                  </Button>
 
-                    <UserMenu user={user} />
-                  </div>
+                  <UserMenu user={user} />
                 </div>
               </div>
             </div>
           </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
       <CreateProjectDialog
         open={showProjectDialog}
         onClose={() => setProjectDialog(false)}

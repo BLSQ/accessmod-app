@@ -1,19 +1,17 @@
 import { gql } from "@apollo/client";
-import Layout, { PageHeader } from "components/layouts/Layout";
-import AccessibilityAnalysisForm from "features/analysis/AccessibilityAnalysisForm";
+import Layout from "components/layouts/Layout";
+import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisForm from "features/analysis/AnalysisForm";
-import ProjectNavbar from "features/ProjectNavbar";
 import {
   AccessmodAnalysisStatus,
   AnalysisEditPageQuery,
   useAnalysisEditPageQuery,
 } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
-import { NextPageWithLayout } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
-const AnalysisEditPage: NextPageWithLayout = () => {
+const AnalysisEditPage = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { data, loading } = useAnalysisEditPageQuery({
@@ -30,10 +28,14 @@ const AnalysisEditPage: NextPageWithLayout = () => {
 
   return (
     <>
-      <PageHeader className="pb-4">
-        <h1 className="text-3xl font-bold text-white">{data.analysis.name}</h1>
+      <PageHeader>
+        <h1 className="text-3xl font-bold text-white">
+          {t("Analysis {{name}}", { name: data.analysis.name })}
+        </h1>
       </PageHeader>
-      <AnalysisForm project={data.project} analysis={data.analysis} />
+      <PageContent>
+        <AnalysisForm project={data.project} analysis={data.analysis} />
+      </PageContent>
     </>
   );
 };
@@ -53,7 +55,6 @@ export const getServerSideProps = createGetServerSideProps({
           project: accessmodProject(id: $id) {
             id
             name
-            ...ProjectNavbar_project
             ...AnalysisForm_project
           }
           analysis: accessmodAnalysis(id: $analysisId) {
@@ -67,7 +68,6 @@ export const getServerSideProps = createGetServerSideProps({
         }
         ${AnalysisForm.fragments.project}
         ${AnalysisForm.fragments.analysis}
-        ${ProjectNavbar.fragments.project}
       `,
       variables: { id: params.id, analysisId: params.analysisId },
     });

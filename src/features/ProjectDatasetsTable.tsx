@@ -1,26 +1,35 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
+import SearchInput from "components/SearchInput";
 import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
   DatasetFormDialog_DatasetFragment,
+  ProjectDatasetsTableQueryVariables,
   ProjectDatasetsTable_ProjectFragment,
   useDeleteDatasetMutation,
   useProjectDatasetsTableQuery,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DatasetFormDialog from "./DatasetFormDialog";
+import User from "./User";
 
 const PROJECT_DATASETS_QUERY = gql`
   query ProjectDatasetsTable(
     $page: Int = 1
     $perPage: Int = 10
     $projectId: String!
+    $term: String
   ) {
-    accessmodFilesets(projectId: $projectId, page: $page, perPage: $perPage) {
+    accessmodFilesets(
+      projectId: $projectId
+      page: $page
+      perPage: $perPage
+      term: $term
+    ) {
       items {
         ...DatasetFormDialog_dataset
         id
@@ -55,7 +64,8 @@ const PROJECT_DATASETS_QUERY = gql`
 
 type Props = {
   project: ProjectDatasetsTable_ProjectFragment;
-  cacheKey?: string; // Used to refetch query without loosing internal state completely (if we used the `key`)
+  perPage?: number;
+  searchable?: boolean;
 };
 
 const DELETE_DATASET_MUTATION = gql`
@@ -67,20 +77,25 @@ const DELETE_DATASET_MUTATION = gql`
 `;
 
 const ProjectDatasetsTable = (props: Props) => {
-  const { project } = props;
+  const { project, perPage = 10, searchable } = props;
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
+  const [searchTerm, setSearchTerm] = useState<string>();
+  const [pagination, setPagination] = useState({ page: 1, perPage });
   const [editedDataset, setEditedDataset] = useState<
     undefined | DatasetFormDialog_DatasetFragment
   >();
   const [deleteDataset] = useDeleteDatasetMutation();
   const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
-      variables: { projectId: project.id, ...pagination },
+      variables: { projectId: project.id, term: searchTerm, ...pagination },
     }
   );
-
   useCacheKey(["filesets"], () => refetch());
+
+  const onSearch = useCallback((term?: string) => {
+    setPagination((pagination) => ({ ...pagination, page: 1 }));
+    setSearchTerm(term);
+  }, []);
 
   const onDeleteDataset = async (dataset: { id: string; name: string }) => {
     if (
@@ -98,8 +113,16 @@ const ProjectDatasetsTable = (props: Props) => {
 
   return (
     <>
-      <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg w-full">
-        <div className="overflow-x-auto rounded-md">
+      {searchable && (
+        <SearchInput
+          className="w-56 mb-4"
+          placeholder="Search for a dataset..."
+          loading={loading}
+          onChange={(term) => onSearch(term ?? undefined)}
+        />
+      )}
+      <div className="overflow-hidden w-full">
+        <div className="overflow-x-auto">
           <table className="who">
             <thead>
               <tr>
@@ -123,9 +146,7 @@ const ProjectDatasetsTable = (props: Props) => {
                   <td className="min-w-fit">{row.name}</td>
                   <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
                   <td>
-                    {[row.owner.firstName, row.owner.lastName]
-                      .filter(Boolean)
-                      .join(" ") || row.owner.email}
+                    <User small user={row.owner} />
                   </td>
                   <td>
                     <Time datetime={row.createdAt} />
@@ -150,8 +171,9 @@ const ProjectDatasetsTable = (props: Props) => {
             </tbody>
           </table>
         </div>
-        <div className="px-5 py-3">
+        <div className="mt-3 border-t border-gray-200">
           <Pagination
+            className="px-2"
             loading={loading}
             onChange={(page) => setPagination({ ...pagination, page })}
             page={pagination.page}
@@ -178,22 +200,22 @@ ProjectDatasetsTable.fragments = {
     fragment ProjectDatasetsTable_project on AccessmodProject {
       id
       ...DatasetFormDialog_project
+      owner {
+        ...User_user
+      }
     }
+    ${User.fragments.user}
     ${DatasetFormDialog.fragments.project}
   `,
 };
 
 ProjectDatasetsTable.prefetch = async (
   client: CustomApolloClient,
-  projectId: string
+  variables: ProjectDatasetsTableQueryVariables
 ) => {
   await client.query({
     query: PROJECT_DATASETS_QUERY,
-    variables: {
-      projectId,
-      page: 1,
-      perPage: 10,
-    },
+    variables,
   });
 };
 
