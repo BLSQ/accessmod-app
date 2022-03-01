@@ -63,6 +63,14 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
       }),
     ]),
     cache: new InMemoryCache({
+      // possibleTypes must be provided to cache correctly unions and interfaces
+      // https://www.apollographql.com/docs/react/data/fragments/#using-fragments-with-unions-and-interfaces
+      possibleTypes: {
+        AccessmodAnalysis: [
+          "AccessmodGeographicCoverageAnalysis",
+          "AccessmodAccessibilityAnalysis",
+        ],
+      },
       typePolicies: {
         Country: {
           // Country code are unique (at least it should). Let's use that for the cache key

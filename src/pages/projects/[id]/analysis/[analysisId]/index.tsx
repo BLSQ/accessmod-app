@@ -2,25 +2,53 @@ import { gql } from "@apollo/client";
 import Block from "components/Block";
 import Layout, { PageHeader } from "components/layouts/Layout";
 import AnalysisActionsButton from "features/analysis/AnalysisActionsButton";
+import AnalysisOutput from "features/analysis/AnalysisOutput";
 import AnalysisStatus from "features/analysis/AnalysisStatus";
 import ProjectNavbar from "features/ProjectNavbar";
 import User from "features/User";
 import { getLabelFromAnalysisType } from "libs/analysis";
-import { useAnalysisDetailPageQuery } from "libs/graphql";
+import {
+  AccessmodAnalysisStatus,
+  useAnalysisDetailPageQuery,
+} from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { NextPageWithLayout } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const AnalysisPage: NextPageWithLayout = (props) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const { loading, data } = useAnalysisDetailPageQuery({
-    variables: {
-      id: router.query.id as string,
-      analysisId: router.query.analysisId as string,
-    },
-  });
+  const { loading, data, startPolling, stopPolling } =
+    useAnalysisDetailPageQuery({
+      pollInterval: 0,
+      variables: {
+        id: router.query.id as string,
+        analysisId: router.query.analysisId as string,
+      },
+    });
+
+  const analysis = data?.analysis;
+
+  useEffect(() => {
+    if (!analysis) {
+      return;
+    }
+
+    if (
+      [
+        AccessmodAnalysisStatus.Queued,
+        AccessmodAnalysisStatus.Running,
+      ].includes(analysis.status)
+    ) {
+      startPolling(5000);
+    }
+    return () => {
+      stopPolling();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analysis]);
 
   if (!data?.project || !data.analysis || loading) {
     // Unknonwn project or not authorized
@@ -39,7 +67,7 @@ const AnalysisPage: NextPageWithLayout = (props) => {
         />
         <div className="col-span-9 xl:col-span-10 space-y-4">
           <div>
-            <h2 className="text-white font-medium mb-3 flex justify-between">
+            <h2 className="text-white font-medium mb-3 flex justify-between gap-1">
               <span>{data.analysis.name}</span>
               <AnalysisActionsButton
                 analysis={data.analysis}
@@ -151,16 +179,16 @@ const AnalysisPage: NextPageWithLayout = (props) => {
               </Block>
             </div>
           )}
-          <div>
-            <h3 className="font-medium mb-2 flex justify-between">
-              {t("Output")}
-            </h3>
-            <Block>
-              <div className="w-full text-sm text-gray-500 text-center italic">
-                Nothing Yet
-              </div>
-            </Block>
-          </div>
+          {data.analysis.status === AccessmodAnalysisStatus.Success && (
+            <div>
+              <h3 className="font-medium mb-2 flex justify-between">
+                {t("Output")}
+              </h3>
+              <Block>
+                <AnalysisOutput analysis={data.analysis} />
+              </Block>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -196,6 +224,7 @@ export const getServerSideProps = createGetServerSideProps({
 
             ...AnalysisActionsButton_analysis
             ...AnalysisStatus_analysis
+            ...AnalysisOutput_analysis
             owner {
               ...User_user
             }
@@ -229,6 +258,7 @@ export const getServerSideProps = createGetServerSideProps({
         ${AnalysisActionsButton.fragments.project}
         ${AnalysisActionsButton.fragments.analysis}
         ${AnalysisStatus.fragments.analysis}
+        ${AnalysisOutput.fragments.analysis}
         ${User.fragments.user}
       `,
       variables: {

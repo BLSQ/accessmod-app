@@ -74,7 +74,11 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
-      setFieldValue(event.target.name, event.target.value);
+      if (event.target.type === "checkbox") {
+        setFieldValue(event.target.name, event.target.checked);
+      } else {
+        setFieldValue(event.target.name, event.target.value);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { FormEvent, HTMLAttributes } from "react";
 
 interface RadioOption {
@@ -15,13 +16,16 @@ interface RadioGroupProps extends HTMLAttributes<HTMLInputElement> {
 
 const RadioGroup = ({ name, options, onChange, value }: RadioGroupProps) => {
   return (
-    <fieldset className="mt-1 flex gap-4">
+    <fieldset className="flex gap-4">
       {options.map((option) => (
         <div key={option.id} className="flex items-center">
           <input
             id={`${name}-${option.id}`}
             type="radio"
             name={name}
+            className={clsx(
+              "form-radio focus:ring-transparent focus:outline-none text-lochmara"
+            )}
             value={option.id}
             onChange={onChange}
             defaultChecked={option.id === value}

@@ -23,53 +23,58 @@ const ButtonGroup = ({ items }: Props) => {
         size="md"
         onClick={firstItem.onClick}
         className={clsx(
-          "rounded-r-none rounded-br-none px-6 focus:z-10",
+          "px-6 focus:z-10",
+          listItems.length > 0 && "rounded-r-none rounded-br-none",
           firstItem.className
         )}
       >
         {firstItem.label}
       </Button>
-      <Menu as="div" className="-ml-px relative" style={{ lineHeight: 0 }}>
-        <Menu.Button as="div" className="block">
-          <Button
-            variant="white"
-            size="md"
-            className="rounded-l-none px-2 border-l-gray-300"
+      {listItems.length > 0 && (
+        <Menu as="div" className="-ml-px relative" style={{ lineHeight: 0 }}>
+          <Menu.Button as="div" className="block">
+            <Button
+              variant="white"
+              size="md"
+              className="rounded-l-none px-2 border-l-gray-300"
+            >
+              <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </Menu.Button>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
           >
-            <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
-          </Button>
-        </Menu.Button>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="origin-top-right absolute right-0 mt-2 -mr-1 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="py-1">
-              {listItems.map((item) => (
-                <Menu.Item key={item.label} onClick={item.onClick}>
-                  {({ active }) => (
-                    <button
-                      type="button"
-                      className={clsx(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "w-full block px-4 py-2 text-sm text-right",
-                        item.className
-                      )}
-                    >
-                      {item.label}
-                    </button>
-                  )}
-                </Menu.Item>
-              ))}
-            </div>
-          </Menu.Items>
-        </Transition>
-      </Menu>
+            <Menu.Items className="origin-top-right absolute right-0 mt-2 -mr-1 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                {listItems.map((item) => (
+                  <Menu.Item key={item.label} onClick={item.onClick}>
+                    {({ active }) => (
+                      <button
+                        type="button"
+                        className={clsx(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "w-full block px-4 py-2 text-sm text-right",
+                          item.className
+                        )}
+                      >
+                        {item.label}
+                      </button>
+                    )}
+                  </Menu.Item>
+                ))}
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      )}
     </div>
   );
 };

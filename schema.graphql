@@ -16,7 +16,6 @@ type AccessmodAccessibilityAnalysis implements AccessmodAnalysis {
   owner: User!
   createdAt: DateTime!
   updatedAt: DateTime!
-  extent: AccessmodFileset
   landCover: AccessmodFileset
   dem: AccessmodFileset
   transportNetwork: AccessmodFileset
@@ -25,11 +24,22 @@ type AccessmodAccessibilityAnalysis implements AccessmodAnalysis {
   barrier: AccessmodFileset
   movingSpeeds: AccessmodFileset
   healthFacilities: AccessmodFileset
-  anisotropic: Boolean
   invertDirection: Boolean
   maxTravelTime: Int
+  maxSlope: Float
+  priorityRoads: Boolean
+  priorityLandCover: [Int!]
+  waterAllTouched: Boolean
+  algorithm: AccessmodAccessibilityAnalysisAlgorithm
+  knightMove: Boolean
   travelTimes: AccessmodFileset
   frictionSurface: AccessmodFileset
+  catchmentAreas: AccessmodFileset
+}
+
+enum AccessmodAccessibilityAnalysisAlgorithm {
+  ANISOTROPIC
+  ISOTROPIC
 }
 
 interface AccessmodAnalysis {
@@ -66,6 +76,7 @@ enum AccessmodAnalysisType {
 type AccessmodFile {
   id: String!
   uri: String!
+  name: String!
   fileset: AccessmodFileset
   mimeType: String!
   createdAt: DateTime!
@@ -77,7 +88,7 @@ type AccessmodFileset {
   name: String!
   role: AccessmodFilesetRole
   owner: User!
-  files: [AccessmodFile]!
+  files: [AccessmodFile!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -105,15 +116,20 @@ type AccessmodFilesetRole {
 }
 
 enum AccessmodFilesetRoleCode {
-  LAND_COVER
-  DEM
-  TRANSPORT_NETWORK
-  SLOPE
-  WATER
   BARRIER
-  MOVING_SPEEDS
-  HEALTH_FACILITIES
+  CATCHMENT_AREAS
+  COVERAGE
+  DEM
+  FRICTION_SURFACE
   GEOMETRY
+  HEALTH_FACILITIES
+  LAND_COVER
+  MOVING_SPEEDS
+  POPULATION
+  SLOPE
+  TRANSPORT_NETWORK
+  TRAVEL_TIMES
+  WATER
 }
 
 type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis {
@@ -144,6 +160,7 @@ type AccessmodProject {
   owner: User!
   createdAt: DateTime!
   updatedAt: DateTime!
+  extent: AccessmodFileset
 }
 
 type AccessmodProjectPage {
@@ -208,6 +225,7 @@ input CreateAccessmodProjectInput {
   name: String!
   spatialResolution: Int!
   crs: Int!
+  extentId: String
   country: CountryInput!
 }
 
@@ -296,6 +314,9 @@ type Mutation {
   prepareAccessmodFileUpload(
     input: PrepareAccessmodFileUploadInput
   ): PrepareAccessmodFileUploadResult
+  prepareAccessmodFileDownload(
+    input: PrepareAccessmodFileDownloadInput
+  ): PrepareAccessmodFileDownloadResult
   createAccessmodFile(
     input: CreateAccessmodFileInput
   ): CreateAccessmodFileResult
@@ -330,6 +351,15 @@ input OrganizationInput {
   type: String
   url: String
   contactInfo: String
+}
+
+input PrepareAccessmodFileDownloadInput {
+  fileId: String!
+}
+
+type PrepareAccessmodFileDownloadResult {
+  success: Boolean!
+  downloadUrl: String
 }
 
 input PrepareAccessmodFileUploadInput {
@@ -370,7 +400,6 @@ type Query {
 input UpdateAccessmodAccessibilityAnalysisInput {
   id: String!
   name: String
-  extentId: String
   landCoverId: String
   demId: String
   transportNetworkId: String
@@ -379,9 +408,14 @@ input UpdateAccessmodAccessibilityAnalysisInput {
   barrierId: String
   movingSpeedsId: String
   healthFacilitiesId: String
-  anisotropic: Boolean
   invertDirection: Boolean
   maxTravelTime: Int
+  maxSlope: Float
+  priorityRoads: Boolean
+  priorityLandCover: [Int!]
+  waterAllTouched: Boolean
+  algorithm: AccessmodAccessibilityAnalysisAlgorithm
+  knightMove: Boolean
 }
 
 type UpdateAccessmodAccessibilityAnalysisResult {
@@ -394,6 +428,7 @@ input UpdateAccessmodProjectInput {
   name: String
   spatialResolution: Int
   country: CountryInput
+  extentId: String
 }
 
 type UpdateAccessmodProjectResult {

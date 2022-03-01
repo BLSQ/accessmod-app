@@ -32,7 +32,7 @@ const Field = (props: CustomField | InputField) => {
 
   return (
     <div className={className}>
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-1">
         {label && <Label htmlFor={name}>{label}</Label>}
         {!required && <span className="text-sm text-gray-400">Optional</span>}
       </div>
