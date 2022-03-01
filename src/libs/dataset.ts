@@ -3,6 +3,7 @@ import { getApolloClient } from "./apollo";
 import {
   AccessmodFilesetFormat,
   CreateFileMutation,
+  GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
   GetUploadUrlMutation,
 } from "./graphql";
@@ -105,3 +106,28 @@ export const ACCEPTED_MIMETYPES = {
   [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
   [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],
 };
+
+export async function getFileDownloadUrl(fileId: string) {
+  const client = getApolloClient();
+  const { data } = await client.mutate<GetFileDownloadUrlMutation>({
+    mutation: gql`
+      mutation GetFileDownloadUrl($input: PrepareAccessmodFileDownloadInput) {
+        prepareAccessmodFileDownload(input: $input) {
+          success
+          downloadUrl
+        }
+      }
+    `,
+    variables: {
+      input: {
+        fileId,
+      },
+    },
+  });
+
+  if (data?.prepareAccessmodFileDownload?.success) {
+    return data.prepareAccessmodFileDownload.downloadUrl as string;
+  } else {
+    throw new Error("File cannot be downloaded");
+  }
+}

@@ -85,7 +85,6 @@ function getMutationInput(
     maxTravelTime: parseInt(formData.maxTravelTime ?? "", 10),
     landCoverId: datasetToInput(formData.landCover),
     demId: datasetToInput(formData.dem),
-    extentId: datasetToInput(formData.extent),
     transportNetworkId: datasetToInput(formData.transportNetwork),
     slopeId: datasetToInput(formData.slope),
     waterId: datasetToInput(formData.water),

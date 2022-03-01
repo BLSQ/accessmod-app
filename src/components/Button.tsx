@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import { ButtonHTMLAttributes, ReactElement } from "react";
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "pill" | "white" | "outlined";
   size?: "sm" | "md" | "lg" | "xl" | "xxl";
   className?: string;
   leadingIcon?: ReactElement;
 }
 
-const Button = (props: Props) => {
+const Button = (props: ButtonProps) => {
   const {
     variant = "primary",
     size = "md",

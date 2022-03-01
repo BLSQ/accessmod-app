@@ -1,6 +1,4 @@
 {
-  "{{count}} files___one": "{{count}} files",
-  "{{count}} files___other": "{{count}} files",
   "# Files": "# Files",
   "Access Mod": "Access Mod",
   "Accessibility": "Accessibility",
@@ -28,6 +26,8 @@
   "Dataset not created": "Dataset not created",
   "Datasets": "Datasets",
   "Delete": "Delete",
+  "Download {{count}} files___one": "Download {{count}} files",
+  "Download {{count}} files___other": "Download {{count}} files",
   "Draft": "Draft",
   "Edit": "Edit",
   "Email": "Email",
@@ -56,6 +56,7 @@
   "Output": "Output",
   "Owner": "Owner",
   "Password": "Password",
+  "Preparing download": "Preparing download",
   "Previous": "Previous",
   "Project": "Project",
   "Project Information": "Project Information",

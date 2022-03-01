@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
 import DescriptionList from "components/DescriptionList";
+import DownloadDatasetButton from "features/DownloadDatasetButton";
 import {
   AccessmodAnalysisStatus,
   AnalysisOutput_AnalysisFragment,
+  DownloadDatasetButton_DatasetFragmentDoc,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 
@@ -21,21 +23,41 @@ const AnalysisOutput = ({ analysis }: Props) => {
       <DescriptionList>
         {analysis.frictionSurface && (
           <DescriptionList.Item label={t("Friction Surface")}>
-            {t("{{count}} files", {
-              count: analysis.frictionSurface.files.length,
-            })}
+            <DownloadDatasetButton
+              dataset={analysis.frictionSurface}
+              variant="secondary"
+              size="sm"
+            >
+              {t("Download {{count}} files", {
+                count: analysis.frictionSurface.files.length,
+              })}
+            </DownloadDatasetButton>
           </DescriptionList.Item>
         )}
         {analysis.travelTimes && (
           <DescriptionList.Item label={t("Travel Times")}>
-            {t("{{count}} files", { count: analysis.travelTimes.files.length })}
+            <DownloadDatasetButton
+              variant="secondary"
+              size="sm"
+              dataset={analysis.travelTimes}
+            >
+              {t("Download {{count}} files", {
+                count: analysis.travelTimes.files.length,
+              })}
+            </DownloadDatasetButton>
           </DescriptionList.Item>
         )}
         {analysis.catchmentAreas && (
           <DescriptionList.Item label={t("Catchments Areas")}>
-            {t("{{count}} files", {
-              count: analysis.catchmentAreas.files.length,
-            })}
+            <DownloadDatasetButton
+              dataset={analysis.catchmentAreas}
+              variant="secondary"
+              size="sm"
+            >
+              {t("Download {{count}} files", {
+                count: analysis.catchmentAreas.files.length,
+              })}
+            </DownloadDatasetButton>
           </DescriptionList.Item>
         )}
       </DescriptionList>
@@ -53,28 +75,17 @@ AnalysisOutput.fragments = {
       status
       ... on AccessmodAccessibilityAnalysis {
         travelTimes {
-          id
-          name
-          files {
-            __typename
-          }
+          ...DownloadDatasetButton_dataset
         }
         frictionSurface {
-          id
-          name
-          files {
-            __typename
-          }
+          ...DownloadDatasetButton_dataset
         }
         catchmentAreas {
-          id
-          name
-          files {
-            __typename
-          }
+          ...DownloadDatasetButton_dataset
         }
       }
     }
+    ${DownloadDatasetButton_DatasetFragmentDoc}
   `,
 };
 

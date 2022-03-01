@@ -24,7 +24,6 @@ export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & {
   catchmentAreas?: Maybe<AccessmodFileset>;
   createdAt: Scalars['DateTime'];
   dem?: Maybe<AccessmodFileset>;
-  extent?: Maybe<AccessmodFileset>;
   frictionSurface?: Maybe<AccessmodFileset>;
   healthFacilities?: Maybe<AccessmodFileset>;
   id: Scalars['String'];
@@ -91,6 +90,7 @@ export type AccessmodFile = {
   fileset?: Maybe<AccessmodFileset>;
   id: Scalars['String'];
   mimeType: Scalars['String'];
+  name: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   uri: Scalars['String'];
 };
@@ -98,7 +98,7 @@ export type AccessmodFile = {
 export type AccessmodFileset = {
   __typename?: 'AccessmodFileset';
   createdAt: Scalars['DateTime'];
-  files: Array<Maybe<AccessmodFile>>;
+  files: Array<AccessmodFile>;
   id: Scalars['String'];
   name: Scalars['String'];
   owner: User;
@@ -132,13 +132,18 @@ export type AccessmodFilesetRole = {
 
 export enum AccessmodFilesetRoleCode {
   Barrier = 'BARRIER',
+  CatchmentAreas = 'CATCHMENT_AREAS',
+  Coverage = 'COVERAGE',
   Dem = 'DEM',
+  FrictionSurface = 'FRICTION_SURFACE',
   Geometry = 'GEOMETRY',
   HealthFacilities = 'HEALTH_FACILITIES',
   LandCover = 'LAND_COVER',
   MovingSpeeds = 'MOVING_SPEEDS',
+  Population = 'POPULATION',
   Slope = 'SLOPE',
   TransportNetwork = 'TRANSPORT_NETWORK',
+  TravelTimes = 'TRAVEL_TIMES',
   Water = 'WATER'
 }
 
@@ -167,6 +172,7 @@ export type AccessmodProject = {
   country: Country;
   createdAt: Scalars['DateTime'];
   crs: Scalars['Int'];
+  extent?: Maybe<AccessmodFileset>;
   id: Scalars['String'];
   name: Scalars['String'];
   owner: User;
@@ -241,6 +247,7 @@ export type CreateAccessmodFilesetResult = {
 export type CreateAccessmodProjectInput = {
   country: CountryInput;
   crs: Scalars['Int'];
+  extentId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   spatialResolution: Scalars['Int'];
 };
@@ -326,6 +333,7 @@ export type Mutation = {
   launchAccessmodAnalysis?: Maybe<LaunchAccessmodAnalysisResult>;
   login?: Maybe<LoginResult>;
   logout?: Maybe<LogoutResult>;
+  prepareAccessmodFileDownload?: Maybe<PrepareAccessmodFileDownloadResult>;
   prepareAccessmodFileUpload?: Maybe<PrepareAccessmodFileUploadResult>;
   updateAccessmodAccessibilityAnalysis?: Maybe<UpdateAccessmodAccessibilityAnalysisResult>;
   updateAccessmodProject?: Maybe<UpdateAccessmodProjectResult>;
@@ -382,6 +390,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationPrepareAccessmodFileDownloadArgs = {
+  input?: InputMaybe<PrepareAccessmodFileDownloadInput>;
+};
+
+
 export type MutationPrepareAccessmodFileUploadArgs = {
   input?: InputMaybe<PrepareAccessmodFileUploadInput>;
 };
@@ -411,6 +424,16 @@ export type OrganizationInput = {
   name?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
+};
+
+export type PrepareAccessmodFileDownloadInput = {
+  fileId: Scalars['String'];
+};
+
+export type PrepareAccessmodFileDownloadResult = {
+  __typename?: 'PrepareAccessmodFileDownloadResult';
+  downloadUrl?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 export type PrepareAccessmodFileUploadInput = {
@@ -486,7 +509,6 @@ export type UpdateAccessmodAccessibilityAnalysisInput = {
   algorithm?: InputMaybe<AccessmodAccessibilityAnalysisAlgorithm>;
   barrierId?: InputMaybe<Scalars['String']>;
   demId?: InputMaybe<Scalars['String']>;
-  extentId?: InputMaybe<Scalars['String']>;
   healthFacilitiesId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   invertDirection?: InputMaybe<Scalars['Boolean']>;
@@ -512,6 +534,7 @@ export type UpdateAccessmodAccessibilityAnalysisResult = {
 
 export type UpdateAccessmodProjectInput = {
   country?: InputMaybe<CountryInput>;
+  extentId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
   spatialResolution?: InputMaybe<Scalars['Int']>;
@@ -578,6 +601,8 @@ export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?
 
 export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
+export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+
 export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -612,7 +637,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' } | null> }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
 
 export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -646,7 +671,7 @@ type AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment
 
 export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
 
-type AnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename: 'AccessmodFile' } | null> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename: 'AccessmodFile' } | null> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename: 'AccessmodFile' } | null> } | null };
+type AnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
 
 type AnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, status: AccessmodAnalysisStatus };
 
@@ -694,6 +719,13 @@ export type GetFilesetRolesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetFilesetRolesQuery = { __typename?: 'Query', roles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode, createdAt: any, updatedAt: any }> };
 
+export type GetFileDownloadUrlMutationVariables = Exact<{
+  input?: InputMaybe<PrepareAccessmodFileDownloadInput>;
+}>;
+
+
+export type GetFileDownloadUrlMutation = { __typename?: 'Mutation', prepareAccessmodFileDownload?: { __typename?: 'PrepareAccessmodFileDownloadResult', success: boolean, downloadUrl?: string | null } | null };
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -715,7 +747,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename: 'AccessmodFile' } | null> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename: 'AccessmodFile' } | null> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename: 'AccessmodFile' } | null> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectAnalysisPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -910,6 +942,17 @@ export const AnalysisActionsButton_AnalysisFragmentDoc = gql`
   type
 }
     `;
+export const DownloadDatasetButton_DatasetFragmentDoc = gql`
+    fragment DownloadDatasetButton_dataset on AccessmodFileset {
+  id
+  name
+  files {
+    id
+    name
+    mimeType
+  }
+}
+    `;
 export const AnalysisOutput_AnalysisFragmentDoc = gql`
     fragment AnalysisOutput_analysis on AccessmodAnalysis {
   __typename
@@ -917,29 +960,17 @@ export const AnalysisOutput_AnalysisFragmentDoc = gql`
   status
   ... on AccessmodAccessibilityAnalysis {
     travelTimes {
-      id
-      name
-      files {
-        __typename
-      }
+      ...DownloadDatasetButton_dataset
     }
     frictionSurface {
-      id
-      name
-      files {
-        __typename
-      }
+      ...DownloadDatasetButton_dataset
     }
     catchmentAreas {
-      id
-      name
-      files {
-        __typename
-      }
+      ...DownloadDatasetButton_dataset
     }
   }
 }
-    `;
+    ${DownloadDatasetButton_DatasetFragmentDoc}`;
 export const AnalysisStatus_AnalysisFragmentDoc = gql`
     fragment AnalysisStatus_analysis on AccessmodAnalysis {
   __typename
@@ -1630,6 +1661,40 @@ export function useGetFilesetRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetFilesetRolesQueryHookResult = ReturnType<typeof useGetFilesetRolesQuery>;
 export type GetFilesetRolesLazyQueryHookResult = ReturnType<typeof useGetFilesetRolesLazyQuery>;
 export type GetFilesetRolesQueryResult = Apollo.QueryResult<GetFilesetRolesQuery, GetFilesetRolesQueryVariables>;
+export const GetFileDownloadUrlDocument = gql`
+    mutation GetFileDownloadUrl($input: PrepareAccessmodFileDownloadInput) {
+  prepareAccessmodFileDownload(input: $input) {
+    success
+    downloadUrl
+  }
+}
+    `;
+export type GetFileDownloadUrlMutationFn = Apollo.MutationFunction<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>;
+
+/**
+ * __useGetFileDownloadUrlMutation__
+ *
+ * To run a mutation, you first call `useGetFileDownloadUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGetFileDownloadUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [getFileDownloadUrlMutation, { data, loading, error }] = useGetFileDownloadUrlMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetFileDownloadUrlMutation(baseOptions?: Apollo.MutationHookOptions<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>(GetFileDownloadUrlDocument, options);
+      }
+export type GetFileDownloadUrlMutationHookResult = ReturnType<typeof useGetFileDownloadUrlMutation>;
+export type GetFileDownloadUrlMutationResult = Apollo.MutationResult<GetFileDownloadUrlMutation>;
+export type GetFileDownloadUrlMutationOptions = Apollo.BaseMutationOptions<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {

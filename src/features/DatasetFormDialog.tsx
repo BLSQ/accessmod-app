@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import assert from "assert";
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Dropzone from "components/Dropzone";
@@ -9,17 +8,16 @@ import filesize from "filesize";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
 import { ACCEPTED_MIMETYPES, createFile, getPresignedURL } from "libs/dataset";
+import { JobFile, uploader } from "libs/file";
 import {
   AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
   DatasetFormDialog_DatasetFragment,
-  DatasetFormDialog_DatasetFragmentDoc,
   DatasetFormDialog_ProjectFragment,
   useCreateFilesetMutation,
 } from "libs/graphql";
-import uploader, { JobFile } from "libs/upload";
 import { useTranslation } from "next-i18next";
-import { MouseEventHandler, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FilesetRolePicker from "./FilesetRolePicker";
 import ProjectPicker from "./ProjectPicker";
 
