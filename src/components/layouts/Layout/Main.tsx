@@ -6,7 +6,7 @@ const Main = (props: MainProps) => {
   const { children } = props;
   return (
     <main className="-mt-32 pb-8 flex-1 flex flex-col">
-      <div className="max-w-8xl w-full px-4 sm:px-4 lg:px-8 flex-1 flex flex-col mx-auto">
+      <div className="max-w-5xl w-full px-4 sm:px-4 lg:px-8 flex-1 flex flex-col mx-auto">
         {children}
       </div>
     </main>
