@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { AnalysisComponents } from "features/analysis";
 import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
 import { AccessmodAnalysisStatus, AccessmodAnalysisType } from "./graphql";
