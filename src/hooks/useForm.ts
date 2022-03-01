@@ -17,7 +17,7 @@ type UseFormResult<T> = {
   previousFormData: Partial<T> | undefined;
   errors: { [key in keyof T]?: FormFieldError };
   handleInputChange: ChangeEventHandler<HTMLInputElement>;
-  setFieldValue: (fieldName: string, value: any) => void;
+  setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
   handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
   touched: { [key in keyof Partial<T>]: boolean };
@@ -84,16 +84,19 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     []
   );
 
-  const setFieldValue = useCallback((field: string, value: any) => {
-    setFormData((formData) => ({
-      ...formData,
-      [field]: value,
-    }));
-    setTouched((touched) => ({
-      ...touched,
-      [field]: true,
-    }));
-  }, []);
+  const setFieldValue = useCallback(
+    (field: string, value: any, isTouched = true) => {
+      setFormData((formData) => ({
+        ...formData,
+        [field]: value,
+      }));
+      setTouched((touched) => ({
+        ...touched,
+        [field]: isTouched,
+      }));
+    },
+    []
+  );
 
   const errors = useMemo(() => {
     if (!validate) {
