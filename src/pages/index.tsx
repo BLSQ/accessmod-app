@@ -22,6 +22,12 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
   getServerSideProps: async (ctx, client) => {
     await Layout.prefetch(client);
+    return {
+      redirect: {
+        destination: "/projects",
+        permanent: false,
+      },
+    };
   },
 });
 
