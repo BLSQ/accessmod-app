@@ -671,6 +671,14 @@ type AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment
 
 export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
 
+export type AnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+
+type AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis' };
+
+export type AnalysisForm_AnalysisFragment = AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+
 type AnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
 
 type AnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, status: AccessmodAnalysisStatus };
@@ -868,6 +876,20 @@ export const ProjectsList_ProjectsFragmentDoc = gql`
   totalPages
 }
     ${ProjectCard_ProjectFragmentDoc}`;
+export const AnalysisActionsButton_ProjectFragmentDoc = gql`
+    fragment AnalysisActionsButton_project on AccessmodProject {
+  id
+  name
+}
+    `;
+export const AnalysisActionsButton_AnalysisFragmentDoc = gql`
+    fragment AnalysisActionsButton_analysis on AccessmodAnalysis {
+  id
+  name
+  status
+  type
+}
+    `;
 export const DatasetPicker_ProjectFragmentDoc = gql`
     fragment DatasetPicker_project on AccessmodProject {
   id
@@ -880,6 +902,11 @@ export const AccessibilityAnalysisForm_ProjectFragmentDoc = gql`
   ...DatasetPicker_project
 }
     ${DatasetPicker_ProjectFragmentDoc}`;
+export const AnalysisForm_ProjectFragmentDoc = gql`
+    fragment AnalysisForm_project on AccessmodProject {
+  ...AccessibilityAnalysisForm_project
+}
+    ${AccessibilityAnalysisForm_ProjectFragmentDoc}`;
 export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
     fragment AccessibilityAnalysisForm_analysis on AccessmodAccessibilityAnalysis {
   __typename
@@ -928,20 +955,11 @@ export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
   }
 }
     `;
-export const AnalysisActionsButton_ProjectFragmentDoc = gql`
-    fragment AnalysisActionsButton_project on AccessmodProject {
-  id
-  name
+export const AnalysisForm_AnalysisFragmentDoc = gql`
+    fragment AnalysisForm_analysis on AccessmodAnalysis {
+  ...AccessibilityAnalysisForm_analysis
 }
-    `;
-export const AnalysisActionsButton_AnalysisFragmentDoc = gql`
-    fragment AnalysisActionsButton_analysis on AccessmodAnalysis {
-  id
-  name
-  status
-  type
-}
-    `;
+    ${AccessibilityAnalysisForm_AnalysisFragmentDoc}`;
 export const DownloadDatasetButton_DatasetFragmentDoc = gql`
     fragment DownloadDatasetButton_dataset on AccessmodFileset {
   id
@@ -1738,7 +1756,7 @@ export const AnalysisEditPageDocument = gql`
     id
     name
     ...ProjectNavbar_project
-    ...AccessibilityAnalysisForm_project
+    ...AnalysisForm_project
   }
   analysis: accessmodAnalysis(id: $analysisId) {
     __typename
@@ -1746,12 +1764,12 @@ export const AnalysisEditPageDocument = gql`
     type
     name
     status
-    ...AccessibilityAnalysisForm_analysis
+    ...AnalysisForm_analysis
   }
 }
     ${ProjectNavbar_ProjectFragmentDoc}
-${AccessibilityAnalysisForm_ProjectFragmentDoc}
-${AccessibilityAnalysisForm_AnalysisFragmentDoc}`;
+${AnalysisForm_ProjectFragmentDoc}
+${AnalysisForm_AnalysisFragmentDoc}`;
 
 /**
  * __useAnalysisEditPageQuery__

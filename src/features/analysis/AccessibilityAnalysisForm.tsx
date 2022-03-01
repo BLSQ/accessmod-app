@@ -134,7 +134,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
   }, [analysis]);
 
   useEffect(() => {
-    console.log("Form has changed", form.isDirty);
     if (form.isDirty) {
       form.handleSubmit();
     }
@@ -162,13 +161,14 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
   return (
     <div className="space-y-5">
-      <Block className="space-y-4">
-        <p>Description</p>
+      <Block>
+        <p className="mb-4">Description</p>
         <Field
           label="Analysis Name"
           name="name"
           required
           type="text"
+          className="md:w-1/2 xl:w-1/3"
           value={form.formData.name}
           onChange={form.handleInputChange}
         />
@@ -176,77 +176,102 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 1 */}
 
-      <AnalysisStep
-        id="friction"
-        title="Generate Friction Map"
-        defaultOpen
-        className="space-y-4"
-      >
-        <p>Description</p>
-        <Field label="Land Cover" name="landCover" required>
-          <DatasetPicker
-            project={project}
-            roleCode={AccessmodFilesetRoleCode.LandCover}
-            value={form.formData.landCover}
+      <AnalysisStep id="friction" title="Generate Friction Map" defaultOpen>
+        <p className="mb-4">Description</p>
+        <div className="space-y-4">
+          <Field
+            label="Land Cover"
+            name="landCover"
             required
-            onChange={(value) => form.setFieldValue("landCover", value)}
-          />
-        </Field>
-        <Field label="Slope" name="slope" required>
-          <DatasetPicker
-            project={project}
-            roleCode={AccessmodFilesetRoleCode.Slope}
-            value={form.formData.slope}
+            className="md:w-1/2 xl:w-1/3"
+          >
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.LandCover}
+              value={form.formData.landCover}
+              required
+              onChange={(value) => form.setFieldValue("landCover", value)}
+            />
+          </Field>
+          <Field
+            label="Slope"
+            name="slope"
             required
-            onChange={(value) => form.setFieldValue("slope", value)}
+            className="md:w-1/2 xl:w-1/3"
+          >
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Slope}
+              value={form.formData.slope}
+              required
+              onChange={(value) => form.setFieldValue("slope", value)}
+            />
+          </Field>
+          <Field
+            label="Max Slope"
+            name="maxSlope"
+            value={form.formData.maxSlope}
+            onChange={form.handleInputChange}
+            type="number"
+            className="md:w-1/2 xl:w-1/3"
           />
-        </Field>
-        <Field
-          label="Max Slope"
-          name="maxSlope"
-          value={form.formData.maxSlope}
-          onChange={form.handleInputChange}
-          type="number"
-        />
-        <Field label="Transport Network" name="transportNetwork" required>
-          <DatasetPicker
-            project={project}
-            roleCode={AccessmodFilesetRoleCode.TransportNetwork}
-            value={form.formData.transportNetwork}
+          <Field
+            label="Transport Network"
+            name="transportNetwork"
             required
-            onChange={(value) => form.setFieldValue("transportNetwork", value)}
-          />
-        </Field>
-        <Field label="Barriers" name="barrier" required>
-          <DatasetPicker
-            project={project}
-            roleCode={AccessmodFilesetRoleCode.Barrier}
-            value={form.formData.barrier}
+            className="md:w-1/2 xl:w-1/3"
+          >
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.TransportNetwork}
+              value={form.formData.transportNetwork}
+              required
+              onChange={(value) =>
+                form.setFieldValue("transportNetwork", value)
+              }
+            />
+          </Field>
+          <Field
+            label="Barriers"
+            name="barrier"
             required
-            onChange={(value) => form.setFieldValue("barrier", value)}
-          />
-        </Field>
-        <Field label="Water" name="water" required>
-          <DatasetPicker
-            project={project}
-            roleCode={AccessmodFilesetRoleCode.Water}
-            value={form.formData.water}
+            className="md:w-1/2 xl:w-1/3"
+          >
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Barrier}
+              value={form.formData.barrier}
+              required
+              onChange={(value) => form.setFieldValue("barrier", value)}
+            />
+          </Field>
+          <Field
+            label="Water"
+            name="water"
             required
-            onChange={(value) => form.setFieldValue("water", value)}
+            className="md:w-1/2 xl:w-1/3"
+          >
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Water}
+              value={form.formData.water}
+              required
+              onChange={(value) => form.setFieldValue("water", value)}
+            />
+          </Field>
+          <Checkbox
+            label="Roads have priority over water cells"
+            checked={form.formData.priorityRoads}
+            name="priorityRoads"
+            onChange={form.handleInputChange}
           />
-        </Field>
-        <Checkbox
-          label="Roads have priority over water cells"
-          checked={form.formData.priorityRoads}
-          name="priorityRoads"
-          onChange={form.handleInputChange}
-        />
-        <Checkbox
-          label="All cells intersecting water are impassable"
-          checked={form.formData.waterAllTouched}
-          name="waterAllTouched"
-          onChange={form.handleInputChange}
-        />
+          <Checkbox
+            label="All cells intersecting water are impassable"
+            checked={form.formData.waterAllTouched}
+            name="waterAllTouched"
+            onChange={form.handleInputChange}
+          />
+        </div>
       </AnalysisStep>
 
       {/* Step 2 */}
@@ -255,13 +280,17 @@ const AccessibilityAnalysisForm = (props: Props) => {
         id="healthFacilities"
         title={"Health Facilities"}
         className="space-y-4"
-        defaultOpen
       >
         <p>
           Description of the analysis. Sed ut perspiciatis unde omnis iste natus
           error sit voluptatem
         </p>
-        <Field name="healthFacilities" required label="Health Facilities">
+        <Field
+          name="healthFacilities"
+          required
+          label="Health Facilities"
+          className="md:w-1/2 xl:w-1/3"
+        >
           <DatasetPicker
             project={project}
             required
@@ -274,14 +303,14 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 3 */}
 
-      <AnalysisStep
-        id="travelScenario"
-        title={"Travel Scenario"}
-        className="space-y-4"
-        defaultOpen
-      >
-        <p>Description</p>
-        <Field name="movingSpeeds" required label="Scenario">
+      <AnalysisStep id="travelScenario" title={"Travel Scenario"}>
+        <p className="mb-4">Description</p>
+        <Field
+          name="movingSpeeds"
+          required
+          label="Scenario"
+          className="md:w-1/2 xl:w-1/3"
+        >
           <DatasetPicker
             project={project}
             required
@@ -298,7 +327,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
         id="advancedSettings"
         title={"Advanced Settings"}
         className="space-y-4"
-        defaultOpen
       >
         <p>Description</p>
         <Field name="analysisType" label="Travel Direction" required>
@@ -334,6 +362,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
           name="maxTravelTime"
           onChange={form.handleInputChange}
           type="number"
+          className="md:w-1/2 xl:w-1/3"
           required
           label="Max travel time"
           value={form.formData.maxTravelTime}

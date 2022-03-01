@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import Layout, { PageHeader } from "components/layouts/Layout";
-import { ANALYSIS } from "features/analysis";
 import AccessibilityAnalysisForm from "features/analysis/AccessibilityAnalysisForm";
+import AnalysisForm from "features/analysis/AnalysisForm";
 import ProjectNavbar from "features/ProjectNavbar";
 import {
   AccessmodAnalysisStatus,
@@ -13,7 +13,7 @@ import { NextPageWithLayout } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
-const AnalysisEditPage: NextPageWithLayout = (props) => {
+const AnalysisEditPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { data, loading } = useAnalysisEditPageQuery({
@@ -28,25 +28,12 @@ const AnalysisEditPage: NextPageWithLayout = (props) => {
     return null;
   }
 
-  const AnalysisComponents = ANALYSIS[data.analysis.type];
-  if (!AnalysisComponents) return <div>{t("Unknown analysis type")}</div>;
-
   return (
     <>
       <PageHeader className="pb-4">
-        <h1 className="text-3xl font-bold text-white">{data.project.name}</h1>
+        <h1 className="text-3xl font-bold text-white">{data.analysis.name}</h1>
       </PageHeader>
-      <div className=" relative flex-1 grid grid-cols-12 gap-4 lg:gap-8">
-        <div className="col-span-4 xl:col-span-3">
-          <AnalysisComponents.Aside />
-        </div>
-        <div className="col-span-8 xl:col-span-9">
-          <AnalysisComponents.Form
-            project={data.project}
-            analysis={data.analysis}
-          />
-        </div>
-      </div>
+      <AnalysisForm project={data.project} analysis={data.analysis} />
     </>
   );
 };
@@ -67,7 +54,7 @@ export const getServerSideProps = createGetServerSideProps({
             id
             name
             ...ProjectNavbar_project
-            ...AccessibilityAnalysisForm_project
+            ...AnalysisForm_project
           }
           analysis: accessmodAnalysis(id: $analysisId) {
             __typename
@@ -75,11 +62,11 @@ export const getServerSideProps = createGetServerSideProps({
             type
             name
             status
-            ...AccessibilityAnalysisForm_analysis
+            ...AnalysisForm_analysis
           }
         }
-        ${AccessibilityAnalysisForm.fragments.project}
-        ${AccessibilityAnalysisForm.fragments.analysis}
+        ${AnalysisForm.fragments.project}
+        ${AnalysisForm.fragments.analysis}
         ${ProjectNavbar.fragments.project}
       `,
       variables: { id: params.id, analysisId: params.analysisId },
