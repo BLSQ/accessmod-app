@@ -7,7 +7,12 @@ import Spinner from "components/Spinner";
 import filesize from "filesize";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
-import { ACCEPTED_MIMETYPES, createFile, getPresignedURL } from "libs/dataset";
+import {
+  ACCEPTED_MIMETYPES,
+  createFile,
+  getPresignedURL,
+  guessFileMimeType,
+} from "libs/dataset";
 import { JobFile, uploader } from "libs/file";
 import {
   AccessmodFilesetFormat,
@@ -96,7 +101,15 @@ const DatasetFormDialog = (props: Props) => {
       const errors = {} as any;
       if (!values.files?.length) {
         errors.files = t("Select files");
+      } else {
+        const invalidFiles = values.files.filter((f) => !guessFileMimeType(f));
+        if (invalidFiles.length) {
+          errors.files = t('Invalid format for files: "{{files}}"', {
+            files: invalidFiles.map((f) => f.name).join(", "),
+          });
+        }
       }
+
       if (!dataset && !values.name) {
         errors.name = t("Enter a name");
       }
@@ -135,7 +148,11 @@ const DatasetFormDialog = (props: Props) => {
             axiosConfig: { method: "PUT" },
             onProgress: setProgress,
             onBeforeFileUpload: async (file: FilesetFile) => {
-              const data = await getPresignedURL(ds!.id, file.type);
+              const mimeType = guessFileMimeType(file);
+              if (!mimeType) {
+                throw new Error("Unknown mime type");
+              }
+              const data = await getPresignedURL(ds!.id, mimeType);
               if (!data || !data.fileUri) {
                 throw new Error("No URI returned");
               }
@@ -149,7 +166,11 @@ const DatasetFormDialog = (props: Props) => {
               if (!file.uri) {
                 throw new Error("File has no URI");
               }
-              await createFile(ds!.id, file.uri, file.type);
+              const mimeType = guessFileMimeType(file);
+              if (!mimeType) {
+                throw new Error("Unknown mime type");
+              }
+              await createFile(ds!.id, file.uri, mimeType);
             },
           });
         }
@@ -164,15 +185,15 @@ const DatasetFormDialog = (props: Props) => {
   });
 
   useEffect(() => {
-    form.setFieldValue("project", project);
-    form.setFieldValue("role", role);
+    form.setFieldValue("project", project, false);
+    form.setFieldValue("role", role, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, role]);
 
   const validator = useCallback(
     (file: File) => {
       if (!role) return null;
-
+      console.log("Invalid files");
       const ext = file.name.slice(file.name.lastIndexOf("."));
 
       if (!ACCEPTED_MIMETYPES[role.format].includes(ext)) {
@@ -190,6 +211,8 @@ const DatasetFormDialog = (props: Props) => {
     form.resetForm();
     onClose("cancel");
   };
+
+  console.log(form.touched);
 
   return (
     <Dialog
@@ -237,7 +260,7 @@ const DatasetFormDialog = (props: Props) => {
                 >
                   <FilesetRolePicker
                     disabled={form.isSubmitting || Boolean(props.role)}
-                    onChange={(value) => form.setFieldValue("role", value)}
+                    onChange={(value) => {}}
                     value={form.formData.role}
                     required
                   />

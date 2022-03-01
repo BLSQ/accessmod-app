@@ -18,6 +18,20 @@ const GET_PRESIGNED_MUTATION = gql`
   }
 `;
 
+export function guessFileMimeType(file: File) {
+  if (file.type) {
+    return file.type;
+  }
+
+  const ext = file.name.slice(file.name.lastIndexOf("."));
+  switch (ext) {
+    case ".geojson":
+      return "application/geo+json";
+    case ".gpkg":
+      return "application/geopackage+sqlite3";
+  }
+}
+
 export async function getPresignedURL(filesetId: string, mimeType: string) {
   const client = getApolloClient();
 
@@ -101,6 +115,7 @@ export const ACCEPTED_MIMETYPES = {
     ".dbf",
     ".shx",
     ".json",
+    ".cpg",
     ".geojson",
   ],
   [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
