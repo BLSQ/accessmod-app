@@ -617,6 +617,13 @@ export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodPr
 
 export type ProjectActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
+export type DeleteAnalysisMutationVariables = Exact<{
+  input?: InputMaybe<DeleteAccessmodAnalysisInput>;
+}>;
+
+
+export type DeleteAnalysisMutation = { __typename?: 'Mutation', deleteAccessmodAnalysis?: { __typename?: 'DeleteAccessmodAnalysisResult', success: boolean } | null };
+
 export type ProjectAnalysisTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type ProjectAnalysisTableQueryVariables = Exact<{
@@ -638,6 +645,13 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 
 
 export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
+
+export type DeleteDatasetMutationVariables = Exact<{
+  input?: InputMaybe<DeleteAccessmodFilesetInput>;
+}>;
+
+
+export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset?: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } | null };
 
 export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -1272,6 +1286,39 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const DeleteAnalysisDocument = gql`
+    mutation DeleteAnalysis($input: DeleteAccessmodAnalysisInput) {
+  deleteAccessmodAnalysis(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteAnalysisMutationFn = Apollo.MutationFunction<DeleteAnalysisMutation, DeleteAnalysisMutationVariables>;
+
+/**
+ * __useDeleteAnalysisMutation__
+ *
+ * To run a mutation, you first call `useDeleteAnalysisMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAnalysisMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAnalysisMutation, { data, loading, error }] = useDeleteAnalysisMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAnalysisMutation, DeleteAnalysisMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAnalysisMutation, DeleteAnalysisMutationVariables>(DeleteAnalysisDocument, options);
+      }
+export type DeleteAnalysisMutationHookResult = ReturnType<typeof useDeleteAnalysisMutation>;
+export type DeleteAnalysisMutationResult = Apollo.MutationResult<DeleteAnalysisMutation>;
+export type DeleteAnalysisMutationOptions = Apollo.BaseMutationOptions<DeleteAnalysisMutation, DeleteAnalysisMutationVariables>;
 export const ProjectAnalysisTableDocument = gql`
     query ProjectAnalysisTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
   analysis: accessmodAnalyses(
@@ -1386,6 +1433,39 @@ export function useProjectDatasetsTableLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type ProjectDatasetsTableQueryHookResult = ReturnType<typeof useProjectDatasetsTableQuery>;
 export type ProjectDatasetsTableLazyQueryHookResult = ReturnType<typeof useProjectDatasetsTableLazyQuery>;
 export type ProjectDatasetsTableQueryResult = Apollo.QueryResult<ProjectDatasetsTableQuery, ProjectDatasetsTableQueryVariables>;
+export const DeleteDatasetDocument = gql`
+    mutation DeleteDataset($input: DeleteAccessmodFilesetInput) {
+  deleteAccessmodFileset(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteDatasetMutationFn = Apollo.MutationFunction<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
+
+/**
+ * __useDeleteDatasetMutation__
+ *
+ * To run a mutation, you first call `useDeleteDatasetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDatasetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDatasetMutation, { data, loading, error }] = useDeleteDatasetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteDatasetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDatasetMutation, DeleteDatasetMutationVariables>(DeleteDatasetDocument, options);
+      }
+export type DeleteDatasetMutationHookResult = ReturnType<typeof useDeleteDatasetMutation>;
+export type DeleteDatasetMutationResult = Apollo.MutationResult<DeleteDatasetMutation>;
+export type DeleteDatasetMutationOptions = Apollo.BaseMutationOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
 export const ProjectPickerDocument = gql`
     query ProjectPicker {
   accessmodProjects(page: 1, perPage: 40) {

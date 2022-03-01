@@ -7,6 +7,7 @@ import { CustomApolloClient } from "libs/apollo";
 import {
   DatasetFormDialog_DatasetFragment,
   ProjectDatasetsTable_ProjectFragment,
+  useDeleteDatasetMutation,
   useProjectDatasetsTableQuery,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
@@ -57,19 +58,39 @@ type Props = {
   cacheKey?: string; // Used to refetch query without loosing internal state completely (if we used the `key`)
 };
 
+const DELETE_DATASET_MUTATION = gql`
+  mutation DeleteDataset($input: DeleteAccessmodFilesetInput) {
+    deleteAccessmodFileset(input: $input) {
+      success
+    }
+  }
+`;
+
 const ProjectDatasetsTable = (props: Props) => {
   const { project } = props;
+  const { t } = useTranslation();
   const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
   const [editedDataset, setEditedDataset] = useState<
     undefined | DatasetFormDialog_DatasetFragment
   >();
-  const { t } = useTranslation();
+  const [deleteDataset] = useDeleteDatasetMutation();
   const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
       variables: { projectId: project.id, ...pagination },
     }
   );
+
   useCacheKey(["filesets"], () => refetch());
+
+  const onDeleteDataset = async (dataset: { id: string; name: string }) => {
+    if (
+      window.confirm(
+        t("Are you sure you want to delete {{name}}", { name: dataset.name })
+      )
+    )
+      await deleteDataset({ variables: { input: { id: dataset.id } } });
+    refetch();
+  };
 
   const rows = (data || previousData)?.accessmodFilesets.items ?? [];
   const totalItems = (data || previousData)?.accessmodFilesets.totalItems ?? 0;
@@ -111,7 +132,14 @@ const ProjectDatasetsTable = (props: Props) => {
                   </td>
                   <td>{row.files.length ?? 0}</td>
                   <td className="text-right">
-                    <div className="invisible group-hover:visible">
+                    <div className="invisible group-hover:visible flex justify-end items-center gap-1">
+                      <Button
+                        variant="white"
+                        size="sm"
+                        onClick={() => onDeleteDataset(row)}
+                      >
+                        {t("Delete")}
+                      </Button>
                       <Button size="sm" onClick={() => setEditedDataset(row)}>
                         {t("Add Files")}
                       </Button>

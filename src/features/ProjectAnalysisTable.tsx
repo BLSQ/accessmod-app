@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
 import useCacheKey from "hooks/useCacheKey";
@@ -7,6 +7,7 @@ import { CustomApolloClient } from "libs/apollo";
 import {
   AccessmodAnalysisStatus,
   ProjectAnalysisTable_ProjectFragment,
+  useDeleteAnalysisMutation,
   useProjectAnalysisTableQuery,
 } from "libs/graphql";
 import { routes } from "libs/router";
@@ -20,16 +21,35 @@ type Props = {
   cacheKey?: string; // Used to refetch query without loosing internal state completely (if we used the `key`)
 };
 
+const DELETE_ANALYSIS_MUTATION = gql`
+  mutation DeleteAnalysis($input: DeleteAccessmodAnalysisInput) {
+    deleteAccessmodAnalysis(input: $input) {
+      success
+    }
+  }
+`;
+
 const ProjectAnalysisTable = (props: Props) => {
   const { project } = props;
+  const { t } = useTranslation();
   const [pagination, setPagination] = useState({ page: 1, perPage: 10 });
+  const [deleteAnalysis] = useDeleteAnalysisMutation();
   const { data, previousData, loading, refetch } = useProjectAnalysisTableQuery(
     {
       variables: { projectId: project.id, ...pagination },
     }
   );
-  const { t } = useTranslation();
   useCacheKey(["analysis"], () => refetch());
+
+  const onDeleteAnalysis = async (analysis: { id: string; name: string }) => {
+    if (
+      window.confirm(
+        t("Are you sure you want to delete {{name}}", { name: analysis.name })
+      )
+    )
+      await deleteAnalysis({ variables: { input: { id: analysis.id } } });
+    refetch();
+  };
 
   const rows = (data || previousData)?.analysis.items ?? [];
   const totalItems = (data || previousData)?.analysis.totalItems ?? 0;
@@ -69,7 +89,14 @@ const ProjectAnalysisTable = (props: Props) => {
                   <AnalysisStatus analysis={row} />
                 </td>
                 <td className="">
-                  <div className="invisible group-hover:visible">
+                  <div className="invisible group-hover:visible flex justify-end gap-1">
+                    <Button
+                      size="sm"
+                      variant="white"
+                      onClick={() => onDeleteAnalysis(row)}
+                    >
+                      {t("Delete")}
+                    </Button>
                     {[
                       AccessmodAnalysisStatus.Ready,
                       AccessmodAnalysisStatus.Draft,
