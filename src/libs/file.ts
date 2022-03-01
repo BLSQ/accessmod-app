@@ -217,15 +217,10 @@ const uploader = new UploadManager();
 export { uploader };
 
 export async function downloadURL(url: string, name: string) {
-  const response = await axios.get(url, { responseType: "blob" });
-  const objectURL = URL.createObjectURL(response.data);
-
   const anchor = document.createElement("a");
-  anchor.href = objectURL;
+  anchor.href = url;
   anchor.download = name;
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
-
-  URL.revokeObjectURL(objectURL);
 }
