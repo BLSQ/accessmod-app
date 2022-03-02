@@ -60,6 +60,14 @@ const ProjectDataPage = () => {
           >
             {data.accessmodProject.name}
           </Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project_dataset_list,
+              query: { projectId: data.accessmodProject.id },
+            }}
+          >
+            {t("Datasets")}
+          </Breadcrumbs.Part>
         </Breadcrumbs>
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">

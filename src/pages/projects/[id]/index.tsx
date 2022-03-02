@@ -127,6 +127,14 @@ const ProjectPage: NextPageWithFragments = () => {
       <PageHeader>
         <Breadcrumbs className="mb-3">
           <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project,
+              query: { projectId: data.project.id },
+            }}
+          >
+            {data.project.name}
+          </Breadcrumbs.Part>
         </Breadcrumbs>
         <div className="flex items-start justify-between gap-2">
           <div>

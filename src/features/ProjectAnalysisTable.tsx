@@ -107,7 +107,6 @@ const ProjectAnalysisTable = (props: Props) => {
                     {[
                       AccessmodAnalysisStatus.Ready,
                       AccessmodAnalysisStatus.Draft,
-                      AccessmodAnalysisStatus.Queued,
                     ].includes(row.status) && (
                       <Link
                         href={`/projects/${encodeURIComponent(

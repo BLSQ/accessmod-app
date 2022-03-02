@@ -37,6 +37,14 @@ const ProjectAnalysisListPage = () => {
           >
             {data.project.name}
           </Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project_analysis_list,
+              query: { projectId: data.project.id },
+            }}
+          >
+            {t("Analysis")}
+          </Breadcrumbs.Part>
         </Breadcrumbs>
         <h1 className="text-3xl font-bold text-white flex items-center justify-between">
           {t("Analysis")}

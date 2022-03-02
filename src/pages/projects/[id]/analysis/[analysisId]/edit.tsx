@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import Breadcrumbs from "components/Breadcrumbs";
 import Layout from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisForm from "features/analysis/AnalysisForm";
@@ -8,6 +9,7 @@ import {
   useAnalysisEditPageQuery,
 } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
+import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
@@ -29,6 +31,36 @@ const AnalysisEditPage = () => {
   return (
     <>
       <PageHeader>
+        <Breadcrumbs className="mb-2">
+          <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project,
+              query: { projectId: data.project.id },
+            }}
+          >
+            {data.project.name}
+          </Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project,
+              query: { projectId: data.project.id },
+            }}
+          >
+            {t("Analysis")}
+          </Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project_analysis,
+              query: {
+                projectId: data.project.id,
+                analysisId: data.analysis.id,
+              },
+            }}
+          >
+            {data.analysis.name}
+          </Breadcrumbs.Part>
+        </Breadcrumbs>
         <h1 className="text-3xl font-bold text-white">
           {t("Analysis {{name}}", { name: data.analysis.name })}
         </h1>

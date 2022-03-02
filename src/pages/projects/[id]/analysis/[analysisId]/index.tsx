@@ -78,6 +78,17 @@ const AnalysisPage = () => {
           >
             {t("Analysis")}
           </Breadcrumbs.Part>
+          <Breadcrumbs.Part
+            href={{
+              pathname: routes.project_analysis,
+              query: {
+                projectId: data.project.id,
+                analysisId: data.analysis.id,
+              },
+            }}
+          >
+            {data.analysis.name}
+          </Breadcrumbs.Part>
         </Breadcrumbs>
         <div className="flex items-start justify-between gap-2">
           <div>
