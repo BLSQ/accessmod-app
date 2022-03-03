@@ -149,7 +149,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     }
 
     if (await launchAnalysis(analysis)) {
-      router.push({
+      await router.push({
         pathname: routes.project_analysis,
         query: { projectId: project.id, analysisId: analysis.id },
       });
@@ -157,7 +157,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
       setTriggering(false);
       setError("Computation failed. Check your input data");
     }
-  }, [form.formData]);
+  }, [analysis, form, project, router]);
 
   return (
     <div className="space-y-5">
