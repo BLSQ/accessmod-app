@@ -56,6 +56,7 @@ function getInitialFormState(
     waterAllTouched: analysis?.waterAllTouched ?? undefined,
     priorityRoads: analysis?.priorityRoads ?? undefined,
     travelDirection: analysis?.invertDirection ? "from" : "towards",
+    dem: analysis?.dem,
     landCover: analysis?.landCover,
     knightMove: analysis?.knightMove ?? undefined,
     transportNetwork: analysis?.transportNetwork,
@@ -127,6 +128,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     },
   });
   const debouncedFormData = useDebounce(form.formData, 500);
+  console.log(form.formData);
 
   useEffect(() => {
     form.resetForm();
