@@ -21,6 +21,7 @@ type Props = {
   disabled?: boolean;
   onChange: (value: any) => void;
   required?: boolean;
+  recommendedOption?: boolean;
 };
 
 const QUERY = gql`
@@ -78,7 +79,15 @@ const RECOMMENDED_OPTION = {
 };
 
 const DatasetPicker = (props: Props) => {
-  const { value, onChange, disabled, required, project, roleCode } = props;
+  const {
+    value,
+    onChange,
+    disabled,
+    required,
+    project,
+    roleCode,
+    recommendedOption = false,
+  } = props;
   const [roles, setRoles] = useState<
     {
       id: string;
@@ -117,10 +126,11 @@ const DatasetPicker = (props: Props) => {
     getFilesetRoles().then((roles) => setRoles(roles));
   }, []);
 
-  // We add the `Recommended dataset` option in the list
+  // We add the `Recommended dataset` option in the list if activated
   const options = useMemo(() => {
-    return [RECOMMENDED_OPTION, ...(data?.filesets?.items ?? [])];
-  }, [data]);
+    const base = recommendedOption ? [RECOMMENDED_OPTION] : [];
+    return [...base, ...(data?.filesets?.items ?? [])];
+  }, [data, recommendedOption]);
 
   const onCreateDialogClose = useCallback((reason?: string, fileset?: any) => {
     toggleCreateDialog();
@@ -138,7 +148,9 @@ const DatasetPicker = (props: Props) => {
         roleId: role.id,
       },
     });
-  }, [role]);
+  }, [role, fetch, project]);
+
+  const defaultValue = recommendedOption ? RECOMMENDED_OPTION : null;
 
   return (
     <>
@@ -150,8 +162,8 @@ const DatasetPicker = (props: Props) => {
       />
       <SelectInput
         options={options}
-        value={value ?? RECOMMENDED_OPTION}
-        defaultValue={RECOMMENDED_OPTION}
+        value={value ?? defaultValue}
+        defaultValue={defaultValue}
         onMenuOpen={onMenuOpen}
         disabled={
           disabled ||

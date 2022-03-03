@@ -179,7 +179,16 @@ const AccessibilityAnalysisForm = (props: Props) => {
       <AnalysisStep id="friction" title="Generate Friction Map" defaultOpen>
         <p className="mb-4">Description</p>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Land Cover" name="landCover" required className="">
+          <Field label="Digital Elevation Model" name="dem" required>
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Dem}
+              value={form.formData.dem}
+              required
+              onChange={(value) => form.setFieldValue("dem", value)}
+            />
+          </Field>
+          <Field label="Land Cover" name="landCover" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.LandCover}
@@ -188,12 +197,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               onChange={(value) => form.setFieldValue("landCover", value)}
             />
           </Field>
-          <Field
-            label="Transport Network"
-            name="transportNetwork"
-            required
-            className=""
-          >
+          <Field label="Transport Network" name="transportNetwork" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.TransportNetwork}
@@ -204,7 +208,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               }
             />
           </Field>
-          <Field label="Barriers" name="barrier" required className="">
+          <Field label="Barriers" name="barrier" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Barrier}
@@ -213,7 +217,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               onChange={(value) => form.setFieldValue("barrier", value)}
             />
           </Field>
-          <Field label="Water" name="water" required className="">
+          <Field label="Water" name="water" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Water}
@@ -222,7 +226,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               onChange={(value) => form.setFieldValue("water", value)}
             />
           </Field>
-          <Field label="Slope" name="slope" required className="">
+          <Field label="Slope" name="slope" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Slope}
@@ -237,9 +241,8 @@ const AccessibilityAnalysisForm = (props: Props) => {
             value={form.formData.maxSlope}
             onChange={form.handleInputChange}
             type="number"
-            className=""
           />
-
+          <br />
           <Checkbox
             label="Roads have priority over water cells"
             checked={form.formData.priorityRoads}
