@@ -128,7 +128,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
     },
   });
   const debouncedFormData = useDebounce(form.formData, 500);
-  console.log(form.formData);
 
   useEffect(() => {
     form.resetForm();
