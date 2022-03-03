@@ -14,7 +14,7 @@ const OPTIONS = [
     value: AccessmodAnalysisType.Accessibility,
     label: "Accessibility Analysis",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elitUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "Compute the traveling time surface, informing the time needed to reach the nearest health facility.",
   },
 ];
 

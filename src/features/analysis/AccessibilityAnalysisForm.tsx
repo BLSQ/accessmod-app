@@ -176,8 +176,10 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 1 */}
 
-      <AnalysisStep id="friction" title="Generate Friction Map" defaultOpen>
-        <p className="mb-4">Description</p>
+      <AnalysisStep id="friction" title="Friction Surface" defaultOpen>
+        <p className="mb-4">
+          Choose the geographic layers used to generate the friction surface.
+        </p>
         <div className="grid md:grid-cols-2 gap-4">
           <Field label="Digital Elevation Model" name="dem" required>
             <DatasetPicker
@@ -265,10 +267,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         title={"Health Facilities"}
         className="space-y-4"
       >
-        <p>
-          Description of the analysis. Sed ut perspiciatis unde omnis iste natus
-          error sit voluptatem
-        </p>
+        <p>Choose the health facilities layer.</p>
         <Field
           name="healthFacilities"
           required
@@ -288,7 +287,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
       {/* Step 3 */}
 
       <AnalysisStep id="travelScenario" title={"Travel Scenario"}>
-        <p className="mb-4">Description</p>
+        <p className="mb-4">
+          Assign moving speeds to each category of road network and land cover.
+        </p>
         <Field
           name="movingSpeeds"
           required
@@ -313,7 +314,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         className="space-y-4"
       >
         <p>Description</p>
-        <Field name="analysisType" label="Travel Direction" required>
+        <Field name="algorithm" label="Cost distance analysis method" required>
           <RadioGroup
             name="algorithm"
             onChange={form.handleInputChange}
@@ -321,11 +322,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
             options={[
               {
                 id: AccessmodAccessibilityAnalysisAlgorithm.Isotropic,
-                label: "Isotropic (no DEM)",
+                label: "Isotropic",
               },
               {
                 id: AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
-                label: "Anisotropic (use DEM)",
+                label: "Anisotropic",
               },
             ]}
           />
