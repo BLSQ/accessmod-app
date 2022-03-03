@@ -246,6 +246,8 @@ const AccessibilityAnalysisForm = (props: Props) => {
             value={form.formData.maxSlope}
             onChange={form.handleInputChange}
             type="number"
+            min={0}
+            max={1000}
           />
           <br />
           <Checkbox
