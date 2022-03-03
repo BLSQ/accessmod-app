@@ -130,6 +130,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
   useEffect(() => {
     form.resetForm();
+    // We only want to reset the form when the analysis changes, regardless of the form object itself
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analysis]);
 
@@ -137,6 +138,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     if (form.isDirty) {
       form.handleSubmit();
     }
+    // We only want to reset the form when the debounced form data changes, regardless of the form object itself
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedFormData]);
 
