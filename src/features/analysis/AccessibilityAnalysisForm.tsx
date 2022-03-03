@@ -56,6 +56,7 @@ function getInitialFormState(
     waterAllTouched: analysis?.waterAllTouched ?? undefined,
     priorityRoads: analysis?.priorityRoads ?? undefined,
     travelDirection: analysis?.invertDirection ? "from" : "towards",
+    dem: analysis?.dem,
     landCover: analysis?.landCover,
     knightMove: analysis?.knightMove ?? undefined,
     transportNetwork: analysis?.transportNetwork,
@@ -127,9 +128,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
     },
   });
   const debouncedFormData = useDebounce(form.formData, 500);
+  console.log(form.formData);
 
   useEffect(() => {
     form.resetForm();
+    // We only want to reset the form when the analysis changes, regardless of the form object itself
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analysis]);
 
@@ -137,6 +140,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     if (form.isDirty) {
       form.handleSubmit();
     }
+    // We only want to reset the form when the debounced form data changes, regardless of the form object itself
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedFormData]);
 
@@ -149,7 +153,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     }
 
     if (await launchAnalysis(analysis)) {
-      router.push({
+      await router.push({
         pathname: routes.project_analysis,
         query: { projectId: project.id, analysisId: analysis.id },
       });
@@ -157,7 +161,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
       setTriggering(false);
       setError("Computation failed. Check your input data");
     }
-  }, [form.formData]);
+  }, [analysis, form, project, router]);
 
   return (
     <div className="space-y-5">
@@ -176,10 +180,21 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 1 */}
 
-      <AnalysisStep id="friction" title="Generate Friction Map" defaultOpen>
-        <p className="mb-4">Description</p>
+      <AnalysisStep id="friction" title="Friction Surface" defaultOpen>
+        <p className="mb-4">
+          Choose the geographic layers used to generate the friction surface.
+        </p>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Land Cover" name="landCover" required className="">
+          <Field label="Digital Elevation Model" name="dem" required>
+            <DatasetPicker
+              project={project}
+              roleCode={AccessmodFilesetRoleCode.Dem}
+              value={form.formData.dem}
+              required
+              onChange={(value) => form.setFieldValue("dem", value)}
+            />
+          </Field>
+          <Field label="Land Cover" name="landCover" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.LandCover}
@@ -188,12 +203,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               onChange={(value) => form.setFieldValue("landCover", value)}
             />
           </Field>
-          <Field
-            label="Transport Network"
-            name="transportNetwork"
-            required
-            className=""
-          >
+          <Field label="Transport Network" name="transportNetwork" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.TransportNetwork}
@@ -204,7 +214,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               }
             />
           </Field>
-          <Field label="Barriers" name="barrier" required className="">
+          <Field label="Barriers" name="barrier" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Barrier}
@@ -213,7 +223,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               onChange={(value) => form.setFieldValue("barrier", value)}
             />
           </Field>
-          <Field label="Water" name="water" required className="">
+          <Field label="Water" name="water" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Water}
@@ -222,7 +232,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
               onChange={(value) => form.setFieldValue("water", value)}
             />
           </Field>
-          <Field label="Slope" name="slope" required className="">
+          <Field label="Slope" name="slope" required>
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Slope}
@@ -237,9 +247,8 @@ const AccessibilityAnalysisForm = (props: Props) => {
             value={form.formData.maxSlope}
             onChange={form.handleInputChange}
             type="number"
-            className=""
           />
-
+          <br />
           <Checkbox
             label="Roads have priority over water cells"
             checked={form.formData.priorityRoads}
@@ -262,10 +271,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         title={"Health Facilities"}
         className="space-y-4"
       >
-        <p>
-          Description of the analysis. Sed ut perspiciatis unde omnis iste natus
-          error sit voluptatem
-        </p>
+        <p>Choose the health facilities layer.</p>
         <Field
           name="healthFacilities"
           required
@@ -285,7 +291,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
       {/* Step 3 */}
 
       <AnalysisStep id="travelScenario" title={"Travel Scenario"}>
-        <p className="mb-4">Description</p>
+        <p className="mb-4">
+          Assign moving speeds to each category of road network and land cover.
+        </p>
         <Field
           name="movingSpeeds"
           required
@@ -310,7 +318,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         className="space-y-4"
       >
         <p>Description</p>
-        <Field name="analysisType" label="Travel Direction" required>
+        <Field name="algorithm" label="Cost distance analysis method" required>
           <RadioGroup
             name="algorithm"
             onChange={form.handleInputChange}
@@ -318,11 +326,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
             options={[
               {
                 id: AccessmodAccessibilityAnalysisAlgorithm.Isotropic,
-                label: "Isotropic (no DEM)",
+                label: "Isotropic",
               },
               {
                 id: AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
-                label: "Anisotropic (use DEM)",
+                label: "Anisotropic",
               },
             ]}
           />
