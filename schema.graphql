@@ -1,10 +1,6 @@
-"""
-Exposes a URL that specifies the behaviour of this scalar.
-"""
+"""Exposes a URL that specifies the behaviour of this scalar."""
 directive @specifiedBy(
-  """
-  The URL that specifies the behaviour of this scalar.
-  """
+  """The URL that specifies the behaviour of this scalar."""
   url: String!
 ) on SCALAR
 
@@ -189,6 +185,10 @@ input CountryInput {
   flag: String
 }
 
+enum CreateAccessmodAccessibilityAnalysisError {
+  NAME_DUPLICATE
+}
+
 input CreateAccessmodAccessibilityAnalysisInput {
   projectId: String!
   name: String!
@@ -197,6 +197,11 @@ input CreateAccessmodAccessibilityAnalysisInput {
 type CreateAccessmodAccessibilityAnalysisResult {
   success: Boolean!
   analysis: AccessmodAccessibilityAnalysis
+  errors: [CreateAccessmodAccessibilityAnalysisError!]!
+}
+
+enum CreateAccessmodFileError {
+  URI_DUPLICATE
 }
 
 input CreateAccessmodFileInput {
@@ -208,6 +213,11 @@ input CreateAccessmodFileInput {
 type CreateAccessmodFileResult {
   success: Boolean!
   file: AccessmodFile
+  errors: [CreateAccessmodFileError!]!
+}
+
+enum CreateAccessmodFilesetError {
+  NAME_DUPLICATE
 }
 
 input CreateAccessmodFilesetInput {
@@ -219,6 +229,11 @@ input CreateAccessmodFilesetInput {
 type CreateAccessmodFilesetResult {
   success: Boolean!
   fileset: AccessmodFileset
+  errors: [CreateAccessmodFilesetError!]!
+}
+
+enum CreateAccessmodProjectError {
+  NAME_DUPLICATE
 }
 
 input CreateAccessmodProjectInput {
@@ -232,11 +247,17 @@ input CreateAccessmodProjectInput {
 type CreateAccessmodProjectResult {
   success: Boolean!
   project: AccessmodProject
+  errors: [CreateAccessmodProjectError!]!
 }
 
 scalar Date
 
 scalar DateTime
+
+enum DeleteAccessmodAnalysisError {
+  NOT_FOUND
+  DELETE_FAILED
+}
 
 input DeleteAccessmodAnalysisInput {
   id: String!
@@ -244,6 +265,11 @@ input DeleteAccessmodAnalysisInput {
 
 type DeleteAccessmodAnalysisResult {
   success: Boolean!
+  errors: [DeleteAccessmodAnalysisError!]!
+}
+
+enum DeleteAccessmodFileError {
+  NOT_FOUND
 }
 
 input DeleteAccessmodFileInput {
@@ -252,6 +278,11 @@ input DeleteAccessmodFileInput {
 
 type DeleteAccessmodFileResult {
   success: Boolean!
+  errors: [DeleteAccessmodFileError!]!
+}
+
+enum DeleteAccessmodFilesetError {
+  NOT_FOUND
 }
 
 input DeleteAccessmodFilesetInput {
@@ -260,6 +291,11 @@ input DeleteAccessmodFilesetInput {
 
 type DeleteAccessmodFilesetResult {
   success: Boolean!
+  errors: [DeleteAccessmodFilesetError!]!
+}
+
+enum DeleteAccessmodProjectError {
+  NOT_FOUND
 }
 
 input DeleteAccessmodProjectInput {
@@ -268,6 +304,11 @@ input DeleteAccessmodProjectInput {
 
 type DeleteAccessmodProjectResult {
   success: Boolean!
+  errors: [DeleteAccessmodProjectError!]!
+}
+
+enum LaunchAccessmodAnalysisError {
+  LAUNCH_FAILED
 }
 
 input LaunchAccessmodAnalysisInput {
@@ -277,6 +318,7 @@ input LaunchAccessmodAnalysisInput {
 type LaunchAccessmodAnalysisResult {
   success: Boolean!
   analysis: AccessmodAnalysis
+  errors: [LaunchAccessmodAnalysisError!]!
 }
 
 input LoginInput {
@@ -294,47 +336,21 @@ type LogoutResult {
 }
 
 type Mutation {
-  login(input: LoginInput!): LoginResult
-  logout: LogoutResult
-  createAccessmodProject(
-    input: CreateAccessmodProjectInput
-  ): CreateAccessmodProjectResult
-  updateAccessmodProject(
-    input: UpdateAccessmodProjectInput
-  ): UpdateAccessmodProjectResult
-  deleteAccessmodProject(
-    input: DeleteAccessmodProjectInput
-  ): DeleteAccessmodProjectResult
-  createAccessmodFileset(
-    input: CreateAccessmodFilesetInput
-  ): CreateAccessmodFilesetResult
-  deleteAccessmodFileset(
-    input: DeleteAccessmodFilesetInput
-  ): DeleteAccessmodFilesetResult
-  prepareAccessmodFileUpload(
-    input: PrepareAccessmodFileUploadInput
-  ): PrepareAccessmodFileUploadResult
-  prepareAccessmodFileDownload(
-    input: PrepareAccessmodFileDownloadInput
-  ): PrepareAccessmodFileDownloadResult
-  createAccessmodFile(
-    input: CreateAccessmodFileInput
-  ): CreateAccessmodFileResult
-  deleteAccessmodFile(
-    input: DeleteAccessmodFileInput
-  ): DeleteAccessmodFileResult
-  createAccessmodAccessibilityAnalysis(
-    input: CreateAccessmodAccessibilityAnalysisInput
-  ): CreateAccessmodAccessibilityAnalysisResult
-  updateAccessmodAccessibilityAnalysis(
-    input: UpdateAccessmodAccessibilityAnalysisInput
-  ): UpdateAccessmodAccessibilityAnalysisResult
-  launchAccessmodAnalysis(
-    input: LaunchAccessmodAnalysisInput
-  ): LaunchAccessmodAnalysisResult
-  deleteAccessmodAnalysis(
-    input: DeleteAccessmodAnalysisInput
-  ): DeleteAccessmodAnalysisResult
+  login(input: LoginInput!): LoginResult!
+  logout: LogoutResult!
+  createAccessmodProject(input: CreateAccessmodProjectInput): CreateAccessmodProjectResult!
+  updateAccessmodProject(input: UpdateAccessmodProjectInput): UpdateAccessmodProjectResult!
+  deleteAccessmodProject(input: DeleteAccessmodProjectInput): DeleteAccessmodProjectResult!
+  createAccessmodFileset(input: CreateAccessmodFilesetInput): CreateAccessmodFilesetResult!
+  deleteAccessmodFileset(input: DeleteAccessmodFilesetInput): DeleteAccessmodFilesetResult!
+  prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput): PrepareAccessmodFileUploadResult!
+  prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput): PrepareAccessmodFileDownloadResult!
+  createAccessmodFile(input: CreateAccessmodFileInput): CreateAccessmodFileResult!
+  deleteAccessmodFile(input: DeleteAccessmodFileInput): DeleteAccessmodFileResult!
+  createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult!
+  updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult!
+  launchAccessmodAnalysis(input: LaunchAccessmodAnalysisInput): LaunchAccessmodAnalysisResult!
+  deleteAccessmodAnalysis(input: DeleteAccessmodAnalysisInput): DeleteAccessmodAnalysisResult!
 }
 
 type Organization {
@@ -380,21 +396,16 @@ type Query {
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(page: Int, perPage: Int): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
-  accessmodFilesets(
-    projectId: String!
-    roleId: String
-    term: String
-    page: Int
-    perPage: Int
-  ): AccessmodFilesetPage!
+  accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole
   accessmodFilesetRoles: [AccessmodFilesetRole!]!
   accessmodAnalysis(id: String): AccessmodAnalysis
-  accessmodAnalyses(
-    projectId: String!
-    page: Int
-    perPage: Int
-  ): AccessmodAnalysisPage!
+  accessmodAnalyses(projectId: String!, page: Int, perPage: Int): AccessmodAnalysisPage!
+}
+
+enum UpdateAccessmodAccessibilityAnalysisError {
+  NOT_FOUND
+  NAME_DUPLICATE
 }
 
 input UpdateAccessmodAccessibilityAnalysisInput {
@@ -421,6 +432,12 @@ input UpdateAccessmodAccessibilityAnalysisInput {
 type UpdateAccessmodAccessibilityAnalysisResult {
   success: Boolean!
   analysis: AccessmodAccessibilityAnalysis
+  errors: [UpdateAccessmodAccessibilityAnalysisError!]!
+}
+
+enum UpdateAccessmodProjectError {
+  NOT_FOUND
+  NAME_DUPLICATE
 }
 
 input UpdateAccessmodProjectInput {
@@ -434,6 +451,7 @@ input UpdateAccessmodProjectInput {
 type UpdateAccessmodProjectResult {
   success: Boolean!
   project: AccessmodProject
+  errors: [UpdateAccessmodProjectError!]!
 }
 
 type User {
@@ -443,3 +461,4 @@ type User {
   lastName: String
   avatar: Avatar!
 }
+
