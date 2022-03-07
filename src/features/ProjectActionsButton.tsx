@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import ButtonGroup, { ButtonGroupOption } from "components/ButtonGroup";
+import useCacheKey from "hooks/useCacheKey";
 import { useDeleteProjectMutation } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -21,6 +22,7 @@ const ProjectActionsButton = ({ project }: Props) => {
   const [deleteProject] = useDeleteProjectMutation();
   const { t } = useTranslation();
   const router = useRouter();
+  const clearCache = useCacheKey("projects");
 
   const onDeleteClick = useCallback(async () => {
     // TODO: Implement permissions check
@@ -32,9 +34,10 @@ const ProjectActionsButton = ({ project }: Props) => {
       )
     ) {
       await deleteProject({ variables: { input: { id: project.id } } });
-      router.push("/projects");
+      await router.push("/projects");
+      clearCache();
     }
-  }, [project, router, deleteProject, t]);
+  }, [project, router, deleteProject, t, clearCache]);
 
   const items = useMemo<ButtonGroupOption[]>(() => {
     const actions = [
