@@ -6,6 +6,7 @@ import {
   AnalysisActionsButton_ProjectFragment,
 } from "libs/graphql";
 import { routes } from "libs/router";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
@@ -15,13 +16,16 @@ type Props = {
 };
 
 const AnalysisActionsButton = ({ project, analysis }: Props) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const onDeleteClick = async () => {
     // TODO: Implement permissions check
     if (
       window.confirm(
-        `Are you sure you want to delete the project "${analysis.name}"?`
+        t('Are you sure you want to delete the analysis "{{name}}"?', {
+          name: analysis.name,
+        })
       )
     ) {
       router.push(routes.project_analysis, { query: project.id });

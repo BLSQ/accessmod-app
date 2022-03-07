@@ -3,7 +3,7 @@ import ButtonGroup, { ButtonGroupOption } from "components/ButtonGroup";
 import { useDeleteProjectMutation } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 type Props = {
   project: any;
@@ -22,11 +22,11 @@ const ProjectActionsButton = ({ project }: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const onDeleteClick = async () => {
+  const onDeleteClick = useCallback(async () => {
     // TODO: Implement permissions check
     if (
       window.confirm(
-        t('Are you sure you want to delete the project "{{project.name}}"?', {
+        t('Are you sure you want to delete the project "{{name}}"?', {
           name: project.name,
         })
       )
@@ -34,7 +34,7 @@ const ProjectActionsButton = ({ project }: Props) => {
       await deleteProject({ variables: { input: { id: project.id } } });
       router.push("/projects");
     }
-  };
+  }, [project, router, deleteProject, t]);
 
   const items = useMemo<ButtonGroupOption[]>(() => {
     const actions = [
@@ -47,7 +47,7 @@ const ProjectActionsButton = ({ project }: Props) => {
       { label: t("Delete"), onClick: onDeleteClick },
     ];
     return actions;
-  }, [project]);
+  }, [t, onDeleteClick]);
 
   return <ButtonGroup items={items} />;
 };
