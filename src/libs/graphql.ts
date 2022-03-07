@@ -769,7 +769,7 @@ export type LaunchAccessmodAnalysisMutationVariables = Exact<{
 }>;
 
 
-export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchAccessmodAnalysis: { __typename?: 'LaunchAccessmodAnalysisResult', success: boolean } };
+export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchAccessmodAnalysis: { __typename?: 'LaunchAccessmodAnalysisResult', success: boolean, errors: Array<LaunchAccessmodAnalysisError>, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', status: AccessmodAnalysisStatus, updatedAt: any } | { __typename?: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus, updatedAt: any } | null } };
 
 export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1651,6 +1651,11 @@ export const LaunchAccessmodAnalysisDocument = gql`
     mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
   launchAccessmodAnalysis(input: $input) {
     success
+    errors
+    analysis {
+      status
+      updatedAt
+    }
   }
 }
     `;
