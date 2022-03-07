@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Field from "components/forms/Field";
+import Spinner from "components/Spinner";
 import useForm from "hooks/useForm";
 import { useLoginMutation } from "libs/graphql";
 import { useTranslation } from "next-i18next";
@@ -55,7 +56,7 @@ const Login = (props: Props) => {
         },
       });
       if (payload?.data?.login?.success) {
-        router.push(props.redirectTo ?? "/");
+        await router.push(props.redirectTo ?? "/");
       }
     },
   });
@@ -113,6 +114,7 @@ const Login = (props: Props) => {
               {t("Forgot your password ?")}
             </a>
             <Button type="submit" className="px-6" disabled={form.isSubmitting}>
+              {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
               {t("Login")}
             </Button>
           </div>
