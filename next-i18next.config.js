@@ -4,6 +4,7 @@ module.exports = {
     defaultLocale: "en",
     fallbackLng: "en",
     locales: ["en", "fr"],
+    pluralSeparator: "___",
     // This option will reload your translations whenever serverSideTranslations is called
     reloadOnPrerender: true,
 
