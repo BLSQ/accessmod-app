@@ -17,6 +17,7 @@ import { JobFile, uploader } from "libs/file";
 import {
   AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
+  CreateAccessmodFilesetError,
   DatasetFormDialog_DatasetFragment,
   DatasetFormDialog_ProjectFragment,
   useCreateFilesetMutation,
@@ -66,6 +67,7 @@ const CREATE_FILESET_MUTATION = gql`
   mutation CreateFileset($input: CreateAccessmodFilesetInput) {
     createAccessmodFileset(input: $input) {
       success
+      errors
       fileset {
         id
         name
@@ -86,7 +88,6 @@ type FilesetFile = JobFile & {
 const DatasetFormDialog = (props: Props) => {
   const { open, onClose, project, role, dataset } = props;
   const [progress, setProgress] = useState(0);
-  const [error, setError] = useState<null | string>(null);
   const [createFileset, { error: filesetError }] = useCreateFilesetMutation();
   const clearFilesets = useCacheKey(["filesets"]);
   const { t } = useTranslation();
@@ -122,7 +123,6 @@ const DatasetFormDialog = (props: Props) => {
       return errors;
     },
     onSubmit: async () => {
-      setError(null);
       let ds = dataset;
       if (!ds) {
         // Create Fileset
@@ -135,52 +135,53 @@ const DatasetFormDialog = (props: Props) => {
             },
           },
         });
-        if (!data?.createAccessmodFileset?.fileset) {
+        if (!data) {
+          throw new Error();
+        }
+        const { success, fileset, errors } = data.createAccessmodFileset;
+        if (errors.includes(CreateAccessmodFilesetError.NameDuplicate)) {
+          throw new Error(t("A dataset with this name already exists"));
+        } else if (!success) {
           throw new Error(t("Dataset not created"));
         }
-        ds = data?.createAccessmodFileset?.fileset;
+        ds = fileset!;
       }
 
-      try {
-        if (form.formData.files && form.formData.files.length > 0) {
-          await uploader.createUploadJob({
-            files: form.formData.files,
-            axiosConfig: { method: "PUT" },
-            onProgress: setProgress,
-            onBeforeFileUpload: async (file: FilesetFile) => {
-              const mimeType = guessFileMimeType(file);
-              if (!mimeType) {
-                throw new Error("Unknown mime type");
-              }
-              const data = await getPresignedURL(ds!.id, mimeType);
-              if (!data || !data.fileUri) {
-                throw new Error("No URI returned");
-              }
-              file.uri = data.fileUri;
+      if (form.formData.files && form.formData.files.length > 0) {
+        await uploader.createUploadJob({
+          files: form.formData.files,
+          axiosConfig: { method: "PUT" },
+          onProgress: setProgress,
+          onBeforeFileUpload: async (file: FilesetFile) => {
+            const mimeType = guessFileMimeType(file);
+            if (!mimeType) {
+              throw new Error("Unknown mime type");
+            }
+            const data = await getPresignedURL(ds!.id, mimeType);
+            if (!data || !data.fileUri) {
+              throw new Error("No URI returned");
+            }
+            file.uri = data.fileUri;
 
-              return {
-                url: data!.uploadUrl as string,
-              };
-            },
-            onAfterFileUpload: async (file: FilesetFile) => {
-              if (!file.uri) {
-                throw new Error("File has no URI");
-              }
-              const mimeType = guessFileMimeType(file);
-              if (!mimeType) {
-                throw new Error("Unknown mime type");
-              }
-              await createFile(ds!.id, file.uri, mimeType);
-            },
-          });
-        }
-        form.resetForm();
-        onClose("submit", ds);
-        clearFilesets();
-      } catch (err: any) {
-        console.error(err);
-        setError(err?.message);
+            return {
+              url: data!.uploadUrl as string,
+            };
+          },
+          onAfterFileUpload: async (file: FilesetFile) => {
+            if (!file.uri) {
+              throw new Error("File has no URI");
+            }
+            const mimeType = guessFileMimeType(file);
+            if (!mimeType) {
+              throw new Error("Unknown mime type");
+            }
+            await createFile(ds!.id, file.uri, mimeType);
+          },
+        });
       }
+      form.resetForm();
+      onClose("submit", ds);
+      clearFilesets();
     },
   });
 
@@ -188,6 +189,7 @@ const DatasetFormDialog = (props: Props) => {
     form.setFieldValue("project", project, false);
     form.setFieldValue("role", role, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Reset the form values when project or role are changed
   }, [project, role]);
 
   const validator = useCallback(
@@ -203,7 +205,7 @@ const DatasetFormDialog = (props: Props) => {
       }
       return null;
     },
-    [role]
+    [role, t]
   );
 
   const handleClose = () => {
@@ -257,7 +259,7 @@ const DatasetFormDialog = (props: Props) => {
                 >
                   <FilesetRolePicker
                     disabled={form.isSubmitting || Boolean(props.role)}
-                    onChange={(value) => {}}
+                    onChange={(value) => form.setFieldValue("role", value)}
                     value={form.formData.role}
                     required
                   />
@@ -289,9 +291,9 @@ const DatasetFormDialog = (props: Props) => {
               </Dropzone>
             </Field>
 
-            {(error || filesetError) && (
+            {(form.submitError || filesetError) && (
               <div className="text-danger mt-3 text-sm">
-                {error || filesetError}
+                {form.submitError || filesetError}
               </div>
             )}
           </div>

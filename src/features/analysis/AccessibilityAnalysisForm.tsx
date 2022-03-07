@@ -14,10 +14,12 @@ import {
   AccessmodAccessibilityAnalysisAlgorithm,
   AccessmodAnalysisStatus,
   AccessmodFilesetRoleCode,
+  UpdateAccessmodAccessibilityAnalysisError,
   UpdateAccessmodAccessibilityAnalysisInput,
   useUpdateAccessibilityAnalysisMutation,
 } from "libs/graphql";
 import { routes } from "libs/router";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -113,6 +115,7 @@ interface Props {
 
 const AccessibilityAnalysisForm = (props: Props) => {
   const { project, analysis } = props;
+  const { t } = useTranslation();
   const router = useRouter();
   const [isTriggering, setTriggering] = useState(false);
   const [error, setError] = useState<null | string>(null);
@@ -122,9 +125,21 @@ const AccessibilityAnalysisForm = (props: Props) => {
     validate: validateForm,
     getInitialState: () => getInitialFormState(analysis),
     onSubmit: async (values) => {
-      await updateAnalysis({
+      const { data } = await updateAnalysis({
         variables: { input: getMutationInput(analysis, values) },
       });
+      if (!data) {
+        throw new Error();
+      }
+      const { success, errors } = data.updateAccessmodAccessibilityAnalysis;
+
+      if (success) return;
+
+      if (
+        errors.includes(UpdateAccessmodAccessibilityAnalysisError.NameDuplicate)
+      ) {
+        throw new Error(t("An analysis with this name already exists."));
+      }
     },
   });
   const debouncedFormData = useDebounce(form.formData, 500);
@@ -150,6 +165,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     if (form.isDirty) {
       await form.handleSubmit();
     }
+    if (!form.isValid) return;
 
     if (await launchAnalysis(analysis)) {
       await router.push({
@@ -365,7 +381,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
         />
       </AnalysisStep>
 
-      {error && <div className="text-sm text-danger text-right">{error}</div>}
+      {(form.submitError || error) && (
+        <div className="text-sm text-danger text-right">
+          {form.submitError || error}
+        </div>
+      )}
       {analysis.status !== AccessmodAnalysisStatus.Ready && (
         <div className="text-sm font-medium text-gray-600 text-right">
           All fields need to be filled in to be able to run the analysis.
@@ -464,6 +484,7 @@ const UPDATE_ANALYSIS_MUTATION = gql`
   ) {
     updateAccessmodAccessibilityAnalysis(input: $input) {
       success
+      errors
       analysis {
         ...AccessibilityAnalysisForm_analysis
       }

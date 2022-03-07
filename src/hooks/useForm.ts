@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { useTranslation } from "next-i18next";
 import {
   ChangeEventHandler,
   useCallback,
@@ -14,6 +15,7 @@ type FormData = {
 
 type UseFormResult<T> = {
   formData: Partial<T>;
+  submitError: string | null;
   previousFormData: Partial<T> | undefined;
   errors: { [key in keyof T]?: FormFieldError };
   handleInputChange: ChangeEventHandler<HTMLInputElement>;
@@ -38,6 +40,7 @@ type UseFormOptions<T> = {
 };
 
 function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
+  const { t } = useTranslation();
   const { initialState = {}, getInitialState, validate, onSubmit } = options;
   const [touched, setTouched] = useState<
     | {
@@ -56,9 +59,9 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   if (!internalInitialState.current) {
     setInitialState();
   }
-
   const [isSubmitting, setSubmitting] = useState(false);
   const [hasBeenSubmitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<T>>(
     internalInitialState.current
   );
@@ -67,6 +70,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   const resetForm = useCallback(() => {
     setSubmitted(false);
     setTouched({});
+    setSubmitError(null);
     setInitialState();
     setFormData(internalInitialState.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,14 +122,18 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
       event?.preventDefault();
       if (isSubmitting) return;
 
+      setSubmitError(null);
       setSubmitting(true);
       setSubmitted(true);
+
       if (isValid) {
         try {
           await onSubmit(formData as T);
           setInitialState();
-        } catch (err) {
-          throw err;
+        } catch (err: any) {
+          setSubmitError(
+            err.message ?? (t("An unexpected error ocurred.") as string)
+          );
         } finally {
           setSubmitting(false);
         }
@@ -155,6 +163,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     formData,
     previousFormData,
     errors,
+    submitError,
     isDirty,
     touched: allTouched,
     handleInputChange,

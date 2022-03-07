@@ -41,6 +41,11 @@ export async function launchAnalysis(analysis: {
       mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
         launchAccessmodAnalysis(input: $input) {
           success
+          errors
+          analysis {
+            status
+            updatedAt
+          }
         }
       }
     `,
@@ -48,5 +53,10 @@ export async function launchAnalysis(analysis: {
       input: { id: analysis.id },
     },
   });
-  return data?.launchAccessmodAnalysis?.success ?? false;
+
+  if (data.launchAccessmodAnalysis.success) {
+    return true;
+  } else {
+    return false;
+  }
 }

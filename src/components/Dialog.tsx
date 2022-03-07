@@ -1,4 +1,4 @@
-import { Fragment, ReactElement, useRef } from "react";
+import { Fragment, ReactElement, ReactNode, useRef } from "react";
 import { Dialog as BaseDialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
@@ -12,10 +12,7 @@ type DialogProps = {
   closeOnEsc?: boolean;
 };
 
-const DialogTitle = (props: {
-  children: ReactElement | string;
-  onClose?: () => void;
-}) => {
+const DialogTitle = (props: { children: ReactNode; onClose?: () => void }) => {
   return (
     <BaseDialog.Title
       as="h3"
@@ -29,10 +26,7 @@ const DialogTitle = (props: {
   );
 };
 
-const DialogContent = (props: {
-  children: ReactElement | ReactElement[] | string;
-  className?: string;
-}) => {
+const DialogContent = (props: { children: ReactNode; className?: string }) => {
   return (
     <div
       className={clsx(
@@ -45,7 +39,7 @@ const DialogContent = (props: {
   );
 };
 
-const DialogActions = (props: { children: ReactElement | ReactElement[] }) => (
+const DialogActions = (props: { children: ReactNode }) => (
   <div className="mt-5 sm:mt-6 sm:gap-3 flex justify-end">{props.children}</div>
 );
 
