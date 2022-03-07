@@ -625,7 +625,7 @@ export type CreateAccessibilityAnalysisMutationVariables = Exact<{
 }>;
 
 
-export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } | null } };
+export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<CreateAccessmodAccessibilityAnalysisError>, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } | null } };
 
 export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -636,14 +636,14 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, project?: { __typename?: 'AccessmodProject', id: string } | null } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
 
 export type CreateFilesetMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodFilesetInput>;
 }>;
 
 
-export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role?: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } | null } | null } };
+export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role?: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } | null } | null } };
 
 export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -734,7 +734,7 @@ export type UpdateAccessibilityAnalysisMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } };
+export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<UpdateAccessmodAccessibilityAnalysisError>, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } };
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -1141,6 +1141,7 @@ export const CreateAccessibilityAnalysisDocument = gql`
     mutation CreateAccessibilityAnalysis($input: CreateAccessmodAccessibilityAnalysisInput) {
   response: createAccessmodAccessibilityAnalysis(input: $input) {
     success
+    errors
     analysis {
       id
     }
@@ -1180,6 +1181,7 @@ export const CreateProjectDocument = gql`
     project {
       id
     }
+    errors
   }
 }
     `;
@@ -1213,6 +1215,7 @@ export const CreateFilesetDocument = gql`
     mutation CreateFileset($input: CreateAccessmodFilesetInput) {
   createAccessmodFileset(input: $input) {
     success
+    errors
     fileset {
       id
       name
@@ -1611,6 +1614,7 @@ export const UpdateAccessibilityAnalysisDocument = gql`
     mutation UpdateAccessibilityAnalysis($input: UpdateAccessmodAccessibilityAnalysisInput) {
   updateAccessmodAccessibilityAnalysis(input: $input) {
     success
+    errors
     analysis {
       ...AccessibilityAnalysisForm_analysis
     }

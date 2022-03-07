@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import clsx from "clsx";
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Field from "components/forms/Field";
@@ -7,10 +8,13 @@ import Spinner from "components/Spinner";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
 import { countries, Country, regions } from "libs/countries";
-import { useCreateProjectMutation } from "libs/graphql";
+import {
+  CreateAccessmodProjectError,
+  useCreateProjectMutation,
+} from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useMemo } from "react";
+import { MouseEventHandler, useMemo, useState } from "react";
 
 type Props = {
   onClose: () => void;
@@ -31,6 +35,7 @@ const MUTATION = gql`
       project {
         id
       }
+      errors
     }
   }
 `;
@@ -58,6 +63,7 @@ const CreateProjectDialog = (props: Props) => {
 
       return errors;
     },
+
     onSubmit: async (values) => {
       const mutation = await createProjectMutation({
         variables: {
@@ -69,7 +75,13 @@ const CreateProjectDialog = (props: Props) => {
           },
         },
       });
-      if (mutation.data && mutation.data.createAccessmodProject!.success) {
+      if (!mutation.data) {
+        throw new Error();
+      }
+
+      const { success, errors } = mutation.data.createAccessmodProject;
+
+      if (success) {
         router.push(
           `/projects/${encodeURIComponent(
             mutation.data.createAccessmodProject!.project!.id
@@ -77,6 +89,8 @@ const CreateProjectDialog = (props: Props) => {
         );
         clearCache();
         onClose();
+      } else if (errors.includes(CreateAccessmodProjectError.NameDuplicate)) {
+        throw new Error(t("A project already exists with this name"));
       }
     },
   });
@@ -97,7 +111,7 @@ const CreateProjectDialog = (props: Props) => {
         options: countries.filter((country) => !country.region),
       });
       return groups;
-    }, []);
+    }, [t]);
 
   const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
@@ -161,6 +175,12 @@ const CreateProjectDialog = (props: Props) => {
             disabled={form.isSubmitting}
             error={form.touched.crs && form.errors.crs}
           />
+
+          {form.submitError && (
+            <p className={clsx("text-sm", "text-red-600")}>
+              {form.submitError}
+            </p>
+          )}
         </Dialog.Content>
 
         <Dialog.Actions>
