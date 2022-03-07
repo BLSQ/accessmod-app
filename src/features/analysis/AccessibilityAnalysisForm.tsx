@@ -121,10 +121,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
   const form = useForm<AccessibilityForm>({
     validate: validateForm,
     getInitialState: () => getInitialFormState(analysis),
-    onSubmit: async (values) => {
-      await updateAnalysis({
+    onSubmit: async (values, setErrors) => {
+      const { success, errors } = await updateAnalysis({
         variables: { input: getMutationInput(analysis, values) },
       });
+      setErrors(errors);
     },
     errorMessages: {
       NAME_DUPLICATE: "An analysis with the same name already exists",
