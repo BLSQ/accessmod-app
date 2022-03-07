@@ -40,10 +40,9 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
     }
 
     if (
-      ![
-        AccessmodAnalysisStatus.Success,
-        AccessmodAnalysisStatus.Running,
-      ].includes(analysis.status)
+      [AccessmodAnalysisStatus.Ready, AccessmodAnalysisStatus.Draft].includes(
+        analysis.status
+      )
     )
       actions.push({
         label: "Edit",

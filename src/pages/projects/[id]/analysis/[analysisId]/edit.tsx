@@ -105,10 +105,9 @@ export const getServerSideProps = createGetServerSideProps({
     });
 
     if (
-      [
-        AccessmodAnalysisStatus.Running,
-        AccessmodAnalysisStatus.Success,
-        AccessmodAnalysisStatus.Queued,
+      ![
+        AccessmodAnalysisStatus.Draft,
+        AccessmodAnalysisStatus.Ready,
         undefined,
       ].includes(response.data?.analysis?.status)
     ) {
