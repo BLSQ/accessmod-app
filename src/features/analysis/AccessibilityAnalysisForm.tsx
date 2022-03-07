@@ -126,6 +126,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
         variables: { input: getMutationInput(analysis, values) },
       });
     },
+    errorMessages: {
+      NAME_DUPLICATE: "An analysis with the same name already exists",
+    },
   });
   const debouncedFormData = useDebounce(form.formData, 500);
 
@@ -174,6 +177,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
           className="md:w-1/2 xl:w-1/3"
           value={form.formData.name}
           onChange={form.handleInputChange}
+          errors={form.errors.name}
         />
       </Block>
 
