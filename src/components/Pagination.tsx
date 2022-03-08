@@ -68,15 +68,20 @@ const Pagination = (props: Props) => {
             {t("Loading...")}
           </div>
         )}
-        {!loading && totalItems > 0 && (
+        {!loading && totalPages > 1 && (
           <div>
             <p className="text-sm text-gray-700">
-              {t("Showing {{start}} to {{end}} of {{count}} results", {
-                count: totalItems,
+              {t("Showing {{start}} to {{end}} of {{totalItems}} results", {
+                totalItems,
                 start: (page - 1) * perPage + 1,
                 end: Math.min((page + 1) * perPage, totalItems),
               })}
             </p>
+          </div>
+        )}
+        {!loading && totalPages <= 1 && (
+          <div>
+            <p className="text-sm text-gray-700">{t("Showing all results")}</p>
           </div>
         )}
         {totalPages > 1 && (
