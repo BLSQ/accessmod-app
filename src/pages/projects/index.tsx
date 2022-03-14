@@ -7,7 +7,6 @@ import Pagination from "components/Pagination";
 import ProjectsList from "features/ProjectsList";
 import { useProjectsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
-import { NextPageWithFragments } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 
@@ -34,9 +33,10 @@ const ProjectsPage = () => {
             <ProjectsList projects={projects} />
             <footer className="mt-6">
               <Pagination
-                perPage={20}
+                perPage={pagination.perPage}
                 loading={loading}
-                page={1}
+                countItems={projects.items.length}
+                page={pagination.page}
                 onChange={(page) => setPagination({ ...pagination, page })}
                 totalItems={projects.totalItems}
                 totalPages={projects.totalPages}
@@ -61,6 +61,9 @@ export const getServerSideProps = createGetServerSideProps({
             pageNumber
             totalPages
             totalItems
+            items {
+              __typename
+            }
           }
         }
         ${ProjectsList.fragments.projects}

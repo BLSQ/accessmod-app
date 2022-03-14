@@ -30,53 +30,5 @@
 }
 
 @layer components {
-  /* Button styles */
   @import "./table.css";
-  .btn {
-    @apply relative inline-flex bg-transparent items-center justify-center border border-transparent font-medium shadow-sm rounded focus:outline-none h-fit;
-  }
-
-  .btn-primary {
-    @apply text-white bg-midnight-blue-500 hover:bg-midnight-blue-400;
-  }
-
-  .btn-secondary {
-    @apply text-white bg-lochmara hover:bg-lochmara-600;
-  }
-
-  .btn-white {
-    @apply text-gray-800 border-gray-300 bg-white hover:bg-gray-50;
-  }
-
-  .btn-outlined {
-    @apply text-white hover:bg-white hover:text-gray-800 border-white;
-  }
-
-  .btn-sm {
-    @apply text-xs px-2 py-1;
-  }
-
-  .btn-md {
-    @apply text-sm px-3 py-2 leading-4;
-  }
-
-  .btn-lg {
-    @apply text-sm px-4 py-2;
-  }
-
-  .btn-xl {
-    @apply text-base px-4 py-2;
-  }
-
-  .btn-xxl {
-    @apply text-base px-6 py-3;
-  }
-
-  .btn-pill {
-    @apply text-white bg-midnight-blue rounded-3xl px-1.5 py-0.5 h-full;
-  }
-
-  .btn-disabled {
-    @apply opacity-50 cursor-not-allowed;
-  }
 }

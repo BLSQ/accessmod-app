@@ -631,6 +631,8 @@ export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProj
 
 export type CreateAnalysisTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
+export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
 export type CreateProjectMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodProjectInput>;
 }>;
@@ -684,16 +686,16 @@ export type DeleteAnalysisMutationVariables = Exact<{
 
 export type DeleteAnalysisMutation = { __typename?: 'Mutation', deleteAccessmodAnalysis: { __typename?: 'DeleteAccessmodAnalysisResult', success: boolean } };
 
-export type ProjectAnalysisTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+export type ProjectAnalysesTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type ProjectAnalysisTableQueryVariables = Exact<{
+export type ProjectAnalysesTableQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   projectId: Scalars['String'];
 }>;
 
 
-export type ProjectAnalysisTableQuery = { __typename?: 'Query', analysis: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
+export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
@@ -714,7 +716,7 @@ export type DeleteDatasetMutationVariables = Exact<{
 
 export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
 
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -727,14 +729,14 @@ export type User_UserFragment = { __typename?: 'User', firstName?: string | null
 
 export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
 export type UpdateAccessibilityAnalysisMutationVariables = Exact<{
   input?: InputMaybe<UpdateAccessmodAccessibilityAnalysisInput>;
 }>;
 
 
-export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<UpdateAccessmodAccessibilityAnalysisError>, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } };
+export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<UpdateAccessmodAccessibilityAnalysisError>, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } };
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -746,7 +748,7 @@ export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analy
 
 export type AnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
 type AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis' };
 
@@ -830,12 +832,12 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 
 export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
-export type ProjectAnalysisPageQueryVariables = Exact<{
+export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectAnalysisPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+export type ProjectAnalysesPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
 
 export type ProjectDataPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -844,14 +846,14 @@ export type ProjectDataPageQueryVariables = Exact<{
 
 export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -859,7 +861,7 @@ export type ProjectsPageQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
 export const UserMenu_UserFragmentDoc = gql`
     fragment UserMenu_user on User {
@@ -969,6 +971,7 @@ export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
     id
     name
   }
+  type
   maxSlope
   priorityRoads
   priorityLandCover
@@ -1049,21 +1052,19 @@ export const ProjectActionsButton_ProjectFragmentDoc = gql`
   id
 }
     `;
-export const ProjectAnalysisTable_ProjectFragmentDoc = gql`
-    fragment ProjectAnalysisTable_project on AccessmodProject {
+export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
+    fragment ProjectAnalysesTable_project on AccessmodProject {
   id
 }
     `;
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
   id
-  ...DatasetFormDialog_project
   owner {
     ...User_user
   }
 }
-    ${DatasetFormDialog_ProjectFragmentDoc}
-${User_UserFragmentDoc}`;
+    ${User_UserFragmentDoc}`;
 export const CreateAnalysisDialog_ProjectFragmentDoc = gql`
     fragment CreateAnalysisDialog_project on AccessmodProject {
   id
@@ -1074,20 +1075,27 @@ export const CreateAnalysisTrigger_ProjectFragmentDoc = gql`
   ...CreateAnalysisDialog_project
 }
     ${CreateAnalysisDialog_ProjectFragmentDoc}`;
+export const CreateDatasetTrigger_ProjectFragmentDoc = gql`
+    fragment CreateDatasetTrigger_project on AccessmodProject {
+  ...DatasetFormDialog_project
+}
+    ${DatasetFormDialog_ProjectFragmentDoc}`;
 export const ProjectPage_ProjectFragmentDoc = gql`
     fragment ProjectPage_project on AccessmodProject {
   id
   name
   crs
   ...ProjectActionsButton_project
-  ...ProjectAnalysisTable_project
+  ...ProjectAnalysesTable_project
   ...ProjectDatasetsTable_project
   ...CreateAnalysisTrigger_project
+  ...CreateDatasetTrigger_project
   country {
     name
     code
     flag
   }
+  createdAt
   spatialResolution
   owner {
     ...User_user
@@ -1095,9 +1103,10 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   }
 }
     ${ProjectActionsButton_ProjectFragmentDoc}
-${ProjectAnalysisTable_ProjectFragmentDoc}
+${ProjectAnalysesTable_ProjectFragmentDoc}
 ${ProjectDatasetsTable_ProjectFragmentDoc}
 ${CreateAnalysisTrigger_ProjectFragmentDoc}
+${CreateDatasetTrigger_ProjectFragmentDoc}
 ${User_UserFragmentDoc}`;
 export const NavbarDocument = gql`
     query Navbar {
@@ -1412,9 +1421,9 @@ export function useDeleteAnalysisMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteAnalysisMutationHookResult = ReturnType<typeof useDeleteAnalysisMutation>;
 export type DeleteAnalysisMutationResult = Apollo.MutationResult<DeleteAnalysisMutation>;
 export type DeleteAnalysisMutationOptions = Apollo.BaseMutationOptions<DeleteAnalysisMutation, DeleteAnalysisMutationVariables>;
-export const ProjectAnalysisTableDocument = gql`
-    query ProjectAnalysisTable($page: Int = 1, $perPage: Int = 10, $projectId: String!) {
-  analysis: accessmodAnalyses(
+export const ProjectAnalysesTableDocument = gql`
+    query ProjectAnalysesTable($page: Int = 1, $perPage: Int = 5, $projectId: String!) {
+  analyses: accessmodAnalyses(
     projectId: $projectId
     page: $page
     perPage: $perPage
@@ -1436,16 +1445,16 @@ export const ProjectAnalysisTableDocument = gql`
     ${AnalysisStatus_AnalysisFragmentDoc}`;
 
 /**
- * __useProjectAnalysisTableQuery__
+ * __useProjectAnalysesTableQuery__
  *
- * To run a query within a React component, call `useProjectAnalysisTableQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectAnalysisTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProjectAnalysesTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectAnalysesTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProjectAnalysisTableQuery({
+ * const { data, loading, error } = useProjectAnalysesTableQuery({
  *   variables: {
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
@@ -1453,19 +1462,19 @@ export const ProjectAnalysisTableDocument = gql`
  *   },
  * });
  */
-export function useProjectAnalysisTableQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>) {
+export function useProjectAnalysesTableQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysesTableQuery, ProjectAnalysesTableQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>(ProjectAnalysisTableDocument, options);
+        return Apollo.useQuery<ProjectAnalysesTableQuery, ProjectAnalysesTableQueryVariables>(ProjectAnalysesTableDocument, options);
       }
-export function useProjectAnalysisTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>) {
+export function useProjectAnalysesTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysesTableQuery, ProjectAnalysesTableQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>(ProjectAnalysisTableDocument, options);
+          return Apollo.useLazyQuery<ProjectAnalysesTableQuery, ProjectAnalysesTableQueryVariables>(ProjectAnalysesTableDocument, options);
         }
-export type ProjectAnalysisTableQueryHookResult = ReturnType<typeof useProjectAnalysisTableQuery>;
-export type ProjectAnalysisTableLazyQueryHookResult = ReturnType<typeof useProjectAnalysisTableLazyQuery>;
-export type ProjectAnalysisTableQueryResult = Apollo.QueryResult<ProjectAnalysisTableQuery, ProjectAnalysisTableQueryVariables>;
+export type ProjectAnalysesTableQueryHookResult = ReturnType<typeof useProjectAnalysesTableQuery>;
+export type ProjectAnalysesTableLazyQueryHookResult = ReturnType<typeof useProjectAnalysesTableLazyQuery>;
+export type ProjectAnalysesTableQueryResult = Apollo.QueryResult<ProjectAnalysesTableQuery, ProjectAnalysesTableQueryVariables>;
 export const ProjectDatasetsTableDocument = gql`
-    query ProjectDatasetsTable($page: Int = 1, $perPage: Int = 10, $projectId: String!, $term: String) {
+    query ProjectDatasetsTable($page: Int = 1, $perPage: Int = 5, $projectId: String!, $term: String) {
   accessmodFilesets(
     projectId: $projectId
     page: $page
@@ -2063,45 +2072,45 @@ export function useAnalysisDetailPageLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type AnalysisDetailPageQueryHookResult = ReturnType<typeof useAnalysisDetailPageQuery>;
 export type AnalysisDetailPageLazyQueryHookResult = ReturnType<typeof useAnalysisDetailPageLazyQuery>;
 export type AnalysisDetailPageQueryResult = Apollo.QueryResult<AnalysisDetailPageQuery, AnalysisDetailPageQueryVariables>;
-export const ProjectAnalysisPageDocument = gql`
-    query ProjectAnalysisPage($id: String!) {
+export const ProjectAnalysesPageDocument = gql`
+    query ProjectAnalysesPage($id: String!) {
   project: accessmodProject(id: $id) {
     id
     name
     ...CreateAnalysisTrigger_project
-    ...ProjectAnalysisTable_project
+    ...ProjectAnalysesTable_project
   }
 }
     ${CreateAnalysisTrigger_ProjectFragmentDoc}
-${ProjectAnalysisTable_ProjectFragmentDoc}`;
+${ProjectAnalysesTable_ProjectFragmentDoc}`;
 
 /**
- * __useProjectAnalysisPageQuery__
+ * __useProjectAnalysesPageQuery__
  *
- * To run a query within a React component, call `useProjectAnalysisPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectAnalysisPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProjectAnalysesPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectAnalysesPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProjectAnalysisPageQuery({
+ * const { data, loading, error } = useProjectAnalysesPageQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useProjectAnalysisPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>) {
+export function useProjectAnalysesPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectAnalysesPageQuery, ProjectAnalysesPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>(ProjectAnalysisPageDocument, options);
+        return Apollo.useQuery<ProjectAnalysesPageQuery, ProjectAnalysesPageQueryVariables>(ProjectAnalysesPageDocument, options);
       }
-export function useProjectAnalysisPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>) {
+export function useProjectAnalysesPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectAnalysesPageQuery, ProjectAnalysesPageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>(ProjectAnalysisPageDocument, options);
+          return Apollo.useLazyQuery<ProjectAnalysesPageQuery, ProjectAnalysesPageQueryVariables>(ProjectAnalysesPageDocument, options);
         }
-export type ProjectAnalysisPageQueryHookResult = ReturnType<typeof useProjectAnalysisPageQuery>;
-export type ProjectAnalysisPageLazyQueryHookResult = ReturnType<typeof useProjectAnalysisPageLazyQuery>;
-export type ProjectAnalysisPageQueryResult = Apollo.QueryResult<ProjectAnalysisPageQuery, ProjectAnalysisPageQueryVariables>;
+export type ProjectAnalysesPageQueryHookResult = ReturnType<typeof useProjectAnalysesPageQuery>;
+export type ProjectAnalysesPageLazyQueryHookResult = ReturnType<typeof useProjectAnalysesPageLazyQuery>;
+export type ProjectAnalysesPageQueryResult = Apollo.QueryResult<ProjectAnalysesPageQuery, ProjectAnalysesPageQueryVariables>;
 export const ProjectDataPageDocument = gql`
     query ProjectDataPage($id: String!) {
   accessmodProject(id: $id) {
@@ -2183,6 +2192,9 @@ export const ProjectsPageDocument = gql`
     pageNumber
     totalPages
     totalItems
+    items {
+      __typename
+    }
   }
 }
     ${ProjectsList_ProjectsFragmentDoc}`;

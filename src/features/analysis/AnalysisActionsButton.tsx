@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import ButtonGroup, { ButtonGroupOption } from "components/ButtonGroup";
+import Button from "components/Button";
 import {
   AccessmodAnalysisStatus,
   AnalysisActionsButton_AnalysisFragment,
@@ -7,8 +7,8 @@ import {
 } from "libs/graphql";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
 
 type Props = {
   project: AnalysisActionsButton_ProjectFragment;
@@ -32,49 +32,35 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
     }
   };
 
-  const items = useMemo<ButtonGroupOption[]>(() => {
-    const actions = [];
-    if (analysis.status === AccessmodAnalysisStatus.Ready) {
-      actions.push({
-        label: "Run",
-        onClick: () => {
-          console.log("run analysis");
-        },
-      });
-    }
-
-    if (
-      [AccessmodAnalysisStatus.Ready, AccessmodAnalysisStatus.Draft].includes(
+  return (
+    <div className="flex items-center gap-2">
+      {analysis.status === AccessmodAnalysisStatus.Ready && (
+        <Button variant="primary">{t("Run")}</Button>
+      )}
+      {[AccessmodAnalysisStatus.Ready, AccessmodAnalysisStatus.Draft].includes(
         analysis.status
-      )
-    )
-      actions.push({
-        label: "Edit",
-        onClick: () => {
-          router.push({
+      ) && (
+        <Link
+          href={{
             pathname: routes.project_analysis_edit,
             query: { projectId: project.id, analysisId: analysis.id },
-          });
-        },
-      });
-
-    if (
-      ![
+          }}
+        >
+          <a>
+            <Button variant="white">{t("Edit")}</Button>
+          </a>
+        </Link>
+      )}
+      {![
         AccessmodAnalysisStatus.Running,
         AccessmodAnalysisStatus.Queued,
-      ].includes(analysis.status)
-    ) {
-      actions.push({ label: "Delete", onClick: onDeleteClick });
-    }
-
-    return actions;
-  }, [analysis]);
-
-  if (!items.length) {
-    return null;
-  }
-
-  return <ButtonGroup items={items} />;
+      ].includes(analysis.status) && (
+        <Button variant="outlined" onClick={onDeleteClick}>
+          {t("Delete")}
+        </Button>
+      )}
+    </div>
+  );
 };
 
 AnalysisActionsButton.fragments = {

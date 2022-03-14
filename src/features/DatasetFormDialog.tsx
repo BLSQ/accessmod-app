@@ -238,19 +238,21 @@ const DatasetFormDialog = (props: Props) => {
                   disabled={form.isSubmitting}
                   error={form.touched.name && form.errors.name}
                 />
-                <Field
-                  label={t("Project")}
-                  required
-                  name="project"
-                  error={form.touched.project && form.errors.project}
-                >
-                  <ProjectPicker
-                    disabled={Boolean(project) || form.isSubmitting}
-                    onChange={(value) => form.setFieldValue("project", value)}
-                    value={form.formData.project}
+                {!project && (
+                  <Field
+                    label={t("Project")}
                     required
-                  />
-                </Field>
+                    name="project"
+                    error={form.touched.project && form.errors.project}
+                  >
+                    <ProjectPicker
+                      disabled={form.isSubmitting}
+                      onChange={(value) => form.setFieldValue("project", value)}
+                      value={form.formData.project}
+                      required
+                    />
+                  </Field>
+                )}
                 <Field
                   label={t("Role")}
                   required
@@ -281,7 +283,7 @@ const DatasetFormDialog = (props: Props) => {
                 }
                 validator={validator}
               >
-                {form.formData.files ? (
+                {form.formData.files?.length ? (
                   <div>
                     {form.formData.files
                       .map((f) => `${f.name} (${filesize(f.size)})`)

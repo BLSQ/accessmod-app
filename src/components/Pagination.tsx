@@ -9,6 +9,7 @@ type Props = {
   page: number;
   perPage: number;
   totalPages: number;
+  countItems: number;
   totalItems: number;
   className?: string;
   onChange: (page: number) => void;
@@ -41,12 +42,16 @@ const Pagination = (props: Props) => {
     loading,
     page,
     perPage,
+    countItems,
     totalPages,
     totalItems,
     onChange,
     className,
   } = props;
+
   const { t } = useTranslation();
+  const start = (page - 1) * perPage + 1;
+  const end = (page - 1) * perPage + countItems;
   return (
     <div className={clsx("py-3 flex items-center justify-between", className)}>
       <div className="flex-1 flex justify-between sm:hidden">
@@ -73,8 +78,8 @@ const Pagination = (props: Props) => {
             <p className="text-sm text-gray-700">
               {t("Showing {{start}} to {{end}} of {{totalItems}} results", {
                 totalItems,
-                start: (page - 1) * perPage + 1,
-                end: Math.min((page + 1) * perPage, totalItems),
+                start,
+                end,
               })}
             </p>
           </div>
@@ -100,7 +105,7 @@ const Pagination = (props: Props) => {
 
               <PaginationItem
                 onClick={() => onChange(page + 1)}
-                disabled={page + 1 === totalPages}
+                disabled={page === totalPages}
               >
                 <span className="sr-only">{t("Next")}</span>
                 <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />

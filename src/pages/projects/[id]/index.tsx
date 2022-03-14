@@ -6,9 +6,11 @@ import Button from "components/Button";
 import DescriptionList from "components/DescriptionList";
 import Layout from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
+import Time from "components/Time";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
+import CreateDatasetTrigger from "features/CreateDatasetTrigger";
 import ProjectActionsButton from "features/ProjectActionsButton";
-import ProjectAnalysisTable from "features/ProjectAnalysisTable";
+import ProjectAnalysesTable from "features/ProjectAnalysesTable";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
 import User from "features/User";
 import { ProjectPage_ProjectFragment, useProjectPageQuery } from "libs/graphql";
@@ -30,12 +32,12 @@ const LatestAnalysisBlock = ({
       <h3 className="mb-4 flex items-center justify-between">
         <Link
           href={{
-            pathname: routes.project_analysis_list,
+            pathname: routes.project_analyses_list,
             query: { projectId: project.id },
           }}
         >
-          <a title={t("See all analysis")} className="hover:underline">
-            {t("Latest Analysis")}
+          <a title={t("See all analyses")} className="hover:underline">
+            {t("Latest Analyses")}
           </a>
         </Link>
         <div className="flex items-center space-x-2">
@@ -53,7 +55,7 @@ const LatestAnalysisBlock = ({
           </CreateAnalysisTrigger>
           <Link
             href={{
-              pathname: routes.project_analysis_list,
+              pathname: routes.project_analyses_list,
               query: { projectId: project.id },
             }}
           >
@@ -65,7 +67,7 @@ const LatestAnalysisBlock = ({
           </Link>
         </div>
       </h3>
-      <ProjectAnalysisTable project={project} />
+      <ProjectAnalysesTable project={project} />
     </Block>
   );
 };
@@ -90,6 +92,18 @@ const LatestDatasetsBlock = ({
           </a>
         </Link>
         <div className="flex items-center space-x-2">
+          <CreateDatasetTrigger project={project}>
+            {({ onClick }) => (
+              <Button
+                variant="secondary"
+                onClick={onClick}
+                size="sm"
+                leadingIcon={<PlusIcon className="h-4 w-4" />}
+              >
+                {t("New Dataset")}
+              </Button>
+            )}
+          </CreateDatasetTrigger>
           <Link
             href={{
               pathname: routes.project_dataset_list,
@@ -157,10 +171,25 @@ const ProjectPage: NextPageWithFragments = () => {
       <PageContent className="space-y-4">
         <Block>
           <DescriptionList>
-            <DescriptionList.Item label={t("Spatial Resolution")}>
+            <DescriptionList.Item label={t("Creation Date")}>
+              <span className="text-md">
+                <Time datetime={project.createdAt} />
+              </span>
+            </DescriptionList.Item>
+            <DescriptionList.Item
+              label={t("Spatial Resolution")}
+              help={t(
+                "The spatial resolution refers to the linear spacing of a measurement."
+              )}
+            >
               <span className="text-md">{project.spatialResolution}</span>
             </DescriptionList.Item>
-            <DescriptionList.Item label={t("Coordinate Reference System")}>
+            <DescriptionList.Item
+              label={t("Coordinate Reference System")}
+              help={t(
+                "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
+              )}
+            >
               <span className="text-md">{project.crs}</span>
             </DescriptionList.Item>
           </DescriptionList>
@@ -180,14 +209,16 @@ ProjectPage.fragments = {
       name
       crs
       ...ProjectActionsButton_project
-      ...ProjectAnalysisTable_project
+      ...ProjectAnalysesTable_project
       ...ProjectDatasetsTable_project
       ...CreateAnalysisTrigger_project
+      ...CreateDatasetTrigger_project
       country {
         name
         code
         flag
       }
+      createdAt
       spatialResolution
       owner {
         ...User_user
@@ -196,9 +227,10 @@ ProjectPage.fragments = {
     }
     ${User.fragments.user}
     ${ProjectDatasetsTable.fragments.project}
-    ${ProjectAnalysisTable.fragments.project}
+    ${ProjectAnalysesTable.fragments.project}
     ${ProjectActionsButton.fragments.project}
     ${CreateAnalysisTrigger.fragments.project}
+    ${CreateDatasetTrigger.fragments.project}
   `,
 };
 
@@ -221,7 +253,10 @@ export const getServerSideProps = createGetServerSideProps({
       `,
       variables: { id: params.id },
     });
-    await ProjectAnalysisTable.prefetch(client, {
+    await ProjectAnalysesTable.prefetch(client, {
+      projectId: params.id as string,
+    });
+    await ProjectDatasetsTable.prefetch(client, {
       projectId: params.id as string,
     });
   },

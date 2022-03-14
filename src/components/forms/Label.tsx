@@ -10,7 +10,7 @@ const Label = (props: LabelHTMLAttributes<HTMLLabelElement>) => {
         props.color ?? "text-gray-600",
         props.className
       )}
-    ></label>
+    />
   );
 };
 

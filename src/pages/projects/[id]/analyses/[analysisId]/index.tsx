@@ -76,7 +76,7 @@ const AnalysisPage = () => {
               query: { projectId: data.project.id },
             }}
           >
-            {t("Analysis")}
+            {t("Analyses")}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
             href={{

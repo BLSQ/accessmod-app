@@ -119,12 +119,7 @@ const CreateProjectDialog = (props: Props) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      closeOnEsc={false}
-      closeOnOutsideClick={false}
-    >
+    <Dialog open={open} onClose={onClose}>
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{t("Create a new Project")}</Dialog.Title>
 
@@ -158,6 +153,9 @@ const CreateProjectDialog = (props: Props) => {
           <Field
             required
             label="Spatial Resolution"
+            help={t(
+              "The spatial resolution refers to the linear spacing of a measurement."
+            )}
             name="spatialResolution"
             type="number"
             onChange={form.handleInputChange}
@@ -171,6 +169,9 @@ const CreateProjectDialog = (props: Props) => {
             label={t("Coordinate Reference System")}
             name="crs"
             type="number"
+            help={t(
+              "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
+            )}
             onChange={form.handleInputChange}
             disabled={form.isSubmitting}
             error={form.touched.crs && form.errors.crs}

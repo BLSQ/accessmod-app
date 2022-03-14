@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
+import { DocumentReportIcon } from "@heroicons/react/outline";
 import Breadcrumbs from "components/Breadcrumbs";
 import Layout from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisForm from "features/analysis/AnalysisForm";
+import { getLabelFromAnalysisType } from "libs/analysis";
 import {
   AccessmodAnalysisStatus,
   AnalysisEditPageQuery,
@@ -47,7 +49,7 @@ const AnalysisEditPage = () => {
               query: { projectId: data.project.id },
             }}
           >
-            {t("Analysis")}
+            {t("Analyses")}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
             href={{
@@ -64,6 +66,12 @@ const AnalysisEditPage = () => {
         <h1 className="text-3xl font-bold text-white">
           {t("Analysis {{name}}", { name: data.analysis.name })}
         </h1>
+        <div className="flex flex-wrap items-center gap-10 gap-y-2 mt-2 text-sm text-white">
+          <div className="flex items-center">
+            <DocumentReportIcon className="h-5 mr-1.5" />
+            {getLabelFromAnalysisType(data.analysis.type)}
+          </div>
+        </div>
       </PageHeader>
       <PageContent>
         <AnalysisForm project={data.project} analysis={data.analysis} />

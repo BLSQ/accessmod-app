@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import type { FileError, FileRejection } from "react-dropzone";
 import { UploadIcon } from "@heroicons/react/solid";
@@ -6,7 +6,7 @@ import clsx from "clsx";
 
 type Props = {
   className?: string;
-  label?: string | ReactElement;
+  label?: ReactNode;
   accept?: string;
   children?: ReactElement;
   onChange: <T extends File>(
