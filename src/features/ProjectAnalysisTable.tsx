@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
@@ -17,7 +17,6 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useState } from "react";
 import AnalysisStatus from "./analysis/AnalysisStatus";
-import User from "./User";
 
 type Props = {
   project: ProjectAnalysisTable_ProjectFragment;
@@ -33,7 +32,7 @@ const DELETE_ANALYSIS_MUTATION = gql`
 `;
 
 const ProjectAnalysisTable = (props: Props) => {
-  const { project, perPage = 10 } = props;
+  const { project, perPage = 5 } = props;
   const { t } = useTranslation();
   const [pagination, setPagination] = useState({ page: 1, perPage });
   const [deleteAnalysis] = useDeleteAnalysisMutation();
@@ -156,7 +155,7 @@ ProjectAnalysisTable.prefetch = async (
     query: gql`
       query ProjectAnalysisTable(
         $page: Int = 1
-        $perPage: Int = 10
+        $perPage: Int = 5
         $projectId: String!
       ) {
         analysis: accessmodAnalyses(

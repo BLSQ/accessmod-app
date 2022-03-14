@@ -20,7 +20,7 @@ import User from "./User";
 const PROJECT_DATASETS_QUERY = gql`
   query ProjectDatasetsTable(
     $page: Int = 1
-    $perPage: Int = 10
+    $perPage: Int = 5
     $projectId: String!
     $term: String
   ) {
@@ -77,7 +77,7 @@ const DELETE_DATASET_MUTATION = gql`
 `;
 
 const ProjectDatasetsTable = (props: Props) => {
-  const { project, perPage = 10, searchable } = props;
+  const { project, perPage = 5, searchable } = props;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState<string>();
   const [pagination, setPagination] = useState({ page: 1, perPage });
