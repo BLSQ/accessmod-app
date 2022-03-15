@@ -3,6 +3,7 @@ import Badge from "components/Badge";
 import { getAnalysisStatusLabel } from "libs/analysis";
 import { AccessmodAnalysisStatus } from "libs/graphql";
 import Tooltip from "components/Tooltip/Tooltip";
+import Spinner from "components/Spinner";
 
 interface Props {
   analysis: { status: AccessmodAnalysisStatus };
@@ -22,6 +23,9 @@ const AnalysisStatus = ({ analysis }: Props) => {
     <Tooltip label={`${getAnalysisStatusLabel(analysis.status)}: Description`}>
       <Badge size="xs" className={Classes[analysis.status]}>
         {getAnalysisStatusLabel(analysis.status)}
+        {analysis.status === AccessmodAnalysisStatus.Running && (
+          <Spinner className="ml-1" size="xs" />
+        )}
       </Badge>
     </Tooltip>
   );

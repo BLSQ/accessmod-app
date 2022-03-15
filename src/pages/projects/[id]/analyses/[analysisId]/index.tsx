@@ -40,6 +40,7 @@ const AnalysisPage = () => {
 
     if (
       [
+        AccessmodAnalysisStatus.Ready,
         AccessmodAnalysisStatus.Queued,
         AccessmodAnalysisStatus.Running,
       ].includes(analysis.status)
