@@ -87,7 +87,7 @@ const Navbar = () => {
         },
       ]);
     }
-  }, [data]);
+  }, [data, t]);
   return (
     <div className="flex gap-2 uppercase text-white h-full items-stretch">
       {items.map((itemProps) => (

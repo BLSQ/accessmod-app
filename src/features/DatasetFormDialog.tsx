@@ -186,11 +186,13 @@ const DatasetFormDialog = (props: Props) => {
   });
 
   useEffect(() => {
-    form.setFieldValue("project", project, false);
-    form.setFieldValue("role", role, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // Reset the form values when project or role are changed
-  }, [project, role]);
+    if (project && form.formData.project?.id !== project.id) {
+      form.setFieldValue("project", project, false);
+    }
+    if (role && form.formData.role?.id !== role.id) {
+      form.setFieldValue("role", role, false);
+    }
+  }, [project, role, form]);
 
   const validator = useCallback(
     (file: File) => {

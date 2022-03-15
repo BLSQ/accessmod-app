@@ -32,7 +32,7 @@ const useBeforeUnload = (cancel: () => void | true | false | string) => {
       return;
     router.events.emit("routeChangeError");
     throw "Route change aborted";
-  }, [cancel]);
+  }, [cancel, router.events]);
 
   useEffect(() => {
     window.addEventListener("beforeunload", onWindowClose);
@@ -42,7 +42,7 @@ const useBeforeUnload = (cancel: () => void | true | false | string) => {
       window.removeEventListener("beforeunload", onWindowClose);
       router.events.off("routeChangeStart", onNavigation);
     };
-  }, [onNavigation, onWindowClose]);
+  }, [onNavigation, onWindowClose, router.events]);
 };
 
 export default useBeforeUnload;
