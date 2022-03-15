@@ -6,7 +6,7 @@ describe("Button", () => {
     render(<Button>btn</Button>);
     const btn = screen.getByText("btn");
     expect(btn).toBeInTheDocument();
-    expect(btn.classList).toContain("bg-midnight-blue-500"); // primary variant
+    expect(btn.classList).toContain("bg-midnight-blue"); // primary variant
     expect(btn.classList).toContain("text-sm"); // md size
   });
 
