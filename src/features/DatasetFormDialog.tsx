@@ -186,11 +186,13 @@ const DatasetFormDialog = (props: Props) => {
   });
 
   useEffect(() => {
-    form.setFieldValue("project", project, false);
-    form.setFieldValue("role", role, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // Reset the form values when project or role are changed
-  }, [project, role]);
+    if (project && form.formData.project?.id !== project.id) {
+      form.setFieldValue("project", project, false);
+    }
+    if (role && form.formData.role?.id !== role.id) {
+      form.setFieldValue("role", role, false);
+    }
+  }, [project, role, form]);
 
   const validator = useCallback(
     (file: File) => {
@@ -238,19 +240,21 @@ const DatasetFormDialog = (props: Props) => {
                   disabled={form.isSubmitting}
                   error={form.touched.name && form.errors.name}
                 />
-                <Field
-                  label={t("Project")}
-                  required
-                  name="project"
-                  error={form.touched.project && form.errors.project}
-                >
-                  <ProjectPicker
-                    disabled={Boolean(project) || form.isSubmitting}
-                    onChange={(value) => form.setFieldValue("project", value)}
-                    value={form.formData.project}
+                {!project && (
+                  <Field
+                    label={t("Project")}
                     required
-                  />
-                </Field>
+                    name="project"
+                    error={form.touched.project && form.errors.project}
+                  >
+                    <ProjectPicker
+                      disabled={form.isSubmitting}
+                      onChange={(value) => form.setFieldValue("project", value)}
+                      value={form.formData.project}
+                      required
+                    />
+                  </Field>
+                )}
                 <Field
                   label={t("Role")}
                   required
@@ -281,7 +285,7 @@ const DatasetFormDialog = (props: Props) => {
                 }
                 validator={validator}
               >
-                {form.formData.files ? (
+                {form.formData.files?.length ? (
                   <div>
                     {form.formData.files
                       .map((f) => `${f.name} (${filesize(f.size)})`)

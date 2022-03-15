@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
@@ -7,20 +7,20 @@ import { getLabelFromAnalysisType } from "libs/analysis";
 import { CustomApolloClient } from "libs/apollo";
 import {
   AccessmodAnalysisStatus,
-  ProjectAnalysisTableQueryVariables,
-  ProjectAnalysisTable_ProjectFragment,
+  ProjectAnalysesTableQueryVariables,
+  ProjectAnalysesTable_ProjectFragment,
   useDeleteAnalysisMutation,
-  useProjectAnalysisTableQuery,
+  useProjectAnalysesTableQuery,
 } from "libs/graphql";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { MouseEvent, useState } from "react";
 import AnalysisStatus from "./analysis/AnalysisStatus";
-import User from "./User";
 
 type Props = {
-  project: ProjectAnalysisTable_ProjectFragment;
+  project: ProjectAnalysesTable_ProjectFragment;
   perPage?: number;
 };
 
@@ -32,12 +32,13 @@ const DELETE_ANALYSIS_MUTATION = gql`
   }
 `;
 
-const ProjectAnalysisTable = (props: Props) => {
-  const { project, perPage = 10 } = props;
+const ProjectAnalysesTable = (props: Props) => {
+  const { project, perPage = 5 } = props;
+  const router = useRouter();
   const { t } = useTranslation();
   const [pagination, setPagination] = useState({ page: 1, perPage });
   const [deleteAnalysis] = useDeleteAnalysisMutation();
-  const { data, previousData, loading, refetch } = useProjectAnalysisTableQuery(
+  const { data, previousData, loading, refetch } = useProjectAnalysesTableQuery(
     {
       variables: { projectId: project.id, ...pagination },
     }
@@ -54,9 +55,23 @@ const ProjectAnalysisTable = (props: Props) => {
     refetch();
   };
 
-  const rows = (data || previousData)?.analysis.items ?? [];
-  const totalItems = (data || previousData)?.analysis.totalItems ?? 0;
-  const totalPages = (data || previousData)?.analysis.totalPages ?? 0;
+  const rows = (data || previousData)?.analyses.items ?? [];
+  const totalItems = (data || previousData)?.analyses.totalItems ?? 0;
+  const totalPages = (data || previousData)?.analyses.totalPages ?? 0;
+
+  const onRowClick = (event: MouseEvent<Element>, row: { id: string }) => {
+    // If the user clicked on a button or a anchor, let's this element handles the click and forget about it.
+    if (
+      event.target instanceof HTMLButtonElement ||
+      event.target instanceof HTMLAnchorElement
+    ) {
+      return;
+    }
+    router.push({
+      pathname: routes.project_analysis,
+      query: { projectId: project.id, analysisId: row.id },
+    });
+  };
 
   return (
     <div className="overflow-x-hidden">
@@ -77,17 +92,12 @@ const ProjectAnalysisTable = (props: Props) => {
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.id} className="group">
-                <td className="min-w-fit">
-                  <Link
-                    href={{
-                      pathname: routes.project_analysis,
-                      query: { projectId: project.id, analysisId: row.id },
-                    }}
-                  >
-                    <a className="hover:underline">{row.name}</a>
-                  </Link>
-                </td>
+              <tr
+                key={row.id}
+                className="group cursor-pointer"
+                onClick={(event) => onRowClick(event, row)}
+              >
+                <td className="min-w-fit">{row.name}</td>
                 <td>{getLabelFromAnalysisType(row.type)}</td>
                 <td>
                   <Time datetime={row.createdAt} />
@@ -109,9 +119,10 @@ const ProjectAnalysisTable = (props: Props) => {
                       AccessmodAnalysisStatus.Draft,
                     ].includes(row.status) && (
                       <Link
-                        href={`/projects/${encodeURIComponent(
-                          project.id
-                        )}/analysis/${encodeURIComponent(row.id)}/edit`}
+                        href={{
+                          pathname: routes.project_analysis_edit,
+                          query: { projectId: project.id, analysisId: row.id },
+                        }}
                       >
                         <a>
                           <Button size="sm">{t("Edit")}</Button>
@@ -131,6 +142,7 @@ const ProjectAnalysisTable = (props: Props) => {
           loading={loading}
           onChange={(page) => setPagination({ ...pagination, page })}
           page={pagination.page}
+          countItems={rows.length}
           perPage={pagination.perPage}
           totalItems={totalItems}
           totalPages={totalPages}
@@ -140,26 +152,26 @@ const ProjectAnalysisTable = (props: Props) => {
   );
 };
 
-ProjectAnalysisTable.fragments = {
+ProjectAnalysesTable.fragments = {
   project: gql`
-    fragment ProjectAnalysisTable_project on AccessmodProject {
+    fragment ProjectAnalysesTable_project on AccessmodProject {
       id
     }
   `,
 };
 
-ProjectAnalysisTable.prefetch = async (
+ProjectAnalysesTable.prefetch = async (
   client: CustomApolloClient,
-  variables: ProjectAnalysisTableQueryVariables
+  variables: ProjectAnalysesTableQueryVariables
 ) => {
   await client.query({
     query: gql`
-      query ProjectAnalysisTable(
+      query ProjectAnalysesTable(
         $page: Int = 1
-        $perPage: Int = 10
+        $perPage: Int = 5
         $projectId: String!
       ) {
-        analysis: accessmodAnalyses(
+        analyses: accessmodAnalyses(
           projectId: $projectId
           page: $page
           perPage: $perPage
@@ -184,4 +196,4 @@ ProjectAnalysisTable.prefetch = async (
   });
 };
 
-export default ProjectAnalysisTable;
+export default ProjectAnalysesTable;

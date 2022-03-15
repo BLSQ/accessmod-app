@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
-import ButtonGroup, { ButtonGroupOption } from "components/ButtonGroup";
+import Button from "components/Button";
 import useCacheKey from "hooks/useCacheKey";
 import { useDeleteProjectMutation } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 type Props = {
   project: any;
@@ -39,20 +39,16 @@ const ProjectActionsButton = ({ project }: Props) => {
     }
   }, [project, router, deleteProject, t, clearCache]);
 
-  const items = useMemo<ButtonGroupOption[]>(() => {
-    const actions = [
-      {
-        label: t("Edit"),
-        onClick: () => {
-          console.log("onClick(edit)");
-        },
-      },
-      { label: t("Delete"), onClick: onDeleteClick },
-    ];
-    return actions;
-  }, [t, onDeleteClick]);
-
-  return <ButtonGroup items={items} />;
+  return (
+    <div className="flex items-center gap-2">
+      <Button disabled variant="white">
+        {t("Edit")}
+      </Button>
+      <Button onClick={onDeleteClick} variant="outlined">
+        {t("Delete")}
+      </Button>
+    </div>
+  );
 };
 
 ProjectActionsButton.fragments = {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 type EventElement = HTMLElement | Window;
 
@@ -6,11 +6,14 @@ export const useEmitter = <T = any>(
   eventName: string,
   element?: EventElement
 ) => {
-  const callEvent = (data?: T) => {
-    const event = new CustomEvent(eventName, { detail: data });
+  const callEvent = useCallback(
+    (data?: T) => {
+      const event = new CustomEvent(eventName, { detail: data });
 
-    (element || window).dispatchEvent(event);
-  };
+      (element || window).dispatchEvent(event);
+    },
+    [eventName, element]
+  );
 
   return callEvent;
 };

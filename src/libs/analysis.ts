@@ -60,3 +60,12 @@ export async function launchAnalysis(analysis: {
     return false;
   }
 }
+
+export const ANALYSES_OPTIONS = [
+  {
+    value: AccessmodAnalysisType.Accessibility,
+    label: "Accessibility Analysis",
+    description:
+      "Compute the traveling time surface, informing the time needed to reach the nearest health facility.",
+  },
+];

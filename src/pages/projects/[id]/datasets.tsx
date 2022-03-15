@@ -1,12 +1,10 @@
 import { gql } from "@apollo/client";
-import { UploadIcon } from "@heroicons/react/outline";
+import { PlusIcon } from "@heroicons/react/outline";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
-import Input from "components/forms/Input";
 import Layout from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
-import SearchInput from "components/SearchInput";
 import CreateDatasetDialog from "features/DatasetFormDialog";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
 import { useProjectDataPageQuery } from "libs/graphql";
@@ -76,9 +74,9 @@ const ProjectDataPage = () => {
           <Button
             variant="primary"
             onClick={() => toggleUploadDialog(true)}
-            leadingIcon={<UploadIcon className="h-4 w-4" />}
+            leadingIcon={<PlusIcon className="h-4 w-4" />}
           >
-            {t("Upload Data")}
+            {t("New Dataset")}
           </Button>
         </div>
       </PageHeader>

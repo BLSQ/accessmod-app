@@ -14,6 +14,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     "w-full form-input shadow-sm rounded-md sm:text-sm border-gray-300",
     "hover:border-gray-400 focus:ring-transparent focus:border-lochmara focus:outline-none",
     "disabled:bg-gray-50 disabled:pointer-events-none",
+    "placeholder-gray-600 placeholder-opacity-70",
     trailingIcon && "pr-4",
     error &&
       "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara"

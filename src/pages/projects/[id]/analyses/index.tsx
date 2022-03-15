@@ -5,17 +5,17 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
-import ProjectAnalysisTable from "features/ProjectAnalysisTable";
-import { useProjectAnalysisPageQuery } from "libs/graphql";
+import ProjectAnalysesTable from "features/ProjectAnalysesTable";
+import { useProjectAnalysesPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
-const ProjectAnalysisListPage = () => {
+const ProjectAnalysesListPage = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const { data } = useProjectAnalysisPageQuery({
+  const { data } = useProjectAnalysesPageQuery({
     variables: { id: router.query.id as string },
   });
 
@@ -39,15 +39,15 @@ const ProjectAnalysisListPage = () => {
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
             href={{
-              pathname: routes.project_analysis_list,
+              pathname: routes.project_analyses_list,
               query: { projectId: data.project.id },
             }}
           >
-            {t("Analysis")}
+            {t("Analyses")}
           </Breadcrumbs.Part>
         </Breadcrumbs>
         <h1 className="text-3xl font-bold text-white flex items-center justify-between">
-          {t("Analysis")}
+          {t("Analyses")}
           <CreateAnalysisTrigger project={data.project}>
             {({ onClick }) => (
               <Button
@@ -63,7 +63,7 @@ const ProjectAnalysisListPage = () => {
       </PageHeader>
       <PageContent>
         <Block>
-          <ProjectAnalysisTable perPage={20} project={data.project} />
+          <ProjectAnalysesTable perPage={20} project={data.project} />
         </Block>
       </PageContent>
     </>
@@ -81,24 +81,24 @@ export const getServerSideProps = createGetServerSideProps({
 
     await client.query({
       query: gql`
-        query ProjectAnalysisPage($id: String!) {
+        query ProjectAnalysesPage($id: String!) {
           project: accessmodProject(id: $id) {
             id
             name
             ...CreateAnalysisTrigger_project
-            ...ProjectAnalysisTable_project
+            ...ProjectAnalysesTable_project
           }
         }
-        ${ProjectAnalysisTable.fragments.project}
+        ${ProjectAnalysesTable.fragments.project}
         ${CreateAnalysisTrigger.fragments.project}
       `,
       variables: { id: params.id },
     });
-    await ProjectAnalysisTable.prefetch(client, {
+    await ProjectAnalysesTable.prefetch(client, {
       projectId: params.id as string,
       perPage: 20,
     });
   },
 });
 
-export default ProjectAnalysisListPage;
+export default ProjectAnalysesListPage;

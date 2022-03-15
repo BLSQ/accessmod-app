@@ -18,9 +18,9 @@ import {
   UpdateAccessmodAccessibilityAnalysisInput,
   useUpdateAccessibilityAnalysisMutation,
 } from "libs/graphql";
+import { InformationCircleIcon } from "@heroicons/react/solid";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import DatasetPicker from "../DatasetPicker";
@@ -180,8 +180,14 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
   return (
     <div className="space-y-5">
-      <Block>
-        <p className="mb-4">Description</p>
+      <Block className="space-y-4">
+        <div className="flex items-start">
+          <InformationCircleIcon className="h-8 w-8 mr-2 text-gray-500" />
+          <p>
+            An accessibility analysis computes the traveling time surface,
+            informing the time needed to reach the nearest health facility.
+          </p>
+        </div>
         <Field
           label="Analysis Name"
           name="name"
@@ -257,11 +263,12 @@ const AccessibilityAnalysisForm = (props: Props) => {
             />
           </Field>
           <Field
-            label="Max Slope"
+            label="Max Slope (in %)"
             name="maxSlope"
             value={form.formData.maxSlope}
             onChange={form.handleInputChange}
             type="number"
+            placeholder="10%"
             min={0}
             max={1000}
           />
@@ -331,10 +338,10 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       <AnalysisStep
         id="advancedSettings"
-        title={"Advanced Settings"}
+        title={"Optional Settings"}
+        titleClassName="opacity-50"
         className="space-y-4"
       >
-        <p>Description</p>
         <Field name="algorithm" label="Cost distance analysis method" required>
           <RadioGroup
             name="algorithm"
@@ -370,7 +377,8 @@ const AccessibilityAnalysisForm = (props: Props) => {
           type="number"
           className="md:w-1/2 xl:w-1/3"
           required
-          label="Max travel time"
+          label="Max travel time (in minutes)"
+          placeholder={"60"}
           value={form.formData.maxTravelTime}
         />
         <Checkbox
@@ -393,16 +401,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
       )}
 
       <div className="flex justify-end gap-4">
-        <Link
-          href={{
-            pathname: routes.project_analysis,
-            query: { projectId: project.id, analysisId: analysis.id },
-          }}
-        >
-          <a>
-            <Button variant="white">Cancel</Button>
-          </a>
-        </Link>
         <Button
           disabled={
             form.isSubmitting ||
@@ -440,6 +438,7 @@ AccessibilityAnalysisForm.fragments = {
         id
         name
       }
+      type
       maxSlope
       priorityRoads
       priorityLandCover

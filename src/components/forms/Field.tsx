@@ -1,7 +1,9 @@
 import Label from "./Label";
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import Input, { InputProps } from "./Input";
 import clsx from "clsx";
+import Tooltip from "components/Tooltip";
+import { InformationCircleIcon } from "@heroicons/react/solid";
 
 interface CommonProps {
   label?: string;
@@ -9,6 +11,7 @@ interface CommonProps {
   required?: boolean;
   description?: string;
   name: string;
+  help?: ReactNode;
   className?: string;
   labelColor?: string;
   errorColor?: string;
@@ -27,6 +30,7 @@ const Field = (props: CustomField | InputField) => {
     label,
     required,
     name,
+    help,
     className,
     labelColor,
     errorColor = "text-red-600",
@@ -46,8 +50,19 @@ const Field = (props: CustomField | InputField) => {
     <div className={className}>
       <div className="flex justify-between mb-1">
         {label && (
-          <Label color={labelColor} htmlFor={name}>
+          <Label color={labelColor} htmlFor={name} className="flex">
             {label}
+            {help && (
+              <Tooltip
+                placement="top"
+                renderTrigger={(ref) => (
+                  <span ref={ref}>
+                    <InformationCircleIcon className="ml-1 h-3 w-3 cursor-pointer" />
+                  </span>
+                )}
+                label={help}
+              />
+            )}
           </Label>
         )}
         {!required && <span className="text-sm text-gray-400">Optional</span>}

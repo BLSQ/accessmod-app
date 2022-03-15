@@ -5,22 +5,22 @@ import SearchInput from "components/SearchInput";
 import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
+import { stopPropagation } from "libs/events";
 import {
-  DatasetFormDialog_DatasetFragment,
   ProjectDatasetsTableQueryVariables,
   ProjectDatasetsTable_ProjectFragment,
   useDeleteDatasetMutation,
   useProjectDatasetsTableQuery,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import DatasetFormDialog from "./DatasetFormDialog";
 import User from "./User";
 
 const PROJECT_DATASETS_QUERY = gql`
   query ProjectDatasetsTable(
     $page: Int = 1
-    $perPage: Int = 10
+    $perPage: Int = 5
     $projectId: String!
     $term: String
   ) {
@@ -77,13 +77,10 @@ const DELETE_DATASET_MUTATION = gql`
 `;
 
 const ProjectDatasetsTable = (props: Props) => {
-  const { project, perPage = 10, searchable } = props;
+  const { project, perPage = 5, searchable } = props;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState<string>();
   const [pagination, setPagination] = useState({ page: 1, perPage });
-  const [editedDataset, setEditedDataset] = useState<
-    undefined | DatasetFormDialog_DatasetFragment
-  >();
   const [deleteDataset] = useDeleteDatasetMutation();
   const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
@@ -152,7 +149,7 @@ const ProjectDatasetsTable = (props: Props) => {
                     <Time datetime={row.createdAt} />
                   </td>
                   <td>{row.files.length ?? 0}</td>
-                  <td className="text-right">
+                  <td className="text-right" onClick={stopPropagation}>
                     <div className="invisible group-hover:visible flex justify-end items-center gap-1">
                       <Button
                         variant="white"
@@ -160,9 +157,6 @@ const ProjectDatasetsTable = (props: Props) => {
                         onClick={() => onDeleteDataset(row)}
                       >
                         {t("Delete")}
-                      </Button>
-                      <Button size="sm" onClick={() => setEditedDataset(row)}>
-                        {t("Add Files")}
                       </Button>
                     </div>
                   </td>
@@ -178,19 +172,12 @@ const ProjectDatasetsTable = (props: Props) => {
             onChange={(page) => setPagination({ ...pagination, page })}
             page={pagination.page}
             perPage={pagination.perPage}
+            countItems={rows.length}
             totalItems={totalItems}
             totalPages={totalPages}
           />
         </div>
       </div>
-      {editedDataset && (
-        <DatasetFormDialog
-          dataset={editedDataset}
-          project={project}
-          open={Boolean(editedDataset)}
-          onClose={() => setEditedDataset(undefined)}
-        />
-      )}
     </>
   );
 };
@@ -199,13 +186,11 @@ ProjectDatasetsTable.fragments = {
   project: gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
       id
-      ...DatasetFormDialog_project
       owner {
         ...User_user
       }
     }
     ${User.fragments.user}
-    ${DatasetFormDialog.fragments.project}
   `,
 };
 

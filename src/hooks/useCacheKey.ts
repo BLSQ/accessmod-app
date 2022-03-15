@@ -60,7 +60,7 @@ const useCacheKey = (keys: string | string[], listener?: () => void) => {
 
   const propagate = useCallback(() => {
     emit({ keys: ensureArray(cachedKeys) });
-  }, [cachedKeys]);
+  }, [cachedKeys, emit]);
 
   return propagate;
 };

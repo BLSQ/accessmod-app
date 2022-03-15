@@ -1,5 +1,5 @@
 import { Fragment, ReactElement, ReactNode, useRef } from "react";
-import { Dialog as BaseDialog, Transition } from "@headlessui/react";
+import { Dialog as BaseDialog, Transition, FocusTrap } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import useEventListener from "hooks/useEventListener";
@@ -67,7 +67,6 @@ function Dialog(props: DialogProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
       <BaseDialog
-        as="div"
         ref={dialogRef}
         className="fixed z-10 inset-0 overflow-y-auto"
         onClose={onClose}

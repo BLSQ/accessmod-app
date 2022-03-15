@@ -10,6 +10,7 @@ const AnalysisStep = (props: {
   defaultOpen?: boolean;
   disabled?: boolean;
   id?: string;
+  titleClassName?: string;
   className?: string;
 }) => (
   <Block id={props.id}>
@@ -23,7 +24,8 @@ const AnalysisStep = (props: {
             <div
               className={clsx(
                 "text-lg flex justify-between -mt-6 pt-6 text-lochmara",
-                props.disabled && "text-gray-300"
+                props.disabled && "text-gray-300",
+                props.titleClassName
               )}
             >
               {props.title}

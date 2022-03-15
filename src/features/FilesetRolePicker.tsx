@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import clsx from "clsx";
-import Button from "components/Button";
+import Badge from "components/Badge";
 import SelectInput, { DefaultComponents } from "components/forms/SelectInput";
 import { getFormatLabel } from "libs/constants";
 import { useFilesetRolePickerQuery } from "libs/graphql";
@@ -20,13 +20,9 @@ const RoleOption = (props: any) => {
           <span className="text-sm font-bold">{props.data.name}</span>
           <span className={clsx("text-xs mt-1")}>Description of the role</span>
         </div>
-        <Button
-          variant="pill"
-          size="sm"
-          className="bg-who-blue-light self-center"
-        >
+        <Badge size="xs" className="bg-lochmara text-white self-center">
           {getFormatLabel(props.data.format)}
-        </Button>
+        </Badge>
       </div>
     </DefaultComponents.Option>
   );

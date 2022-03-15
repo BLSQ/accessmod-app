@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import SelectInput, { DefaultComponents } from "components/forms/SelectInput";
+import { ANALYSES_OPTIONS } from "libs/analysis";
 import { AccessmodAnalysisType } from "libs/graphql";
 
 type Props = {
@@ -8,15 +9,6 @@ type Props = {
   required?: boolean;
   onChange: (value: any) => void;
 };
-
-const OPTIONS = [
-  {
-    value: AccessmodAnalysisType.Accessibility,
-    label: "Accessibility Analysis",
-    description:
-      "Compute the traveling time surface, informing the time needed to reach the nearest health facility.",
-  },
-];
 
 const AnalysisOption = (props: any) => {
   return (
@@ -40,7 +32,7 @@ const AnalysisTypePicker = (props: Props) => {
 
   return (
     <SelectInput
-      options={OPTIONS}
+      options={ANALYSES_OPTIONS}
       value={value}
       disabled={disabled}
       onChange={onChange}
