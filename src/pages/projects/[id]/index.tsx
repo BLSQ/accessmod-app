@@ -9,7 +9,7 @@ import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
 import CreateDatasetTrigger from "features/CreateDatasetTrigger";
-import ProjectActionsButton from "features/ProjectActionsButton";
+import ProjectActionsMenu from "features/ProjectActionsMenu";
 import ProjectAnalysesTable from "features/ProjectAnalysesTable";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
 import User from "features/User";
@@ -165,11 +165,16 @@ const ProjectPage: NextPageWithFragments = () => {
               <User small user={project.owner} textColor="text-white" />
             </div>
           </div>
-          <ProjectActionsButton project={project} />
+          <ProjectActionsMenu project={project} />
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
         <Block>
+          <div className="flex justify-end">
+            <Button size="sm" variant="white" disabled>
+              {t("Edit")}
+            </Button>
+          </div>
           <DescriptionList>
             <DescriptionList.Item label={t("Creation Date")}>
               <span className="text-md">
@@ -208,7 +213,7 @@ ProjectPage.fragments = {
       id
       name
       crs
-      ...ProjectActionsButton_project
+      ...ProjectActionsMenu_project
       ...ProjectAnalysesTable_project
       ...ProjectDatasetsTable_project
       ...CreateAnalysisTrigger_project
@@ -225,10 +230,10 @@ ProjectPage.fragments = {
         email
       }
     }
+    ${ProjectActionsMenu.fragments.project}
     ${User.fragments.user}
     ${ProjectDatasetsTable.fragments.project}
     ${ProjectAnalysesTable.fragments.project}
-    ${ProjectActionsButton.fragments.project}
     ${CreateAnalysisTrigger.fragments.project}
     ${CreateDatasetTrigger.fragments.project}
   `,

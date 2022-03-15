@@ -663,13 +663,6 @@ export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?
 
 export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
-
-export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> };
-
 export type DeleteProjectMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodProjectInput>;
 }>;
@@ -677,7 +670,16 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } };
 
-export type ProjectActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+export type DeleteProjectTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+
+export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> };
+
+export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type DeleteAnalysisMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
@@ -1047,11 +1049,19 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
   status
 }
     `;
-export const ProjectActionsButton_ProjectFragmentDoc = gql`
-    fragment ProjectActionsButton_project on AccessmodProject {
+export const DeleteProjectTrigger_ProjectFragmentDoc = gql`
+    fragment DeleteProjectTrigger_project on AccessmodProject {
   id
+  name
 }
     `;
+export const ProjectActionsMenu_ProjectFragmentDoc = gql`
+    fragment ProjectActionsMenu_project on AccessmodProject {
+  id
+  name
+  ...DeleteProjectTrigger_project
+}
+    ${DeleteProjectTrigger_ProjectFragmentDoc}`;
 export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
     fragment ProjectAnalysesTable_project on AccessmodProject {
   id
@@ -1085,7 +1095,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   id
   name
   crs
-  ...ProjectActionsButton_project
+  ...ProjectActionsMenu_project
   ...ProjectAnalysesTable_project
   ...ProjectDatasetsTable_project
   ...CreateAnalysisTrigger_project
@@ -1102,7 +1112,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
     email
   }
 }
-    ${ProjectActionsButton_ProjectFragmentDoc}
+    ${ProjectActionsMenu_ProjectFragmentDoc}
 ${ProjectAnalysesTable_ProjectFragmentDoc}
 ${ProjectDatasetsTable_ProjectFragmentDoc}
 ${CreateAnalysisTrigger_ProjectFragmentDoc}
@@ -1317,6 +1327,39 @@ export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
 export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
 export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
+export const DeleteProjectDocument = gql`
+    mutation DeleteProject($input: DeleteAccessmodProjectInput) {
+  deleteAccessmodProject(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+
+/**
+ * __useDeleteProjectMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
+      }
+export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -1355,39 +1398,6 @@ export function useFilesetRolePickerLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FilesetRolePickerQueryHookResult = ReturnType<typeof useFilesetRolePickerQuery>;
 export type FilesetRolePickerLazyQueryHookResult = ReturnType<typeof useFilesetRolePickerLazyQuery>;
 export type FilesetRolePickerQueryResult = Apollo.QueryResult<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>;
-export const DeleteProjectDocument = gql`
-    mutation DeleteProject($input: DeleteAccessmodProjectInput) {
-  deleteAccessmodProject(input: $input) {
-    success
-  }
-}
-    `;
-export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
-
-/**
- * __useDeleteProjectMutation__
- *
- * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
-      }
-export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
-export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
-export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const DeleteAnalysisDocument = gql`
     mutation DeleteAnalysis($input: DeleteAccessmodAnalysisInput) {
   deleteAccessmodAnalysis(input: $input) {

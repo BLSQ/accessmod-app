@@ -4,10 +4,12 @@ import useCacheKey from "hooks/useCacheKey";
 import { useDeleteProjectMutation } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { ReactElement, useCallback } from "react";
 
 type Props = {
   project: any;
+  children?: ({ onClick }: { onClick: () => void }) => ReactElement;
+  className?: string;
 };
 
 const DELETE_PROJECT_MUTATION = gql`
@@ -18,7 +20,7 @@ const DELETE_PROJECT_MUTATION = gql`
   }
 `;
 
-const ProjectActionsButton = ({ project }: Props) => {
+const DeleteProjectTrigger = ({ project, children, className }: Props) => {
   const [deleteProject] = useDeleteProjectMutation();
   const { t } = useTranslation();
   const router = useRouter();
@@ -34,29 +36,32 @@ const ProjectActionsButton = ({ project }: Props) => {
       )
     ) {
       await deleteProject({ variables: { input: { id: project.id } } });
-      await router.push("/projects");
+      if (
+        router.asPath.startsWith(`/projects/${encodeURIComponent(project.id)}`)
+      )
+        await router.push("/projects");
       clearCache();
     }
   }, [project, router, deleteProject, t, clearCache]);
 
-  return (
-    <div className="flex items-center gap-2">
-      <Button disabled variant="white">
-        {t("Edit")}
-      </Button>
-      <Button onClick={onDeleteClick} variant="outlined">
+  if (children) {
+    return children({ onClick: onDeleteClick });
+  } else {
+    return (
+      <Button variant="white" className={className} onClick={onDeleteClick}>
         {t("Delete")}
       </Button>
-    </div>
-  );
+    );
+  }
 };
 
-ProjectActionsButton.fragments = {
+DeleteProjectTrigger.fragments = {
   project: gql`
-    fragment ProjectActionsButton_project on AccessmodProject {
+    fragment DeleteProjectTrigger_project on AccessmodProject {
       id
+      name
     }
   `,
 };
 
-export default ProjectActionsButton;
+export default DeleteProjectTrigger;

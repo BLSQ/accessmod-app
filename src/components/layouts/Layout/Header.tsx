@@ -47,7 +47,7 @@ const Header = ({ user }: Props) => {
                 <div className="ml-4 flex items-center md:ml-6">
                   <Button
                     variant="primary"
-                    className="mr-4"
+                    className="mr-7"
                     onClick={() => setProjectDialog(true)}
                   >
                     {t("New Project")}
