@@ -8,7 +8,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   leadingIcon?: ReactElement;
 }
 
-const Classes: { [key: string]: string } = {
+export const Classes: { [key: string]: string } = {
   base: "relative inline-flex items-center justify-center transition-all border border-transparent font-medium shadow-sm rounded focus:outline-none h-fit disabled:opacity-50 disabled:cursor-not-allowed",
   primary: "text-white bg-midnight-blue hover:bg-midnight-blue-500",
   secondary: "text-white bg-lochmara hover:bg-lochmara-600",

@@ -9,13 +9,14 @@ import { Fragment } from "react";
 
 type UserMenuProps = {
   user: UserMenu_UserFragment;
+  className?: string;
 };
 
 const UserMenu = (props: UserMenuProps) => {
-  const { user } = props;
+  const { user, className } = props;
   const { t } = useTranslation();
   return (
-    <Menu as="div" className="ml-3 relative">
+    <Menu as="div" className={clsx("relative", className)}>
       <Menu.Button className="max-w-xs flex items-center text-sm focus:outline-none ">
         <span className="sr-only">{t("Open user menu")}</span>
         <Avatar
