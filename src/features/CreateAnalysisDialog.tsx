@@ -65,7 +65,7 @@ const CreateAnalysisDialog = ({ onClose, open, project }: Props) => {
       const { success, errors, analysis } = data.response;
       if (success) {
         return router.push(
-          `/projects/${encodeURIComponent(project.id)}/analysis/${
+          `/projects/${encodeURIComponent(project.id)}/analyses/${
             analysis?.id
           }/edit`
         );
