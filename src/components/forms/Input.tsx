@@ -7,23 +7,21 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { type, name, error, className, required, trailingIcon, ...delegated } =
-    props;
+  const { type, name, error, className, trailingIcon, ...delegated } = props;
 
   const inputClassName = clsx(
     "w-full form-input shadow-sm rounded-md sm:text-sm border-gray-300",
     "hover:border-gray-400 focus:ring-transparent focus:border-lochmara focus:outline-none",
-    "disabled:bg-gray-50 disabled:pointer-events-none",
+    "disabled:bg-gray-50 disabled:cursor-not-allowed",
     "placeholder-gray-600 placeholder-opacity-70",
     trailingIcon && "pr-4",
     error &&
-      "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara"
+      "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara",
+    className
   );
 
   return (
-    <div
-      className={clsx("relative rounded-md flex items-center group", className)}
-    >
+    <div className="relative group">
       <input
         id={name}
         name={name}
