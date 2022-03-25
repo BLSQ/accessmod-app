@@ -4,7 +4,7 @@ This repository contains the code of the frontend application of the AccessMod p
 
 ## Architecture overview
 
-The AccessMod application is a [Next.js](https://nextjs.org/) application. It is a frontend app designed to connect 
+The AccessMod application is a [Next.js](https://nextjs.org/) application. It is a frontend app designed to connect
 to an [OpenHexa](https://github.com/BLSQ/openhexa-app) instance.
 
 The app communicates with OpenHexa through its [GraphQL](https://graphql.org/) API, and uses the standard OpenHexa
@@ -40,9 +40,9 @@ cp .env.local.dist .env.local
 Finally, run the development server:
 
 ```bash
-npm run dev
+npm run watch
 # or
-yarn dev
+yarn watch
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
