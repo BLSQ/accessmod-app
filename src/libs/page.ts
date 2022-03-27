@@ -3,13 +3,20 @@ import { AuthenticatedUser, getUser } from "./auth";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { addApolloState, CustomApolloClient, getApolloClient } from "./apollo";
 
+interface GetServerSidePropsContextWithUser extends GetServerSidePropsContext {
+  user: AuthenticatedUser | null;
+}
+
 interface CreateGetServerSideProps {
   i18n?: string[];
   requireAuth?: boolean;
   getServerSideProps?: (
-    ctx: GetServerSidePropsContext,
+    ctx: GetServerSidePropsContextWithUser,
     client: CustomApolloClient
-  ) => Promise<GetServerSidePropsResult<any> | void>;
+  ) =>
+    | Promise<GetServerSidePropsResult<any> | void>
+    | GetServerSidePropsResult<any>
+    | void;
 }
 
 interface ServerSideProps {
@@ -25,9 +32,10 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
   } = options;
 
   return async function (
-    ctx: GetServerSidePropsContext
+    ctx: GetServerSidePropsContextWithUser
   ): Promise<GetServerSidePropsResult<ServerSideProps>> {
     const user = await getUser(ctx);
+    ctx.user = user;
     const res = {
       props: {
         user,
@@ -40,7 +48,7 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
       return {
         ...res,
         redirect: {
-          destination: `/login?returnTo=${encodeURIComponent(ctx.resolvedUrl)}`,
+          destination: `/login?next=${encodeURIComponent(ctx.resolvedUrl)}`,
           permanent: false,
         },
       };
@@ -51,7 +59,7 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
       const nextRes = await getServerSideProps(ctx, client);
       return {
         ...res,
-        ...nextRes,
+        ...(nextRes ?? {}),
         props: {
           ...res.props,
           ...addApolloState(client).props,

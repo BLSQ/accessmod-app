@@ -48,8 +48,8 @@ const Field = (props: CustomField | InputField) => {
 
   return (
     <div className={className}>
-      <div className="flex justify-between mb-1">
-        {label && (
+      {label && (
+        <div className="flex justify-between mb-1">
           <Label color={labelColor} htmlFor={name} className="flex">
             {label}
             {help && (
@@ -64,9 +64,9 @@ const Field = (props: CustomField | InputField) => {
               />
             )}
           </Label>
-        )}
-        {!required && <span className="text-sm text-gray-400">Optional</span>}
-      </div>
+          {!required && <span className="text-sm text-gray-400">Optional</span>}
+        </div>
+      )}
       {children}
       {description && (
         <p className="mt-2 text-sm text-gray-500">{description}</p>

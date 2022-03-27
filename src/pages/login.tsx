@@ -4,6 +4,7 @@ import Field from "components/forms/Field";
 import Spinner from "components/Spinner";
 import useForm from "hooks/useForm";
 import { useLoginMutation } from "libs/graphql";
+import { createGetServerSideProps } from "libs/page";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -27,7 +28,7 @@ const LOGIN = gql`
 `;
 
 interface Props {
-  redirectTo?: string;
+  next?: string;
 }
 
 const Login = (props: Props) => {
@@ -56,7 +57,7 @@ const Login = (props: Props) => {
         },
       });
       if (payload?.data?.login?.success) {
-        await router.push(props.redirectTo ?? "/");
+        await router.push(props.next ?? "/");
       }
     },
   });
@@ -125,5 +126,19 @@ const Login = (props: Props) => {
 };
 
 Login.getLayout = (page: ReactElement) => page;
+
+export const getServerSideProps = createGetServerSideProps({
+  requireAuth: false,
+  getServerSideProps: (ctx) => {
+    if (ctx.user) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: `${ctx.query.next ?? "/"}`,
+        },
+      };
+    }
+  },
+});
 
 export default Login;
