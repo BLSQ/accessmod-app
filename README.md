@@ -17,9 +17,9 @@ The project is meant to be deployed in a containerized environment, such as [Kub
 The following environment variables should be provided at build time:
 
 - `NEXT_PUBLIC_GRAPHQL_ENDPOINT`: the URL of the OpenHexa GraphQL API
+- `NEXT_PUBLIC_RELEASE`: a release identifier used for Sentry (such as a Git tag) and displayed in the footer of the app. If none is provided, Sentry is not enabled
 - `NEXT_PUBLIC_SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
 - `SENTRY_AUTH_TOKEN`: A valid Sentry authentication token
-- `SENTRY_RELEASE`: a release identifier for Sentry (such as a Git tag)
 
 ## Local development
 
