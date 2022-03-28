@@ -17,11 +17,11 @@
 
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
-	"dbaeumer.vscode-eslint",
-	"HookyQR.beautify",
-	"esbenp.prettier-vscode",
-	"GraphQL.vscode-graphql"
-],
+    "dbaeumer.vscode-eslint",
+    "HookyQR.beautify",
+    "esbenp.prettier-vscode",
+    "GraphQL.vscode-graphql"
+  ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000],
