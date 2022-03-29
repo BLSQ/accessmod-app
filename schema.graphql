@@ -394,7 +394,7 @@ type Query {
   countries: [Country!]
   organizations: [Organization!]
   accessmodProject(id: String): AccessmodProject
-  accessmodProjects(page: Int, perPage: Int): AccessmodProjectPage!
+  accessmodProjects(term: String, page: Int, perPage: Int): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
   accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole

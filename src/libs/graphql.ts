@@ -549,6 +549,7 @@ export type QueryAccessmodProjectArgs = {
 export type QueryAccessmodProjectsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+  term?: InputMaybe<Scalars['String']>;
 };
 
 export enum UpdateAccessmodAccessibilityAnalysisError {
@@ -858,6 +859,7 @@ export type ProjectPageQueryVariables = Exact<{
 export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
+  term?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 }>;
@@ -2196,8 +2198,8 @@ export type ProjectPageQueryHookResult = ReturnType<typeof useProjectPageQuery>;
 export type ProjectPageLazyQueryHookResult = ReturnType<typeof useProjectPageLazyQuery>;
 export type ProjectPageQueryResult = Apollo.QueryResult<ProjectPageQuery, ProjectPageQueryVariables>;
 export const ProjectsPageDocument = gql`
-    query ProjectsPage($page: Int = 1, $perPage: Int = 20) {
-  accessmodProjects(page: $page, perPage: $perPage) {
+    query ProjectsPage($term: String, $page: Int = 1, $perPage: Int = 20) {
+  accessmodProjects(term: $term, page: $page, perPage: $perPage) {
     ...ProjectsList_projects
     pageNumber
     totalPages
@@ -2221,6 +2223,7 @@ export const ProjectsPageDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsPageQuery({
  *   variables: {
+ *      term: // value for 'term'
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *   },
