@@ -4,12 +4,12 @@ import {
   createElement,
   FunctionComponent,
   HTMLAttributes,
-  ReactElement,
+  ReactNode,
 } from "react";
 
 type Props = {
   as?: string | FunctionComponent | ComponentClass;
-  children: ReactElement | ReactElement[] | string | undefined | null;
+  children: ReactNode | undefined | null;
   withPadding?: boolean;
   background?: string;
 } & HTMLAttributes<HTMLElement>;
