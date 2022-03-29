@@ -4,12 +4,21 @@ import clsx from "clsx";
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string | null | false | true;
   trailingIcon?: ReactNode;
+  inputClassName?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { type, name, error, className, trailingIcon, ...delegated } = props;
+  const {
+    type,
+    name,
+    error,
+    className,
+    trailingIcon,
+    inputClassName,
+    ...delegated
+  } = props;
 
-  const inputClassName = clsx(
+  const inputClasses = clsx(
     "w-full form-input shadow-sm rounded-md sm:text-sm border-gray-300",
     "hover:border-gray-400 focus:ring-transparent focus:border-lochmara focus:outline-none",
     "disabled:bg-gray-50 disabled:border-gray-300 disabled:cursor-not-allowed", // Override hover:border to not change the border when disabled
@@ -17,18 +26,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     trailingIcon && "pr-4",
     error &&
       "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara",
-    className
+    inputClassName
   );
 
   return (
-    <div className="relative group">
+    <div className={clsx("relative group", className)}>
       <input
         id={name}
         name={name}
         type={type ?? "text"}
         aria-invalid={Boolean(error)}
         aria-describedby={`${name}-description`}
-        className={inputClassName}
+        className={inputClasses}
         {...delegated}
         ref={ref}
       />
