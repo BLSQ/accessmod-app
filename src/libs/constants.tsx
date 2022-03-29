@@ -13,3 +13,8 @@ export const getFormatLabel = (format: Format) => {
       return i18n!.t("Tabular");
   }
 };
+
+export const LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "fr", name: "French" },
+];

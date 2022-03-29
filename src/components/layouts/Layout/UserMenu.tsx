@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Avatar from "components/Avatar";
 import MenuLink from "components/MenuLink";
 import { UserMenu_UserFragment } from "libs/graphql";
+import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { Fragment } from "react";
 
@@ -38,7 +39,7 @@ const UserMenu = (props: UserMenuProps) => {
           <Menu.Item>
             {({ active }) => (
               <MenuLink
-                href="/settings"
+                href={routes.settings}
                 className={clsx(
                   "block mx-1 rounded px-4 py-2 text-sm",
                   active && "bg-gray-200"

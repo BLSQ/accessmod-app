@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const inputClassName = clsx(
     "w-full form-input shadow-sm rounded-md sm:text-sm border-gray-300",
     "hover:border-gray-400 focus:ring-transparent focus:border-lochmara focus:outline-none",
-    "disabled:bg-gray-50 disabled:cursor-not-allowed",
+    "disabled:bg-gray-50 disabled:border-gray-300 disabled:cursor-not-allowed", // Override hover:border to not change the border when disabled
     "placeholder-gray-600 placeholder-opacity-70",
     trailingIcon && "pr-4",
     error &&

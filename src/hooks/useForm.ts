@@ -42,6 +42,9 @@ type UseFormOptions<T> = {
 function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   const { t } = useTranslation();
   const { initialState = {}, getInitialState, validate, onSubmit } = options;
+  const [isSubmitting, setSubmitting] = useState(false);
+  const [hasBeenSubmitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [touched, setTouched] = useState<
     | {
         [key in keyof Partial<T>]: boolean;
@@ -49,21 +52,20 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     | {}
   >({});
 
-  const internalInitialState = useRef<Partial<T>>({});
+  const internalInitialState = useRef<Partial<T>>();
 
   const setInitialState = () => {
-    internalInitialState.current = (
-      getInitialState ? getInitialState() : initialState
-    ) as T;
+    if (getInitialState) {
+      internalInitialState.current = getInitialState() as T;
+    } else {
+      internalInitialState.current = initialState ?? {};
+    }
   };
   if (!internalInitialState.current) {
     setInitialState();
   }
-  const [isSubmitting, setSubmitting] = useState(false);
-  const [hasBeenSubmitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<T>>(
-    internalInitialState.current
+    internalInitialState.current ?? {}
   );
   const previousFormData = usePrevious<Partial<T>>(formData);
 
@@ -72,7 +74,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     setTouched({});
     setSubmitError(null);
     setInitialState();
-    setFormData(internalInitialState.current);
+    setFormData(internalInitialState.current ?? {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getInitialState, initialState]);
 

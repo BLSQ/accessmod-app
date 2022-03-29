@@ -1,5 +1,6 @@
 export const routes = {
   homepage: "/",
+  settings: "/settings",
   project_list: "/projects",
   project: "/projects/[projectId]",
   project_analyses_list: "/projects/[projectId]/analyses",

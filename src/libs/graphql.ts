@@ -865,6 +865,11 @@ export type ProjectsPageQueryVariables = Exact<{
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
+export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SettingsPageQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null };
+
 export const UserMenu_UserFragmentDoc = gql`
     fragment UserMenu_user on User {
   avatar {
@@ -2237,3 +2242,40 @@ export function useProjectsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ProjectsPageQueryHookResult = ReturnType<typeof useProjectsPageQuery>;
 export type ProjectsPageLazyQueryHookResult = ReturnType<typeof useProjectsPageLazyQuery>;
 export type ProjectsPageQueryResult = Apollo.QueryResult<ProjectsPageQuery, ProjectsPageQueryVariables>;
+export const SettingsPageDocument = gql`
+    query SettingsPage {
+  me {
+    id
+    email
+    firstName
+    lastName
+  }
+}
+    `;
+
+/**
+ * __useSettingsPageQuery__
+ *
+ * To run a query within a React component, call `useSettingsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSettingsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSettingsPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSettingsPageQuery(baseOptions?: Apollo.QueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
+      }
+export function useSettingsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
+        }
+export type SettingsPageQueryHookResult = ReturnType<typeof useSettingsPageQuery>;
+export type SettingsPageLazyQueryHookResult = ReturnType<typeof useSettingsPageLazyQuery>;
+export type SettingsPageQueryResult = Apollo.QueryResult<SettingsPageQuery, SettingsPageQueryVariables>;
