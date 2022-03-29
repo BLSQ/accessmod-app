@@ -53,10 +53,13 @@
   "Filetype {{ext}} is not a valid one.": "",
   "First name": "",
   "Forgot your password ?": "",
+  "Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one.": "",
   "Friction Surface": "",
+  "Go to login page": "",
   "Health Facilities": "",
   "Help": "",
   "Home": "",
+  "If you don’t receive an email, please make sure you’ve entered the address you registered with, and check your spam folder.": "",
   "Input Parameters": "",
   "Interface Language": "",
   "Invalid format for files: \"{{files}}\"": "",
@@ -86,6 +89,8 @@
   "Queued": "",
   "Raster": "",
   "Ready": "",
+  "Reset password": "",
+  "Reset your password": "",
   "Role": "",
   "Run": "",
   "Running": "",
@@ -119,5 +124,6 @@
   "Vector": "",
   "View all": "",
   "Water": "",
-  "We were unable to log you in. Please verify your credentials.": ""
+  "We were unable to log you in. Please verify your credentials.": "",
+  "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly.": ""
 }

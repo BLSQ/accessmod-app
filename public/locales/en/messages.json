@@ -52,10 +52,13 @@
   "Filetype {{ext}} is not a valid one.": "Filetype {{ext}} is not a valid one.",
   "First name": "First name",
   "Forgot your password ?": "Forgot your password ?",
+  "Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one.": "Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one.",
   "Friction Surface": "Friction Surface",
+  "Go to login page": "Go to login page",
   "Health Facilities": "Health Facilities",
   "Help": "Help",
   "Home": "Home",
+  "If you don’t receive an email, please make sure you’ve entered the address you registered with, and check your spam folder.": "If you don’t receive an email, please make sure you’ve entered the address you registered with, and check your spam folder.",
   "Input Parameters": "Input Parameters",
   "Interface Language": "Interface Language",
   "Invalid format for files: \"{{files}}\"": "Invalid format for files: \"{{files}}\"",
@@ -85,6 +88,8 @@
   "Queued": "Queued",
   "Raster": "Raster",
   "Ready": "Ready",
+  "Reset password": "Reset password",
+  "Reset your password": "Reset your password",
   "Role": "Role",
   "Run": "Run",
   "Running": "Running",
@@ -118,5 +123,6 @@
   "Vector": "Vector",
   "View all": "View all",
   "Water": "Water",
-  "We were unable to log you in. Please verify your credentials.": "We were unable to log you in. Please verify your credentials."
+  "We were unable to log you in. Please verify your credentials.": "We were unable to log you in. Please verify your credentials.",
+  "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly.": "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly."
 }
