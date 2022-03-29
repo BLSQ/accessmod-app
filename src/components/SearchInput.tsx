@@ -1,5 +1,5 @@
-import { SearchIcon } from "@heroicons/react/outline";
-import useDebounce from "hooks/useDebounce";
+import { SearchIcon, XIcon } from "@heroicons/react/outline";
+import usePrevious from "hooks/usePrevious";
 import { useTranslation } from "next-i18next";
 import {
   ChangeEvent,
@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { InputProps } from "react-select";
 import Input from "./forms/Input";
 import Spinner from "./Spinner";
 
@@ -20,6 +19,10 @@ type Props = {
   loading?: boolean;
   debounce?: number;
   defaultValue?: string;
+};
+
+const Classes = {
+  icon: "h-5 text-gray-400 hover:text-gray-600 group-focus-within:text-gray-500",
 };
 
 const SearchInput = (props: Props) => {
@@ -33,31 +36,41 @@ const SearchInput = (props: Props) => {
     defaultValue,
     ...delegated
   } = props;
-  const [value, setValue] = useState<string | null>();
+  const [internalValue, setInternalValue] = useState<string | null>();
+  const prevValue = usePrevious(internalValue);
 
   useEffect(() => {
     // If debounce duration has to be longer than a few hundreds of millis ...
     // ... this need to be changed in favor of a ref to the timeout to avoid to ...
     // ... trigger twice the onChange if the user is fast enough to click on the button.
-    const timeout = setTimeout(
-      () => onChange(inputRef.current?.value),
-      debounce
-    );
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [value, debounce, onChange]);
+    if (prevValue !== internalValue) {
+      const timeout = setTimeout(() => {
+        onChange(inputRef.current?.value);
+      }, debounce);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [internalValue, debounce, onChange, prevValue]);
 
   const handleInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>) => {
       if ("value" in event.target) {
-        setValue(event.target.value);
+        setInternalValue(event.target.value);
       } else {
-        setValue(inputRef.current?.value ?? null);
+        setInternalValue(inputRef.current?.value ?? "");
       }
     },
     []
   );
+
+  const clearInput = () => {
+    setInternalValue("");
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
   return (
     <Input
       ref={inputRef}
@@ -66,13 +79,19 @@ const SearchInput = (props: Props) => {
       defaultValue={defaultValue}
       {...delegated}
       trailingIcon={
-        loading ? (
-          <Spinner size="xs" />
-        ) : (
-          <button onClick={() => onChange(value)}>
-            <SearchIcon className="h-5 text-gray-400 hover:text-gray-600 group-focus-within:text-gray-500" />
-          </button>
-        )
+        <>
+          {loading && <Spinner size="xs" />}
+          {!loading && !(internalValue || defaultValue) && (
+            <button onClick={() => onChange(internalValue)}>
+              <SearchIcon className={Classes.icon} />
+            </button>
+          )}
+          {!loading && (internalValue || defaultValue) && (
+            <button onClick={clearInput}>
+              <XIcon className={Classes.icon} />
+            </button>
+          )}
+        </>
       }
     />
   );
