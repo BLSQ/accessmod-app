@@ -14,15 +14,19 @@ cookie-based authentication.
 
 The project is meant to be deployed in a containerized environment, such as [Kubernetes](https://kubernetes.io/).
 
-The following environment variables should be provided both at build time and at run time:
+The following environment variables should be provided at build time:
+
+- `RELEASE`: a release identifier, such as a Git tag (used for uploading source maps to Sentry)
+- `SENTRY_AUTH_TOKEN`: A valid Sentry authentication token
+- The following environment variables should be provided at run time:
 
 - `NEXT_PUBLIC_GRAPHQL_ENDPOINT`: the URL of the OpenHexa GraphQL API
-- `NEXT_PUBLIC_RELEASE`: a release identifier used for Sentry (such as a Git tag) and displayed in the footer of the app. If none is provided, Sentry is not enabled
+- `NEXT_PUBLIC_RELEASE`: a release identifier used in-app (should be the same as `SENTRY_RELEASE`)
+- `SENTRY_RELEASE`: a release identifier used for Sentry (such as a Git tag)
 - `NEXT_PUBLIC_SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
-- `SENTRY_AUTH_TOKEN`: A valid Sentry authentication token
 
-For your convenience, if the `NEXT_PUBLIC_*` variables are provided at build time, they will be available at run
-time as well.
+If you use the provided `Dockerfile`, `NEXT_PUBLIC_RELEASE` and `SENTRY_RELEASE` are set for you if you provide
+`RELEASE` at build time.
 
 ## Local development
 
