@@ -12,7 +12,7 @@
     "test": "jest --watch",
     "test:ci": "jest --ci",
     "lint": "next lint --dir src",
-    "format": "prettier --write .",
+    "format": "prettier --write src",
     "prepare": "husky install",
     "schema": "npx get-graphql-schema http://localhost:8000/graphql/ > schema.graphql",
     "codegen": "graphql-codegen --config codegen.yml",
