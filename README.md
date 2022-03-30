@@ -25,9 +25,6 @@ The following environment variables should be provided at build time:
 - `SENTRY_RELEASE`: a release identifier used for Sentry (such as a Git tag)
 - `NEXT_PUBLIC_SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
 
-If you use the provided `Dockerfile`, `NEXT_PUBLIC_RELEASE` and `SENTRY_RELEASE` are set for you if you provide
-`RELEASE` at build time.
-
 ## Local development
 
 First, install the dependencies
