@@ -21,7 +21,8 @@ The following environment variables should be provided both at build time and at
 - `NEXT_PUBLIC_SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
 - `SENTRY_AUTH_TOKEN`: A valid Sentry authentication token
 
-For your convenience, if those variables are provided at build time, they will be available at run time as well.
+For your convenience, if the `NEXT_PUBLIC_*` variables are provided at build time, they will be available at run
+time as well.
 
 ## Local development
 
