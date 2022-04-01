@@ -62,6 +62,10 @@ const Navbar = () => {
       label: t("Projects"),
       link: "/projects",
     },
+    {
+      label: t("Teams"),
+      link: "/teams",
+    },
   ]);
 
   useCacheKey("projects", () => refetch());
@@ -84,6 +88,10 @@ const Navbar = () => {
           label: t("Projects"),
           link: "/projects",
           items: projects,
+        },
+        {
+          label: t("Teams"),
+          link: "/teams",
         },
       ]);
     }

@@ -782,6 +782,10 @@ export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> };
 
+export type InviteTeamMemberDialog_TeamFragment = { __typename?: 'Team', id: string, name: string };
+
+export type InviteTeamMemberTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string };
+
 export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type DeleteAnalysisMutationVariables = Exact<{
@@ -829,6 +833,15 @@ export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
 
 export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
+
+export type TeamMembersTable_TeamFragment = { __typename?: 'Team', id: string };
+
+export type TeamMembersTableQueryVariables = Exact<{
+  teamId: Scalars['String'];
+}>;
+
+
+export type TeamMembersTableQuery = { __typename?: 'Query', team?: { __typename?: 'Team', memberships: { __typename?: 'MembershipPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'Membership', id: string, createdAt: any, updatedAt: any, role: MembershipRole, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } } | null };
 
 export type User_UserFragment = { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
@@ -981,6 +994,21 @@ export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type SettingsPageQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null };
 
+export type TeamPageQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type TeamPageQuery = { __typename?: 'Query', team?: { __typename?: 'Team', id: string, name: string, createdAt: any } | null };
+
+export type TeamsPageQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type TeamsPageQuery = { __typename?: 'Query', teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
+
 export const UserMenu_UserFragmentDoc = gql`
     fragment UserMenu_user on User {
   avatar {
@@ -995,6 +1023,17 @@ export const DatasetFormDialog_DatasetFragmentDoc = gql`
   name
 }
     `;
+export const InviteTeamMemberDialog_TeamFragmentDoc = gql`
+    fragment InviteTeamMemberDialog_team on Team {
+  id
+  name
+}
+    `;
+export const InviteTeamMemberTrigger_TeamFragmentDoc = gql`
+    fragment InviteTeamMemberTrigger_team on Team {
+  ...InviteTeamMemberDialog_team
+}
+    ${InviteTeamMemberDialog_TeamFragmentDoc}`;
 export const User_UserFragmentDoc = gql`
     fragment User_user on User {
   firstName
@@ -1039,6 +1078,11 @@ export const ProjectsList_ProjectsFragmentDoc = gql`
   totalPages
 }
     ${ProjectCard_ProjectFragmentDoc}`;
+export const TeamMembersTable_TeamFragmentDoc = gql`
+    fragment TeamMembersTable_team on Team {
+  id
+}
+    `;
 export const AnalysisActionsButton_ProjectFragmentDoc = gql`
     fragment AnalysisActionsButton_project on AccessmodProject {
   id
@@ -1745,6 +1789,54 @@ export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
 export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
 export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
+export const TeamMembersTableDocument = gql`
+    query TeamMembersTable($teamId: String!) {
+  team(id: $teamId) {
+    memberships(page: 1, perPage: 10) {
+      totalItems
+      totalPages
+      pageNumber
+      items {
+        id
+        createdAt
+        updatedAt
+        role
+        user {
+          ...User_user
+        }
+      }
+    }
+  }
+}
+    ${User_UserFragmentDoc}`;
+
+/**
+ * __useTeamMembersTableQuery__
+ *
+ * To run a query within a React component, call `useTeamMembersTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamMembersTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamMembersTableQuery({
+ *   variables: {
+ *      teamId: // value for 'teamId'
+ *   },
+ * });
+ */
+export function useTeamMembersTableQuery(baseOptions: Apollo.QueryHookOptions<TeamMembersTableQuery, TeamMembersTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamMembersTableQuery, TeamMembersTableQueryVariables>(TeamMembersTableDocument, options);
+      }
+export function useTeamMembersTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamMembersTableQuery, TeamMembersTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamMembersTableQuery, TeamMembersTableQueryVariables>(TeamMembersTableDocument, options);
+        }
+export type TeamMembersTableQueryHookResult = ReturnType<typeof useTeamMembersTableQuery>;
+export type TeamMembersTableLazyQueryHookResult = ReturnType<typeof useTeamMembersTableLazyQuery>;
+export type TeamMembersTableQueryResult = Apollo.QueryResult<TeamMembersTableQuery, TeamMembersTableQueryVariables>;
 export const UpdateAccessibilityAnalysisDocument = gql`
     mutation UpdateAccessibilityAnalysis($input: UpdateAccessmodAccessibilityAnalysisInput) {
   updateAccessmodAccessibilityAnalysis(input: $input) {
@@ -2424,3 +2516,101 @@ export function useSettingsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type SettingsPageQueryHookResult = ReturnType<typeof useSettingsPageQuery>;
 export type SettingsPageLazyQueryHookResult = ReturnType<typeof useSettingsPageLazyQuery>;
 export type SettingsPageQueryResult = Apollo.QueryResult<SettingsPageQuery, SettingsPageQueryVariables>;
+export const TeamPageDocument = gql`
+    query TeamPage($id: String!) {
+  team(id: $id) {
+    id
+    name
+    createdAt
+    ...TeamMembersTable_team
+    ...InviteTeamMemberTrigger_team
+  }
+}
+    ${TeamMembersTable_TeamFragmentDoc}
+${InviteTeamMemberTrigger_TeamFragmentDoc}`;
+
+/**
+ * __useTeamPageQuery__
+ *
+ * To run a query within a React component, call `useTeamPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useTeamPageQuery(baseOptions: Apollo.QueryHookOptions<TeamPageQuery, TeamPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamPageQuery, TeamPageQueryVariables>(TeamPageDocument, options);
+      }
+export function useTeamPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamPageQuery, TeamPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamPageQuery, TeamPageQueryVariables>(TeamPageDocument, options);
+        }
+export type TeamPageQueryHookResult = ReturnType<typeof useTeamPageQuery>;
+export type TeamPageLazyQueryHookResult = ReturnType<typeof useTeamPageLazyQuery>;
+export type TeamPageQueryResult = Apollo.QueryResult<TeamPageQuery, TeamPageQueryVariables>;
+export const TeamsPageDocument = gql`
+    query TeamsPage($page: Int = 1, $perPage: Int = 20) {
+  teams(page: $page, perPage: $perPage) {
+    pageNumber
+    totalPages
+    totalItems
+    items {
+      name
+      id
+      memberships(page: 1, perPage: 5) {
+        totalItems
+        items {
+          user {
+            id
+            email
+            firstName
+            lastName
+            avatar {
+              initials
+              color
+            }
+          }
+        }
+      }
+      __typename
+    }
+  }
+}
+    `;
+
+/**
+ * __useTeamsPageQuery__
+ *
+ * To run a query within a React component, call `useTeamsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamsPageQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useTeamsPageQuery(baseOptions?: Apollo.QueryHookOptions<TeamsPageQuery, TeamsPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamsPageQuery, TeamsPageQueryVariables>(TeamsPageDocument, options);
+      }
+export function useTeamsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamsPageQuery, TeamsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamsPageQuery, TeamsPageQueryVariables>(TeamsPageDocument, options);
+        }
+export type TeamsPageQueryHookResult = ReturnType<typeof useTeamsPageQuery>;
+export type TeamsPageLazyQueryHookResult = ReturnType<typeof useTeamsPageLazyQuery>;
+export type TeamsPageQueryResult = Apollo.QueryResult<TeamsPageQuery, TeamsPageQueryVariables>;

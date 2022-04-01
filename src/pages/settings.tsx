@@ -35,7 +35,6 @@ const SettingsPage = () => {
       return errors;
     },
   });
-  console.log(data);
 
   return (
     <>
