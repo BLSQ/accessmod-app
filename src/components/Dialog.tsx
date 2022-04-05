@@ -43,6 +43,15 @@ const DialogActions = (props: { children: ReactNode }) => (
   <div className="mt-5 sm:mt-6 sm:gap-3 flex justify-end">{props.children}</div>
 );
 
+const DialogDescription = (props: {
+  children: ReactNode;
+  className?: string;
+}) => (
+  <div className={clsx("mb-3 text-gray-600", props.className)}>
+    {props.children}
+  </div>
+);
+
 function Dialog(props: DialogProps) {
   const {
     open,
@@ -117,6 +126,7 @@ function Dialog(props: DialogProps) {
 
 Dialog.Title = DialogTitle;
 Dialog.Content = DialogContent;
+Dialog.Description = DialogDescription;
 Dialog.Actions = DialogActions;
 
 export default Dialog;

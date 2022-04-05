@@ -3,6 +3,8 @@ export const routes = {
   settings: "/settings",
   project_list: "/projects",
   project: "/projects/[projectId]",
+  team: "/teams/[teamId]",
+  teams: "/teams",
   project_analyses_list: "/projects/[projectId]/analyses",
   project_dataset_list: "/projects/[projectId]/datasets",
   project_analysis: "/projects/[projectId]/analyses/[analysisId]",
