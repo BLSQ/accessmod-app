@@ -7,6 +7,7 @@ import { useLoginMutation } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
@@ -111,9 +112,11 @@ const Login = (props: Props) => {
             </div>
           )}
           <div className="flex justify-between items-center">
-            <a href="" className="text-xs text-gray-100 hover:underline">
-              {t("Forgot your password ?")}
-            </a>
+            <Link href="/reset-password">
+              <a className="text-xs text-gray-100 hover:underline">
+                {t("Forgot your password ?")}
+              </a>
+            </Link>
             <Button type="submit" className="px-6" disabled={form.isSubmitting}>
               {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
               {t("Login")}
