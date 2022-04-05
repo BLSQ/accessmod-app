@@ -25,6 +25,7 @@ The following environment variables should be provided at run time:
 - `NEXT_PUBLIC_RELEASE`: a release identifier used in-app (should be the same as `SENTRY_RELEASE`)
 - `SENTRY_RELEASE`: a release identifier used for Sentry (such as a Git tag)
 - `NEXT_PUBLIC_SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
+- `NEXT_PUBLIC_SENTRY_ENVIRONMENT`: the [Sentry](https://sentry.io/) environment tag
 
 If you use the provided `Dockerfile`, `NEXT_PUBLIC_RELEASE` and `SENTRY_RELEASE` are set for you if you provide `RELEASE` at build time and `NEXT_PUBLIC_SENTRY_DSN` is already set.
 
