@@ -3,18 +3,18 @@ import clsx from "clsx";
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Field from "components/forms/Field";
-import SelectInput from "components/forms/SelectInput";
 import Spinner from "components/Spinner";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
-import { countries, Country, regions } from "libs/countries";
+import { Country } from "libs/countries";
 import {
   CreateAccessmodProjectError,
   useCreateProjectMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useMemo, useState } from "react";
+import { MouseEventHandler } from "react";
+import CountryPicker from "./CountryPicker";
 
 type Props = {
   onClose: () => void;
@@ -97,22 +97,6 @@ const CreateProjectDialog = (props: Props) => {
 
   const clearCache = useCacheKey("projects");
 
-  const countryOptions: { label: string; options: Country[] }[] =
-    useMemo(() => {
-      const groups = [];
-      for (const [regionKey, regionLabel] of Object.entries(regions)) {
-        groups.push({
-          label: regionLabel,
-          options: countries.filter((country) => country.region === regionKey),
-        });
-      }
-      groups.push({
-        label: t("No Region"),
-        options: countries.filter((country) => !country.region),
-      });
-      return groups;
-    }, [t]);
-
   const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
     onClose();
@@ -123,7 +107,7 @@ const CreateProjectDialog = (props: Props) => {
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{t("Create a new Project")}</Dialog.Title>
 
-        <Dialog.Content className="px-9 py-8 space-y-4">
+        <Dialog.Content className="space-y-4 px-9 py-8">
           <Field
             label={t("Project name")}
             required
@@ -139,12 +123,9 @@ const CreateProjectDialog = (props: Props) => {
             name="country"
             error={form.touched.country && form.errors.country}
           >
-            <SelectInput
+            <CountryPicker
               required
-              options={countryOptions}
-              labelKey="name"
               disabled={form.isSubmitting}
-              valueKey="code"
               value={form.formData.country}
               onChange={(value) => form.setFieldValue("country", value)}
             />

@@ -23,14 +23,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     "hover:border-gray-400 focus:ring-transparent focus:border-lochmara focus:outline-none",
     "disabled:bg-gray-50 disabled:border-gray-300 disabled:cursor-not-allowed", // Override hover:border to not change the border when disabled
     "placeholder-gray-600 placeholder-opacity-70",
-    trailingIcon && "pr-4",
+    trailingIcon && "pr-8",
     error &&
       "border-red-300 text-red-900 placeholder-red-300 focus:ring-lochmara focus:border-lochmara",
     inputClassName
   );
 
   return (
-    <div className={clsx("relative group", className)}>
+    <div className={clsx("group relative", className)}>
       <input
         id={name}
         name={name}

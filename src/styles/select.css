@@ -4,7 +4,7 @@
   @apply relative w-full;
 }
 .react-select-container .react-select__control {
-  @apply relative mt-1 form-input p-0 shadow-sm focus:ring-lochmara focus:border-lochmara w-full sm:text-sm border-gray-300 rounded-md focus:outline-none;
+  @apply relative mt-0 form-input px-0 py-1 shadow-sm focus:ring-lochmara focus:border-lochmara w-full sm:text-sm border-gray-300 rounded-md focus:outline-none;
   min-height: 34px;
 }
 
@@ -21,12 +21,28 @@
   @apply py-0;
 }
 
+.react-select-container .react-select__value-container .react-select__placeholder {
+  @apply text-gray-600 text-opacity-70;
+}
+
 .react-select-container .react-select__option {
   @apply text-sm;
 }
 
 .react-select-container .react-select__single-value {
   @apply text-sm text-inherit;
+}
+
+.react-select-container .react-select__multi-value {
+  @apply rounded-xl px-1 m-0;
+}
+
+.react-select-container .react-select__value-container--is-multi {
+  @apply gap-1;
+}
+
+.react-select-container .react-select__multi-value .react-select__multi-value__remove {
+  @apply hover:bg-transparent;
 }
 
 .react-select-container .react-select__indicators .react-select__indicator {

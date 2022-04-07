@@ -5,8 +5,11 @@ import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
+import CountryPicker from "features/CountryPicker";
 import ProjectsList from "features/ProjectsList";
 import usePrevious from "hooks/usePrevious";
+import { ensureArray } from "libs/array";
+import { countries, Country } from "libs/countries";
 import { useProjectsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
@@ -19,6 +22,7 @@ type Variables = {
   page: number;
   perPage: number;
   term: string;
+  countries: string[];
 };
 
 const ProjectsPage = ({
@@ -58,15 +62,33 @@ const ProjectsPage = ({
       <PageContent>
         {projects && (
           <Block>
-            <SearchInput
-              className="mb-4 w-80"
-              placeholder={t("Search...")}
-              loading={loading}
-              defaultValue={variables.term ?? ""}
-              onChange={(term) =>
-                setVariables({ ...variables, term: term ?? "" })
-              }
-            />
+            <div className="mb-4 flex items-start gap-2">
+              <SearchInput
+                className="w-80"
+                placeholder={t("Search...")}
+                loading={loading}
+                defaultValue={variables.term ?? ""}
+                onChange={(term) =>
+                  setVariables({ ...variables, term: term ?? "", page: 1 })
+                }
+              />
+              <div className="w-80">
+                <CountryPicker
+                  placeholder={t("Filter by country")}
+                  onChange={(value) =>
+                    setVariables({
+                      ...variables,
+                      countries: ensureArray<Country>(value).map((x) => x.code),
+                      page: 1,
+                    })
+                  }
+                  multiple
+                  value={variables.countries.map((c) =>
+                    countries.find(({ code }) => code === c)
+                  )}
+                />
+              </div>
+            </div>
             {projects.items.length > 0 ? (
               <>
                 <ProjectsList projects={projects} />
@@ -101,12 +123,23 @@ export const getServerSideProps = createGetServerSideProps({
       page: parseInt(`${ctx.query.page}`, 10) || 1,
       perPage: parseInt(`${ctx.query.perPage}`, 10) || 10,
       term: (ctx.query.term as string) ?? "",
+      countries: ensureArray(ctx.query.countries || []),
     };
     await Layout.prefetch(client);
     await client.query({
       query: gql`
-        query ProjectsPage($term: String, $page: Int = 1, $perPage: Int = 20) {
-          accessmodProjects(term: $term, page: $page, perPage: $perPage) {
+        query ProjectsPage(
+          $term: String
+          $countries: [String!]
+          $page: Int = 1
+          $perPage: Int = 20
+        ) {
+          accessmodProjects(
+            term: $term
+            countries: $countries
+            page: $page
+            perPage: $perPage
+          ) {
             ...ProjectsList_projects
             pageNumber
             totalPages
