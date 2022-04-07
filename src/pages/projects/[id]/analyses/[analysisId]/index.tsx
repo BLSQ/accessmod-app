@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { DocumentReportIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
-import Layout from "components/layouts/Layout";
+import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisActionsButton from "features/analysis/AnalysisActionsButton";
 import AnalysisOutput from "features/analysis/AnalysisOutput";
@@ -59,7 +59,7 @@ const AnalysisPage = () => {
   }
 
   return (
-    <>
+    <Page title={data.analysis.name}>
       <PageHeader>
         <Breadcrumbs className="mb-2">
           <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
@@ -96,10 +96,10 @@ const AnalysisPage = () => {
             <h1 className="text-3xl font-bold text-white">
               {data.analysis.name}
             </h1>
-            <div className="flex flex-wrap items-center gap-10 gap-y-2 mt-2 text-sm text-white">
+            <div className="mt-2 flex flex-wrap items-center gap-10 gap-y-2 text-sm text-white">
               <AnalysisStatus analysis={data.analysis} />
               <div className="flex items-center">
-                <DocumentReportIcon className="h-5 mr-1.5" />
+                <DocumentReportIcon className="mr-1.5 h-5" />
                 {getLabelFromAnalysisType(data.analysis.type)}
               </div>
               <User small user={data.analysis.owner} textColor="text-white" />
@@ -117,12 +117,12 @@ const AnalysisPage = () => {
             <h3 className="mb-4 flex items-center justify-between">
               {t("Input Parameters")}
             </h3>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
               <div className="sm:col-span-1">
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Land Cover")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.landCover?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -130,7 +130,7 @@ const AnalysisPage = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Barrier")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.barrier?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -138,7 +138,7 @@ const AnalysisPage = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Water")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.water?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -146,7 +146,7 @@ const AnalysisPage = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Health Facilities")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.healthFacilities?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -154,7 +154,7 @@ const AnalysisPage = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Slope")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.slope?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -162,7 +162,7 @@ const AnalysisPage = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Travel Scenario")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.movingSpeeds?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -170,7 +170,7 @@ const AnalysisPage = () => {
                 <dt className="text-sm font-medium text-gray-500">
                   {t("Transport Network")}
                 </dt>
-                <dd className="mt-1 text-sm text-gray-900 col-span-2">
+                <dd className="col-span-2 mt-1 text-sm text-gray-900">
                   {data.analysis.transportNetwork?.name ?? "Automatic"}
                 </dd>
               </div>
@@ -186,7 +186,7 @@ const AnalysisPage = () => {
           </Block>
         )}
       </PageContent>
-    </>
+    </Page>
   );
 };
 

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
-import Layout from "components/layouts/Layout";
+import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
@@ -48,7 +48,7 @@ const ProjectsPage = ({
   const projects = data?.accessmodProjects || previousData?.accessmodProjects;
 
   return (
-    <>
+    <Page title={t("Projects")}>
       <PageHeader>
         <Breadcrumbs>
           <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
@@ -59,7 +59,7 @@ const ProjectsPage = ({
         {projects && (
           <Block>
             <SearchInput
-              className="w-80 mb-4"
+              className="mb-4 w-80"
               placeholder={t("Search...")}
               loading={loading}
               defaultValue={variables.term ?? ""}
@@ -83,14 +83,14 @@ const ProjectsPage = ({
                 </footer>
               </>
             ) : (
-              <p className="italic text-center text-sm text-gray-700">
+              <p className="text-center text-sm italic text-gray-700">
                 {t("No project matches your criteria")}
               </p>
             )}
           </Block>
         )}
       </PageContent>
-    </>
+    </Page>
   );
 };
 

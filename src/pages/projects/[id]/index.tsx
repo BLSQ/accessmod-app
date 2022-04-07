@@ -4,7 +4,7 @@ import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import DescriptionList from "components/DescriptionList";
-import Layout from "components/layouts/Layout";
+import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
@@ -137,7 +137,7 @@ const ProjectPage: NextPageWithFragments = () => {
   const { project } = data;
 
   return (
-    <>
+    <Page title={project.name}>
       <PageHeader>
         <Breadcrumbs className="mb-3">
           <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
@@ -153,11 +153,11 @@ const ProjectPage: NextPageWithFragments = () => {
         <div className="flex items-start justify-between gap-2">
           <div>
             <h1 className="text-3xl font-bold text-white">{project.name}</h1>
-            <div className="flex flex-wrap items-center gap-10 gap-y-2 mt-2 text-sm text-white">
+            <div className="mt-2 flex flex-wrap items-center gap-10 gap-y-2 text-sm text-white">
               <div className="flex items-center">
                 <img
                   alt={t("Country Flag")}
-                  className="h-4 mr-2"
+                  className="mr-2 h-4"
                   src={project.country.flag}
                 />
                 <span>{project.country.name}</span>
@@ -202,7 +202,7 @@ const ProjectPage: NextPageWithFragments = () => {
         <LatestAnalysisBlock project={project} />
         <LatestDatasetsBlock project={project} />
       </PageContent>
-    </>
+    </Page>
   );
 };
 

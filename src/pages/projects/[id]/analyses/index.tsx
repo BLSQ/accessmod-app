@@ -3,6 +3,7 @@ import { PlusIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
+import { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
 import ProjectAnalysesTable from "features/ProjectAnalysesTable";
@@ -25,7 +26,7 @@ const ProjectAnalysesListPage = () => {
   }
 
   return (
-    <>
+    <Page title={t("Analyses of {{name}}", data.project)}>
       <PageHeader>
         <Breadcrumbs className="mb-3">
           <Breadcrumbs.Part href="/projects">{t("Projects")}</Breadcrumbs.Part>
@@ -46,7 +47,7 @@ const ProjectAnalysesListPage = () => {
             {t("Analyses")}
           </Breadcrumbs.Part>
         </Breadcrumbs>
-        <h1 className="text-3xl font-bold text-white flex items-center justify-between">
+        <h1 className="flex items-center justify-between text-3xl font-bold text-white">
           {t("Analyses")}
           <CreateAnalysisTrigger project={data.project}>
             {({ onClick }) => (
@@ -66,7 +67,7 @@ const ProjectAnalysesListPage = () => {
           <ProjectAnalysesTable perPage={20} project={data.project} />
         </Block>
       </PageContent>
-    </>
+    </Page>
   );
 };
 
