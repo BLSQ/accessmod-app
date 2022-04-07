@@ -33,7 +33,7 @@ const Avatar = (props: Props) => {
       <span
         style={{ background: color }}
         className={clsx(
-          "inline-flex items-center justify-center h-6 w-6 rounded-full bg-gray-500",
+          "inline-flex items-center justify-center rounded-full bg-gray-500",
           className
         )}
       >
