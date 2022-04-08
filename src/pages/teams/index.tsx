@@ -4,7 +4,7 @@ import { UserAddIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
-import Layout from "components/layouts/Layout";
+import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Pagination from "components/Pagination";
 import usePrevious from "hooks/usePrevious";
@@ -60,7 +60,7 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
   };
 
   return (
-    <>
+    <Page title={t("Teams")}>
       <PageHeader>
         <Breadcrumbs className="mb-3">
           <Breadcrumbs.Part href="/teams">{t("Teams")}</Breadcrumbs.Part>
@@ -133,14 +133,14 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
                 </footer>
               </>
             ) : (
-              <p className="italic text-center text-sm text-gray-700">
+              <p className="text-center text-sm italic text-gray-700">
                 {t("There is no team")}
               </p>
             )}
           </Block>
         )}
       </PageContent>
-    </>
+    </Page>
   );
 };
 

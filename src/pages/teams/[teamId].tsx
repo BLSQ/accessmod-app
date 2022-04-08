@@ -4,7 +4,7 @@ import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import DescriptionList from "components/DescriptionList";
-import Layout from "components/layouts/Layout";
+import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import InviteTeamMemberTrigger from "features/InviteTeamMemberTrigger";
@@ -33,7 +33,7 @@ const TeamPage = ({
   }
 
   return (
-    <>
+    <Page title={t("Team {{name}}", { name: team.name })}>
       <PageHeader>
         <Breadcrumbs className="mb-3">
           <Breadcrumbs.Part href="/teams">{t("Teams")}</Breadcrumbs.Part>
@@ -88,12 +88,12 @@ const TeamPage = ({
           <h3 className="mb-4 flex items-center justify-between">
             {t("Projects")}
           </h3>
-          <p className="text-sm text-gray-400 italic p-4 text-center w-full">
+          <p className="w-full p-4 text-center text-sm italic text-gray-400">
             {t("No projects")}
           </p>
         </Block>
       </PageContent>
-    </>
+    </Page>
   );
 };
 

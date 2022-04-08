@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/react/outline";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
-import Layout from "components/layouts/Layout";
+import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateDatasetDialog from "features/DatasetFormDialog";
 import ProjectDatasetsTable from "features/ProjectDatasetsTable";
@@ -41,7 +41,7 @@ const ProjectDataPage = () => {
   }
 
   return (
-    <>
+    <Page title={t("Datasets of {{name}}", data.accessmodProject)}>
       <CreateDatasetDialog
         project={data.accessmodProject}
         open={showUploadDialog}
@@ -67,7 +67,7 @@ const ProjectDataPage = () => {
             {t("Datasets")}
           </Breadcrumbs.Part>
         </Breadcrumbs>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div className="flex space-x-4">
             <h1 className="text-3xl font-bold text-white">{t("Datasets")}</h1>
           </div>
@@ -89,7 +89,7 @@ const ProjectDataPage = () => {
           />
         </Block>
       </PageContent>
-    </>
+    </Page>
   );
 };
 
