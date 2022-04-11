@@ -737,13 +737,6 @@ export type CreateAnalysisTrigger_ProjectFragment = { __typename?: 'AccessmodPro
 
 export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type CreateProjectMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodProjectInput>;
-}>;
-
-
-export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
-
 export type CreateFilesetMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodFilesetInput>;
 }>;
@@ -767,15 +760,6 @@ export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?
 
 export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type DeleteProjectMutationVariables = Exact<{
-  input?: InputMaybe<DeleteAccessmodProjectInput>;
-}>;
-
-
-export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } };
-
-export type DeleteProjectTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
-
 export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
 export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
@@ -786,54 +770,6 @@ export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRol
 export type InviteTeamMemberDialog_TeamFragment = { __typename?: 'Team', id: string, name: string };
 
 export type InviteTeamMemberTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string };
-
-export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
-
-export type DeleteAnalysisMutationVariables = Exact<{
-  input?: InputMaybe<DeleteAccessmodAnalysisInput>;
-}>;
-
-
-export type DeleteAnalysisMutation = { __typename?: 'Mutation', deleteAccessmodAnalysis: { __typename?: 'DeleteAccessmodAnalysisResult', success: boolean } };
-
-export type ProjectAnalysesTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
-
-export type ProjectAnalysesTableQueryVariables = Exact<{
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
-  projectId: Scalars['String'];
-}>;
-
-
-export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
-
-export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
-
-export type ProjectDatasetsTableQueryVariables = Exact<{
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
-  projectId: Scalars['String'];
-  term?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
-
-export type DeleteDatasetMutationVariables = Exact<{
-  input?: InputMaybe<DeleteAccessmodFilesetInput>;
-}>;
-
-
-export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
-
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
-
-export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
-
-export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
 
 export type TeamMembersTable_TeamFragment = { __typename?: 'Team', id: string };
 
@@ -884,6 +820,70 @@ type AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typen
 type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus };
 
 export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+
+export type CreateProjectMutationVariables = Exact<{
+  input?: InputMaybe<CreateAccessmodProjectInput>;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
+
+export type DeleteProjectMutationVariables = Exact<{
+  input?: InputMaybe<DeleteAccessmodProjectInput>;
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } };
+
+export type DeleteProjectTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type DeleteAnalysisMutationVariables = Exact<{
+  input?: InputMaybe<DeleteAccessmodAnalysisInput>;
+}>;
+
+
+export type DeleteAnalysisMutation = { __typename?: 'Mutation', deleteAccessmodAnalysis: { __typename?: 'DeleteAccessmodAnalysisResult', success: boolean } };
+
+export type ProjectAnalysesTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type ProjectAnalysesTableQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  projectId: Scalars['String'];
+}>;
+
+
+export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
+
+export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+
+export type ProjectDatasetsTableQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  projectId: Scalars['String'];
+  term?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
+
+export type DeleteDatasetMutationVariables = Exact<{
+  input?: InputMaybe<DeleteAccessmodFilesetInput>;
+}>;
+
+
+export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
+
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+
+export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
+
+export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
 
 export type LaunchAccessmodAnalysisMutationVariables = Exact<{
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
@@ -1036,50 +1036,6 @@ export const InviteTeamMemberTrigger_TeamFragmentDoc = gql`
   ...InviteTeamMemberDialog_team
 }
     ${InviteTeamMemberDialog_TeamFragmentDoc}`;
-export const User_UserFragmentDoc = gql`
-    fragment User_user on User {
-  firstName
-  lastName
-  email
-  id
-  avatar {
-    initials
-    color
-  }
-}
-    `;
-export const ProjectCard_ProjectFragmentDoc = gql`
-    fragment ProjectCard_project on AccessmodProject {
-  id
-  name
-  spatialResolution
-  country {
-    name
-    flag
-    code
-  }
-  owner {
-    ...User_user
-    firstName
-    email
-    lastName
-    avatar {
-      initials
-      color
-    }
-  }
-}
-    ${User_UserFragmentDoc}`;
-export const ProjectsList_ProjectsFragmentDoc = gql`
-    fragment ProjectsList_projects on AccessmodProjectPage {
-  items {
-    id
-    ...ProjectCard_project
-  }
-  pageNumber
-  totalPages
-}
-    ${ProjectCard_ProjectFragmentDoc}`;
 export const TeamMembersTable_TeamFragmentDoc = gql`
     fragment TeamMembersTable_team on Team {
   id
@@ -1211,6 +1167,50 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
   status
 }
     `;
+export const User_UserFragmentDoc = gql`
+    fragment User_user on User {
+  firstName
+  lastName
+  email
+  id
+  avatar {
+    initials
+    color
+  }
+}
+    `;
+export const ProjectCard_ProjectFragmentDoc = gql`
+    fragment ProjectCard_project on AccessmodProject {
+  id
+  name
+  spatialResolution
+  country {
+    name
+    flag
+    code
+  }
+  owner {
+    ...User_user
+    firstName
+    email
+    lastName
+    avatar {
+      initials
+      color
+    }
+  }
+}
+    ${User_UserFragmentDoc}`;
+export const ProjectsList_ProjectsFragmentDoc = gql`
+    fragment ProjectsList_projects on AccessmodProjectPage {
+  items {
+    id
+    ...ProjectCard_project
+  }
+  pageNumber
+  totalPages
+}
+    ${ProjectCard_ProjectFragmentDoc}`;
 export const DeleteProjectTrigger_ProjectFragmentDoc = gql`
     fragment DeleteProjectTrigger_project on AccessmodProject {
   id
@@ -1355,43 +1355,6 @@ export function useCreateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type CreateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useCreateAccessibilityAnalysisMutation>;
 export type CreateAccessibilityAnalysisMutationResult = Apollo.MutationResult<CreateAccessibilityAnalysisMutation>;
 export type CreateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
-export const CreateProjectDocument = gql`
-    mutation CreateProject($input: CreateAccessmodProjectInput) {
-  createAccessmodProject(input: $input) {
-    success
-    project {
-      id
-    }
-    errors
-  }
-}
-    `;
-export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
-
-/**
- * __useCreateProjectMutation__
- *
- * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
-      }
-export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
-export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
-export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const CreateFilesetDocument = gql`
     mutation CreateFileset($input: CreateAccessmodFilesetInput) {
   createAccessmodFileset(input: $input) {
@@ -1489,39 +1452,6 @@ export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
 export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
 export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
-export const DeleteProjectDocument = gql`
-    mutation DeleteProject($input: DeleteAccessmodProjectInput) {
-  deleteAccessmodProject(input: $input) {
-    success
-  }
-}
-    `;
-export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
-
-/**
- * __useDeleteProjectMutation__
- *
- * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
-      }
-export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
-export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
-export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -1560,6 +1490,161 @@ export function useFilesetRolePickerLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FilesetRolePickerQueryHookResult = ReturnType<typeof useFilesetRolePickerQuery>;
 export type FilesetRolePickerLazyQueryHookResult = ReturnType<typeof useFilesetRolePickerLazyQuery>;
 export type FilesetRolePickerQueryResult = Apollo.QueryResult<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>;
+export const TeamMembersTableDocument = gql`
+    query TeamMembersTable($teamId: String!) {
+  team(id: $teamId) {
+    memberships(page: 1, perPage: 10) {
+      totalItems
+      totalPages
+      pageNumber
+      items {
+        id
+        createdAt
+        updatedAt
+        role
+        user {
+          ...User_user
+        }
+      }
+    }
+  }
+}
+    ${User_UserFragmentDoc}`;
+
+/**
+ * __useTeamMembersTableQuery__
+ *
+ * To run a query within a React component, call `useTeamMembersTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamMembersTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamMembersTableQuery({
+ *   variables: {
+ *      teamId: // value for 'teamId'
+ *   },
+ * });
+ */
+export function useTeamMembersTableQuery(baseOptions: Apollo.QueryHookOptions<TeamMembersTableQuery, TeamMembersTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamMembersTableQuery, TeamMembersTableQueryVariables>(TeamMembersTableDocument, options);
+      }
+export function useTeamMembersTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamMembersTableQuery, TeamMembersTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamMembersTableQuery, TeamMembersTableQueryVariables>(TeamMembersTableDocument, options);
+        }
+export type TeamMembersTableQueryHookResult = ReturnType<typeof useTeamMembersTableQuery>;
+export type TeamMembersTableLazyQueryHookResult = ReturnType<typeof useTeamMembersTableLazyQuery>;
+export type TeamMembersTableQueryResult = Apollo.QueryResult<TeamMembersTableQuery, TeamMembersTableQueryVariables>;
+export const UpdateAccessibilityAnalysisDocument = gql`
+    mutation UpdateAccessibilityAnalysis($input: UpdateAccessmodAccessibilityAnalysisInput) {
+  updateAccessmodAccessibilityAnalysis(input: $input) {
+    success
+    errors
+    analysis {
+      ...AccessibilityAnalysisForm_analysis
+    }
+  }
+}
+    ${AccessibilityAnalysisForm_AnalysisFragmentDoc}`;
+export type UpdateAccessibilityAnalysisMutationFn = Apollo.MutationFunction<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
+
+/**
+ * __useUpdateAccessibilityAnalysisMutation__
+ *
+ * To run a mutation, you first call `useUpdateAccessibilityAnalysisMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccessibilityAnalysisMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAccessibilityAnalysisMutation, { data, loading, error }] = useUpdateAccessibilityAnalysisMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAccessibilityAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>(UpdateAccessibilityAnalysisDocument, options);
+      }
+export type UpdateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useUpdateAccessibilityAnalysisMutation>;
+export type UpdateAccessibilityAnalysisMutationResult = Apollo.MutationResult<UpdateAccessibilityAnalysisMutation>;
+export type UpdateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
+export const CreateProjectDocument = gql`
+    mutation CreateProject($input: CreateAccessmodProjectInput) {
+  createAccessmodProject(input: $input) {
+    success
+    project {
+      id
+    }
+    errors
+  }
+}
+    `;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const DeleteProjectDocument = gql`
+    mutation DeleteProject($input: DeleteAccessmodProjectInput) {
+  deleteAccessmodProject(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+
+/**
+ * __useDeleteProjectMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
+      }
+export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const DeleteAnalysisDocument = gql`
     mutation DeleteAnalysis($input: DeleteAccessmodAnalysisInput) {
   deleteAccessmodAnalysis(input: $input) {
@@ -1791,91 +1876,6 @@ export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
 export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
 export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
-export const TeamMembersTableDocument = gql`
-    query TeamMembersTable($teamId: String!) {
-  team(id: $teamId) {
-    memberships(page: 1, perPage: 10) {
-      totalItems
-      totalPages
-      pageNumber
-      items {
-        id
-        createdAt
-        updatedAt
-        role
-        user {
-          ...User_user
-        }
-      }
-    }
-  }
-}
-    ${User_UserFragmentDoc}`;
-
-/**
- * __useTeamMembersTableQuery__
- *
- * To run a query within a React component, call `useTeamMembersTableQuery` and pass it any options that fit your needs.
- * When your component renders, `useTeamMembersTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTeamMembersTableQuery({
- *   variables: {
- *      teamId: // value for 'teamId'
- *   },
- * });
- */
-export function useTeamMembersTableQuery(baseOptions: Apollo.QueryHookOptions<TeamMembersTableQuery, TeamMembersTableQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TeamMembersTableQuery, TeamMembersTableQueryVariables>(TeamMembersTableDocument, options);
-      }
-export function useTeamMembersTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamMembersTableQuery, TeamMembersTableQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TeamMembersTableQuery, TeamMembersTableQueryVariables>(TeamMembersTableDocument, options);
-        }
-export type TeamMembersTableQueryHookResult = ReturnType<typeof useTeamMembersTableQuery>;
-export type TeamMembersTableLazyQueryHookResult = ReturnType<typeof useTeamMembersTableLazyQuery>;
-export type TeamMembersTableQueryResult = Apollo.QueryResult<TeamMembersTableQuery, TeamMembersTableQueryVariables>;
-export const UpdateAccessibilityAnalysisDocument = gql`
-    mutation UpdateAccessibilityAnalysis($input: UpdateAccessmodAccessibilityAnalysisInput) {
-  updateAccessmodAccessibilityAnalysis(input: $input) {
-    success
-    errors
-    analysis {
-      ...AccessibilityAnalysisForm_analysis
-    }
-  }
-}
-    ${AccessibilityAnalysisForm_AnalysisFragmentDoc}`;
-export type UpdateAccessibilityAnalysisMutationFn = Apollo.MutationFunction<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
-
-/**
- * __useUpdateAccessibilityAnalysisMutation__
- *
- * To run a mutation, you first call `useUpdateAccessibilityAnalysisMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAccessibilityAnalysisMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAccessibilityAnalysisMutation, { data, loading, error }] = useUpdateAccessibilityAnalysisMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAccessibilityAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>(UpdateAccessibilityAnalysisDocument, options);
-      }
-export type UpdateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useUpdateAccessibilityAnalysisMutation>;
-export type UpdateAccessibilityAnalysisMutationResult = Apollo.MutationResult<UpdateAccessibilityAnalysisMutation>;
-export type UpdateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
 export const LaunchAccessmodAnalysisDocument = gql`
     mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
   launchAccessmodAnalysis(input: $input) {

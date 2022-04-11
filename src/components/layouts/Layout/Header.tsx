@@ -4,7 +4,7 @@ import Button from "components/Button";
 import UserMenu from "./UserMenu";
 import Navbar from "./Navbar";
 
-import CreateProjectDialog from "features/CreateProjectDialog";
+import CreateProjectDialog from "features/project/CreateProjectDialog";
 import { useState } from "react";
 import { CustomApolloClient } from "libs/apollo";
 import { useTranslation } from "next-i18next";
@@ -20,10 +20,10 @@ const Header = ({ user }: Props) => {
   return (
     <>
       <nav className="bg-lochmara">
-        <div className="max-w-5xl mx-auto sm:px-4 md:px-8">
+        <div className="mx-auto max-w-5xl sm:px-4 md:px-8">
           <div className="border-b border-white">
-            <div className="flex items-center justify-between h-16 px-4 sm:px-0">
-              <div className="flex items-center gap-5 text-white h-full">
+            <div className="flex h-16 items-center justify-between px-4 sm:px-0">
+              <div className="flex h-full items-center gap-5 text-white">
                 <div className="flex-shrink-0">
                   <Link href="/">
                     <a className="flex">
@@ -38,7 +38,7 @@ const Header = ({ user }: Props) => {
                     </a>
                   </Link>
                 </div>
-                <div className="text-xl text-bold uppercase ">
+                <div className="text-bold text-xl uppercase ">
                   {t("Access Mod")}
                 </div>
                 <Navbar />

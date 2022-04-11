@@ -6,7 +6,7 @@ import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
 import CountryPicker from "features/CountryPicker";
-import ProjectsList from "features/ProjectsList";
+import ProjectsList from "features/project/ProjectsList";
 import usePrevious from "hooks/usePrevious";
 import { ensureArray } from "libs/array";
 import { countries, Country } from "libs/countries";

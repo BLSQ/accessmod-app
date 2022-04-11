@@ -25,7 +25,7 @@ import {
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useState } from "react";
 import FilesetRolePicker from "./FilesetRolePicker";
-import ProjectPicker from "./ProjectPicker";
+import ProjectPicker from "./project/ProjectPicker";
 
 type Props = {
   onClose: (
@@ -296,7 +296,7 @@ const DatasetFormDialog = (props: Props) => {
             </Field>
 
             {(form.submitError || filesetError) && (
-              <div className="text-danger mt-3 text-sm">
+              <div className="mt-3 text-sm text-danger">
                 {form.submitError || filesetError}
               </div>
             )}

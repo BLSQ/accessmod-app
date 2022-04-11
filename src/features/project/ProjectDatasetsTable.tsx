@@ -14,8 +14,8 @@ import {
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useCallback, useState } from "react";
-import DatasetFormDialog from "./DatasetFormDialog";
-import User from "./User";
+import DatasetFormDialog from "../DatasetFormDialog";
+import User from "../User";
 
 const PROJECT_DATASETS_QUERY = gql`
   query ProjectDatasetsTable(
@@ -112,13 +112,13 @@ const ProjectDatasetsTable = (props: Props) => {
     <>
       {searchable && (
         <SearchInput
-          className="w-56 mb-4"
+          className="mb-4 w-56"
           placeholder="Search for a dataset..."
           loading={loading}
           onChange={(term) => onSearch(term ?? undefined)}
         />
       )}
-      <div className="overflow-hidden w-full">
+      <div className="w-full overflow-hidden">
         <div className="overflow-x-auto">
           <table className="who">
             <thead>
@@ -150,7 +150,7 @@ const ProjectDatasetsTable = (props: Props) => {
                   </td>
                   <td>{row.files.length ?? 0}</td>
                   <td className="text-right" onClick={stopPropagation}>
-                    <div className="invisible group-hover:visible flex justify-end items-center gap-1">
+                    <div className="invisible flex items-center justify-end gap-1 group-hover:visible">
                       <Button
                         variant="white"
                         size="sm"
