@@ -12,6 +12,7 @@ import AsyncSelect from "react-select/async";
 import CreatableSelect from "react-select/creatable";
 
 export { DefaultComponents };
+
 export default function SelectInput({
   options,
   loadOptions,
@@ -20,6 +21,7 @@ export default function SelectInput({
   defaultOptions,
   value,
   defaultValue,
+  placeholder,
   onMenuOpen,
   onChange,
   required,
@@ -35,7 +37,7 @@ export default function SelectInput({
   onCommandShiftEnter = () => {},
   autoFocus,
   onCreateOption,
-}: SelectInputProps<Option, boolean, GroupBase<Option>>) {
+}: SelectInputProps) {
   const onKeyDown = useInputKeyDown({ onEscape, onCommandShiftEnter });
   const onSelectChange = useCallback(
     (newValue: any) => {
@@ -59,6 +61,7 @@ export default function SelectInput({
     options,
     value,
     defaultValue,
+    placeholder,
     isDisabled: disabled,
     onMenuOpen,
     onChange: onSelectChange,
@@ -105,7 +108,7 @@ export default function SelectInput({
 
 type Option = { [key: string]: any };
 
-interface SelectInputProps<
+export interface BaseSelectInputProps<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
@@ -113,6 +116,7 @@ interface SelectInputProps<
   options?: OptionsOrGroups<Option, Group>;
   value: any;
   defaultValue?: any;
+  placeholder?: string;
   onChange: (value: any) => void;
   multiple?: boolean;
   required?: boolean;
@@ -133,3 +137,6 @@ interface SelectInputProps<
   onMenuScrollToBottom?: (event: WheelEvent | TouchEvent) => void;
   components?: SelectComponentsConfig<Option, IsMulti, Group>;
 }
+
+export interface SelectInputProps
+  extends BaseSelectInputProps<Option, boolean, GroupBase<Option>> {}

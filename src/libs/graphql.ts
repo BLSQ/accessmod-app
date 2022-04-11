@@ -584,6 +584,7 @@ export type QueryAccessmodProjectArgs = {
 
 
 export type QueryAccessmodProjectsArgs = {
+  countries?: InputMaybe<Array<Scalars['String']>>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   term?: InputMaybe<Scalars['String']>;
@@ -975,6 +976,7 @@ export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
+  countries?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 }>;
@@ -2404,8 +2406,13 @@ export type ProjectPageQueryHookResult = ReturnType<typeof useProjectPageQuery>;
 export type ProjectPageLazyQueryHookResult = ReturnType<typeof useProjectPageLazyQuery>;
 export type ProjectPageQueryResult = Apollo.QueryResult<ProjectPageQuery, ProjectPageQueryVariables>;
 export const ProjectsPageDocument = gql`
-    query ProjectsPage($term: String, $page: Int = 1, $perPage: Int = 20) {
-  accessmodProjects(term: $term, page: $page, perPage: $perPage) {
+    query ProjectsPage($term: String, $countries: [String!], $page: Int = 1, $perPage: Int = 20) {
+  accessmodProjects(
+    term: $term
+    countries: $countries
+    page: $page
+    perPage: $perPage
+  ) {
     ...ProjectsList_projects
     pageNumber
     totalPages
@@ -2430,6 +2437,7 @@ export const ProjectsPageDocument = gql`
  * const { data, loading, error } = useProjectsPageQuery({
  *   variables: {
  *      term: // value for 'term'
+ *      countries: // value for 'countries'
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *   },
