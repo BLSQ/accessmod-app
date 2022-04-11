@@ -510,6 +510,7 @@ enum UpdateAccessmodProjectError {
 input UpdateAccessmodProjectInput {
   id: String!
   name: String
+  crs: Int
   spatialResolution: Int
   country: CountryInput
   extentId: String

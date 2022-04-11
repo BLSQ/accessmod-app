@@ -693,6 +693,7 @@ export enum UpdateAccessmodProjectError {
 
 export type UpdateAccessmodProjectInput = {
   country?: InputMaybe<CountryInput>;
+  crs?: InputMaybe<Scalars['Int']>;
   extentId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
@@ -836,6 +837,22 @@ export type DeleteProjectMutationVariables = Exact<{
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } };
 
 export type DeleteProjectTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type EditProjectQueryVariables = Exact<{
+  projectId: Scalars['String'];
+}>;
+
+
+export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number } | null };
+
+export type UpdateProjectMutationVariables = Exact<{
+  input?: InputMaybe<UpdateAccessmodProjectInput>;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number } | null } };
+
+export type EditProjectFormBlock_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -1252,6 +1269,11 @@ export const CreateDatasetTrigger_ProjectFragmentDoc = gql`
   ...DatasetFormDialog_project
 }
     ${DatasetFormDialog_ProjectFragmentDoc}`;
+export const EditProjectFormBlock_ProjectFragmentDoc = gql`
+    fragment EditProjectFormBlock_project on AccessmodProject {
+  id
+}
+    `;
 export const ProjectPage_ProjectFragmentDoc = gql`
     fragment ProjectPage_project on AccessmodProject {
   id
@@ -1262,6 +1284,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   ...ProjectDatasetsTable_project
   ...CreateAnalysisTrigger_project
   ...CreateDatasetTrigger_project
+  ...EditProjectFormBlock_project
   country {
     name
     code
@@ -1279,6 +1302,7 @@ ${ProjectAnalysesTable_ProjectFragmentDoc}
 ${ProjectDatasetsTable_ProjectFragmentDoc}
 ${CreateAnalysisTrigger_ProjectFragmentDoc}
 ${CreateDatasetTrigger_ProjectFragmentDoc}
+${EditProjectFormBlock_ProjectFragmentDoc}
 ${User_UserFragmentDoc}`;
 export const NavbarDocument = gql`
     query Navbar {
@@ -1645,6 +1669,84 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const EditProjectDocument = gql`
+    query EditProject($projectId: String!) {
+  project: accessmodProject(id: $projectId) {
+    id
+    name
+    crs
+    spatialResolution
+  }
+}
+    `;
+
+/**
+ * __useEditProjectQuery__
+ *
+ * To run a query within a React component, call `useEditProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEditProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEditProjectQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useEditProjectQuery(baseOptions: Apollo.QueryHookOptions<EditProjectQuery, EditProjectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EditProjectQuery, EditProjectQueryVariables>(EditProjectDocument, options);
+      }
+export function useEditProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditProjectQuery, EditProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EditProjectQuery, EditProjectQueryVariables>(EditProjectDocument, options);
+        }
+export type EditProjectQueryHookResult = ReturnType<typeof useEditProjectQuery>;
+export type EditProjectLazyQueryHookResult = ReturnType<typeof useEditProjectLazyQuery>;
+export type EditProjectQueryResult = Apollo.QueryResult<EditProjectQuery, EditProjectQueryVariables>;
+export const UpdateProjectDocument = gql`
+    mutation UpdateProject($input: UpdateAccessmodProjectInput) {
+  updateAccessmodProject(input: $input) {
+    success
+    errors
+    project {
+      id
+      name
+      crs
+      spatialResolution
+    }
+  }
+}
+    `;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+
+/**
+ * __useUpdateProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectMutation, { data, loading, error }] = useUpdateProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, options);
+      }
+export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
 export const DeleteAnalysisDocument = gql`
     mutation DeleteAnalysis($input: DeleteAccessmodAnalysisInput) {
   deleteAccessmodAnalysis(input: $input) {

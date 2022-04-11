@@ -9,10 +9,12 @@ import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
 import CreateDatasetTrigger from "features/CreateDatasetTrigger";
+import EditProjectFormBlock from "features/project/EditProjectFormBlock";
 import ProjectActionsMenu from "features/project/ProjectActionsMenu";
 import ProjectAnalysesTable from "features/project/ProjectAnalysesTable";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
 import User from "features/User";
+import useToggle from "hooks/useToggle";
 import { ProjectPage_ProjectFragment, useProjectPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
@@ -126,6 +128,7 @@ const LatestDatasetsBlock = ({
 const ProjectPage: NextPageWithFragments = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const [isEditingProject, { toggle: toggleEditingProject }] = useToggle();
   const { data } = useProjectPageQuery({
     variables: { id: router.query.id as string },
   });
@@ -169,36 +172,44 @@ const ProjectPage: NextPageWithFragments = () => {
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
-        <Block>
-          <div className="flex justify-end">
-            <Button size="sm" variant="white" disabled>
-              {t("Edit")}
-            </Button>
-          </div>
-          <DescriptionList>
-            <DescriptionList.Item label={t("Creation Date")}>
-              <span className="text-md">
-                <Time datetime={project.createdAt} />
-              </span>
-            </DescriptionList.Item>
-            <DescriptionList.Item
-              label={t("Spatial Resolution")}
-              help={t(
-                "The spatial resolution refers to the linear spacing of a measurement."
-              )}
-            >
-              <span className="text-md">{project.spatialResolution}</span>
-            </DescriptionList.Item>
-            <DescriptionList.Item
-              label={t("Coordinate Reference System")}
-              help={t(
-                "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
-              )}
-            >
-              <span className="text-md">{project.crs}</span>
-            </DescriptionList.Item>
-          </DescriptionList>
-        </Block>
+        {isEditingProject ? (
+          <EditProjectFormBlock
+            project={project}
+            onCancel={toggleEditingProject}
+            onSave={toggleEditingProject}
+          />
+        ) : (
+          <Block className="relative">
+            <div className="absolute top-4 right-4">
+              <Button size="sm" variant="white" onClick={toggleEditingProject}>
+                {t("Edit")}
+              </Button>
+            </div>
+            <DescriptionList>
+              <DescriptionList.Item
+                label={t("Spatial Resolution")}
+                help={t(
+                  "The spatial resolution refers to the linear spacing of a measurement."
+                )}
+              >
+                <span className="text-md">{project.spatialResolution}</span>
+              </DescriptionList.Item>
+              <DescriptionList.Item
+                label={t("Coordinate Reference System")}
+                help={t(
+                  "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
+                )}
+              >
+                <span className="text-md">{project.crs}</span>
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Creation Date")}>
+                <span className="text-md">
+                  <Time datetime={project.createdAt} />
+                </span>
+              </DescriptionList.Item>
+            </DescriptionList>
+          </Block>
+        )}
         <LatestAnalysisBlock project={project} />
         <LatestDatasetsBlock project={project} />
       </PageContent>
@@ -218,6 +229,7 @@ ProjectPage.fragments = {
       ...ProjectDatasetsTable_project
       ...CreateAnalysisTrigger_project
       ...CreateDatasetTrigger_project
+      ...EditProjectFormBlock_project
       country {
         name
         code
@@ -236,6 +248,7 @@ ProjectPage.fragments = {
     ${ProjectAnalysesTable.fragments.project}
     ${CreateAnalysisTrigger.fragments.project}
     ${CreateDatasetTrigger.fragments.project}
+    ${EditProjectFormBlock.fragments.project}
   `,
 };
 
