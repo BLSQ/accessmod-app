@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
-import CountryPicker from "./CountryPicker";
+import CountryPicker from "../CountryPicker";
 
 type Props = {
   onClose: () => void;

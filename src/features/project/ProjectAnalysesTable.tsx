@@ -17,7 +17,7 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
-import AnalysisStatus from "./analysis/AnalysisStatus";
+import AnalysisStatus from "../analysis/AnalysisStatus";
 
 type Props = {
   project: ProjectAnalysesTable_ProjectFragment;
@@ -106,7 +106,7 @@ const ProjectAnalysesTable = (props: Props) => {
                   <AnalysisStatus analysis={row} />
                 </td>
                 <td>
-                  <div className="invisible group-hover:visible flex justify-end gap-1">
+                  <div className="invisible flex justify-end gap-1 group-hover:visible">
                     <Button
                       size="sm"
                       variant="white"

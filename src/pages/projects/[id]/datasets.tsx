@@ -6,7 +6,7 @@ import Button from "components/Button";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateDatasetDialog from "features/DatasetFormDialog";
-import ProjectDatasetsTable from "features/ProjectDatasetsTable";
+import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
 import { useProjectDataPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";

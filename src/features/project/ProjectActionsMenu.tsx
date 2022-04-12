@@ -3,7 +3,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon, TrashIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import { Classes as ButtonClasses } from "components/Button";
-import DeleteProjectTrigger from "features/DeleteProjectTrigger";
+import DeleteProjectTrigger from "features/project/DeleteProjectTrigger";
 import { ProjectActionsMenu_ProjectFragment } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { Fragment } from "react";
@@ -44,7 +44,7 @@ const ProjectActionsMenu = ({
       <Menu.Button className={Classes.TriggerButton}>
         {t("Actions")}
         <ChevronDownIcon
-          className="w-4 h-4 ml-2 -mr-1 text-gray-500 group-hover:text-gray-700"
+          className="ml-2 -mr-1 h-4 w-4 text-gray-500 group-hover:text-gray-700"
           aria-hidden="true"
         />
       </Menu.Button>
@@ -58,10 +58,10 @@ const ProjectActionsMenu = ({
                     <button
                       className={clsx(
                         Classes.Item,
-                        active && "text-white bg-red-500"
+                        active && "bg-red-500 text-white"
                       )}
                     >
-                      <TrashIcon className="h-4 w-4 mr-2" />
+                      <TrashIcon className="mr-2 h-4 w-4" />
                       {t("Delete")}
                     </button>
                   )}

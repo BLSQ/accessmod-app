@@ -6,7 +6,7 @@ import Button from "components/Button";
 import { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
-import ProjectAnalysesTable from "features/ProjectAnalysesTable";
+import ProjectAnalysesTable from "features/project/ProjectAnalysesTable";
 import { useProjectAnalysesPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";

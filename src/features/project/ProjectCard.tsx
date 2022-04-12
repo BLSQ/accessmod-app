@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { gql } from "@apollo/client";
 import { ProjectCard_ProjectFragment } from "libs/graphql";
 import Link from "next/link";
-import User from "./User";
+import User from "../User";
 
 type Props = {
   project: ProjectCard_ProjectFragment;
