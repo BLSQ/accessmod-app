@@ -36,7 +36,7 @@ const ProjectCard = (props: Props) => {
             className="h-4"
           />
         </div>
-        <User user={project.owner} />
+        <User user={project.author} />
       </div>
     </div>
   );
@@ -53,7 +53,7 @@ ProjectCard.fragments = {
         flag
         code
       }
-      owner {
+      author {
         ...User_user
         firstName
         email

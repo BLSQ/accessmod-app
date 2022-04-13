@@ -102,7 +102,7 @@ const AnalysisPage = () => {
                 <DocumentReportIcon className="mr-1.5 h-5" />
                 {getLabelFromAnalysisType(data.analysis.type)}
               </div>
-              <User small user={data.analysis.owner} textColor="text-white" />
+              <User small user={data.analysis.author} textColor="text-white" />
             </div>
           </div>
           <AnalysisActionsButton
@@ -219,7 +219,7 @@ export const getServerSideProps = createGetServerSideProps({
             ...AnalysisActionsButton_analysis
             ...AnalysisStatus_analysis
             ...AnalysisOutput_analysis
-            owner {
+            author {
               ...User_user
             }
 
