@@ -123,7 +123,7 @@
   "Select files": "Select files",
   "Select your files": "Select your files",
   "Settings": "Settings",
-  "Showing {{start}} to {{end}} of {{totalItems}} results": "Showing {{start}} to {{end}} of {{totalItems}} results",
+  "Showing {{ start }} to {{ end }} of {{ totalItems }} results": "Showing {{ start }} to {{ end }} of {{ totalItems }} results",
   "Showing all results": "Showing all results",
   "Slope": "Slope",
   "Spatial Resolution": "Spatial Resolution",
