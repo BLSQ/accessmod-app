@@ -165,7 +165,7 @@ const ProjectPage: NextPageWithFragments = () => {
                 />
                 <span>{project.country.name}</span>
               </div>
-              <User small user={project.owner} textColor="text-white" />
+              <User small user={project.author} textColor="text-white" />
             </div>
           </div>
           <ProjectActionsMenu project={project} />
@@ -237,7 +237,7 @@ ProjectPage.fragments = {
       }
       createdAt
       spatialResolution
-      owner {
+      author {
         ...User_user
         email
       }

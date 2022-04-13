@@ -39,7 +39,7 @@ const PROJECT_DATASETS_QUERY = gql`
           id
           format
         }
-        owner {
+        author {
           id
           firstName
           lastName
@@ -143,7 +143,7 @@ const ProjectDatasetsTable = (props: Props) => {
                   <td className="min-w-fit">{row.name}</td>
                   <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
                   <td>
-                    <User small user={row.owner} />
+                    <User small user={row.author} />
                   </td>
                   <td>
                     <Time datetime={row.createdAt} />
@@ -186,7 +186,7 @@ ProjectDatasetsTable.fragments = {
   project: gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
       id
-      owner {
+      author {
         ...User_user
       }
     }

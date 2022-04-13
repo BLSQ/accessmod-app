@@ -20,6 +20,8 @@ export type Scalars = {
 export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & {
   __typename?: 'AccessmodAccessibilityAnalysis';
   algorithm?: Maybe<AccessmodAccessibilityAnalysisAlgorithm>;
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
   barrier?: Maybe<AccessmodFileset>;
   catchmentAreas?: Maybe<AccessmodFileset>;
   createdAt: Scalars['DateTime'];
@@ -34,7 +36,6 @@ export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & {
   maxTravelTime?: Maybe<Scalars['Int']>;
   movingSpeeds?: Maybe<AccessmodFileset>;
   name: Scalars['String'];
-  owner: User;
   priorityLandCover?: Maybe<Array<Scalars['Int']>>;
   priorityRoads?: Maybe<Scalars['Boolean']>;
   slope?: Maybe<AccessmodFileset>;
@@ -53,14 +54,22 @@ export enum AccessmodAccessibilityAnalysisAlgorithm {
 }
 
 export type AccessmodAnalysis = {
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   name: Scalars['String'];
-  owner: User;
   status: AccessmodAnalysisStatus;
   type: AccessmodAnalysisType;
   updatedAt: Scalars['DateTime'];
 };
+
+export enum AccessmodAnalysisAuthorizedActions {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Run = 'RUN',
+  Update = 'UPDATE'
+}
 
 export type AccessmodAnalysisPage = {
   __typename?: 'AccessmodAnalysisPage';
@@ -97,14 +106,22 @@ export type AccessmodFile = {
 
 export type AccessmodFileset = {
   __typename?: 'AccessmodFileset';
+  author: User;
+  authorizedActions: Array<AccessmodFilesetAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   files: Array<AccessmodFile>;
   id: Scalars['String'];
   name: Scalars['String'];
-  owner: User;
   role?: Maybe<AccessmodFilesetRole>;
   updatedAt: Scalars['DateTime'];
 };
+
+export enum AccessmodFilesetAuthorizedActions {
+  Create = 'CREATE',
+  CreateFile = 'CREATE_FILE',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
 
 export enum AccessmodFilesetFormat {
   Raster = 'RASTER',
@@ -150,6 +167,8 @@ export enum AccessmodFilesetRoleCode {
 export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
   __typename?: 'AccessmodGeographicCoverageAnalysis';
   anisotropic?: Maybe<Scalars['Boolean']>;
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
   catchmentAreas?: Maybe<AccessmodFileset>;
   createdAt: Scalars['DateTime'];
   dem?: Maybe<AccessmodFileset>;
@@ -160,7 +179,6 @@ export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
   id: Scalars['String'];
   maxTravelTime?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
-  owner: User;
   population?: Maybe<AccessmodFileset>;
   status: AccessmodAnalysisStatus;
   type: AccessmodAnalysisType;
@@ -169,20 +187,48 @@ export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
 
 export type AccessmodProject = {
   __typename?: 'AccessmodProject';
+  author: User;
+  authorizedActions: Array<AccessmodProjectAuthorizedActions>;
   country: Country;
   createdAt: Scalars['DateTime'];
   crs: Scalars['Int'];
   extent?: Maybe<AccessmodFileset>;
   id: Scalars['String'];
   name: Scalars['String'];
-  owner: User;
   spatialResolution: Scalars['Int'];
   updatedAt: Scalars['DateTime'];
 };
 
+export enum AccessmodProjectAuthorizedActions {
+  CreateAnalysis = 'CREATE_ANALYSIS',
+  CreateFileset = 'CREATE_FILESET',
+  CreatePermission = 'CREATE_PERMISSION',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
+
 export type AccessmodProjectPage = {
   __typename?: 'AccessmodProjectPage';
   items: Array<AccessmodProject>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export type AccessmodProjectPermission = {
+  __typename?: 'AccessmodProjectPermission';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  mode: PermissionMode;
+  project: AccessmodProject;
+  team: Team;
+  updatedAt: Scalars['DateTime'];
+  user: User;
+};
+
+export type AccessmodProjectPermissionPage = {
+  __typename?: 'AccessmodProjectPermissionPage';
+  items: Array<AccessmodProjectPermission>;
   pageNumber: Scalars['Int'];
   totalItems: Scalars['Int'];
   totalPages: Scalars['Int'];
@@ -260,7 +306,8 @@ export type CreateAccessmodFilesetResult = {
 };
 
 export enum CreateAccessmodProjectError {
-  NameDuplicate = 'NAME_DUPLICATE'
+  NameDuplicate = 'NAME_DUPLICATE',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type CreateAccessmodProjectInput = {
@@ -271,10 +318,47 @@ export type CreateAccessmodProjectInput = {
   spatialResolution: Scalars['Int'];
 };
 
+export enum CreateAccessmodProjectPermissionError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type CreateAccessmodProjectPermissionInput = {
+  mode: PermissionMode;
+  projectId: Scalars['String'];
+  teamId?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateAccessmodProjectPermissionResult = {
+  __typename?: 'CreateAccessmodProjectPermissionResult';
+  errors: Array<CreateAccessmodProjectPermissionError>;
+  permission?: Maybe<AccessmodProjectPermission>;
+  success: Scalars['Boolean'];
+};
+
 export type CreateAccessmodProjectResult = {
   __typename?: 'CreateAccessmodProjectResult';
   errors: Array<CreateAccessmodProjectError>;
   project?: Maybe<AccessmodProject>;
+  success: Scalars['Boolean'];
+};
+
+export enum CreateMembershipError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type CreateMembershipInput = {
+  role: MembershipRole;
+  teamId: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type CreateMembershipResult = {
+  __typename?: 'CreateMembershipResult';
+  errors: Array<CreateMembershipError>;
+  membership?: Maybe<Membership>;
   success: Scalars['Boolean'];
 };
 
@@ -322,16 +406,49 @@ export type DeleteAccessmodFilesetResult = {
 };
 
 export enum DeleteAccessmodProjectError {
-  NotFound = 'NOT_FOUND'
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type DeleteAccessmodProjectInput = {
   id: Scalars['String'];
 };
 
+export enum DeleteAccessmodProjectPermissionError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteAccessmodProjectPermissionInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteAccessmodProjectPermissionResult = {
+  __typename?: 'DeleteAccessmodProjectPermissionResult';
+  errors: Array<DeleteAccessmodProjectPermissionError>;
+  membership?: Maybe<Membership>;
+  success: Scalars['Boolean'];
+};
+
 export type DeleteAccessmodProjectResult = {
   __typename?: 'DeleteAccessmodProjectResult';
   errors: Array<DeleteAccessmodProjectError>;
+  success: Scalars['Boolean'];
+};
+
+export enum DeleteMembershipError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteMembershipInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteMembershipResult = {
+  __typename?: 'DeleteMembershipResult';
+  errors: Array<DeleteMembershipError>;
+  membership?: Maybe<Membership>;
   success: Scalars['Boolean'];
 };
 
@@ -395,10 +512,14 @@ export type Mutation = {
   createAccessmodFile: CreateAccessmodFileResult;
   createAccessmodFileset: CreateAccessmodFilesetResult;
   createAccessmodProject: CreateAccessmodProjectResult;
+  createAccessmodProjectPermission: CreateAccessmodProjectPermissionResult;
+  createMembership: CreateMembershipResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
   deleteAccessmodFile: DeleteAccessmodFileResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
+  deleteAccessmodProjectPermission: DeleteAccessmodProjectPermissionResult;
+  deleteMembership: DeleteMembershipResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
   login: LoginResult;
   logout: LogoutResult;
@@ -408,6 +529,8 @@ export type Mutation = {
   setPassword: SetPasswordResult;
   updateAccessmodAccessibilityAnalysis: UpdateAccessmodAccessibilityAnalysisResult;
   updateAccessmodProject: UpdateAccessmodProjectResult;
+  updateAccessmodProjectPermission: UpdateAccessmodProjectPermissionResult;
+  updateMembership: UpdateMembershipResult;
 };
 
 
@@ -431,6 +554,16 @@ export type MutationCreateAccessmodProjectArgs = {
 };
 
 
+export type MutationCreateAccessmodProjectPermissionArgs = {
+  input: CreateAccessmodProjectPermissionInput;
+};
+
+
+export type MutationCreateMembershipArgs = {
+  input: CreateMembershipInput;
+};
+
+
 export type MutationDeleteAccessmodAnalysisArgs = {
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
 };
@@ -448,6 +581,16 @@ export type MutationDeleteAccessmodFilesetArgs = {
 
 export type MutationDeleteAccessmodProjectArgs = {
   input?: InputMaybe<DeleteAccessmodProjectInput>;
+};
+
+
+export type MutationDeleteAccessmodProjectPermissionArgs = {
+  input: DeleteAccessmodProjectPermissionInput;
+};
+
+
+export type MutationDeleteMembershipArgs = {
+  input: DeleteMembershipInput;
 };
 
 
@@ -490,6 +633,16 @@ export type MutationUpdateAccessmodProjectArgs = {
   input?: InputMaybe<UpdateAccessmodProjectInput>;
 };
 
+
+export type MutationUpdateAccessmodProjectPermissionArgs = {
+  input: UpdateAccessmodProjectPermissionInput;
+};
+
+
+export type MutationUpdateMembershipArgs = {
+  input: UpdateMembershipInput;
+};
+
 export type Organization = {
   __typename?: 'Organization';
   contactInfo: Scalars['String'];
@@ -506,6 +659,12 @@ export type OrganizationInput = {
   type?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
 };
+
+export enum PermissionMode {
+  Editor = 'EDITOR',
+  Owner = 'OWNER',
+  Viewer = 'VIEWER'
+}
 
 export type PrepareAccessmodFileDownloadInput = {
   fileId: Scalars['String'];
@@ -632,6 +791,7 @@ export type SetPasswordResult = {
 
 export type Team = {
   __typename?: 'Team';
+  authorizedActions: Array<TeamAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   memberships: MembershipPage;
@@ -644,6 +804,12 @@ export type TeamMembershipsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 };
+
+export enum TeamAuthorizedActions {
+  CreateMembership = 'CREATE_MEMBERSHIP',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
 
 export type TeamPage = {
   __typename?: 'TeamPage';
@@ -688,7 +854,8 @@ export type UpdateAccessmodAccessibilityAnalysisResult = {
 
 export enum UpdateAccessmodProjectError {
   NameDuplicate = 'NAME_DUPLICATE',
-  NotFound = 'NOT_FOUND'
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type UpdateAccessmodProjectInput = {
@@ -700,10 +867,44 @@ export type UpdateAccessmodProjectInput = {
   spatialResolution?: InputMaybe<Scalars['Int']>;
 };
 
+export enum UpdateAccessmodProjectPermissionError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateAccessmodProjectPermissionInput = {
+  id: Scalars['String'];
+  mode: PermissionMode;
+};
+
+export type UpdateAccessmodProjectPermissionResult = {
+  __typename?: 'UpdateAccessmodProjectPermissionResult';
+  errors: Array<UpdateAccessmodProjectPermissionError>;
+  permission?: Maybe<AccessmodProjectPermission>;
+  success: Scalars['Boolean'];
+};
+
 export type UpdateAccessmodProjectResult = {
   __typename?: 'UpdateAccessmodProjectResult';
   errors: Array<UpdateAccessmodProjectError>;
   project?: Maybe<AccessmodProject>;
+  success: Scalars['Boolean'];
+};
+
+export enum UpdateMembershipError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateMembershipInput = {
+  id: Scalars['String'];
+  role: MembershipRole;
+};
+
+export type UpdateMembershipResult = {
+  __typename?: 'UpdateMembershipResult';
+  errors: Array<UpdateMembershipError>;
+  membership?: Maybe<Membership>;
   success: Scalars['Boolean'];
 };
 
@@ -874,7 +1075,7 @@ export type ProjectAnalysesTableQueryVariables = Exact<{
 
 export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
 
-export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, author: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectDatasetsTableQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -884,7 +1085,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
 
 export type DeleteDatasetMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodFilesetInput>;
@@ -893,14 +1094,14 @@ export type DeleteDatasetMutationVariables = Exact<{
 
 export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
 
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
 
-export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
+export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, author: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
 
 export type LaunchAccessmodAnalysisMutationVariables = Exact<{
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
@@ -966,7 +1167,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -980,16 +1181,16 @@ export type ProjectDataPageQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
@@ -999,7 +1200,7 @@ export type ProjectsPageQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, author: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
@@ -1206,7 +1407,7 @@ export const ProjectCard_ProjectFragmentDoc = gql`
     flag
     code
   }
-  owner {
+  author {
     ...User_user
     firstName
     email
@@ -1249,7 +1450,7 @@ export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
   id
-  owner {
+  author {
     ...User_user
   }
 }
@@ -1292,7 +1493,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   }
   createdAt
   spatialResolution
-  owner {
+  author {
     ...User_user
     email
   }
@@ -1849,7 +2050,7 @@ export const ProjectDatasetsTableDocument = gql`
         id
         format
       }
-      owner {
+      author {
         id
         firstName
         lastName
@@ -2332,7 +2533,7 @@ export const AnalysisDetailPageDocument = gql`
     ...AnalysisActionsButton_analysis
     ...AnalysisStatus_analysis
     ...AnalysisOutput_analysis
-    owner {
+    author {
       ...User_user
     }
     ... on AccessmodAccessibilityAnalysis {

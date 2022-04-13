@@ -9,7 +9,8 @@ type AccessmodAccessibilityAnalysis implements AccessmodAnalysis {
   type: AccessmodAnalysisType!
   status: AccessmodAnalysisStatus!
   name: String!
-  owner: User!
+  author: User!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   landCover: AccessmodFileset
@@ -43,9 +44,17 @@ interface AccessmodAnalysis {
   type: AccessmodAnalysisType!
   status: AccessmodAnalysisStatus!
   name: String!
-  owner: User!
+  author: User!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum AccessmodAnalysisAuthorizedActions {
+  CREATE
+  UPDATE
+  DELETE
+  RUN
 }
 
 type AccessmodAnalysisPage {
@@ -83,10 +92,18 @@ type AccessmodFileset {
   id: String!
   name: String!
   role: AccessmodFilesetRole
-  owner: User!
+  author: User!
   files: [AccessmodFile!]!
+  authorizedActions: [AccessmodFilesetAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum AccessmodFilesetAuthorizedActions {
+  CREATE
+  UPDATE
+  DELETE
+  CREATE_FILE
 }
 
 enum AccessmodFilesetFormat {
@@ -133,7 +150,8 @@ type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis {
   type: AccessmodAnalysisType!
   status: AccessmodAnalysisStatus!
   name: String!
-  owner: User!
+  author: User!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   population: AccessmodFileset
@@ -153,10 +171,19 @@ type AccessmodProject {
   spatialResolution: Int!
   crs: Int!
   country: Country!
-  owner: User!
+  author: User!
+  extent: AccessmodFileset
+  authorizedActions: [AccessmodProjectAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
-  extent: AccessmodFileset
+}
+
+enum AccessmodProjectAuthorizedActions {
+  UPDATE
+  DELETE
+  CREATE_FILESET
+  CREATE_ANALYSIS
+  CREATE_PERMISSION
 }
 
 type AccessmodProjectPage {
@@ -164,6 +191,23 @@ type AccessmodProjectPage {
   totalPages: Int!
   totalItems: Int!
   items: [AccessmodProject!]!
+}
+
+type AccessmodProjectPermission {
+  id: String!
+  user: User!
+  team: Team!
+  project: AccessmodProject!
+  mode: PermissionMode!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AccessmodProjectPermissionPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [AccessmodProjectPermission!]!
 }
 
 type Avatar {
@@ -234,6 +278,7 @@ type CreateAccessmodFilesetResult {
 
 enum CreateAccessmodProjectError {
   NAME_DUPLICATE
+  PERMISSION_DENIED
 }
 
 input CreateAccessmodProjectInput {
@@ -244,10 +289,45 @@ input CreateAccessmodProjectInput {
   country: CountryInput!
 }
 
+enum CreateAccessmodProjectPermissionError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input CreateAccessmodProjectPermissionInput {
+  userId: String
+  teamId: String
+  projectId: String!
+  mode: PermissionMode!
+}
+
+type CreateAccessmodProjectPermissionResult {
+  success: Boolean!
+  permission: AccessmodProjectPermission
+  errors: [CreateAccessmodProjectPermissionError!]!
+}
+
 type CreateAccessmodProjectResult {
   success: Boolean!
   project: AccessmodProject
   errors: [CreateAccessmodProjectError!]!
+}
+
+enum CreateMembershipError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input CreateMembershipInput {
+  userId: String!
+  teamId: String!
+  role: MembershipRole!
+}
+
+type CreateMembershipResult {
+  success: Boolean!
+  membership: Membership
+  errors: [CreateMembershipError!]!
 }
 
 scalar Date
@@ -296,15 +376,46 @@ type DeleteAccessmodFilesetResult {
 
 enum DeleteAccessmodProjectError {
   NOT_FOUND
+  PERMISSION_DENIED
 }
 
 input DeleteAccessmodProjectInput {
   id: String!
 }
 
+enum DeleteAccessmodProjectPermissionError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input DeleteAccessmodProjectPermissionInput {
+  id: String!
+}
+
+type DeleteAccessmodProjectPermissionResult {
+  success: Boolean!
+  membership: Membership
+  errors: [DeleteAccessmodProjectPermissionError!]!
+}
+
 type DeleteAccessmodProjectResult {
   success: Boolean!
   errors: [DeleteAccessmodProjectError!]!
+}
+
+enum DeleteMembershipError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input DeleteMembershipInput {
+  id: String!
+}
+
+type DeleteMembershipResult {
+  success: Boolean!
+  membership: Membership
+  errors: [DeleteMembershipError!]!
 }
 
 enum LaunchAccessmodAnalysisError {
@@ -361,9 +472,15 @@ type Mutation {
   logout: LogoutResult!
   resetPassword(input: ResetPasswordInput!): ResetPasswordResult!
   setPassword(input: SetPasswordInput!): SetPasswordResult!
+  createMembership(input: CreateMembershipInput!): CreateMembershipResult!
+  updateMembership(input: UpdateMembershipInput!): UpdateMembershipResult!
+  deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
   createAccessmodProject(input: CreateAccessmodProjectInput): CreateAccessmodProjectResult!
   updateAccessmodProject(input: UpdateAccessmodProjectInput): UpdateAccessmodProjectResult!
   deleteAccessmodProject(input: DeleteAccessmodProjectInput): DeleteAccessmodProjectResult!
+  createAccessmodProjectPermission(input: CreateAccessmodProjectPermissionInput!): CreateAccessmodProjectPermissionResult!
+  updateAccessmodProjectPermission(input: UpdateAccessmodProjectPermissionInput!): UpdateAccessmodProjectPermissionResult!
+  deleteAccessmodProjectPermission(input: DeleteAccessmodProjectPermissionInput!): DeleteAccessmodProjectPermissionResult!
   createAccessmodFileset(input: CreateAccessmodFilesetInput): CreateAccessmodFilesetResult!
   deleteAccessmodFileset(input: DeleteAccessmodFilesetInput): DeleteAccessmodFilesetResult!
   prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput): PrepareAccessmodFileUploadResult!
@@ -390,6 +507,12 @@ input OrganizationInput {
   type: String
   url: String
   contactInfo: String
+}
+
+enum PermissionMode {
+  OWNER
+  EDITOR
+  VIEWER
 }
 
 input PrepareAccessmodFileDownloadInput {
@@ -459,8 +582,15 @@ type Team {
   id: String!
   name: String!
   memberships(page: Int, perPage: Int): MembershipPage!
+  authorizedActions: [TeamAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum TeamAuthorizedActions {
+  UPDATE
+  DELETE
+  CREATE_MEMBERSHIP
 }
 
 type TeamPage {
@@ -505,6 +635,7 @@ type UpdateAccessmodAccessibilityAnalysisResult {
 enum UpdateAccessmodProjectError {
   NOT_FOUND
   NAME_DUPLICATE
+  PERMISSION_DENIED
 }
 
 input UpdateAccessmodProjectInput {
@@ -516,10 +647,42 @@ input UpdateAccessmodProjectInput {
   extentId: String
 }
 
+enum UpdateAccessmodProjectPermissionError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input UpdateAccessmodProjectPermissionInput {
+  id: String!
+  mode: PermissionMode!
+}
+
+type UpdateAccessmodProjectPermissionResult {
+  success: Boolean!
+  permission: AccessmodProjectPermission
+  errors: [UpdateAccessmodProjectPermissionError!]!
+}
+
 type UpdateAccessmodProjectResult {
   success: Boolean!
   project: AccessmodProject
   errors: [UpdateAccessmodProjectError!]!
+}
+
+enum UpdateMembershipError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input UpdateMembershipInput {
+  id: String!
+  role: MembershipRole!
+}
+
+type UpdateMembershipResult {
+  success: Boolean!
+  membership: Membership
+  errors: [UpdateMembershipError!]!
 }
 
 type User {
