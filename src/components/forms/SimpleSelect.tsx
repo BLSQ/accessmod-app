@@ -1,15 +1,34 @@
 import clsx from "clsx";
-import { HTMLAttributes } from "react";
+import { SelectHTMLAttributes, useEffect, useRef } from "react";
 
-type Props = {
+export interface SimpleSelectProps
+  extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string | boolean;
-  value?: string;
-} & HTMLAttributes<HTMLSelectElement>;
+  placeholder?: string;
+}
 
-const SimpleSelect = (props: Props) => {
-  const { className, error, ...delegated } = props;
+const SimpleSelect = (props: SimpleSelectProps) => {
+  const {
+    className,
+    error,
+    required,
+    children,
+    placeholder,
+    value,
+    ...delegated
+  } = props;
+  const selectRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    if (selectRef.current) {
+      selectRef.current.value = `${value ?? ""}`;
+    }
+  }, [value, selectRef]);
+
   return (
     <select
+      defaultValue={""}
+      ref={selectRef}
       className={clsx(
         "form-select rounded-md border-gray-300 shadow-sm sm:text-sm",
         "hover:border-gray-400 focus:border-lochmara focus:outline-none focus:ring-transparent",
@@ -19,8 +38,17 @@ const SimpleSelect = (props: Props) => {
           "border-red-300 text-red-900 placeholder-red-300 focus:border-lochmara focus:ring-lochmara",
         className
       )}
+      required={required}
       {...delegated}
-    />
+    >
+      {placeholder && (
+        <option value="" disabled>
+          {placeholder}
+        </option>
+      )}
+      {!required && <option></option>}
+      {children}
+    </select>
   );
 };
 

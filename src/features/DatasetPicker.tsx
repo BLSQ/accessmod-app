@@ -7,10 +7,11 @@ import { getFilesetRoles } from "libs/dataset";
 import {
   AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
+  AccessmodProjectAuthorizedActions,
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
 } from "libs/graphql";
-import { i18n } from "next-i18next";
+import { i18n, useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CreateDatasetDialog from "./DatasetFormDialog";
 
@@ -53,20 +54,25 @@ const QUERY = gql`
   }
 `;
 
-const CustomMenuList = ({ children, onCreate, ...props }: any) => {
+const CustomMenuList = ({ children, onCreate, project, ...props }: any) => {
+  const { t } = useTranslation();
   return (
     <DefaultComponents.MenuList {...props}>
       {children}
-      <div className="mt-1 border-t border-gray-300 px-3 py-2 text-sm">
-        <Button
-          size="sm"
-          variant="secondary"
-          onClick={onCreate}
-          leadingIcon={<PlusIcon className="h-4" />}
-        >
-          Create a new dataset
-        </Button>
-      </div>
+      {project.authorizedActions.includes(
+        AccessmodProjectAuthorizedActions.CreateFileset
+      ) && (
+        <div className="mt-1 border-t border-gray-300 px-3 py-2 text-sm">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={onCreate}
+            leadingIcon={<PlusIcon className="h-4" />}
+          >
+            {t("Create a new dataset")}
+          </Button>
+        </div>
+      )}
     </DefaultComponents.MenuList>
   );
 };
@@ -178,7 +184,11 @@ const DatasetPicker = (props: Props) => {
         valueKey="id"
         components={{
           MenuList: (props) => (
-            <CustomMenuList onCreate={toggleCreateDialog} {...props} />
+            <CustomMenuList
+              project={project}
+              onCreate={toggleCreateDialog}
+              {...props}
+            />
           ),
         }}
       />
@@ -190,6 +200,7 @@ DatasetPicker.fragments = {
   project: gql`
     fragment DatasetPicker_project on AccessmodProject {
       id
+      authorizedActions
       ...DatasetFormDialog_project
     }
     ${CreateDatasetDialog.fragments.project}

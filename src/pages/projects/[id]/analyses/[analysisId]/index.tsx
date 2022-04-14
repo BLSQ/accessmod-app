@@ -215,7 +215,6 @@ export const getServerSideProps = createGetServerSideProps({
             createdAt
             updatedAt
             status
-
             ...AnalysisActionsButton_analysis
             ...AnalysisStatus_analysis
             ...AnalysisOutput_analysis

@@ -75,6 +75,9 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
         Team: {
           merge: true,
         },
+        User: {
+          merge: true,
+        },
         Country: {
           // Country code are unique (at least it should). Let's use that for the cache key
           keyFields: false,

@@ -51,7 +51,6 @@ interface AccessmodAnalysis {
 }
 
 enum AccessmodAnalysisAuthorizedActions {
-  CREATE
   UPDATE
   DELETE
   RUN
@@ -174,6 +173,7 @@ type AccessmodProject {
   author: User!
   extent: AccessmodFileset
   authorizedActions: [AccessmodProjectAuthorizedActions!]!
+  permissions: [AccessmodProjectPermission!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -184,6 +184,8 @@ enum AccessmodProjectAuthorizedActions {
   CREATE_FILESET
   CREATE_ANALYSIS
   CREATE_PERMISSION
+  UPDATE_PERMISSION
+  DELETE_PERMISSION
 }
 
 type AccessmodProjectPage {
@@ -195,8 +197,8 @@ type AccessmodProjectPage {
 
 type AccessmodProjectPermission {
   id: String!
-  user: User!
-  team: Team!
+  user: User
+  team: Team
   project: AccessmodProject!
   mode: PermissionMode!
   createdAt: DateTime!
@@ -262,6 +264,7 @@ type CreateAccessmodFileResult {
 
 enum CreateAccessmodFilesetError {
   NAME_DUPLICATE
+  PERMISSION_DENIED
 }
 
 input CreateAccessmodFilesetInput {
@@ -319,7 +322,7 @@ enum CreateMembershipError {
 }
 
 input CreateMembershipInput {
-  userId: String!
+  userEmail: String!
   teamId: String!
   role: MembershipRole!
 }
@@ -328,6 +331,21 @@ type CreateMembershipResult {
   success: Boolean!
   membership: Membership
   errors: [CreateMembershipError!]!
+}
+
+enum CreateTeamError {
+  PERMISSION_DENIED
+  NAME_DUPLICATE
+}
+
+input CreateTeamInput {
+  name: String!
+}
+
+type CreateTeamResult {
+  team: Team
+  success: Boolean!
+  errors: [CreateTeamError!]!
 }
 
 scalar Date
@@ -394,7 +412,6 @@ input DeleteAccessmodProjectPermissionInput {
 
 type DeleteAccessmodProjectPermissionResult {
   success: Boolean!
-  membership: Membership
   errors: [DeleteAccessmodProjectPermissionError!]!
 }
 
@@ -414,8 +431,21 @@ input DeleteMembershipInput {
 
 type DeleteMembershipResult {
   success: Boolean!
-  membership: Membership
   errors: [DeleteMembershipError!]!
+}
+
+enum DeleteTeamError {
+  NOT_FOUND
+  PERMISSION_DENIED
+}
+
+input DeleteTeamInput {
+  id: String!
+}
+
+type DeleteTeamResult {
+  success: Boolean!
+  errors: [DeleteTeamError!]!
 }
 
 enum LaunchAccessmodAnalysisError {
@@ -439,20 +469,36 @@ input LoginInput {
 
 type LoginResult {
   success: Boolean!
-  me: User
+  me: Me
 }
 
 type LogoutResult {
   success: Boolean!
 }
 
+type Me {
+  user: User
+  authorizedActions: [MeAuthorizedActions!]!
+}
+
+enum MeAuthorizedActions {
+  CREATE_TEAM
+  CREATE_ACCESSMOD_PROJECT
+}
+
 type Membership {
   id: String!
   user: User!
   team: Team!
+  authorizedActions: [MembershipAuthorizedActions!]!
   role: MembershipRole!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum MembershipAuthorizedActions {
+  UPDATE
+  DELETE
 }
 
 type MembershipPage {
@@ -472,6 +518,9 @@ type Mutation {
   logout: LogoutResult!
   resetPassword(input: ResetPasswordInput!): ResetPasswordResult!
   setPassword(input: SetPasswordInput!): SetPasswordResult!
+  createTeam(input: CreateTeamInput!): CreateTeamResult!
+  updateTeam(input: UpdateTeamInput!): UpdateTeamResult!
+  deleteTeam(input: DeleteTeamInput!): DeleteTeamResult!
   createMembership(input: CreateMembershipInput!): CreateMembershipResult!
   updateMembership(input: UpdateMembershipInput!): UpdateMembershipResult!
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
@@ -536,13 +585,13 @@ type PrepareAccessmodFileUploadResult {
 }
 
 type Query {
-  me: User
-  countries: [Country!]!
-  organizations: [Organization!]!
+  me: Me!
   team(id: String!): Team
-  teams(page: Int, perPage: Int): TeamPage!
+  teams(term: String, page: Int, perPage: Int): TeamPage!
+  organizations: [Organization!]!
+  countries: [Country!]!
   accessmodProject(id: String): AccessmodProject
-  accessmodProjects(term: String, countries: [String!], page: Int, perPage: Int): AccessmodProjectPage!
+  accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
   accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole
@@ -683,6 +732,23 @@ type UpdateMembershipResult {
   success: Boolean!
   membership: Membership
   errors: [UpdateMembershipError!]!
+}
+
+enum UpdateTeamError {
+  NOT_FOUND
+  PERMISSION_DENIED
+  NAME_DUPLICATE
+}
+
+input UpdateTeamInput {
+  id: String!
+  name: String
+}
+
+type UpdateTeamResult {
+  team: Team
+  success: Boolean!
+  errors: [UpdateTeamError!]!
 }
 
 type User {

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { FormEvent, HTMLAttributes } from "react";
+import { HTMLAttributes, InputHTMLAttributes } from "react";
 
 interface RadioOption {
   id: OptionId;
@@ -8,7 +8,7 @@ interface RadioOption {
 
 type OptionId = string;
 
-interface RadioGroupProps extends HTMLAttributes<HTMLInputElement> {
+interface RadioGroupProps extends InputHTMLAttributes<HTMLInputElement> {
   options: RadioOption[];
   value?: OptionId;
   name: string;

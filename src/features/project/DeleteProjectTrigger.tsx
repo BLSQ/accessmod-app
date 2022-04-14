@@ -1,7 +1,10 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import useCacheKey from "hooks/useCacheKey";
-import { useDeleteProjectMutation } from "libs/graphql";
+import {
+  AccessmodProjectAuthorizedActions,
+  useDeleteProjectMutation,
+} from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactElement, useCallback } from "react";
@@ -44,7 +47,13 @@ const DeleteProjectTrigger = ({ project, children, className }: Props) => {
     }
   }, [project, router, deleteProject, t, clearCache]);
 
-  if (children) {
+  if (
+    !project.authorizedActions.includes(
+      AccessmodProjectAuthorizedActions.Delete
+    )
+  ) {
+    return null;
+  } else if (children) {
     return children({ onClick: onDeleteClick });
   } else {
     return (
@@ -60,6 +69,7 @@ DeleteProjectTrigger.fragments = {
     fragment DeleteProjectTrigger_project on AccessmodProject {
       id
       name
+      authorizedActions
     }
   `,
 };

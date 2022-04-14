@@ -1,14 +1,16 @@
 import { gql } from "@apollo/client";
 import { PlusIcon } from "@heroicons/react/outline";
-import { UserAddIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Pagination from "components/Pagination";
+import Toggle from "components/Toggle";
+import CreateTeamDialog from "features/team/TeamFormDialog";
+import useCacheKey from "hooks/useCacheKey";
 import usePrevious from "hooks/usePrevious";
-import { useTeamsPageQuery } from "libs/graphql";
+import { MeAuthorizedActions, useTeamsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import _ from "lodash";
@@ -27,10 +29,12 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
   const router = useRouter();
   const [variables, setVariables] = useState<Variables>(defaultVariables);
   const { t } = useTranslation();
-  const { loading, data, previousData } = useTeamsPageQuery({
+  const { loading, data, previousData, refetch } = useTeamsPageQuery({
     variables,
   });
   const prevVariables = usePrevious(variables);
+
+  useCacheKey("teams", () => refetch());
 
   // Update location URL based on the search criteria
   useEffect(() => {
@@ -65,20 +69,32 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
         <Breadcrumbs className="mb-3">
           <Breadcrumbs.Part href="/teams">{t("Teams")}</Breadcrumbs.Part>
         </Breadcrumbs>
-        <h1 className="text-3xl font-bold text-white">{t("Teams")}</h1>
+        <h1 className="flex justify-between gap-4 text-3xl font-bold text-white">
+          {t("Teams")}
+
+          {data?.me?.authorizedActions.includes(
+            MeAuthorizedActions.CreateTeam
+          ) && (
+            <Toggle>
+              {({ toggle, isToggled }) => (
+                <>
+                  <Button
+                    variant="white"
+                    leadingIcon={<PlusIcon className="h-4" />}
+                    onClick={toggle}
+                  >
+                    {t("Create team")}
+                  </Button>
+                  <CreateTeamDialog open={isToggled} onClose={toggle} />
+                </>
+              )}
+            </Toggle>
+          )}
+        </h1>
       </PageHeader>
       <PageContent>
         {teams && (
           <Block>
-            <div className="flex justify-end">
-              <Button
-                variant="secondary"
-                size="sm"
-                leadingIcon={<PlusIcon className="h-4" />}
-              >
-                {t("Create team")}
-              </Button>
-            </div>
             <table className="who">
               <thead>
                 <tr>
@@ -155,6 +171,9 @@ export const getServerSideProps = createGetServerSideProps({
     await client.query({
       query: gql`
         query TeamsPage($page: Int = 1, $perPage: Int = 20) {
+          me {
+            authorizedActions
+          }
           teams(page: $page, perPage: $perPage) {
             pageNumber
             totalPages

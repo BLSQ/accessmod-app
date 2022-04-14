@@ -7,7 +7,10 @@ import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateDatasetDialog from "features/DatasetFormDialog";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
-import { useProjectDataPageQuery } from "libs/graphql";
+import {
+  AccessmodProjectAuthorizedActions,
+  useProjectDataPageQuery,
+} from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
@@ -71,13 +74,17 @@ const ProjectDataPage = () => {
           <div className="flex space-x-4">
             <h1 className="text-3xl font-bold text-white">{t("Datasets")}</h1>
           </div>
-          <Button
-            variant="primary"
-            onClick={() => toggleUploadDialog(true)}
-            leadingIcon={<PlusIcon className="h-4 w-4" />}
-          >
-            {t("New Dataset")}
-          </Button>
+          {data.accessmodProject.authorizedActions.includes(
+            AccessmodProjectAuthorizedActions.CreateFileset
+          ) && (
+            <Button
+              variant="primary"
+              onClick={() => toggleUploadDialog(true)}
+              leadingIcon={<PlusIcon className="h-4 w-4" />}
+            >
+              {t("New Dataset")}
+            </Button>
+          )}
         </div>
       </PageHeader>
       <PageContent>
@@ -108,6 +115,7 @@ export const getServerSideProps = createGetServerSideProps({
           accessmodProject(id: $id) {
             id
             name
+            authorizedActions
             ...DatasetFormDialog_project
             ...ProjectDatasetsTable_project
           }

@@ -37,6 +37,7 @@ export default function SelectInput({
   onCommandShiftEnter = () => {},
   autoFocus,
   onCreateOption,
+  formatOptionLabel,
 }: SelectInputProps) {
   const onKeyDown = useInputKeyDown({ onEscape, onCommandShiftEnter });
   const onSelectChange = useCallback(
@@ -71,6 +72,7 @@ export default function SelectInput({
     className: "react-select-container",
     classNamePrefix: "react-select",
     hideSelectedOptions: false,
+    formatOptionLabel,
     getOptionLabel: labelKey
       ? (option: Option) => get(labelKey, option)
       : undefined,
@@ -136,6 +138,7 @@ export interface BaseSelectInputProps<
   defaultOptions?: boolean | OptionsOrGroups<Option, Group>;
   onMenuScrollToBottom?: (event: WheelEvent | TouchEvent) => void;
   components?: SelectComponentsConfig<Option, IsMulti, Group>;
+  formatOptionLabel?: (option: Option) => string;
 }
 
 export interface SelectInputProps

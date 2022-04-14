@@ -155,7 +155,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
         <Field
           required
           className="col-span-2"
-          label={t("Coordinate Reference System")}
+          label={t("Coordinate Reference System Code")}
           name="crs"
           type="number"
           help={t(

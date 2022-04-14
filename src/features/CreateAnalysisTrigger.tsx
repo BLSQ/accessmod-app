@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import useToggle from "hooks/useToggle";
+import { AccessmodProjectAuthorizedActions } from "libs/graphql";
 import { ReactNode } from "react";
 import CreateAnalysisDialog from "./CreateAnalysisDialog";
 
@@ -11,6 +12,14 @@ type Props = {
 
 const CreateAnalysisTrigger = ({ project, children }: Props) => {
   const [isOpen, { toggle }] = useToggle();
+
+  if (
+    !project.authorizedActions.includes(
+      AccessmodProjectAuthorizedActions.CreateAnalysis
+    )
+  ) {
+    return null;
+  }
   return (
     <>
       {children({ onClick: toggle })}
@@ -23,6 +32,7 @@ CreateAnalysisTrigger.fragments = {
   project: gql`
     fragment CreateAnalysisTrigger_project on AccessmodProject {
       ...CreateAnalysisDialog_project
+      authorizedActions
     }
     ${CreateAnalysisDialog.fragments.project}
   `,

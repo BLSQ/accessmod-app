@@ -18,7 +18,7 @@ type UseFormResult<T> = {
   submitError: string | null;
   previousFormData: Partial<T> | undefined;
   errors: { [key in keyof T]?: FormFieldError };
-  handleInputChange: ChangeEventHandler<HTMLInputElement>;
+  handleInputChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
   setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
   handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
@@ -78,9 +78,14 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getInitialState, initialState]);
 
-  const handleInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+  const handleInputChange: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  > = useCallback(
     (event) => {
-      if (event.target.type === "checkbox") {
+      if (
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "checkbox"
+      ) {
         setFieldValue(event.target.name, event.target.checked);
       } else {
         setFieldValue(event.target.name, event.target.value);

@@ -1,8 +1,8 @@
-import { Fragment, ReactElement, ReactNode, useRef } from "react";
-import { Dialog as BaseDialog, Transition, FocusTrap } from "@headlessui/react";
+import { Dialog as BaseDialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import useEventListener from "hooks/useEventListener";
+import { Fragment, ReactElement, ReactNode, useRef } from "react";
 
 type DialogProps = {
   open: boolean;

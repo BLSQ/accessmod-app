@@ -147,7 +147,7 @@ const CreateProjectDialog = (props: Props) => {
           />
           <Field
             required
-            label={t("Coordinate Reference System")}
+            label={t("Coordinate Reference System Code")}
             name="crs"
             type="number"
             help={t(
