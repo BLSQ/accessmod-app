@@ -108,7 +108,7 @@ const Pagination = (props: Props) => {
               value={perPage.toString()}
             >
               {perPageOptions.map((opt) => (
-                <option key={opt} id={opt.toString()}>
+                <option key={opt} value={opt.toString()}>
                   {opt}
                 </option>
               ))}

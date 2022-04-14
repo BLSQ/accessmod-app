@@ -1,16 +1,39 @@
 import { gql } from "@apollo/client";
+import SimpleSelect from "components/forms/SimpleSelect";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
+import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
-import { useTeamMembersTableQuery } from "libs/graphql";
+import {
+  Membership,
+  MembershipAuthorizedActions,
+  MembershipRole,
+  useTeamMembersTableQuery,
+  useUpdateMembershipMutation,
+} from "libs/graphql";
 import { formatMembershipRole } from "libs/team";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
+import MembershipRolePicker from "./MembershipRolePicker";
+import DeleteMembershipTrigger from "./team/DeleteMembershipTrigger";
 import User from "./User";
 
 type Props = {
   team: any;
 };
+
+const MUTATION = gql`
+  mutation UpdateMembership($input: UpdateMembershipInput!) {
+    updateMembership(input: $input) {
+      success
+      errors
+      membership {
+        id
+        role
+      }
+    }
+  }
+`;
 
 const TeamMembersTable = ({ team }: Props) => {
   const { t } = useTranslation();
@@ -19,16 +42,29 @@ const TeamMembersTable = ({ team }: Props) => {
     page: 1,
     perPage: 10,
   });
-  const { data } = useTeamMembersTableQuery({
+  const { data, refetch } = useTeamMembersTableQuery({
     variables: {
       teamId: team.id,
     },
   });
+  const [updateMember] = useUpdateMembershipMutation();
+  useCacheKey(["teams", team.id], () => refetch());
+
   if (!data?.team) {
     return null;
   }
 
   const { memberships } = data.team;
+  const canUpdateMember = (member: Pick<Membership, "authorizedActions">) =>
+    member.authorizedActions.includes(MembershipAuthorizedActions.Update);
+
+  const onMemberRoleChange = async (
+    member: Pick<Membership, "id">,
+    role: MembershipRole
+  ) => {
+    await updateMember({ variables: { input: { id: member.id, role } } });
+  };
+
   return (
     <>
       <table className="who">
@@ -51,21 +87,33 @@ const TeamMembersTable = ({ team }: Props) => {
               <td>
                 <Time datetime={member.createdAt} />
               </td>
-              <td>{formatMembershipRole(member.role)}</td>
+              <td>
+                {canUpdateMember(member) ? (
+                  <MembershipRolePicker
+                    onChange={(role) => onMemberRoleChange(member, role)}
+                    value={member.role}
+                    required
+                  />
+                ) : (
+                  formatMembershipRole(member.role)
+                )}
+              </td>
               <td>
                 <div className="flex justify-end gap-3">
-                  <a
-                    href=""
-                    className="text-lochmara-500 hover:text-lochmara-700"
-                  >
-                    {t("Edit")}
-                  </a>
-                  <a
-                    href=""
-                    className="text-lochmara-500 hover:text-lochmara-700"
-                  >
-                    {t("Remove")}
-                  </a>
+                  {member.authorizedActions.includes(
+                    MembershipAuthorizedActions.Delete
+                  ) && (
+                    <DeleteMembershipTrigger membership={member}>
+                      {({ onClick }) => (
+                        <button
+                          onClick={onClick}
+                          className="text-lochmara-500 hover:text-lochmara-700"
+                        >
+                          {t("Remove")}
+                        </button>
+                      )}
+                    </DeleteMembershipTrigger>
+                  )}
                 </div>
               </td>
             </tr>
@@ -105,7 +153,9 @@ TeamMembersTable.prefetch = async (
             totalPages
             pageNumber
             items {
+              ...DeleteMembershipTrigger_membership
               id
+              authorizedActions
               createdAt
               updatedAt
               role
@@ -117,6 +167,7 @@ TeamMembersTable.prefetch = async (
         }
       }
       ${User.fragments.user}
+      ${DeleteMembershipTrigger.fragments.membership}
     `,
     variables: { teamId: options.teamId },
   });

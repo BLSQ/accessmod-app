@@ -20,10 +20,6 @@ const LOGIN = gql`
   mutation Login($input: LoginInput!) {
     login(input: $input) {
       success
-      me {
-        id
-        email
-      }
     }
   }
 `;

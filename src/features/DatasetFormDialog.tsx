@@ -141,6 +141,12 @@ const DatasetFormDialog = (props: Props) => {
         const { success, fileset, errors } = data.createAccessmodFileset;
         if (errors.includes(CreateAccessmodFilesetError.NameDuplicate)) {
           throw new Error(t("A dataset with this name already exists"));
+        } else if (
+          errors.includes(CreateAccessmodFilesetError.PermissionDenied)
+        ) {
+          throw new Error(
+            t("You do not have sufficient permissions to perform this action")
+          );
         } else if (!success) {
           throw new Error(t("Dataset not created"));
         }

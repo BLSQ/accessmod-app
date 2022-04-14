@@ -26,8 +26,8 @@ const SettingsPage = () => {
     onSubmit: (values) => {},
     getInitialState: () => ({
       language: LANGUAGES.find((l) => l.code === "en"),
-      firstName: data?.me?.firstName ?? "",
-      lastName: data?.me?.lastName ?? "",
+      firstName: data?.me?.user?.firstName ?? "",
+      lastName: data?.me?.user?.lastName ?? "",
     }),
     validate: (values) => {
       const errors = {} as any;
@@ -108,10 +108,12 @@ export const getServerSideProps = createGetServerSideProps({
       query: gql`
         query SettingsPage {
           me {
-            id
-            email
-            firstName
-            lastName
+            user {
+              id
+              email
+              firstName
+              lastName
+            }
           }
         }
       `,
