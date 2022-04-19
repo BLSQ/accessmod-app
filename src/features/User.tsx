@@ -27,7 +27,7 @@ const User = ({
     return [user.firstName, user.lastName].filter(Boolean).join(" ");
   }, [user.firstName, user.lastName]);
   return (
-    <div className={clsx("flex items-center group flex-shrink-0", className)}>
+    <div className={clsx("group flex flex-shrink-0 items-center", className)}>
       <div>
         <Avatar
           size={small ? "xs" : "sm"}

@@ -16,11 +16,11 @@ const DialogTitle = (props: { children: ReactNode; onClose?: () => void }) => {
   return (
     <BaseDialog.Title
       as="h3"
-      className="text-2xl mb-5 flex justify-between items-center font-medium text-white"
+      className="mb-5 flex items-center justify-between text-2xl font-medium text-white"
     >
       {props.children}
       {props.onClose && (
-        <XIcon className="w-6 h-6 cursor-pointer" onClick={props.onClose} />
+        <XIcon className="h-6 w-6 cursor-pointer" onClick={props.onClose} />
       )}
     </BaseDialog.Title>
   );
@@ -30,7 +30,7 @@ const DialogContent = (props: { children: ReactNode; className?: string }) => {
   return (
     <div
       className={clsx(
-        "bg-white rounded-lg px-4 py-5 shadow-xl text-gray-600",
+        "rounded-lg bg-white px-4 py-5 text-gray-600 shadow-xl",
         props.className
       )}
     >
@@ -40,7 +40,7 @@ const DialogContent = (props: { children: ReactNode; className?: string }) => {
 };
 
 const DialogActions = (props: { children: ReactNode }) => (
-  <div className="mt-5 sm:mt-6 sm:gap-3 flex justify-end">{props.children}</div>
+  <div className="mt-5 flex justify-end sm:mt-6 sm:gap-3">{props.children}</div>
 );
 
 const DialogDescription = (props: {
@@ -77,10 +77,10 @@ function Dialog(props: DialogProps) {
     <Transition.Root show={open} as={Fragment}>
       <BaseDialog
         ref={dialogRef}
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="fixed inset-0 z-10 overflow-y-auto"
         onClose={onClose}
       >
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -92,7 +92,7 @@ function Dialog(props: DialogProps) {
           >
             <BaseDialog.Overlay
               className={clsx(
-                "fixed inset-0 bg-gray-500 bg-opacity-80 transition-opacity backdrop-blur-sm",
+                "fixed inset-0 bg-gray-500 bg-opacity-80 backdrop-blur-sm transition-opacity",
                 !closeOnOutsideClick && "pointer-events-none" // Let's prevent mouse events to be triggered to ensure the dialog stay open.
               )}
             />
@@ -100,7 +100,7 @@ function Dialog(props: DialogProps) {
 
           {/* This element is to trick the browser into centering the modal contents. */}
           <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
+            className="hidden sm:inline-block sm:h-screen sm:align-middle"
             aria-hidden="true"
           >
             &#8203;
@@ -114,7 +114,7 @@ function Dialog(props: DialogProps) {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            <div className="inline-block transform overflow-hidden text-left align-bottom transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
               {children}
             </div>
           </Transition.Child>

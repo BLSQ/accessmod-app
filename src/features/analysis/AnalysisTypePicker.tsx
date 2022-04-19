@@ -14,9 +14,9 @@ const AnalysisOption = (props: any) => {
   return (
     <DefaultComponents.Option {...props}>
       <div className="flex">
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
           <span className="text-md font-bold">{props.data.label}</span>
-          <span className={clsx("text-xs mt-1")}>{props.data.description}</span>
+          <span className={clsx("mt-1 text-xs")}>{props.data.description}</span>
         </div>
       </div>
     </DefaultComponents.Option>

@@ -16,7 +16,7 @@ const Aside = (props: {
       as={as}
       background="bg-midnight-blue"
       className={clsx(
-        "h-fit text-white w-full py-4 md:px-4 xl:px-7 md:py-6",
+        "h-fit w-full py-4 text-white md:px-4 md:py-6 xl:px-7",
         className
       )}
     >
@@ -27,7 +27,7 @@ const Aside = (props: {
 
 Aside.Item = function AsideItem({ children }: { children: ReactNode }) {
   return (
-    <li className="w-full transition-all hover:bg-who-blue-light rounded-md">
+    <li className="w-full rounded-md transition-all hover:bg-who-blue-light">
       {children}
     </li>
   );

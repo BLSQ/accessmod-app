@@ -23,7 +23,7 @@ const AnalysisStep = (props: {
           >
             <div
               className={clsx(
-                "text-lg flex justify-between -mt-6 pt-6 text-lochmara",
+                "-mt-6 flex justify-between pt-6 text-lg text-lochmara",
                 props.disabled && "text-gray-300",
                 props.titleClassName
               )}

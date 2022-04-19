@@ -18,7 +18,7 @@ const UserMenu = (props: UserMenuProps) => {
   const { t } = useTranslation();
   return (
     <Menu as="div" className={clsx("relative", className)}>
-      <Menu.Button className="max-w-xs flex items-center text-sm focus:outline-none ">
+      <Menu.Button className="flex max-w-xs items-center text-sm focus:outline-none ">
         <span className="sr-only">{t("Open user menu")}</span>
         <Avatar
           size="sm"
@@ -35,13 +35,13 @@ const UserMenu = (props: UserMenuProps) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-36 rounded shadow-lg py-1 bg-white text-gray-900 focus:outline-none text-right z-40">
+        <Menu.Items className="absolute right-0 z-40 mt-2 w-36 origin-top-right rounded bg-white py-1 text-right text-gray-900 shadow-lg focus:outline-none">
           <Menu.Item>
             {({ active }) => (
               <MenuLink
                 href={routes.settings}
                 className={clsx(
-                  "block mx-1 rounded px-4 py-2 text-sm",
+                  "mx-1 block rounded px-4 py-2 text-sm",
                   active && "bg-gray-200"
                 )}
               >
@@ -54,7 +54,7 @@ const UserMenu = (props: UserMenuProps) => {
               <MenuLink
                 href="/help"
                 className={clsx(
-                  "block mx-1 rounded px-4 py-2 text-sm",
+                  "mx-1 block rounded px-4 py-2 text-sm",
                   active && "bg-gray-200"
                 )}
               >
@@ -67,7 +67,7 @@ const UserMenu = (props: UserMenuProps) => {
               <MenuLink
                 href="/logout"
                 className={clsx(
-                  "block mx-1 rounded px-4 py-2 text-sm",
+                  "mx-1 block rounded px-4 py-2 text-sm",
                   active && "bg-gray-200"
                 )}
               >

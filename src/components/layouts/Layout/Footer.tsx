@@ -5,9 +5,9 @@ const Footer = () => {
   const { t } = useTranslation();
   return (
     <footer className="bg-lochmara">
-      <div className="py-4 text-sm text-center sm:text-left max-w-5xl mx-auto sm:px-4 md:px-8 text-white flex justify-between items-baseline">
+      <div className="mx-auto flex max-w-5xl items-baseline justify-between py-4 text-center text-sm text-white sm:px-4 sm:text-left md:px-8">
         <div className="flex items-baseline">
-          <span className="block sm:inline mr-2">&copy; 2022 WHO</span>{" "}
+          <span className="mr-2 block sm:inline">&copy; 2022 WHO</span>{" "}
           <Link href="/">
             <a className="block sm:inline">{t("Contact Support")}</a>
           </Link>

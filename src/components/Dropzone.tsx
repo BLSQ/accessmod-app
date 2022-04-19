@@ -36,14 +36,14 @@ const Dropzone = (props: Props) => {
   return (
     <div
       className={clsx(
-        "border w-full rounded-md bg-gray-50 px-5 py-5 text-sm flex items-center justify-center border-gray-300 hover:border-gray-400 shadow-sm border-dashed font text-gray-500",
+        "font flex w-full items-center justify-center rounded-md border border-dashed border-gray-300 bg-gray-50 px-5 py-5 text-sm text-gray-500 shadow-sm hover:border-gray-400",
         className
       )}
       {...getRootProps()}
     >
       <input type="hidden" {...getInputProps()} />
       {children ?? (
-        <div className="flex gap-1 items-center">
+        <div className="flex items-center gap-1">
           <UploadIcon className="h-4 w-4" />
           <span>{label}</span>
         </div>

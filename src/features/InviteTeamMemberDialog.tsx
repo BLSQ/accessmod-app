@@ -45,7 +45,7 @@ const InviteTeamMemberDialog = (props: Props) => {
           {t("Invite members in '{{name}}'", { name: team.name })}
         </Dialog.Title>
 
-        <Dialog.Content className="px-9 py-8 space-y-4">
+        <Dialog.Content className="space-y-4 px-9 py-8">
           <Dialog.Description>Lorem ipsum</Dialog.Description>
           {emails.map((email, idx) => (
             <Input
