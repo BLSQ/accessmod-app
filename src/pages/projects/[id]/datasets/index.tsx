@@ -63,7 +63,7 @@ const ProjectDataPage = () => {
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
             href={{
-              pathname: routes.project_dataset_list,
+              pathname: routes.project_datasets_list,
               query: { projectId: data.accessmodProject.id },
             }}
           >

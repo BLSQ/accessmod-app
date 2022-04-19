@@ -73,7 +73,7 @@ const AnalysisPage = () => {
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
             href={{
-              pathname: routes.project,
+              pathname: routes.project_analyses_list,
               query: { projectId: data.project.id },
             }}
           >

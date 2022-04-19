@@ -33,6 +33,7 @@ type DataGridTheme = {
   tr?: string;
   pagination?: string;
 };
+
 interface IDataGridProps {
   columns: ReadonlyArray<Column>;
   data: object[];
@@ -63,7 +64,7 @@ const DEFAULT_THEME = {
   thead: "",
   tbody: "",
   th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-3 py-3.5",
-  td: "whitespace-nowrap text-sm font-medium text-gray-800  px-3 py-3 md:py-4 flex items-center",
+  td: "whitespace-nowrap text-sm font-medium text-gray-800 px-3 py-3 md:py-4 flex items-center",
   tr: "hover:bg-gray-200",
   pagination: "",
 };

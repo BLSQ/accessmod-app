@@ -10,7 +10,7 @@ export function PageHeader({
       <div
         {...delegated}
         className={clsx(
-          "mx-auto w-full max-w-5xl px-4 py-4 sm:px-4 md:px-8 md:py-8",
+          "mx-auto w-full max-w-6xl px-4 py-4 sm:px-4 md:px-8 md:py-8",
           className
         )}
       />
@@ -27,7 +27,7 @@ export function PageContent(props: HTMLAttributes<HTMLDivElement>) {
     >
       <div
         className={clsx(
-          "mx-auto -mt-16 w-full max-w-5xl px-4 sm:px-4 md:px-8",
+          "mx-auto -mt-16 w-full max-w-6xl px-4 sm:px-4 md:px-8",
           className
         )}
       >

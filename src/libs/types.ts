@@ -21,3 +21,5 @@ export type NextPageWithPrefetch<T = any> = NextPage<T> & {
 export type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+export type Unpacked<T> = T extends (infer U)[] ? U : T;

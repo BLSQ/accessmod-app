@@ -1,7 +1,11 @@
 import { gql } from "@apollo/client";
+import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
+import { parse } from "csv-parse/sync";
 import {
+  AccessmodFile,
   AccessmodFilesetFormat,
+  AccessmodFilesetStatus,
   CreateFileMutation,
   GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
@@ -123,7 +127,21 @@ export const ACCEPTED_MIMETYPES = {
   [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],
 };
 
-export async function getFileDownloadUrl(fileId: string) {
+export function validateFileFormat(
+  file: Pick<AccessmodFile, "mimeType">,
+  format: AccessmodFilesetFormat
+) {
+  if (
+    format === AccessmodFilesetFormat.Tabular &&
+    ["application/csv", "text/csv"].includes(file.mimeType)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+export async function getFileDownloadUrl(fileId: string): Promise<string> {
   const client = getApolloClient();
   const { data } = await client.mutate<GetFileDownloadUrlMutation>({
     mutation: gql`
@@ -145,5 +163,34 @@ export async function getFileDownloadUrl(fileId: string) {
     return data.prepareAccessmodFileDownload.downloadUrl as string;
   } else {
     throw new Error("File cannot be downloaded");
+  }
+}
+
+export function formatDatasetStatus(status: AccessmodFilesetStatus) {
+  switch (status) {
+    case AccessmodFilesetStatus.Invalid:
+      return i18n!.t("Invalid");
+    case AccessmodFilesetStatus.Pending:
+      return i18n!.t("Pending");
+    case AccessmodFilesetStatus.Valid:
+      return i18n!.t("Valid");
+  }
+}
+
+export async function getTabularFileContent(
+  file: Pick<AccessmodFile, "id" | "mimeType">
+) {
+  // const downloadUrl = await getFileDownloadUrl(file.id);
+  const downloadUrl =
+    "https://raw.githubusercontent.com/google/dspl/master/samples/google/canonical/countries.csv";
+  const textContent = await fetch(downloadUrl).then((resp) => resp.text());
+  return parse(textContent, { delimiter: ",", columns: true });
+}
+
+export function getFileContent(
+  file: Partial<AccessmodFile> & Pick<AccessmodFile, "id" | "mimeType">
+) {
+  if (validateFileFormat(file, AccessmodFilesetFormat.Tabular)) {
+    return getTabularFileContent(file);
   }
 }

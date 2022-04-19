@@ -100,7 +100,7 @@ const LatestDatasetsBlock = ({
       <h3 className="mb-4 flex items-center justify-between">
         <Link
           href={{
-            pathname: routes.project_dataset_list,
+            pathname: routes.project_datasets_list,
             query: { projectId: project.id },
           }}
         >
@@ -123,7 +123,7 @@ const LatestDatasetsBlock = ({
           </CreateDatasetTrigger>
           <Link
             href={{
-              pathname: routes.project_dataset_list,
+              pathname: routes.project_datasets_list,
               query: { projectId: project.id },
             }}
           >

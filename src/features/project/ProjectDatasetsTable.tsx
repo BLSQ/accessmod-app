@@ -3,17 +3,19 @@ import Button from "components/Button";
 import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
 import Time from "components/Time";
+import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
+import DatasetStatusBadge from "features/DatasetStatusBadge";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
-import { stopPropagation } from "libs/events";
 import {
   ProjectDatasetsTableQueryVariables,
   ProjectDatasetsTable_ProjectFragment,
-  useDeleteDatasetMutation,
   useProjectDatasetsTableQuery,
 } from "libs/graphql";
+import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
-import { useCallback, useState } from "react";
+import { useRouter } from "next/router";
+import { MouseEvent, useCallback, useState } from "react";
 import DatasetFormDialog from "../DatasetFormDialog";
 import User from "../User";
 
@@ -32,6 +34,8 @@ const PROJECT_DATASETS_QUERY = gql`
     ) {
       items {
         ...DatasetFormDialog_dataset
+        ...DatasetStatusBadge_dataset
+        ...DeleteDatasetTrigger_dataset
         id
         name
         role {
@@ -49,9 +53,7 @@ const PROJECT_DATASETS_QUERY = gql`
             color
           }
         }
-        files {
-          __typename # We should just expose a count
-        }
+        status
         createdAt
       }
       pageNumber
@@ -59,6 +61,8 @@ const PROJECT_DATASETS_QUERY = gql`
       totalItems
     }
   }
+  ${DeleteDatasetTrigger.fragments.dataset}
+  ${DatasetStatusBadge.fragments.dataset}
   ${DatasetFormDialog.fragments.dataset}
 `;
 
@@ -68,45 +72,42 @@ type Props = {
   searchable?: boolean;
 };
 
-const DELETE_DATASET_MUTATION = gql`
-  mutation DeleteDataset($input: DeleteAccessmodFilesetInput) {
-    deleteAccessmodFileset(input: $input) {
-      success
-    }
-  }
-`;
-
 const ProjectDatasetsTable = (props: Props) => {
   const { project, perPage = 5, searchable } = props;
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState<string>();
   const [pagination, setPagination] = useState({ page: 1, perPage });
-  const [deleteDataset] = useDeleteDatasetMutation();
+  const router = useRouter();
   const { data, previousData, loading, refetch } = useProjectDatasetsTableQuery(
     {
       variables: { projectId: project.id, term: searchTerm, ...pagination },
     }
   );
   useCacheKey(["filesets"], () => refetch());
+  useCacheKey(["projects", project.id], () => refetch());
 
   const onSearch = useCallback((term?: string) => {
     setPagination((pagination) => ({ ...pagination, page: 1 }));
     setSearchTerm(term);
   }, []);
 
-  const onDeleteDataset = async (dataset: { id: string; name: string }) => {
-    if (
-      window.confirm(
-        t("Are you sure you want to delete {{name}}", { name: dataset.name })
-      )
-    )
-      await deleteDataset({ variables: { input: { id: dataset.id } } });
-    refetch();
-  };
-
   const rows = (data || previousData)?.accessmodFilesets.items ?? [];
   const totalItems = (data || previousData)?.accessmodFilesets.totalItems ?? 0;
   const totalPages = (data || previousData)?.accessmodFilesets.totalPages ?? 0;
+
+  const onRowClick = (event: MouseEvent<Element>, row: { id: string }) => {
+    // If the user clicked on a button or a anchor, let's this element handles the click and forget about it.
+    if (
+      event.target instanceof HTMLButtonElement ||
+      event.target instanceof HTMLAnchorElement
+    ) {
+      return;
+    }
+    router.push({
+      pathname: routes.project_dataset,
+      query: { projectId: project.id, datasetId: row.id },
+    });
+  };
 
   return (
     <>
@@ -130,7 +131,7 @@ const ProjectDatasetsTable = (props: Props) => {
                 <th scope="column">{t("Owner")}</th>
                 <th scope="column">{t("Created")} At</th>
                 <th scope="column" className="whitespace-nowrap">
-                  {t("# Files")}
+                  {t("Status")}
                 </th>
                 <th scope="column">
                   <span className="sr-only">{t("Delete")}</span>
@@ -139,7 +140,11 @@ const ProjectDatasetsTable = (props: Props) => {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="group">
+                <tr
+                  key={row.id}
+                  className="cursor-pointer"
+                  onClick={(event) => onRowClick(event, row)}
+                >
                   <td className="min-w-fit">{row.name}</td>
                   <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
                   <td>
@@ -148,17 +153,19 @@ const ProjectDatasetsTable = (props: Props) => {
                   <td>
                     <Time datetime={row.createdAt} />
                   </td>
-                  <td>{row.files.length ?? 0}</td>
-                  <td className="text-right" onClick={stopPropagation}>
-                    <div className="invisible flex items-center justify-end gap-1 group-hover:visible">
-                      <Button
-                        variant="white"
-                        size="sm"
-                        onClick={() => onDeleteDataset(row)}
-                      >
-                        {t("Delete")}
-                      </Button>
-                    </div>
+                  <td>
+                    <DatasetStatusBadge dataset={row} />
+                  </td>
+                  <td>
+                    <DeleteDatasetTrigger project={project} dataset={row}>
+                      {({ onClick }) => (
+                        <div className="flex items-center justify-end gap-1">
+                          <Button variant="white" size="sm" onClick={onClick}>
+                            {t("Delete")}
+                          </Button>
+                        </div>
+                      )}
+                    </DeleteDatasetTrigger>
                   </td>
                 </tr>
               ))}
@@ -185,11 +192,13 @@ const ProjectDatasetsTable = (props: Props) => {
 ProjectDatasetsTable.fragments = {
   project: gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
+      ...DeleteDatasetTrigger_project
       id
       author {
         ...User_user
       }
     }
+    ${DeleteDatasetTrigger.fragments.project}
     ${User.fragments.user}
   `,
 };
