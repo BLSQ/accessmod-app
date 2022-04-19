@@ -17,7 +17,7 @@ export const Part = ({
     <li>
       <div className="flex items-center">
         <svg
-          className="flex-shrink-0 h-5 w-5 text-white"
+          className="h-5 w-5 flex-shrink-0 text-white"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -27,13 +27,13 @@ export const Part = ({
         </svg>
         {href ? (
           <Link href={href}>
-            <a className="ml-1 text-md font-medium text-white hover:text-gray-50 hover:underline">
+            <a className="text-md ml-1 font-medium text-white hover:text-gray-50 hover:underline">
               {children}
             </a>
           </Link>
         ) : (
           <span
-            className="ml-1 text-md font-medium text-white hover:text-gray-50 hover:underline"
+            className="text-md ml-1 font-medium text-white hover:text-gray-50 hover:underline"
             onClick={onClick}
           >
             {children}
@@ -58,7 +58,7 @@ const Breadcrumbs = (props: {
           <div>
             <Link href="/">
               <a className="text-white">
-                <HomeIcon className="flex-shrink-0 h-5 w-5" />
+                <HomeIcon className="h-5 w-5 flex-shrink-0" />
                 <span className="sr-only">{t("Home")}</span>
               </a>
             </Link>

@@ -125,7 +125,7 @@
   "Select files": "",
   "Select your files": "",
   "Settings": "",
-  "Showing {{start}} to {{end}} of {{totalItems}} results": "",
+  "Showing {{ start }} to {{ end }} of {{ totalItems }} results": "",
   "Showing all results": "",
   "Slope": "",
   "Spatial Resolution": "",

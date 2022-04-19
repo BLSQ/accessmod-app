@@ -64,8 +64,8 @@ const Login = (props: Props) => {
   });
 
   return (
-    <div className="min-h-screen bg-lochmara flex flex-col justify-center sm:py-12">
-      <div className="p-5 md:p-10 mx-auto w-full md:max-w-md space-y-4">
+    <div className="flex min-h-screen flex-col justify-center bg-lochmara sm:py-12">
+      <div className="mx-auto w-full space-y-4 p-5 md:max-w-md md:p-10">
         <div className="text-center">
           <Image
             priority
@@ -76,8 +76,8 @@ const Login = (props: Props) => {
             width="363"
           />
         </div>
-        <h2 className="text-white font-medium text-center">AccessMod</h2>
-        <p className="text-white text-center">Description</p>
+        <h2 className="text-center font-medium text-white">AccessMod</h2>
+        <p className="text-center text-white">Description</p>
         <form className="space-y-4 px-4" onSubmit={form.handleSubmit}>
           <Field
             name="email"
@@ -111,7 +111,7 @@ const Login = (props: Props) => {
               )}
             </div>
           )}
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <Link href="/reset-password">
               <a className="text-xs text-gray-100 hover:underline">
                 {t("Forgot your password ?")}

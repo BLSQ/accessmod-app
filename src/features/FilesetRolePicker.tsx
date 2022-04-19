@@ -16,11 +16,11 @@ const RoleOption = (props: any) => {
   return (
     <DefaultComponents.Option {...props}>
       <div className="flex">
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
           <span className="text-sm font-bold">{props.data.name}</span>
-          <span className={clsx("text-xs mt-1")}>Description of the role</span>
+          <span className={clsx("mt-1 text-xs")}>Description of the role</span>
         </div>
-        <Badge size="xs" className="bg-lochmara text-white self-center">
+        <Badge size="xs" className="self-center bg-lochmara text-white">
           {getFormatLabel(props.data.format)}
         </Badge>
       </div>

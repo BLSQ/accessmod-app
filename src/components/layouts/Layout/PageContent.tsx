@@ -10,7 +10,7 @@ export function PageHeader({
       <div
         {...delegated}
         className={clsx(
-          "max-w-5xl px-4 sm:px-4 md:px-8 py-4 md:py-8 w-full mx-auto",
+          "mx-auto w-full max-w-5xl px-4 py-4 sm:px-4 md:px-8 md:py-8",
           className
         )}
       />
@@ -22,12 +22,12 @@ export function PageContent(props: HTMLAttributes<HTMLDivElement>) {
   const { children, className, ...delegated } = props;
   return (
     <main
-      className="flex-1 bg-gray-50 pb-6 before:bg-lochmara before:block before:h-16 before:content-['']"
+      className="flex-1 bg-gray-50 pb-6 before:block before:h-16 before:bg-lochmara before:content-['']"
       {...delegated}
     >
       <div
         className={clsx(
-          "max-w-5xl px-4 sm:px-4 md:px-8 w-full mx-auto -mt-16",
+          "mx-auto -mt-16 w-full max-w-5xl px-4 sm:px-4 md:px-8",
           className
         )}
       >

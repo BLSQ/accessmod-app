@@ -57,7 +57,7 @@ const CustomMenuList = ({ children, onCreate, ...props }: any) => {
   return (
     <DefaultComponents.MenuList {...props}>
       {children}
-      <div className="text-sm mt-1 px-3 py-2 border-t border-gray-300">
+      <div className="mt-1 border-t border-gray-300 px-3 py-2 text-sm">
         <Button
           size="sm"
           variant="secondary"

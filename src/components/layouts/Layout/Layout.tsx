@@ -12,7 +12,7 @@ type LayoutProps = {
 const Layout = (props: LayoutProps) => {
   const { children, pageProps } = props;
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 ">
+    <div className="flex min-h-screen flex-col bg-gray-50 ">
       {pageProps.user && <Header user={pageProps.user} />}
       {children}
       <Footer />

@@ -182,7 +182,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
     <div className="space-y-5">
       <Block className="space-y-4">
         <div className="flex items-start">
-          <InformationCircleIcon className="h-8 w-8 mr-2 text-gray-500" />
+          <InformationCircleIcon className="mr-2 h-8 w-8 text-gray-500" />
           <p>
             An accessibility analysis computes the traveling time surface,
             informing the time needed to reach the nearest health facility.
@@ -205,7 +205,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
         <p className="mb-4">
           Choose the geographic layers used to generate the friction surface.
         </p>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid gap-4 md:grid-cols-2">
           <Field label="Digital Elevation Model" name="dem" required>
             <DatasetPicker
               project={project}
@@ -390,12 +390,12 @@ const AccessibilityAnalysisForm = (props: Props) => {
       </AnalysisStep>
 
       {(form.submitError || error) && (
-        <div className="text-sm text-danger text-right">
+        <div className="text-right text-sm text-danger">
           {form.submitError || error}
         </div>
       )}
       {analysis.status !== AccessmodAnalysisStatus.Ready && (
-        <div className="text-sm font-medium text-gray-600 text-right">
+        <div className="text-right text-sm font-medium text-gray-600">
           All fields need to be filled in to be able to run the analysis.
         </div>
       )}

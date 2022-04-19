@@ -47,8 +47,8 @@ const ResetPasswordPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-lochmara flex flex-col justify-center sm:py-12">
-      <div className="p-5 md:p-10 mx-auto w-full md:max-w-md space-y-4">
+    <div className="flex min-h-screen flex-col justify-center bg-lochmara sm:py-12">
+      <div className="mx-auto w-full space-y-4 p-5 md:max-w-md md:p-10">
         <div className="text-center">
           <Image
             priority
@@ -59,11 +59,11 @@ const ResetPasswordPage = () => {
             width="363"
           />
         </div>
-        <h2 className="text-white font-medium text-center">
+        <h2 className="text-center font-medium text-white">
           {t("Reset your password")}
         </h2>
         {isDone ? (
-          <div className="text-white space-y-2">
+          <div className="space-y-2 text-white">
             <p>
               {t(
                 "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly."
@@ -86,7 +86,7 @@ const ResetPasswordPage = () => {
           </div>
         ) : (
           <>
-            <p className="text-white text-center">
+            <p className="text-center text-white">
               {t(
                 "Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one."
               )}

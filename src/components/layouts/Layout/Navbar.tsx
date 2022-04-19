@@ -21,24 +21,24 @@ const NavEntry = (props: NavEntry) => {
   return (
     <div
       className={
-        "hover:bg-who-blue-dark hover:text-white px-3 text-sm font-medium flex items-center relative group"
+        "group relative flex items-center px-3 text-sm font-medium hover:bg-who-blue-dark hover:text-white"
       }
     >
       <Link href={link}>
-        <a className="h-full flex items-center">{label}</a>
+        <a className="flex h-full items-center">{label}</a>
       </Link>
 
       {items && items.length > 0 && (
-        <div className="transition invisible opacity-0 duration-100 ease-out group-hover:visible group-hover:opacity-100 z-40">
+        <div className="invisible z-40 opacity-0 transition duration-100 ease-out group-hover:visible group-hover:opacity-100">
           <div
             className={clsx(
-              "absolute left-0 top-full w-44 shadow-lg p-1 bg-who-blue-dark text-white focus:outline-none",
-              "text-left origin-top-left"
+              "absolute left-0 top-full w-44 bg-who-blue-dark p-1 text-white shadow-lg focus:outline-none",
+              "origin-top-left text-left"
             )}
           >
             {items.map(({ link, label }, idx) => (
               <Link key={idx} href={link}>
-                <a className="h-full p-2 flex rounded items-center hover:bg-who-blue-light">
+                <a className="flex h-full items-center rounded p-2 hover:bg-who-blue-light">
                   {label}
                 </a>
               </Link>
@@ -97,7 +97,7 @@ const Navbar = () => {
     }
   }, [data, t]);
   return (
-    <div className="flex gap-2 uppercase text-white h-full items-stretch">
+    <div className="flex h-full items-stretch gap-2 uppercase text-white">
       {items.map((itemProps) => (
         <NavEntry key={itemProps.link} {...itemProps} />
       ))}
