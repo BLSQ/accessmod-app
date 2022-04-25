@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AccessmodFilesetMetadata: any;
   Date: any;
   DateTime: any;
 };
@@ -110,8 +111,10 @@ export type AccessmodFileset = {
   createdAt: Scalars['DateTime'];
   files: Array<AccessmodFile>;
   id: Scalars['String'];
+  metadata: Scalars['AccessmodFilesetMetadata'];
   name: Scalars['String'];
-  role?: Maybe<AccessmodFilesetRole>;
+  role: AccessmodFilesetRole;
+  status: AccessmodFilesetStatus;
   updatedAt: Scalars['DateTime'];
 };
 
@@ -161,6 +164,12 @@ export enum AccessmodFilesetRoleCode {
   TransportNetwork = 'TRANSPORT_NETWORK',
   TravelTimes = 'TRAVEL_TIMES',
   Water = 'WATER'
+}
+
+export enum AccessmodFilesetStatus {
+  Invalid = 'INVALID',
+  Pending = 'PENDING',
+  Valid = 'VALID'
 }
 
 export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
@@ -1033,7 +1042,7 @@ export type CreateFilesetMutationVariables = Exact<{
 }>;
 
 
-export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role?: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } | null } | null } };
+export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } } | null } };
 
 export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -1047,7 +1056,7 @@ export type DatasetPickerQueryVariables = Exact<{
 }>;
 
 
-export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role?: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } | null }> } };
+export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } }> } };
 
 export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
@@ -1206,7 +1215,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
 
 export type DeleteDatasetMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodFilesetInput>;

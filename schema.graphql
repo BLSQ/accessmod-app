@@ -90,9 +90,11 @@ type AccessmodFile {
 type AccessmodFileset {
   id: String!
   name: String!
-  role: AccessmodFilesetRole
+  status: AccessmodFilesetStatus!
+  role: AccessmodFilesetRole!
   author: User!
   files: [AccessmodFile!]!
+  metadata: AccessmodFilesetMetadata!
   authorizedActions: [AccessmodFilesetAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -110,6 +112,8 @@ enum AccessmodFilesetFormat {
   RASTER
   TABULAR
 }
+
+scalar AccessmodFilesetMetadata
 
 type AccessmodFilesetPage {
   pageNumber: Int!
@@ -142,6 +146,12 @@ enum AccessmodFilesetRoleCode {
   TRANSPORT_NETWORK
   TRAVEL_TIMES
   WATER
+}
+
+enum AccessmodFilesetStatus {
+  PENDING
+  VALID
+  INVALID
 }
 
 type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis {
