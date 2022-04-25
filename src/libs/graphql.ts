@@ -200,6 +200,7 @@ export type AccessmodProject = {
   country: Country;
   createdAt: Scalars['DateTime'];
   crs: Scalars['Int'];
+  description: Scalars['String'];
   extent?: Maybe<AccessmodFileset>;
   id: Scalars['String'];
   name: Scalars['String'];
@@ -325,6 +326,7 @@ export enum CreateAccessmodProjectError {
 export type CreateAccessmodProjectInput = {
   country: CountryInput;
   crs: Scalars['Int'];
+  description: Scalars['String'];
   extentId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   spatialResolution: Scalars['Int'];
@@ -939,6 +941,7 @@ export enum UpdateAccessmodProjectError {
 export type UpdateAccessmodProjectInput = {
   country?: InputMaybe<CountryInput>;
   crs?: InputMaybe<Scalars['Int']>;
+  description?: InputMaybe<Scalars['String']>;
   extentId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
