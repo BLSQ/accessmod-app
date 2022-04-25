@@ -151,13 +151,18 @@ const ProjectGeneralInformationBlock = (props: {
       {project.authorizedActions.includes(
         AccessmodProjectAuthorizedActions.Update
       ) && (
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-3 right-4">
           <Button size="sm" variant="white" onClick={onEdit}>
             {t("Edit")}
           </Button>
         </div>
       )}
       <DescriptionList>
+        <DescriptionList.Item className="col-span-2" label={t("Description")}>
+          <div className="text-md leading-2 max-w-[100ch]">
+            {project.description}
+          </div>
+        </DescriptionList.Item>
         <DescriptionList.Item
           label={t("Spatial Resolution")}
           help={t(
@@ -428,6 +433,7 @@ ProjectPage.fragments = {
       id
       name
       crs
+      description
       ...ProjectActionsMenu_project
       ...ProjectAnalysesTable_project
       ...ProjectDatasetsTable_project
