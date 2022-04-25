@@ -18,7 +18,9 @@ type UseFormResult<T> = {
   submitError: string | null;
   previousFormData: Partial<T> | undefined;
   errors: { [key in keyof T]?: FormFieldError };
-  handleInputChange: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
+  handleInputChange: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >;
   setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
   handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
