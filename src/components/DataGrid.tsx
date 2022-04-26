@@ -160,7 +160,7 @@ const DataGrid = (props: DataGridProps) => {
   }, [selectedFlatRows, selectedRowIds, onSelectionChange]);
 
   const onFetchData = useCallback(
-    async (params) => {
+    async (params: any) => {
       if (!fetchData) {
         return;
       }
