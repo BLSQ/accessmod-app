@@ -101,6 +101,7 @@ const Pagination = (props: Props) => {
         <div className="flex items-center space-x-2">
           {perPageOptions && (
             <SimpleSelect
+              required
               onChange={(event) =>
                 onChange(1, parseInt(event.currentTarget.value, 10))
               }
