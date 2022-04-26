@@ -179,6 +179,15 @@ const ProjectGeneralInformationBlock = (props: {
         >
           <span className="text-md">{project.crs}</span>
         </DescriptionList.Item>
+        <DescriptionList.Item
+          label={t("Author")}
+          help={t("The user that created this project")}
+        >
+          <User small user={project.author} />
+        </DescriptionList.Item>
+        <DescriptionList.Item label={t("Creation date")}>
+          <Time datetime={project.createdAt} format={DateTime.DATE_MED} />
+        </DescriptionList.Item>
       </DescriptionList>
     </Block>
   );
@@ -390,13 +399,10 @@ const ProjectPage: NextPageWithFragments = () => {
               <div className="flex items-center">
                 <ClockIcon className="mr-1.5 h-4" />
                 <span>
-                  {t("Created at {{date}} by {{user}}", {
-                    date: DateTime.fromISO(project.createdAt).toLocaleString(
+                  {t("Updated at {{date}}", {
+                    date: DateTime.fromISO(project.updatedAt).toLocaleString(
                       DateTime.DATETIME_SHORT
                     ),
-                    user: [project.author.firstName, project.author.lastName]
-                      .filter(Boolean)
-                      .join(" "),
                   })}
                 </span>
               </div>
@@ -466,6 +472,7 @@ ProjectPage.fragments = {
         flag
       }
       createdAt
+      updatedAt
       spatialResolution
       author {
         ...User_user
