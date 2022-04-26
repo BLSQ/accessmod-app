@@ -64,9 +64,3 @@ npm run i18n:extract
 ```
 
 Translations are stored in `public/locales/[lang]/[ns].json`.
-
-## FAQs
-
-### Server Error: fetch failed
-
-It can happen in local if you try to use `localhost` instead of `127.0.0.1` in the server url.
