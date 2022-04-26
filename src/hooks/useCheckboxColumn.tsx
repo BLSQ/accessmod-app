@@ -1,5 +1,5 @@
 import Checkbox from "components/forms/Checkbox";
-import { Cell, Hooks } from "react-table";
+import { Cell, CellProps, Hooks } from "react-table";
 
 export interface UseCheckboxColumn<D extends object = {}> {
   (hooks: Hooks<D>): void;
@@ -19,8 +19,8 @@ export const useCheckboxColumn: UseCheckboxColumn = (hooks) => {
       ),
       // The cell can use the individual row's getToggleRowSelectedProps method
       // to the render a checkbox
-      Cell: ({ row }: Cell) => (
-        <Checkbox {...row.getToggleRowSelectedProps()} />
+      Cell: (cell: any) => (
+        <Checkbox {...cell.row.getToggleRowSelectedProps()} />
       ),
     },
     ...columns,

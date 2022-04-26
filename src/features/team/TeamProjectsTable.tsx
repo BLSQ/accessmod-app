@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 import Pagination from "components/Pagination";
-import ProjectsList from "features/project/ProjectsList";
-import { CustomApolloClient } from "libs/apollo";
+import Time from "components/Time";
 import User from "features/User";
+import { CustomApolloClient } from "libs/apollo";
 import {
   TeamProjectsTable_TeamFragment,
   useTeamProjectsTableQuery,
@@ -13,7 +13,6 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
-import Time from "components/Time";
 
 type TeamProjectsTableProps = {
   team: TeamProjectsTable_TeamFragment;
@@ -99,6 +98,7 @@ const TeamProjectsTable: NextPageWithPrefetch & NextPageWithFragments = ({
               ))}
             </tbody>
           </table>
+
           <footer className="mt-6">
             <Pagination
               perPage={10}

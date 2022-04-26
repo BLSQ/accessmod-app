@@ -88,7 +88,7 @@ type FilesetFile = JobFile & {
 const DatasetFormDialog = (props: Props) => {
   const { open, onClose, project, role, dataset } = props;
   const [progress, setProgress] = useState(0);
-  const [createFileset, { error: filesetError }] = useCreateFilesetMutation();
+  const [createFileset] = useCreateFilesetMutation();
   const clearFilesets = useCacheKey(["filesets"]);
   const { t } = useTranslation();
   const form = useForm<Form>({
@@ -301,10 +301,8 @@ const DatasetFormDialog = (props: Props) => {
               </Dropzone>
             </Field>
 
-            {(form.submitError || filesetError) && (
-              <div className="mt-3 text-sm text-danger">
-                {form.submitError || filesetError}
-              </div>
+            {form.submitError && (
+              <div className="mt-3 text-sm text-danger">{form.submitError}</div>
             )}
           </div>
         </Dialog.Content>
