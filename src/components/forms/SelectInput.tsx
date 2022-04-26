@@ -48,7 +48,7 @@ export default function SelectInput({
   );
 
   const onSelectCreateOption = useCallback(
-    async (newOptionValue: any) => {
+    async (newOptionValue) => {
       if (!onCreateOption) {
         throw new Error("This should not happen");
       }
@@ -133,7 +133,7 @@ export interface BaseSelectInputProps<
   labelKey?: string;
   onInputChange?: (value: any, actionMeta: InputActionMeta) => void;
   valueKey?: string;
-  loadOptions?: (str: string) => Promise<OptionsOrGroups<Option, Group>>;
+  loadOptions?: (str: string) => OptionsOrGroups<Option, Group>;
   cacheOptions?: boolean;
   defaultOptions?: boolean | OptionsOrGroups<Option, Group>;
   onMenuScrollToBottom?: (event: WheelEvent | TouchEvent) => void;

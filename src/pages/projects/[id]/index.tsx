@@ -37,7 +37,6 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import { CellProps } from "react-table";
 
 const LatestAnalysisBlock = ({
   project,
@@ -224,24 +223,21 @@ const ProjectPermissionsBlock = (props: {
       {
         Header: t("Mode"),
         accessor: "mode",
-        Cell: (cell: CellProps<{}>) => (
-          <>
-            {cell.row.state.isEdited ? (
-              <ProjectPermissionPicker
-                project={project}
-                permission={cell.row.original}
-                className="w-full"
-                required
-                value={cell.row.state.mode ?? cell.value}
-                onChange={(value) =>
-                  cell.row.setState({ isEdited: true, mode: value })
-                }
-              />
-            ) : (
-              formatPermissionMode(cell.value)
-            )}
-          </>
-        ),
+        Cell: (cell) =>
+          cell.row.state.isEdited ? (
+            <ProjectPermissionPicker
+              project={project}
+              permission={cell.row.original}
+              className="w-full"
+              required
+              value={cell.row.state.mode ?? cell.value}
+              onChange={(value) =>
+                cell.row.setState({ isEdited: true, mode: value })
+              }
+            />
+          ) : (
+            formatPermissionMode(cell.value)
+          ),
       },
       {
         Header: t("Created at"),

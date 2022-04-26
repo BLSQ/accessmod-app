@@ -42,23 +42,20 @@ const ProjectActionsMenu = ({
   return (
     <Menu as="div" className={clsx(Classes.Menu, className)}>
       <Menu.Button className={Classes.TriggerButton}>
-        <>
-          {t("Actions")}
-          <ChevronDownIcon
-            className="ml-2 -mr-1 h-4 w-4 text-gray-500 group-hover:text-gray-700"
-            aria-hidden="true"
-          />
-        </>
+        {t("Actions")}
+        <ChevronDownIcon
+          className="ml-2 -mr-1 h-4 w-4 text-gray-500 group-hover:text-gray-700"
+          aria-hidden="true"
+        />
       </Menu.Button>
       <Transition as={Fragment} {...TRANSITION}>
         <Menu.Items className={Classes.Items}>
           <div className="px-1 py-1">
             <DeleteProjectTrigger project={project}>
               {({ onClick }) => (
-                <Menu.Item>
+                <Menu.Item onClick={onClick}>
                   {({ active }) => (
                     <button
-                      onClick={onClick}
                       className={clsx(
                         Classes.Item,
                         active && "bg-red-500 text-white"
