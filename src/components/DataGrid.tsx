@@ -86,7 +86,7 @@ const DataGrid = (props: DataGridProps) => {
     totalItems,
     idKey,
     pageSizeOptions,
-    defaultSortBy,
+    defaultSortBy = [],
     defaultPageSize = 10,
   } = props;
 
