@@ -1,6 +1,6 @@
 #
 # ----------- Base -----------
-FROM node:18-alpine as deps
+FROM node:17-alpine as deps
 WORKDIR /code
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
@@ -12,7 +12,7 @@ RUN npm set progress=false && \
     npm ci
 
 ## ----------- Builder -----------
-FROM node:18-alpine AS builder
+FROM node:17-alpine AS builder
 WORKDIR /code
 COPY . .
 COPY --from=deps /code/node_modules ./node_modules
@@ -33,7 +33,7 @@ RUN npm run build
 
 #
 ## ----------- Runner -----------
-FROM node:18-alpine AS runner
+FROM node:17-alpine AS runner
 WORKDIR /code
 ARG APP=/code
 ENV APP_USER=runner

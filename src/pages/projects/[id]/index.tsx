@@ -37,7 +37,6 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import { CellProps } from "react-table";
 
 const LatestAnalysisBlock = ({
   project,
