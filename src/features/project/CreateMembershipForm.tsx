@@ -85,7 +85,7 @@ const CreateMembershipForm = (props: CreateMembershipFormProps) => {
   return (
     <form
       onSubmit={form.handleSubmit}
-      className={clsx("mb-4 flex items-center gap-2", className)}
+      className={clsx("flex items-center gap-2", className)}
     >
       <div className="w-72">
         <TeamPicker

@@ -418,9 +418,9 @@ const ProjectPage: NextPageWithFragments = () => {
             project={project}
           />
         )}
-        <ProjectPermissionsBlock project={project} />
         <LatestAnalysisBlock project={project} />
         <LatestDatasetsBlock project={project} />
+        <ProjectPermissionsBlock project={project} />
       </PageContent>
     </Page>
   );
