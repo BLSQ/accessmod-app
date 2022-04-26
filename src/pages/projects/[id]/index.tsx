@@ -23,6 +23,7 @@ import useCacheKey from "hooks/useCacheKey";
 import useToggle from "hooks/useToggle";
 import {
   AccessmodProjectAuthorizedActions,
+  AccessmodProjectPermissionAuthorizedActions,
   PermissionMode,
   ProjectPage_ProjectFragment,
   useProjectPageQuery,
@@ -299,8 +300,8 @@ const ProjectPermissionsBlock = (props: {
               </>
             ) : (
               <>
-                {project.authorizedActions.includes(
-                  AccessmodProjectAuthorizedActions.UpdatePermission
+                {(cell.row.original as any).authorizedActions.includes(
+                  AccessmodProjectPermissionAuthorizedActions.Update
                 ) && (
                   <Button
                     variant="white"
@@ -316,8 +317,7 @@ const ProjectPermissionsBlock = (props: {
                   </Button>
                 )}
                 <DeleteProjectPermissionTrigger
-                  project={project}
-                  permissionId={cell.row.id}
+                  permission={cell.row.original as any}
                 >
                   {({ onClick }) => (
                     <Button variant="white" size="sm" onClick={onClick}>
@@ -453,15 +453,17 @@ ProjectPage.fragments = {
       ...EditProjectFormBlock_project
       ...CreateMembershipForm_project
       ...ProjectPermissionPicker_project
-      ...DeleteProjectPermissionTrigger_project
       authorizedActions
       permissions {
+        ...DeleteProjectPermissionTrigger_permission
+        ...ProjectPermissionPicker_permission
         id
         team {
           __typename
           id
           name
         }
+        authorizedActions
         user {
           __typename
           ...User_user
@@ -469,7 +471,6 @@ ProjectPage.fragments = {
         mode
         createdAt
         updatedAt
-        ...ProjectPermissionPicker_permission
       }
       country {
         name
@@ -484,7 +485,7 @@ ProjectPage.fragments = {
         email
       }
     }
-    ${DeleteProjectPermissionTrigger.fragments.project}
+    ${DeleteProjectPermissionTrigger.fragments.permission}
     ${ProjectPermissionPicker.fragments.project}
     ${ProjectPermissionPicker.fragments.permission}
     ${ProjectActionsMenu.fragments.project}

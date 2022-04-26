@@ -10,10 +10,6 @@ table.who td {
   @apply whitespace-nowrap px-2 py-1.5 text-sm font-medium text-gray-800 lg:px-3 lg:py-2;
 }
 
-table.who tbody tr:nth-child(odd) {
-  @apply bg-gray-50;
-}
-
 table.who tbody tr:hover {
   @apply bg-gray-200;
 }

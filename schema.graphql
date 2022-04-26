@@ -101,7 +101,6 @@ type AccessmodFileset {
 }
 
 enum AccessmodFilesetAuthorizedActions {
-  CREATE
   UPDATE
   DELETE
   CREATE_FILE
@@ -195,8 +194,6 @@ enum AccessmodProjectAuthorizedActions {
   CREATE_FILESET
   CREATE_ANALYSIS
   CREATE_PERMISSION
-  UPDATE_PERMISSION
-  DELETE_PERMISSION
 }
 
 type AccessmodProjectPage {
@@ -212,8 +209,14 @@ type AccessmodProjectPermission {
   team: Team
   project: AccessmodProject!
   mode: PermissionMode!
+  authorizedActions: [AccessmodProjectPermissionAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum AccessmodProjectPermissionAuthorizedActions {
+  UPDATE
+  DELETE
 }
 
 type AccessmodProjectPermissionPage {
@@ -298,7 +301,7 @@ enum CreateAccessmodProjectError {
 input CreateAccessmodProjectInput {
   name: String!
   spatialResolution: Int!
-  description: String!
+  description: String
   crs: Int!
   extentId: String
   country: CountryInput!

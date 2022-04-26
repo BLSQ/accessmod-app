@@ -63,8 +63,8 @@ const DEFAULT_THEME = {
   table: "divide-y divide-gray-200 w-full",
   thead: "",
   tbody: "",
-  th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-3 py-3.5",
-  td: "whitespace-nowrap text-sm font-medium text-gray-800 px-3 py-3 md:py-4 flex items-center",
+  th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-3 py-3",
+  td: "whitespace-nowrap text-sm font-medium text-gray-800 px-3 py-1 md:py-2 flex items-center",
   tr: "hover:bg-gray-200",
   pagination: "",
 };
