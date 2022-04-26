@@ -3,12 +3,11 @@ import {
   ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
-  createHttpLink,
+  HttpLink,
 } from "@apollo/client";
 import { onError } from "@apollo/link-error";
 import merge from "deepmerge";
 import { IncomingHttpHeaders } from "http";
-import fetch from "isomorphic-unfetch";
 import isEqual from "lodash/isEqual";
 import type { AppProps } from "next/app";
 import { useMemo } from "react";
@@ -53,7 +52,7 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
         }
       }),
 
-      createHttpLink({
+      new HttpLink({
         uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
         fetch: enhancedFetch,
         credentials: "include",
