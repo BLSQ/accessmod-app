@@ -36,31 +36,38 @@ const useCacheKey = (keys: string | string[], listener?: () => void) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keys]);
 
-  useListener<{ keys: string[] }>("CacheKey", (event) => {
-    if (!listener) {
-      // We may use this hook only to propagate a cache reset (and we cannot call a hook in a conditional statement)
-      return;
-    }
-
-    const keys = ensureArray(cachedKeys);
-    if (keys.length > event.detail.keys.length) {
-      return; // Listened keys array is longer (more precise) than the received keys array
-    }
-
-    keys.forEach((k, index) => {
-      if (k !== event.detail.keys[index]) {
-        // Keys are different -> no match
-        return;
-      }
-    });
-
-    // Let's call the listener :)
-    listener();
-  });
-
   const propagate = useCallback(() => {
     emit({ keys: ensureArray(cachedKeys) });
   }, [cachedKeys, emit]);
+
+  const onEvent = useCallback(
+    (event) => {
+      if (!listener) {
+        // We may use this hook only to propagate a cache reset (and we cannot call a hook in a conditional statement)
+        return;
+      }
+
+      const keys = ensureArray(cachedKeys);
+      if (keys.length > event.detail.keys.length) {
+        return; // Listened keys array is longer (more precise) than the received keys array
+      }
+
+      keys.forEach((k, index) => {
+        if (k !== event.detail.keys[index]) {
+          // Keys are different -> no match
+          return;
+        }
+      });
+
+      // Let's call the listener :)
+      console.log("listener", listener);
+      console.log("keys", cachedKeys);
+      listener();
+    },
+    [cachedKeys, listener]
+  );
+
+  useListener<{ keys: string[] }>("CacheKey", onEvent);
 
   return propagate;
 };

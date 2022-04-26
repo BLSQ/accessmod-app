@@ -7,6 +7,7 @@ import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
 import CountryPicker from "features/CountryPicker";
 import ProjectsList from "features/project/ProjectsList";
+import TeamPicker from "features/team/TeamPicker";
 import usePrevious from "hooks/usePrevious";
 import { ensureArray } from "libs/array";
 import { countries, Country } from "libs/countries";
@@ -22,6 +23,7 @@ type Variables = {
   page: number;
   perPage: number;
   term: string;
+  teams?: string[];
   countries: string[];
 };
 
@@ -34,7 +36,13 @@ const ProjectsPage = ({
   const [variables, setVariables] = useState<Variables>(defaultVariables);
   const { t } = useTranslation();
   const { loading, data, previousData } = useProjectsPageQuery({
-    variables,
+    variables: {
+      page: variables.page,
+      term: variables.term,
+      perPage: variables.perPage,
+      countries: variables.countries,
+      teams: variables.teams?.map((team: any) => team.id) ?? undefined,
+    },
   });
   const prevVariables = usePrevious(variables);
 
@@ -42,7 +50,11 @@ const ProjectsPage = ({
   useEffect(() => {
     if (prevVariables && !_.isEqual(prevVariables, variables)) {
       router.push(
-        { pathname: routes.project_list, query: variables },
+        {
+          pathname: routes.project_list,
+          // Since we cannot store the team ids in the URL, let's just pass the page and the perPage params in the location
+          query: { page: variables.page, perPage: variables.perPage },
+        },
         undefined,
         { shallow: true }
       );
@@ -62,17 +74,18 @@ const ProjectsPage = ({
       <PageContent>
         {projects && (
           <Block>
-            <div className="mb-4 flex items-start gap-2">
-              <SearchInput
-                className="w-80"
-                placeholder={t("Search...")}
-                loading={loading}
-                defaultValue={variables.term ?? ""}
-                onChange={(term) =>
-                  setVariables({ ...variables, term: term ?? "", page: 1 })
-                }
-              />
-              <div className="w-80">
+            <div className="mb-4 grid grid-cols-6 gap-2">
+              <div className="col-span-2">
+                <SearchInput
+                  placeholder={t("Search...")}
+                  loading={loading}
+                  defaultValue={variables.term ?? ""}
+                  onChange={(term) =>
+                    setVariables({ ...variables, term: term ?? "", page: 1 })
+                  }
+                />
+              </div>
+              <div className="col-span-2">
                 <CountryPicker
                   placeholder={t("Filter by country")}
                   onChange={(value) =>
@@ -86,6 +99,19 @@ const ProjectsPage = ({
                   value={variables.countries.map((c) =>
                     countries.find(({ code }) => code === c)
                   )}
+                />
+              </div>
+              <div className="col-span-2">
+                <TeamPicker
+                  multiple
+                  placeholder={t("Filter by teams")}
+                  value={variables.teams}
+                  onChange={(value) =>
+                    setVariables({
+                      ...variables,
+                      teams: ensureArray(value),
+                    })
+                  }
                 />
               </div>
             </div>
@@ -131,11 +157,13 @@ export const getServerSideProps = createGetServerSideProps({
         query ProjectsPage(
           $term: String
           $countries: [String!]
+          $teams: [String!]
           $page: Int = 1
           $perPage: Int = 20
         ) {
           accessmodProjects(
             term: $term
+            teams: $teams
             countries: $countries
             page: $page
             perPage: $perPage

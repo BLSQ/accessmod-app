@@ -1,11 +1,10 @@
 import { gql } from "@apollo/client";
 import clsx from "clsx";
 import useCacheKey from "hooks/useCacheKey";
-import { CustomApolloClient } from "libs/apollo";
-import { useNavbarQuery } from "libs/graphql";
+import { Navbar_NavbarFragment } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type NavEntry = {
   label: string;
@@ -50,52 +49,51 @@ const NavEntry = (props: NavEntry) => {
   );
 };
 
-const Navbar = () => {
-  const { data, refetch } = useNavbarQuery();
+type NavbarProps = {
+  navbar: Navbar_NavbarFragment;
+};
+
+const Navbar = (props: NavbarProps) => {
+  const { navbar } = props;
   const { t } = useTranslation();
-  const [items, setItems] = useState<NavState>([
-    {
-      label: t("Dashboard"),
-      link: "/",
-    },
-    {
-      label: t("Projects"),
-      link: "/projects",
-    },
-    {
-      label: t("Teams"),
-      link: "/teams",
-    },
-  ]);
 
-  useCacheKey("projects", () => refetch());
+  const items = useMemo(() => {
+    const projects = navbar.projects.items.map((project) => ({
+      label: project.name,
+      link: `/projects/${encodeURIComponent(project.id)}`,
+    }));
 
-  useEffect(() => {
-    if (data) {
-      const projects = data.accessmodProjects.items.map((project) => ({
-        label: project.name,
-        link: `/projects/${encodeURIComponent(project.id)}`,
-      }));
-      if (projects.length > 0) {
-        projects.push({ label: t("See all projects"), link: "/projects" });
-      }
-      setItems([
-        {
-          label: t("Dashboard"),
-          link: "/",
-        },
-        {
-          label: t("Projects"),
-          link: "/projects",
-          items: projects,
-        },
-        {
-          label: t("Teams"),
-          link: "/teams",
-        },
-      ]);
+    const teams = navbar.teams.items.map((team) => ({
+      label: team.name,
+      link: `/teams/${encodeURIComponent(team.id)}`,
+    }));
+
+    if (projects.length > 0) {
+      projects.push({ label: t("See all projects"), link: "/projects" });
     }
-  }, [data, t]);
+
+    if (teams.length > 0) {
+      teams.push({ label: t("See all teams"), link: "/teams" });
+    }
+
+    return [
+      {
+        label: t("Dashboard"),
+        link: "/",
+      },
+      {
+        label: t("Projects"),
+        link: "/projects",
+        items: projects,
+      },
+      {
+        label: t("Teams"),
+        link: "/teams",
+        items: teams,
+      },
+    ];
+  }, [navbar, t]);
+
   return (
     <div className="flex h-full items-stretch gap-2 uppercase text-white">
       {items.map((itemProps) => (
@@ -105,20 +103,23 @@ const Navbar = () => {
   );
 };
 
-Navbar.prefetch = async (client: CustomApolloClient) => {
-  await client.query({
-    query: gql`
-      query Navbar {
-        accessmodProjects(page: 1, perPage: 5) {
-          items {
-            id
-            name
-          }
-          totalPages
+Navbar.fragments = {
+  navbar: gql`
+    fragment Navbar_navbar on Query {
+      teams(page: 1, perPage: 5) {
+        items {
+          id
+          name
         }
       }
-    `,
-  });
+      projects: accessmodProjects(page: 1, perPage: 5) {
+        items {
+          id
+          name
+        }
+      }
+    }
+  `,
 };
 
 export default Navbar;

@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Block from "components/Block";
 import Button from "components/Button";
 import Field from "components/forms/Field";
+import Textarea from "components/forms/Textarea";
 import Spinner from "components/Spinner";
 import useForm from "hooks/useForm";
 import {
@@ -21,6 +22,7 @@ type EditProjectFormProps = {
 
 type Form = {
   name: string;
+  description: string;
   crs: string | number;
   spatialResolution: string | number;
 };
@@ -31,6 +33,7 @@ const EDIT_PROJECT_QUERY = gql`
       id
       name
       crs
+      description
       spatialResolution
     }
   }
@@ -44,6 +47,7 @@ const UPDATE_PROJECT_MUTATION = gql`
       project {
         id
         name
+        description
         crs
         spatialResolution
       }
@@ -65,6 +69,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
           input: {
             id: props.project.id,
             name: values.name,
+            description: values.description,
             spatialResolution: parseInt(
               values.spatialResolution.toString(),
               10
@@ -95,6 +100,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
       return {
         name: data?.project?.name ?? "",
         crs: data?.project?.crs ?? "",
+        description: data?.project?.description ?? "",
         spatialResolution: data?.project?.spatialResolution ?? "",
       };
     },
@@ -102,6 +108,9 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
       const errors = {} as any;
       if (!values.name) {
         errors.name = t("Enter a name");
+      }
+      if (!values.description) {
+        errors.description = t("Enter a description");
       }
       if (!values.spatialResolution) {
         errors.spatialResolution = t("Enter a spatial resolution");
@@ -136,6 +145,22 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
         />
 
         <Field
+          className="col-span-4"
+          label={t("Description")}
+          required
+          name="description"
+          error={form.touched.description && form.errors.description}
+        >
+          <Textarea
+            rows={5}
+            disabled={form.isSubmitting}
+            onChange={form.handleInputChange}
+          >
+            {form.formData.description}
+          </Textarea>
+        </Field>
+
+        <Field
           className="col-span-2"
           required
           label="Spatial Resolution"
@@ -155,7 +180,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
         <Field
           required
           className="col-span-2"
-          label={t("Coordinate Reference System")}
+          label={t("Coordinate Reference System Code")}
           name="crs"
           type="number"
           help={t(

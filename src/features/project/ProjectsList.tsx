@@ -14,12 +14,13 @@ const ProjectsList = (props: Props) => {
   return (
     <ul
       role="list"
-      className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3"
+      className="grid auto-rows-auto grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3"
     >
       {projects.items.map((project) => (
         <li key={project.id} className="col-span-1">
           <ProjectCard
             project={project}
+            className="h-full"
             onClick={() =>
               router.push(`/projects/${encodeURIComponent(project.id)}`)
             }

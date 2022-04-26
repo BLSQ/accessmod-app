@@ -3,29 +3,32 @@ import { PlusIcon } from "@heroicons/react/outline";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
-import DescriptionList from "components/DescriptionList";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
-import Time from "components/Time";
+import Toggle from "components/Toggle";
 import InviteTeamMemberTrigger from "features/InviteTeamMemberTrigger";
+import DeleteTeamTrigger from "features/team/DeleteTeamTrigger";
+import TeamFormDialog from "features/team/TeamFormDialog";
+import TeamProjectsTable from "features/team/TeamProjectsTable";
 import TeamMembersTable from "features/TeamMembersTable";
-import { TeamPageQueryVariables, useTeamPageQuery } from "libs/graphql";
+import {
+  TeamAuthorizedActions,
+  TeamPageQueryVariables,
+  useTeamPageQuery,
+} from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 
 const TeamPage = ({
   defaultVariables,
-  ...props
 }: {
   defaultVariables: TeamPageQueryVariables;
 }) => {
   const { data, previousData } = useTeamPageQuery({
     variables: defaultVariables,
   });
-
   const { t } = useTranslation();
-
   const { team } = data || previousData || {};
 
   if (!team) {
@@ -48,25 +51,39 @@ const TeamPage = ({
         </Breadcrumbs>
         <div className="flex items-start justify-between gap-2">
           <h1 className="text-3xl font-bold text-white">{team.name}</h1>
-          <Button variant="white" disabled>
-            {t("Edit")}
-          </Button>
+
+          <div className="flex items-center gap-2">
+            <Toggle>
+              {({ toggle, isToggled }) => (
+                <>
+                  <TeamFormDialog
+                    onClose={toggle}
+                    open={isToggled}
+                    team={team}
+                  />
+                  <Button
+                    onClick={toggle}
+                    variant="white"
+                    disabled={
+                      !team.authorizedActions.includes(
+                        TeamAuthorizedActions.Update
+                      )
+                    }
+                  >
+                    {t("Edit")}
+                  </Button>
+                </>
+              )}
+            </Toggle>
+            <DeleteTeamTrigger team={team} />
+          </div>
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
         <Block>
-          <DescriptionList>
-            <DescriptionList.Item label={t("Creation Date")}>
-              <span className="text-md">
-                <Time datetime={team.createdAt} />
-              </span>
-            </DescriptionList.Item>
-          </DescriptionList>
-        </Block>
-
-        <Block>
           <h3 className="mb-4 flex items-center justify-between">
             {t("Members")}
+
             <div className="flex items-center space-x-2">
               <InviteTeamMemberTrigger team={team}>
                 {({ onClick }) => (
@@ -76,7 +93,7 @@ const TeamPage = ({
                     onClick={onClick}
                     leadingIcon={<PlusIcon className="h-4 w-4" />}
                   >
-                    {t("Add member")}
+                    {t("Add a member")}
                   </Button>
                 )}
               </InviteTeamMemberTrigger>
@@ -88,9 +105,7 @@ const TeamPage = ({
           <h3 className="mb-4 flex items-center justify-between">
             {t("Projects")}
           </h3>
-          <p className="w-full p-4 text-center text-sm italic text-gray-400">
-            {t("No projects")}
-          </p>
+          <TeamProjectsTable team={team} />
         </Block>
       </PageContent>
     </Page>
@@ -106,6 +121,8 @@ export const getServerSideProps = createGetServerSideProps({
 
     await Layout.prefetch(client);
     await TeamMembersTable.prefetch(client, { teamId: variables.id });
+    await TeamProjectsTable.prefetch(client, { teamIds: [variables.id] });
+
     await client.query({
       query: gql`
         query TeamPage($id: String!) {
@@ -113,12 +130,19 @@ export const getServerSideProps = createGetServerSideProps({
             id
             name
             createdAt
+            authorizedActions
             ...TeamMembersTable_team
             ...InviteTeamMemberTrigger_team
+            ...TeamFormDialog_team
+            ...DeleteTeamTrigger_team
+            ...TeamProjectsTable_team
           }
         }
         ${InviteTeamMemberTrigger.fragments.team}
         ${TeamMembersTable.fragments.team}
+        ${TeamFormDialog.fragments.team}
+        ${DeleteTeamTrigger.fragments.team}
+        ${TeamProjectsTable.fragments.team}
       `,
       variables,
     });

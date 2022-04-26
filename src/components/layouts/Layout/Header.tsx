@@ -1,22 +1,29 @@
-import Link from "next/link";
-import Image from "next/image";
+import { gql } from "@apollo/client";
 import Button from "components/Button";
-import UserMenu from "./UserMenu";
-import Navbar from "./Navbar";
-
+import Toggle from "components/Toggle";
 import CreateProjectDialog from "features/project/CreateProjectDialog";
-import { useState } from "react";
+import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
+import {
+  MeAuthorizedActions,
+  useHeaderQuery,
+  UserMenu_UserFragment,
+} from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import { UserMenu_UserFragment } from "libs/graphql";
+import Image from "next/image";
+import Link from "next/link";
+import Navbar from "./Navbar";
+import UserMenu from "./UserMenu";
 
 type Props = {
   user: UserMenu_UserFragment;
 };
 
 const Header = ({ user }: Props) => {
-  const [showProjectDialog, setProjectDialog] = useState(false);
   const { t } = useTranslation();
+  const { data, refetch } = useHeaderQuery();
+
+  useCacheKey("projects", () => refetch());
   return (
     <>
       <nav className="bg-lochmara">
@@ -41,17 +48,31 @@ const Header = ({ user }: Props) => {
                 <div className="text-bold text-xl uppercase ">
                   {t("Access Mod")}
                 </div>
-                <Navbar />
+                {data && <Navbar navbar={data} />}
               </div>
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  <Button
-                    variant="primary"
-                    className="mr-7"
-                    onClick={() => setProjectDialog(true)}
-                  >
-                    {t("New Project")}
-                  </Button>
+                  {data?.me.authorizedActions.includes(
+                    MeAuthorizedActions.CreateAccessmodProject
+                  ) && (
+                    <Toggle>
+                      {({ isToggled, toggle }) => (
+                        <>
+                          <Button
+                            variant="primary"
+                            className="mr-7"
+                            onClick={toggle}
+                          >
+                            {t("New Project")}
+                          </Button>
+                          <CreateProjectDialog
+                            open={isToggled}
+                            onClose={toggle}
+                          />
+                        </>
+                      )}
+                    </Toggle>
+                  )}
 
                   <UserMenu user={user} />
                 </div>
@@ -60,16 +81,22 @@ const Header = ({ user }: Props) => {
           </div>
         </div>
       </nav>
-      <CreateProjectDialog
-        open={showProjectDialog}
-        onClose={() => setProjectDialog(false)}
-      />
     </>
   );
 };
 
 Header.prefetch = async (client: CustomApolloClient) => {
-  await Navbar.prefetch(client);
+  await client.query({
+    query: gql`
+      query Header {
+        me {
+          authorizedActions
+        }
+        ...Navbar_navbar
+      }
+      ${Navbar.fragments.navbar}
+    `,
+  });
 };
 
 export default Header;

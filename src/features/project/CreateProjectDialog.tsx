@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Field from "components/forms/Field";
+import Textarea from "components/forms/Textarea";
 import Spinner from "components/Spinner";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
@@ -23,6 +24,7 @@ type Props = {
 
 type Form = {
   name: string;
+  description: string;
   spatialResolution: string;
   country: Country;
   crs: string;
@@ -54,6 +56,9 @@ const CreateProjectDialog = (props: Props) => {
       if (!values.country) {
         errors.country = t("Select a country");
       }
+      if (!values.description) {
+        errors.description = t("Type a short description");
+      }
       if (!values.spatialResolution) {
         errors.spatialResolution = t("Enter a spatial resolution");
       }
@@ -68,6 +73,7 @@ const CreateProjectDialog = (props: Props) => {
       const mutation = await createProjectMutation({
         variables: {
           input: {
+            description: values.description,
             spatialResolution: parseInt(values.spatialResolution, 10),
             name: values.name,
             country: { code: values.country.code },
@@ -118,6 +124,21 @@ const CreateProjectDialog = (props: Props) => {
             error={form.touched.name && form.errors.name}
           />
           <Field
+            label={t("Description")}
+            name="description"
+            required
+            error={form.touched.description && form.errors.description}
+          >
+            <Textarea
+              required
+              name="description"
+              disabled={form.isSubmitting}
+              onChange={form.handleInputChange}
+            >
+              {form.formData.description}
+            </Textarea>
+          </Field>
+          <Field
             label={t("Country")}
             required
             name="country"
@@ -147,7 +168,7 @@ const CreateProjectDialog = (props: Props) => {
           />
           <Field
             required
-            label={t("Coordinate Reference System")}
+            label={t("Coordinate Reference System Code")}
             name="crs"
             type="number"
             help={t(

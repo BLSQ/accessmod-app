@@ -7,8 +7,8 @@ import { MeQueryQuery } from "./graphql";
 export type AuthenticatedUser = {
   id: string;
   email: string;
-  firstName: string | null | undefined;
-  lastName: string | null | undefined;
+  firstName: string | null;
+  lastName: string | null;
   avatar: { initials: string; color: string };
 };
 
@@ -20,28 +20,30 @@ export async function getUser(
     query: gql`
       query MeQuery {
         me {
-          email
-          id
-          firstName
-          lastName
-          avatar {
-            initials
-            color
+          user {
+            email
+            id
+            firstName
+            lastName
+            avatar {
+              initials
+              color
+            }
           }
         }
       }
     `,
   });
 
-  const user = payload?.data.me;
+  const user = payload?.data.me?.user;
   if (!user) {
     return null;
   }
   return {
     id: user.id,
     email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    firstName: user.firstName ?? null,
+    lastName: user.lastName ?? null,
     avatar: user.avatar,
   };
 }

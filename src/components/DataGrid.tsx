@@ -5,7 +5,11 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import { useCheckboxColumn } from "hooks/useCheckboxColumn";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Column, PluginHook } from "react-table";
+import {
+  Column as ReactTableColumn,
+  PluginHook,
+  useRowState,
+} from "react-table";
 import {
   SortingRule,
   useFlexLayout,
@@ -15,7 +19,11 @@ import {
   useTable,
 } from "react-table";
 import Pagination from "./Pagination";
+export type { Cell, SortingRule } from "react-table";
 
+export type Column = ReactTableColumn & {
+  Header: string | null;
+};
 type DataGridTheme = {
   table?: string;
   thead?: string;
@@ -44,6 +52,7 @@ interface IDataGridProps {
   totalItems?: number;
   idKey?: string;
   defaultPageSize?: number;
+  defaultSortBy?: SortingRule<object>[];
   pageSizeOptions?: number[];
 }
 
@@ -53,8 +62,8 @@ const DEFAULT_THEME = {
   table: "divide-y divide-gray-200 w-full",
   thead: "",
   tbody: "",
-  th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex last:text-right px-3 py-3.5",
-  td: "whitespace-nowrap text-sm font-medium text-gray-800 last:text-right px-3 py-3 md:py-4",
+  th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-3 py-3.5",
+  td: "whitespace-nowrap text-sm font-medium text-gray-800  px-3 py-3 md:py-4 flex items-center",
   tr: "hover:bg-gray-200",
   pagination: "",
 };
@@ -76,17 +85,18 @@ const DataGrid = (props: DataGridProps) => {
     totalItems,
     idKey,
     pageSizeOptions,
+    defaultSortBy,
     defaultPageSize = 10,
   } = props;
 
   const [loading, setLoading] = useState(false);
-
   const hooks = useMemo(() => {
     const hooks: Array<PluginHook<{}>> = [
       useSortBy,
       usePagination,
       useRowSelect,
       useFlexLayout,
+      useRowState,
     ];
     if (onSelectionChange) {
       hooks.push(useCheckboxColumn);
@@ -129,11 +139,11 @@ const DataGrid = (props: DataGridProps) => {
 
       // Pagination
       manualPagination: Boolean(fetchData),
-      pageCount: -1,
+      ...(Boolean(fetchData) ? { pageCount: -1 } : {}),
 
       // Initial state
       initialState: {
-        pageIndex: 0,
+        sortBy: defaultSortBy,
         pageSize: defaultPageSize,
       },
     },
@@ -180,7 +190,6 @@ const DataGrid = (props: DataGridProps) => {
   useEffect(() => {
     onFetchData({ pageIndex, pageSize, sortBy });
   }, [onFetchData, pageIndex, pageSize, sortBy]);
-
   return (
     <div>
       <table className={clsx(theme.table)} {...getTableProps()}>
@@ -237,7 +246,7 @@ const DataGrid = (props: DataGridProps) => {
           className={theme.pagination}
           loading={loading}
           totalItems={totalItems}
-          countItems={data.length}
+          countItems={page.length}
           page={pageIndex + 1}
           perPage={pageSize}
           perPageOptions={pageSizeOptions}

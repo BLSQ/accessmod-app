@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import {
+  AccessmodAnalysisAuthorizedActions,
   AccessmodAnalysisStatus,
   AnalysisActionsButton_AnalysisFragment,
   AnalysisActionsButton_ProjectFragment,
@@ -34,31 +35,38 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
 
   return (
     <div className="flex items-center gap-2">
-      {analysis.status === AccessmodAnalysisStatus.Ready && (
-        <Button variant="primary">{t("Run")}</Button>
-      )}
+      {analysis.status === AccessmodAnalysisStatus.Ready &&
+        analysis.authorizedActions.includes(
+          AccessmodAnalysisAuthorizedActions.Run
+        ) && <Button variant="primary">{t("Run")}</Button>}
       {[AccessmodAnalysisStatus.Ready, AccessmodAnalysisStatus.Draft].includes(
         analysis.status
-      ) && (
-        <Link
-          href={{
-            pathname: routes.project_analysis_edit,
-            query: { projectId: project.id, analysisId: analysis.id },
-          }}
-        >
-          <a>
-            <Button variant="white">{t("Edit")}</Button>
-          </a>
-        </Link>
-      )}
+      ) &&
+        analysis.authorizedActions.includes(
+          AccessmodAnalysisAuthorizedActions.Update
+        ) && (
+          <Link
+            href={{
+              pathname: routes.project_analysis_edit,
+              query: { projectId: project.id, analysisId: analysis.id },
+            }}
+          >
+            <a>
+              <Button variant="white">{t("Edit")}</Button>
+            </a>
+          </Link>
+        )}
       {![
         AccessmodAnalysisStatus.Running,
         AccessmodAnalysisStatus.Queued,
-      ].includes(analysis.status) && (
-        <Button variant="outlined" onClick={onDeleteClick}>
-          {t("Delete")}
-        </Button>
-      )}
+      ].includes(analysis.status) &&
+        analysis.authorizedActions.includes(
+          AccessmodAnalysisAuthorizedActions.Delete
+        ) && (
+          <Button variant="outlined" onClick={onDeleteClick}>
+            {t("Delete")}
+          </Button>
+        )}
     </div>
   );
 };
@@ -76,6 +84,7 @@ AnalysisActionsButton.fragments = {
       name
       status
       type
+      authorizedActions
     }
   `,
 };

@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  AccessmodFilesetMetadata: any;
   Date: any;
   DateTime: any;
 };
@@ -20,6 +21,8 @@ export type Scalars = {
 export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & {
   __typename?: 'AccessmodAccessibilityAnalysis';
   algorithm?: Maybe<AccessmodAccessibilityAnalysisAlgorithm>;
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
   barrier?: Maybe<AccessmodFileset>;
   catchmentAreas?: Maybe<AccessmodFileset>;
   createdAt: Scalars['DateTime'];
@@ -34,7 +37,6 @@ export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & {
   maxTravelTime?: Maybe<Scalars['Int']>;
   movingSpeeds?: Maybe<AccessmodFileset>;
   name: Scalars['String'];
-  owner: User;
   priorityLandCover?: Maybe<Array<Scalars['Int']>>;
   priorityRoads?: Maybe<Scalars['Boolean']>;
   slope?: Maybe<AccessmodFileset>;
@@ -53,14 +55,21 @@ export enum AccessmodAccessibilityAnalysisAlgorithm {
 }
 
 export type AccessmodAnalysis = {
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   name: Scalars['String'];
-  owner: User;
   status: AccessmodAnalysisStatus;
   type: AccessmodAnalysisType;
   updatedAt: Scalars['DateTime'];
 };
+
+export enum AccessmodAnalysisAuthorizedActions {
+  Delete = 'DELETE',
+  Run = 'RUN',
+  Update = 'UPDATE'
+}
 
 export type AccessmodAnalysisPage = {
   __typename?: 'AccessmodAnalysisPage';
@@ -97,14 +106,24 @@ export type AccessmodFile = {
 
 export type AccessmodFileset = {
   __typename?: 'AccessmodFileset';
+  author: User;
+  authorizedActions: Array<AccessmodFilesetAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   files: Array<AccessmodFile>;
   id: Scalars['String'];
+  metadata: Scalars['AccessmodFilesetMetadata'];
   name: Scalars['String'];
-  owner: User;
-  role?: Maybe<AccessmodFilesetRole>;
+  role: AccessmodFilesetRole;
+  status: AccessmodFilesetStatus;
   updatedAt: Scalars['DateTime'];
 };
+
+export enum AccessmodFilesetAuthorizedActions {
+  Create = 'CREATE',
+  CreateFile = 'CREATE_FILE',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
 
 export enum AccessmodFilesetFormat {
   Raster = 'RASTER',
@@ -147,9 +166,17 @@ export enum AccessmodFilesetRoleCode {
   Water = 'WATER'
 }
 
+export enum AccessmodFilesetStatus {
+  Invalid = 'INVALID',
+  Pending = 'PENDING',
+  Valid = 'VALID'
+}
+
 export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
   __typename?: 'AccessmodGeographicCoverageAnalysis';
   anisotropic?: Maybe<Scalars['Boolean']>;
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
   catchmentAreas?: Maybe<AccessmodFileset>;
   createdAt: Scalars['DateTime'];
   dem?: Maybe<AccessmodFileset>;
@@ -160,7 +187,6 @@ export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
   id: Scalars['String'];
   maxTravelTime?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
-  owner: User;
   population?: Maybe<AccessmodFileset>;
   status: AccessmodAnalysisStatus;
   type: AccessmodAnalysisType;
@@ -169,20 +195,52 @@ export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
 
 export type AccessmodProject = {
   __typename?: 'AccessmodProject';
+  author: User;
+  authorizedActions: Array<AccessmodProjectAuthorizedActions>;
   country: Country;
   createdAt: Scalars['DateTime'];
   crs: Scalars['Int'];
+  description: Scalars['String'];
   extent?: Maybe<AccessmodFileset>;
   id: Scalars['String'];
   name: Scalars['String'];
-  owner: User;
+  permissions: Array<AccessmodProjectPermission>;
   spatialResolution: Scalars['Int'];
   updatedAt: Scalars['DateTime'];
 };
 
+export enum AccessmodProjectAuthorizedActions {
+  CreateAnalysis = 'CREATE_ANALYSIS',
+  CreateFileset = 'CREATE_FILESET',
+  CreatePermission = 'CREATE_PERMISSION',
+  Delete = 'DELETE',
+  DeletePermission = 'DELETE_PERMISSION',
+  Update = 'UPDATE',
+  UpdatePermission = 'UPDATE_PERMISSION'
+}
+
 export type AccessmodProjectPage = {
   __typename?: 'AccessmodProjectPage';
   items: Array<AccessmodProject>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export type AccessmodProjectPermission = {
+  __typename?: 'AccessmodProjectPermission';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  mode: PermissionMode;
+  project: AccessmodProject;
+  team?: Maybe<Team>;
+  updatedAt: Scalars['DateTime'];
+  user?: Maybe<User>;
+};
+
+export type AccessmodProjectPermissionPage = {
+  __typename?: 'AccessmodProjectPermissionPage';
+  items: Array<AccessmodProjectPermission>;
   pageNumber: Scalars['Int'];
   totalItems: Scalars['Int'];
   totalPages: Scalars['Int'];
@@ -243,7 +301,8 @@ export type CreateAccessmodFileResult = {
 };
 
 export enum CreateAccessmodFilesetError {
-  NameDuplicate = 'NAME_DUPLICATE'
+  NameDuplicate = 'NAME_DUPLICATE',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type CreateAccessmodFilesetInput = {
@@ -260,15 +319,36 @@ export type CreateAccessmodFilesetResult = {
 };
 
 export enum CreateAccessmodProjectError {
-  NameDuplicate = 'NAME_DUPLICATE'
+  NameDuplicate = 'NAME_DUPLICATE',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type CreateAccessmodProjectInput = {
   country: CountryInput;
   crs: Scalars['Int'];
+  description: Scalars['String'];
   extentId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   spatialResolution: Scalars['Int'];
+};
+
+export enum CreateAccessmodProjectPermissionError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type CreateAccessmodProjectPermissionInput = {
+  mode: PermissionMode;
+  projectId: Scalars['String'];
+  teamId?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateAccessmodProjectPermissionResult = {
+  __typename?: 'CreateAccessmodProjectPermissionResult';
+  errors: Array<CreateAccessmodProjectPermissionError>;
+  permission?: Maybe<AccessmodProjectPermission>;
+  success: Scalars['Boolean'];
 };
 
 export type CreateAccessmodProjectResult = {
@@ -276,6 +356,40 @@ export type CreateAccessmodProjectResult = {
   errors: Array<CreateAccessmodProjectError>;
   project?: Maybe<AccessmodProject>;
   success: Scalars['Boolean'];
+};
+
+export enum CreateMembershipError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type CreateMembershipInput = {
+  role: MembershipRole;
+  teamId: Scalars['String'];
+  userEmail: Scalars['String'];
+};
+
+export type CreateMembershipResult = {
+  __typename?: 'CreateMembershipResult';
+  errors: Array<CreateMembershipError>;
+  membership?: Maybe<Membership>;
+  success: Scalars['Boolean'];
+};
+
+export enum CreateTeamError {
+  NameDuplicate = 'NAME_DUPLICATE',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type CreateTeamInput = {
+  name: Scalars['String'];
+};
+
+export type CreateTeamResult = {
+  __typename?: 'CreateTeamResult';
+  errors: Array<CreateTeamError>;
+  success: Scalars['Boolean'];
+  team?: Maybe<Team>;
 };
 
 export enum DeleteAccessmodAnalysisError {
@@ -322,16 +436,62 @@ export type DeleteAccessmodFilesetResult = {
 };
 
 export enum DeleteAccessmodProjectError {
-  NotFound = 'NOT_FOUND'
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type DeleteAccessmodProjectInput = {
   id: Scalars['String'];
 };
 
+export enum DeleteAccessmodProjectPermissionError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteAccessmodProjectPermissionInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteAccessmodProjectPermissionResult = {
+  __typename?: 'DeleteAccessmodProjectPermissionResult';
+  errors: Array<DeleteAccessmodProjectPermissionError>;
+  success: Scalars['Boolean'];
+};
+
 export type DeleteAccessmodProjectResult = {
   __typename?: 'DeleteAccessmodProjectResult';
   errors: Array<DeleteAccessmodProjectError>;
+  success: Scalars['Boolean'];
+};
+
+export enum DeleteMembershipError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteMembershipInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteMembershipResult = {
+  __typename?: 'DeleteMembershipResult';
+  errors: Array<DeleteMembershipError>;
+  success: Scalars['Boolean'];
+};
+
+export enum DeleteTeamError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteTeamInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteTeamResult = {
+  __typename?: 'DeleteTeamResult';
+  errors: Array<DeleteTeamError>;
   success: Scalars['Boolean'];
 };
 
@@ -357,7 +517,7 @@ export type LoginInput = {
 
 export type LoginResult = {
   __typename?: 'LoginResult';
-  me?: Maybe<User>;
+  me?: Maybe<Me>;
   success: Scalars['Boolean'];
 };
 
@@ -366,8 +526,20 @@ export type LogoutResult = {
   success: Scalars['Boolean'];
 };
 
+export type Me = {
+  __typename?: 'Me';
+  authorizedActions: Array<MeAuthorizedActions>;
+  user?: Maybe<User>;
+};
+
+export enum MeAuthorizedActions {
+  CreateAccessmodProject = 'CREATE_ACCESSMOD_PROJECT',
+  CreateTeam = 'CREATE_TEAM'
+}
+
 export type Membership = {
   __typename?: 'Membership';
+  authorizedActions: Array<MembershipAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   role: MembershipRole;
@@ -375,6 +547,11 @@ export type Membership = {
   updatedAt: Scalars['DateTime'];
   user: User;
 };
+
+export enum MembershipAuthorizedActions {
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
 
 export type MembershipPage = {
   __typename?: 'MembershipPage';
@@ -395,10 +572,16 @@ export type Mutation = {
   createAccessmodFile: CreateAccessmodFileResult;
   createAccessmodFileset: CreateAccessmodFilesetResult;
   createAccessmodProject: CreateAccessmodProjectResult;
+  createAccessmodProjectPermission: CreateAccessmodProjectPermissionResult;
+  createMembership: CreateMembershipResult;
+  createTeam: CreateTeamResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
   deleteAccessmodFile: DeleteAccessmodFileResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
+  deleteAccessmodProjectPermission: DeleteAccessmodProjectPermissionResult;
+  deleteMembership: DeleteMembershipResult;
+  deleteTeam: DeleteTeamResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
   login: LoginResult;
   logout: LogoutResult;
@@ -408,6 +591,9 @@ export type Mutation = {
   setPassword: SetPasswordResult;
   updateAccessmodAccessibilityAnalysis: UpdateAccessmodAccessibilityAnalysisResult;
   updateAccessmodProject: UpdateAccessmodProjectResult;
+  updateAccessmodProjectPermission: UpdateAccessmodProjectPermissionResult;
+  updateMembership: UpdateMembershipResult;
+  updateTeam: UpdateTeamResult;
 };
 
 
@@ -431,6 +617,21 @@ export type MutationCreateAccessmodProjectArgs = {
 };
 
 
+export type MutationCreateAccessmodProjectPermissionArgs = {
+  input: CreateAccessmodProjectPermissionInput;
+};
+
+
+export type MutationCreateMembershipArgs = {
+  input: CreateMembershipInput;
+};
+
+
+export type MutationCreateTeamArgs = {
+  input: CreateTeamInput;
+};
+
+
 export type MutationDeleteAccessmodAnalysisArgs = {
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
 };
@@ -448,6 +649,21 @@ export type MutationDeleteAccessmodFilesetArgs = {
 
 export type MutationDeleteAccessmodProjectArgs = {
   input?: InputMaybe<DeleteAccessmodProjectInput>;
+};
+
+
+export type MutationDeleteAccessmodProjectPermissionArgs = {
+  input: DeleteAccessmodProjectPermissionInput;
+};
+
+
+export type MutationDeleteMembershipArgs = {
+  input: DeleteMembershipInput;
+};
+
+
+export type MutationDeleteTeamArgs = {
+  input: DeleteTeamInput;
 };
 
 
@@ -490,6 +706,21 @@ export type MutationUpdateAccessmodProjectArgs = {
   input?: InputMaybe<UpdateAccessmodProjectInput>;
 };
 
+
+export type MutationUpdateAccessmodProjectPermissionArgs = {
+  input: UpdateAccessmodProjectPermissionInput;
+};
+
+
+export type MutationUpdateMembershipArgs = {
+  input: UpdateMembershipInput;
+};
+
+
+export type MutationUpdateTeamArgs = {
+  input: UpdateTeamInput;
+};
+
 export type Organization = {
   __typename?: 'Organization';
   contactInfo: Scalars['String'];
@@ -506,6 +737,12 @@ export type OrganizationInput = {
   type?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
 };
+
+export enum PermissionMode {
+  Editor = 'EDITOR',
+  Owner = 'OWNER',
+  Viewer = 'VIEWER'
+}
 
 export type PrepareAccessmodFileDownloadInput = {
   fileId: Scalars['String'];
@@ -540,7 +777,7 @@ export type Query = {
   accessmodProject?: Maybe<AccessmodProject>;
   accessmodProjects: AccessmodProjectPage;
   countries: Array<Country>;
-  me?: Maybe<User>;
+  me: Me;
   organizations: Array<Organization>;
   team?: Maybe<Team>;
   teams: TeamPage;
@@ -587,6 +824,7 @@ export type QueryAccessmodProjectsArgs = {
   countries?: InputMaybe<Array<Scalars['String']>>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+  teams?: InputMaybe<Array<Scalars['String']>>;
   term?: InputMaybe<Scalars['String']>;
 };
 
@@ -599,6 +837,7 @@ export type QueryTeamArgs = {
 export type QueryTeamsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+  term?: InputMaybe<Scalars['String']>;
 };
 
 export type ResetPasswordInput = {
@@ -632,6 +871,7 @@ export type SetPasswordResult = {
 
 export type Team = {
   __typename?: 'Team';
+  authorizedActions: Array<TeamAuthorizedActions>;
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   memberships: MembershipPage;
@@ -644,6 +884,12 @@ export type TeamMembershipsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 };
+
+export enum TeamAuthorizedActions {
+  CreateMembership = 'CREATE_MEMBERSHIP',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
 
 export type TeamPage = {
   __typename?: 'TeamPage';
@@ -688,16 +934,35 @@ export type UpdateAccessmodAccessibilityAnalysisResult = {
 
 export enum UpdateAccessmodProjectError {
   NameDuplicate = 'NAME_DUPLICATE',
-  NotFound = 'NOT_FOUND'
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type UpdateAccessmodProjectInput = {
   country?: InputMaybe<CountryInput>;
   crs?: InputMaybe<Scalars['Int']>;
+  description?: InputMaybe<Scalars['String']>;
   extentId?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
   spatialResolution?: InputMaybe<Scalars['Int']>;
+};
+
+export enum UpdateAccessmodProjectPermissionError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateAccessmodProjectPermissionInput = {
+  id: Scalars['String'];
+  mode: PermissionMode;
+};
+
+export type UpdateAccessmodProjectPermissionResult = {
+  __typename?: 'UpdateAccessmodProjectPermissionResult';
+  errors: Array<UpdateAccessmodProjectPermissionError>;
+  permission?: Maybe<AccessmodProjectPermission>;
+  success: Scalars['Boolean'];
 };
 
 export type UpdateAccessmodProjectResult = {
@@ -705,6 +970,41 @@ export type UpdateAccessmodProjectResult = {
   errors: Array<UpdateAccessmodProjectError>;
   project?: Maybe<AccessmodProject>;
   success: Scalars['Boolean'];
+};
+
+export enum UpdateMembershipError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateMembershipInput = {
+  id: Scalars['String'];
+  role: MembershipRole;
+};
+
+export type UpdateMembershipResult = {
+  __typename?: 'UpdateMembershipResult';
+  errors: Array<UpdateMembershipError>;
+  membership?: Maybe<Membership>;
+  success: Scalars['Boolean'];
+};
+
+export enum UpdateTeamError {
+  NameDuplicate = 'NAME_DUPLICATE',
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateTeamInput = {
+  id: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateTeamResult = {
+  __typename?: 'UpdateTeamResult';
+  errors: Array<UpdateTeamError>;
+  success: Scalars['Boolean'];
+  team?: Maybe<Team>;
 };
 
 export type User = {
@@ -718,10 +1018,12 @@ export type User = {
   lastName?: Maybe<Scalars['String']>;
 };
 
-export type NavbarQueryVariables = Exact<{ [key: string]: never; }>;
+export type HeaderQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NavbarQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
+export type HeaderQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
+
+export type Navbar_NavbarFragment = { __typename?: 'Query', teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
 export type UserMenu_UserFragment = { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
@@ -734,16 +1036,16 @@ export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', res
 
 export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type CreateAnalysisTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+export type CreateAnalysisTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string };
 
-export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
 
 export type CreateFilesetMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodFilesetInput>;
 }>;
 
 
-export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role?: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } | null } | null } };
+export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } } | null } };
 
 export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -757,9 +1059,9 @@ export type DatasetPickerQueryVariables = Exact<{
 }>;
 
 
-export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role?: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } | null }> } };
+export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } }> } };
 
-export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
 export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
@@ -768,9 +1070,23 @@ export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FilesetRolePickerQuery = { __typename?: 'Query', accessmodFilesetRoles: Array<{ __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, createdAt: any, updatedAt: any }> };
 
+export type CreateMembershipMutationVariables = Exact<{
+  input: CreateMembershipInput;
+}>;
+
+
+export type CreateMembershipMutation = { __typename?: 'Mutation', createMembership: { __typename?: 'CreateMembershipResult', success: boolean, errors: Array<CreateMembershipError> } };
+
 export type InviteTeamMemberDialog_TeamFragment = { __typename?: 'Team', id: string, name: string };
 
-export type InviteTeamMemberTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string };
+export type InviteTeamMemberTrigger_TeamFragment = { __typename?: 'Team', authorizedActions: Array<TeamAuthorizedActions>, id: string, name: string };
+
+export type UpdateMembershipMutationVariables = Exact<{
+  input: UpdateMembershipInput;
+}>;
+
+
+export type UpdateMembershipMutation = { __typename?: 'Mutation', updateMembership: { __typename?: 'UpdateMembershipResult', success: boolean, errors: Array<UpdateMembershipError>, membership?: { __typename?: 'Membership', id: string, role: MembershipRole } | null } };
 
 export type TeamMembersTable_TeamFragment = { __typename?: 'Team', id: string };
 
@@ -779,11 +1095,11 @@ export type TeamMembersTableQueryVariables = Exact<{
 }>;
 
 
-export type TeamMembersTableQuery = { __typename?: 'Query', team?: { __typename?: 'Team', memberships: { __typename?: 'MembershipPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'Membership', id: string, createdAt: any, updatedAt: any, role: MembershipRole, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } } | null };
+export type TeamMembersTableQuery = { __typename?: 'Query', team?: { __typename?: 'Team', memberships: { __typename?: 'MembershipPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'Membership', id: string, authorizedActions: Array<MembershipAuthorizedActions>, createdAt: any, updatedAt: any, role: MembershipRole, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, team: { __typename?: 'Team', id: string, name: string } }> } } | null };
 
 export type User_UserFragment = { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
-export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
 export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
@@ -796,13 +1112,13 @@ export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', upd
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-type AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType };
+type AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> };
 
-type AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType };
+type AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> };
 
 export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
 
-export type AnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type AnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
 type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
@@ -822,12 +1138,30 @@ type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __
 
 export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
 
+export type CreateProjectMembershipMutationVariables = Exact<{
+  input: CreateAccessmodProjectPermissionInput;
+}>;
+
+
+export type CreateProjectMembershipMutation = { __typename?: 'Mutation', createAccessmodProjectPermission: { __typename?: 'CreateAccessmodProjectPermissionResult', success: boolean, errors: Array<CreateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string } | null } };
+
+export type CreateMembershipForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, id: string, team?: { __typename: 'Team', id: string } | null }> };
+
 export type CreateProjectMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodProjectInput>;
 }>;
 
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
+
+export type DeleteProjectPermissionMutationVariables = Exact<{
+  input: DeleteAccessmodProjectPermissionInput;
+}>;
+
+
+export type DeleteProjectPermissionMutation = { __typename?: 'Mutation', deleteAccessmodProjectPermission: { __typename?: 'DeleteAccessmodProjectPermissionResult', success: boolean } };
+
+export type DeleteProjectPermissionTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> };
 
 export type DeleteProjectMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodProjectInput>;
@@ -836,25 +1170,25 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteAccessmodProject: { __typename?: 'DeleteAccessmodProjectResult', success: boolean } };
 
-export type DeleteProjectTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type DeleteProjectTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> };
 
 export type EditProjectQueryVariables = Exact<{
   projectId: Scalars['String'];
 }>;
 
 
-export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number } | null };
+export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, spatialResolution: number } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   input?: InputMaybe<UpdateAccessmodProjectInput>;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, spatialResolution: number } | null } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, crs: number, spatialResolution: number } | null } };
 
 export type EditProjectFormBlock_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> };
 
 export type DeleteAnalysisMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
@@ -874,7 +1208,7 @@ export type ProjectAnalysesTableQueryVariables = Exact<{
 
 export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus }> } };
 
-export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } };
 
 export type ProjectDatasetsTableQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -884,7 +1218,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role?: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat } | null, owner: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
 
 export type DeleteDatasetMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodFilesetInput>;
@@ -893,14 +1227,72 @@ export type DeleteDatasetMutationVariables = Exact<{
 
 export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
 
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+
+export type ProjectPermissionPicker_ProjectFragment = { __typename?: 'AccessmodProject', permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, id: string }> };
+
+export type ProjectPermissionPicker_PermissionFragment = { __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode };
 
 export type ProjectPickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProjectPickerQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, updatedAt: any, country: { __typename?: 'Country', flag: string, name: string, code: string } }> } };
 
-export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> };
+export type ProjectsList_ProjectsFragment = { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } }> };
+
+export type DeleteMembershipMutationVariables = Exact<{
+  input: DeleteMembershipInput;
+}>;
+
+
+export type DeleteMembershipMutation = { __typename?: 'Mutation', deleteMembership: { __typename?: 'DeleteMembershipResult', success: boolean, errors: Array<DeleteMembershipError> } };
+
+export type DeleteMembershipTrigger_MembershipFragment = { __typename?: 'Membership', id: string, authorizedActions: Array<MembershipAuthorizedActions>, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null }, team: { __typename?: 'Team', id: string, name: string } };
+
+export type DeleteTeamMutationVariables = Exact<{
+  input: DeleteTeamInput;
+}>;
+
+
+export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'DeleteTeamResult', success: boolean, errors: Array<DeleteTeamError> } };
+
+export type DeleteTeamTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
+
+export type CreateTeamMutationVariables = Exact<{
+  input: CreateTeamInput;
+}>;
+
+
+export type CreateTeamMutation = { __typename?: 'Mutation', result: { __typename?: 'CreateTeamResult', success: boolean, errors: Array<CreateTeamError>, team?: { __typename?: 'Team', id: string } | null } };
+
+export type UpdateTeamMutationVariables = Exact<{
+  input: UpdateTeamInput;
+}>;
+
+
+export type UpdateTeamMutation = { __typename?: 'Mutation', result: { __typename?: 'UpdateTeamResult', success: boolean, errors: Array<UpdateTeamError>, team?: { __typename?: 'Team', id: string, name: string } | null } };
+
+export type TeamFormDialog_TeamFragment = { __typename?: 'Team', id: string, name: string };
+
+export type TeamPickerQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  term?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type TeamPickerQuery = { __typename?: 'Query', teams: { __typename?: 'TeamPage', totalItems: number, items: Array<{ __typename?: 'Team', id: string, name: string }> } };
+
+export type TeamProjectsTable_TeamFragment = { __typename?: 'Team', id: string };
+
+export type TeamProjectsTableQueryVariables = Exact<{
+  page?: Scalars['Int'];
+  perPage?: InputMaybe<Scalars['Int']>;
+  teamIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
 export type LaunchAccessmodAnalysisMutationVariables = Exact<{
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
@@ -912,7 +1304,7 @@ export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchA
 export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQueryQuery = { __typename?: 'Query', me?: { __typename?: 'User', email: string, id: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
+export type MeQueryQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', email: string, id: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -950,7 +1342,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResult', success: boolean, me?: { __typename?: 'User', id: string, email: string } | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResult', success: boolean } };
 
 export type AnalysisEditPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -958,7 +1350,7 @@ export type AnalysisEditPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus } | null };
+export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
 
 export type AnalysisDetailPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -966,40 +1358,48 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectAnalysesPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null };
+export type ProjectAnalysesPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
 export type ProjectDataPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, owner: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type UpdateProjectPermissionMutationVariables = Exact<{
+  input: UpdateAccessmodProjectPermissionInput;
+}>;
+
+
+export type UpdateProjectPermissionMutation = { __typename?: 'Mutation', updateAccessmodProjectPermission: { __typename?: 'UpdateAccessmodProjectPermissionResult', success: boolean, errors: Array<UpdateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode } | null } };
+
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, spatialResolution: number, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, createdAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, owner: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, spatialResolution: number, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
   countries?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  teams?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, country: { __typename?: 'Country', name: string, flag: string, code: string }, owner: { __typename?: 'User', firstName?: string | null, email: string, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } }> } };
 
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
@@ -1011,14 +1411,14 @@ export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { 
 export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SettingsPageQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null };
+export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null } };
 
 export type TeamPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type TeamPageQuery = { __typename?: 'Query', team?: { __typename?: 'Team', id: string, name: string, createdAt: any } | null };
+export type TeamPageQuery = { __typename?: 'Query', team?: { __typename?: 'Team', id: string, name: string, createdAt: any, authorizedActions: Array<TeamAuthorizedActions> } | null };
 
 export type TeamsPageQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -1026,8 +1426,24 @@ export type TeamsPageQueryVariables = Exact<{
 }>;
 
 
-export type TeamsPageQuery = { __typename?: 'Query', teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
+export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
 
+export const Navbar_NavbarFragmentDoc = gql`
+    fragment Navbar_navbar on Query {
+  teams(page: 1, perPage: 5) {
+    items {
+      id
+      name
+    }
+  }
+  projects: accessmodProjects(page: 1, perPage: 5) {
+    items {
+      id
+      name
+    }
+  }
+}
+    `;
 export const UserMenu_UserFragmentDoc = gql`
     fragment UserMenu_user on User {
   avatar {
@@ -1051,6 +1467,7 @@ export const InviteTeamMemberDialog_TeamFragmentDoc = gql`
 export const InviteTeamMemberTrigger_TeamFragmentDoc = gql`
     fragment InviteTeamMemberTrigger_team on Team {
   ...InviteTeamMemberDialog_team
+  authorizedActions
 }
     ${InviteTeamMemberDialog_TeamFragmentDoc}`;
 export const TeamMembersTable_TeamFragmentDoc = gql`
@@ -1070,6 +1487,7 @@ export const AnalysisActionsButton_AnalysisFragmentDoc = gql`
   name
   status
   type
+  authorizedActions
 }
     `;
 export const DatasetFormDialog_ProjectFragmentDoc = gql`
@@ -1081,6 +1499,7 @@ export const DatasetFormDialog_ProjectFragmentDoc = gql`
 export const DatasetPicker_ProjectFragmentDoc = gql`
     fragment DatasetPicker_project on AccessmodProject {
   id
+  authorizedActions
   ...DatasetFormDialog_project
 }
     ${DatasetFormDialog_ProjectFragmentDoc}`;
@@ -1184,40 +1603,34 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
   status
 }
     `;
-export const User_UserFragmentDoc = gql`
-    fragment User_user on User {
-  firstName
-  lastName
-  email
-  id
-  avatar {
-    initials
-    color
-  }
-}
-    `;
 export const ProjectCard_ProjectFragmentDoc = gql`
     fragment ProjectCard_project on AccessmodProject {
   id
   name
   spatialResolution
+  description
+  updatedAt
+  permissions {
+    user {
+      firstName
+      lastName
+      avatar {
+        initials
+        color
+      }
+    }
+    team {
+      name
+    }
+    mode
+  }
   country {
     name
     flag
     code
   }
-  owner {
-    ...User_user
-    firstName
-    email
-    lastName
-    avatar {
-      initials
-      color
-    }
-  }
 }
-    ${User_UserFragmentDoc}`;
+    `;
 export const ProjectsList_ProjectsFragmentDoc = gql`
     fragment ProjectsList_projects on AccessmodProjectPage {
   items {
@@ -1228,10 +1641,43 @@ export const ProjectsList_ProjectsFragmentDoc = gql`
   totalPages
 }
     ${ProjectCard_ProjectFragmentDoc}`;
+export const DeleteMembershipTrigger_MembershipFragmentDoc = gql`
+    fragment DeleteMembershipTrigger_membership on Membership {
+  id
+  authorizedActions
+  user {
+    firstName
+    lastName
+  }
+  team {
+    id
+    name
+  }
+}
+    `;
+export const DeleteTeamTrigger_TeamFragmentDoc = gql`
+    fragment DeleteTeamTrigger_team on Team {
+  id
+  name
+  authorizedActions
+}
+    `;
+export const TeamFormDialog_TeamFragmentDoc = gql`
+    fragment TeamFormDialog_team on Team {
+  id
+  name
+}
+    `;
+export const TeamProjectsTable_TeamFragmentDoc = gql`
+    fragment TeamProjectsTable_team on Team {
+  id
+}
+    `;
 export const DeleteProjectTrigger_ProjectFragmentDoc = gql`
     fragment DeleteProjectTrigger_project on AccessmodProject {
   id
   name
+  authorizedActions
 }
     `;
 export const ProjectActionsMenu_ProjectFragmentDoc = gql`
@@ -1246,10 +1692,22 @@ export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
   id
 }
     `;
+export const User_UserFragmentDoc = gql`
+    fragment User_user on User {
+  firstName
+  lastName
+  email
+  id
+  avatar {
+    initials
+    color
+  }
+}
+    `;
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
   id
-  owner {
+  author {
     ...User_user
   }
 }
@@ -1262,11 +1720,13 @@ export const CreateAnalysisDialog_ProjectFragmentDoc = gql`
 export const CreateAnalysisTrigger_ProjectFragmentDoc = gql`
     fragment CreateAnalysisTrigger_project on AccessmodProject {
   ...CreateAnalysisDialog_project
+  authorizedActions
 }
     ${CreateAnalysisDialog_ProjectFragmentDoc}`;
 export const CreateDatasetTrigger_ProjectFragmentDoc = gql`
     fragment CreateDatasetTrigger_project on AccessmodProject {
   ...DatasetFormDialog_project
+  authorizedActions
 }
     ${DatasetFormDialog_ProjectFragmentDoc}`;
 export const EditProjectFormBlock_ProjectFragmentDoc = gql`
@@ -1274,17 +1734,71 @@ export const EditProjectFormBlock_ProjectFragmentDoc = gql`
   id
 }
     `;
+export const ProjectPermissionPicker_ProjectFragmentDoc = gql`
+    fragment ProjectPermissionPicker_project on AccessmodProject {
+  permissions {
+    mode
+    id
+  }
+}
+    `;
+export const CreateMembershipForm_ProjectFragmentDoc = gql`
+    fragment CreateMembershipForm_project on AccessmodProject {
+  id
+  ...ProjectPermissionPicker_project
+  permissions {
+    mode
+    team {
+      __typename
+      id
+    }
+  }
+}
+    ${ProjectPermissionPicker_ProjectFragmentDoc}`;
+export const DeleteProjectPermissionTrigger_ProjectFragmentDoc = gql`
+    fragment DeleteProjectPermissionTrigger_project on AccessmodProject {
+  id
+  authorizedActions
+}
+    `;
+export const ProjectPermissionPicker_PermissionFragmentDoc = gql`
+    fragment ProjectPermissionPicker_permission on AccessmodProjectPermission {
+  id
+  mode
+}
+    `;
 export const ProjectPage_ProjectFragmentDoc = gql`
     fragment ProjectPage_project on AccessmodProject {
   id
   name
   crs
+  description
   ...ProjectActionsMenu_project
   ...ProjectAnalysesTable_project
   ...ProjectDatasetsTable_project
   ...CreateAnalysisTrigger_project
   ...CreateDatasetTrigger_project
   ...EditProjectFormBlock_project
+  ...CreateMembershipForm_project
+  ...ProjectPermissionPicker_project
+  ...DeleteProjectPermissionTrigger_project
+  authorizedActions
+  permissions {
+    id
+    team {
+      __typename
+      id
+      name
+    }
+    user {
+      __typename
+      ...User_user
+    }
+    mode
+    createdAt
+    updatedAt
+    ...ProjectPermissionPicker_permission
+  }
   country {
     name
     code
@@ -1292,7 +1806,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   }
   createdAt
   spatialResolution
-  owner {
+  author {
     ...User_user
     email
   }
@@ -1303,45 +1817,46 @@ ${ProjectDatasetsTable_ProjectFragmentDoc}
 ${CreateAnalysisTrigger_ProjectFragmentDoc}
 ${CreateDatasetTrigger_ProjectFragmentDoc}
 ${EditProjectFormBlock_ProjectFragmentDoc}
-${User_UserFragmentDoc}`;
-export const NavbarDocument = gql`
-    query Navbar {
-  accessmodProjects(page: 1, perPage: 5) {
-    items {
-      id
-      name
-    }
-    totalPages
+${CreateMembershipForm_ProjectFragmentDoc}
+${ProjectPermissionPicker_ProjectFragmentDoc}
+${DeleteProjectPermissionTrigger_ProjectFragmentDoc}
+${User_UserFragmentDoc}
+${ProjectPermissionPicker_PermissionFragmentDoc}`;
+export const HeaderDocument = gql`
+    query Header {
+  me {
+    authorizedActions
   }
+  ...Navbar_navbar
 }
-    `;
+    ${Navbar_NavbarFragmentDoc}`;
 
 /**
- * __useNavbarQuery__
+ * __useHeaderQuery__
  *
- * To run a query within a React component, call `useNavbarQuery` and pass it any options that fit your needs.
- * When your component renders, `useNavbarQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHeaderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHeaderQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useNavbarQuery({
+ * const { data, loading, error } = useHeaderQuery({
  *   variables: {
  *   },
  * });
  */
-export function useNavbarQuery(baseOptions?: Apollo.QueryHookOptions<NavbarQuery, NavbarQueryVariables>) {
+export function useHeaderQuery(baseOptions?: Apollo.QueryHookOptions<HeaderQuery, HeaderQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<NavbarQuery, NavbarQueryVariables>(NavbarDocument, options);
+        return Apollo.useQuery<HeaderQuery, HeaderQueryVariables>(HeaderDocument, options);
       }
-export function useNavbarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NavbarQuery, NavbarQueryVariables>) {
+export function useHeaderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HeaderQuery, HeaderQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<NavbarQuery, NavbarQueryVariables>(NavbarDocument, options);
+          return Apollo.useLazyQuery<HeaderQuery, HeaderQueryVariables>(HeaderDocument, options);
         }
-export type NavbarQueryHookResult = ReturnType<typeof useNavbarQuery>;
-export type NavbarLazyQueryHookResult = ReturnType<typeof useNavbarLazyQuery>;
-export type NavbarQueryResult = Apollo.QueryResult<NavbarQuery, NavbarQueryVariables>;
+export type HeaderQueryHookResult = ReturnType<typeof useHeaderQuery>;
+export type HeaderLazyQueryHookResult = ReturnType<typeof useHeaderLazyQuery>;
+export type HeaderQueryResult = Apollo.QueryResult<HeaderQuery, HeaderQueryVariables>;
 export const CreateAccessibilityAnalysisDocument = gql`
     mutation CreateAccessibilityAnalysis($input: CreateAccessmodAccessibilityAnalysisInput) {
   response: createAccessmodAccessibilityAnalysis(input: $input) {
@@ -1514,6 +2029,78 @@ export function useFilesetRolePickerLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FilesetRolePickerQueryHookResult = ReturnType<typeof useFilesetRolePickerQuery>;
 export type FilesetRolePickerLazyQueryHookResult = ReturnType<typeof useFilesetRolePickerLazyQuery>;
 export type FilesetRolePickerQueryResult = Apollo.QueryResult<FilesetRolePickerQuery, FilesetRolePickerQueryVariables>;
+export const CreateMembershipDocument = gql`
+    mutation CreateMembership($input: CreateMembershipInput!) {
+  createMembership(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type CreateMembershipMutationFn = Apollo.MutationFunction<CreateMembershipMutation, CreateMembershipMutationVariables>;
+
+/**
+ * __useCreateMembershipMutation__
+ *
+ * To run a mutation, you first call `useCreateMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMembershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMembershipMutation, { data, loading, error }] = useCreateMembershipMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateMembershipMutation(baseOptions?: Apollo.MutationHookOptions<CreateMembershipMutation, CreateMembershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMembershipMutation, CreateMembershipMutationVariables>(CreateMembershipDocument, options);
+      }
+export type CreateMembershipMutationHookResult = ReturnType<typeof useCreateMembershipMutation>;
+export type CreateMembershipMutationResult = Apollo.MutationResult<CreateMembershipMutation>;
+export type CreateMembershipMutationOptions = Apollo.BaseMutationOptions<CreateMembershipMutation, CreateMembershipMutationVariables>;
+export const UpdateMembershipDocument = gql`
+    mutation UpdateMembership($input: UpdateMembershipInput!) {
+  updateMembership(input: $input) {
+    success
+    errors
+    membership {
+      id
+      role
+    }
+  }
+}
+    `;
+export type UpdateMembershipMutationFn = Apollo.MutationFunction<UpdateMembershipMutation, UpdateMembershipMutationVariables>;
+
+/**
+ * __useUpdateMembershipMutation__
+ *
+ * To run a mutation, you first call `useUpdateMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMembershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMembershipMutation, { data, loading, error }] = useUpdateMembershipMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMembershipMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMembershipMutation, UpdateMembershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMembershipMutation, UpdateMembershipMutationVariables>(UpdateMembershipDocument, options);
+      }
+export type UpdateMembershipMutationHookResult = ReturnType<typeof useUpdateMembershipMutation>;
+export type UpdateMembershipMutationResult = Apollo.MutationResult<UpdateMembershipMutation>;
+export type UpdateMembershipMutationOptions = Apollo.BaseMutationOptions<UpdateMembershipMutation, UpdateMembershipMutationVariables>;
 export const TeamMembersTableDocument = gql`
     query TeamMembersTable($teamId: String!) {
   team(id: $teamId) {
@@ -1522,7 +2109,9 @@ export const TeamMembersTableDocument = gql`
       totalPages
       pageNumber
       items {
+        ...DeleteMembershipTrigger_membership
         id
+        authorizedActions
         createdAt
         updatedAt
         role
@@ -1533,7 +2122,8 @@ export const TeamMembersTableDocument = gql`
     }
   }
 }
-    ${User_UserFragmentDoc}`;
+    ${DeleteMembershipTrigger_MembershipFragmentDoc}
+${User_UserFragmentDoc}`;
 
 /**
  * __useTeamMembersTableQuery__
@@ -1599,6 +2189,43 @@ export function useUpdateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type UpdateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useUpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationResult = Apollo.MutationResult<UpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
+export const CreateProjectMembershipDocument = gql`
+    mutation CreateProjectMembership($input: CreateAccessmodProjectPermissionInput!) {
+  createAccessmodProjectPermission(input: $input) {
+    success
+    errors
+    permission {
+      id
+    }
+  }
+}
+    `;
+export type CreateProjectMembershipMutationFn = Apollo.MutationFunction<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>;
+
+/**
+ * __useCreateProjectMembershipMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMembershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMembershipMutation, { data, loading, error }] = useCreateProjectMembershipMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProjectMembershipMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>(CreateProjectMembershipDocument, options);
+      }
+export type CreateProjectMembershipMutationHookResult = ReturnType<typeof useCreateProjectMembershipMutation>;
+export type CreateProjectMembershipMutationResult = Apollo.MutationResult<CreateProjectMembershipMutation>;
+export type CreateProjectMembershipMutationOptions = Apollo.BaseMutationOptions<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($input: CreateAccessmodProjectInput) {
   createAccessmodProject(input: $input) {
@@ -1636,6 +2263,39 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const DeleteProjectPermissionDocument = gql`
+    mutation DeleteProjectPermission($input: DeleteAccessmodProjectPermissionInput!) {
+  deleteAccessmodProjectPermission(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteProjectPermissionMutationFn = Apollo.MutationFunction<DeleteProjectPermissionMutation, DeleteProjectPermissionMutationVariables>;
+
+/**
+ * __useDeleteProjectPermissionMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectPermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectPermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectPermissionMutation, { data, loading, error }] = useDeleteProjectPermissionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteProjectPermissionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectPermissionMutation, DeleteProjectPermissionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectPermissionMutation, DeleteProjectPermissionMutationVariables>(DeleteProjectPermissionDocument, options);
+      }
+export type DeleteProjectPermissionMutationHookResult = ReturnType<typeof useDeleteProjectPermissionMutation>;
+export type DeleteProjectPermissionMutationResult = Apollo.MutationResult<DeleteProjectPermissionMutation>;
+export type DeleteProjectPermissionMutationOptions = Apollo.BaseMutationOptions<DeleteProjectPermissionMutation, DeleteProjectPermissionMutationVariables>;
 export const DeleteProjectDocument = gql`
     mutation DeleteProject($input: DeleteAccessmodProjectInput) {
   deleteAccessmodProject(input: $input) {
@@ -1675,6 +2335,7 @@ export const EditProjectDocument = gql`
     id
     name
     crs
+    description
     spatialResolution
   }
 }
@@ -1715,6 +2376,7 @@ export const UpdateProjectDocument = gql`
     project {
       id
       name
+      description
       crs
       spatialResolution
     }
@@ -1849,7 +2511,7 @@ export const ProjectDatasetsTableDocument = gql`
         id
         format
       }
-      owner {
+      author {
         id
         firstName
         lastName
@@ -1978,6 +2640,236 @@ export function useProjectPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ProjectPickerQueryHookResult = ReturnType<typeof useProjectPickerQuery>;
 export type ProjectPickerLazyQueryHookResult = ReturnType<typeof useProjectPickerLazyQuery>;
 export type ProjectPickerQueryResult = Apollo.QueryResult<ProjectPickerQuery, ProjectPickerQueryVariables>;
+export const DeleteMembershipDocument = gql`
+    mutation DeleteMembership($input: DeleteMembershipInput!) {
+  deleteMembership(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type DeleteMembershipMutationFn = Apollo.MutationFunction<DeleteMembershipMutation, DeleteMembershipMutationVariables>;
+
+/**
+ * __useDeleteMembershipMutation__
+ *
+ * To run a mutation, you first call `useDeleteMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMembershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMembershipMutation, { data, loading, error }] = useDeleteMembershipMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteMembershipMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMembershipMutation, DeleteMembershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMembershipMutation, DeleteMembershipMutationVariables>(DeleteMembershipDocument, options);
+      }
+export type DeleteMembershipMutationHookResult = ReturnType<typeof useDeleteMembershipMutation>;
+export type DeleteMembershipMutationResult = Apollo.MutationResult<DeleteMembershipMutation>;
+export type DeleteMembershipMutationOptions = Apollo.BaseMutationOptions<DeleteMembershipMutation, DeleteMembershipMutationVariables>;
+export const DeleteTeamDocument = gql`
+    mutation DeleteTeam($input: DeleteTeamInput!) {
+  deleteTeam(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type DeleteTeamMutationFn = Apollo.MutationFunction<DeleteTeamMutation, DeleteTeamMutationVariables>;
+
+/**
+ * __useDeleteTeamMutation__
+ *
+ * To run a mutation, you first call `useDeleteTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTeamMutation, { data, loading, error }] = useDeleteTeamMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteTeamMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTeamMutation, DeleteTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTeamMutation, DeleteTeamMutationVariables>(DeleteTeamDocument, options);
+      }
+export type DeleteTeamMutationHookResult = ReturnType<typeof useDeleteTeamMutation>;
+export type DeleteTeamMutationResult = Apollo.MutationResult<DeleteTeamMutation>;
+export type DeleteTeamMutationOptions = Apollo.BaseMutationOptions<DeleteTeamMutation, DeleteTeamMutationVariables>;
+export const CreateTeamDocument = gql`
+    mutation CreateTeam($input: CreateTeamInput!) {
+  result: createTeam(input: $input) {
+    success
+    team {
+      id
+    }
+    errors
+  }
+}
+    `;
+export type CreateTeamMutationFn = Apollo.MutationFunction<CreateTeamMutation, CreateTeamMutationVariables>;
+
+/**
+ * __useCreateTeamMutation__
+ *
+ * To run a mutation, you first call `useCreateTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTeamMutation, { data, loading, error }] = useCreateTeamMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<CreateTeamMutation, CreateTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTeamMutation, CreateTeamMutationVariables>(CreateTeamDocument, options);
+      }
+export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
+export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
+export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
+export const UpdateTeamDocument = gql`
+    mutation UpdateTeam($input: UpdateTeamInput!) {
+  result: updateTeam(input: $input) {
+    success
+    team {
+      id
+      name
+    }
+    errors
+  }
+}
+    `;
+export type UpdateTeamMutationFn = Apollo.MutationFunction<UpdateTeamMutation, UpdateTeamMutationVariables>;
+
+/**
+ * __useUpdateTeamMutation__
+ *
+ * To run a mutation, you first call `useUpdateTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTeamMutation, { data, loading, error }] = useUpdateTeamMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTeamMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTeamMutation, UpdateTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTeamMutation, UpdateTeamMutationVariables>(UpdateTeamDocument, options);
+      }
+export type UpdateTeamMutationHookResult = ReturnType<typeof useUpdateTeamMutation>;
+export type UpdateTeamMutationResult = Apollo.MutationResult<UpdateTeamMutation>;
+export type UpdateTeamMutationOptions = Apollo.BaseMutationOptions<UpdateTeamMutation, UpdateTeamMutationVariables>;
+export const TeamPickerDocument = gql`
+    query TeamPicker($page: Int = 1, $perPage: Int = 15, $term: String) {
+  teams(page: $page, perPage: $perPage, term: $term) {
+    items {
+      id
+      name
+    }
+    totalItems
+  }
+}
+    `;
+
+/**
+ * __useTeamPickerQuery__
+ *
+ * To run a query within a React component, call `useTeamPickerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamPickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamPickerQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      term: // value for 'term'
+ *   },
+ * });
+ */
+export function useTeamPickerQuery(baseOptions?: Apollo.QueryHookOptions<TeamPickerQuery, TeamPickerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamPickerQuery, TeamPickerQueryVariables>(TeamPickerDocument, options);
+      }
+export function useTeamPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamPickerQuery, TeamPickerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamPickerQuery, TeamPickerQueryVariables>(TeamPickerDocument, options);
+        }
+export type TeamPickerQueryHookResult = ReturnType<typeof useTeamPickerQuery>;
+export type TeamPickerLazyQueryHookResult = ReturnType<typeof useTeamPickerLazyQuery>;
+export type TeamPickerQueryResult = Apollo.QueryResult<TeamPickerQuery, TeamPickerQueryVariables>;
+export const TeamProjectsTableDocument = gql`
+    query TeamProjectsTable($page: Int! = 1, $perPage: Int = 10, $teamIds: [String!]!) {
+  projects: accessmodProjects(teams: $teamIds, page: $page, perPage: $perPage) {
+    totalPages
+    totalItems
+    items {
+      id
+      name
+      createdAt
+      author {
+        ...User_user
+      }
+    }
+  }
+}
+    ${User_UserFragmentDoc}`;
+
+/**
+ * __useTeamProjectsTableQuery__
+ *
+ * To run a query within a React component, call `useTeamProjectsTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamProjectsTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamProjectsTableQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      teamIds: // value for 'teamIds'
+ *   },
+ * });
+ */
+export function useTeamProjectsTableQuery(baseOptions: Apollo.QueryHookOptions<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>(TeamProjectsTableDocument, options);
+      }
+export function useTeamProjectsTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>(TeamProjectsTableDocument, options);
+        }
+export type TeamProjectsTableQueryHookResult = ReturnType<typeof useTeamProjectsTableQuery>;
+export type TeamProjectsTableLazyQueryHookResult = ReturnType<typeof useTeamProjectsTableLazyQuery>;
+export type TeamProjectsTableQueryResult = Apollo.QueryResult<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>;
 export const LaunchAccessmodAnalysisDocument = gql`
     mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
   launchAccessmodAnalysis(input: $input) {
@@ -2019,13 +2911,15 @@ export type LaunchAccessmodAnalysisMutationOptions = Apollo.BaseMutationOptions<
 export const MeQueryDocument = gql`
     query MeQuery {
   me {
-    email
-    id
-    firstName
-    lastName
-    avatar {
-      initials
-      color
+    user {
+      email
+      id
+      firstName
+      lastName
+      avatar {
+        initials
+        color
+      }
     }
   }
 }
@@ -2234,10 +3128,6 @@ export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
     success
-    me {
-      id
-      email
-    }
   }
 }
     `;
@@ -2280,6 +3170,7 @@ export const AnalysisEditPageDocument = gql`
     type
     name
     status
+    authorizedActions
     ...AnalysisForm_analysis
   }
 }
@@ -2332,7 +3223,7 @@ export const AnalysisDetailPageDocument = gql`
     ...AnalysisActionsButton_analysis
     ...AnalysisStatus_analysis
     ...AnalysisOutput_analysis
-    owner {
+    author {
       ...User_user
     }
     ... on AccessmodAccessibilityAnalysis {
@@ -2438,6 +3329,7 @@ export const ProjectDataPageDocument = gql`
   accessmodProject(id: $id) {
     id
     name
+    authorizedActions
     ...DatasetFormDialog_project
     ...ProjectDatasetsTable_project
   }
@@ -2472,6 +3364,44 @@ export function useProjectDataPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type ProjectDataPageQueryHookResult = ReturnType<typeof useProjectDataPageQuery>;
 export type ProjectDataPageLazyQueryHookResult = ReturnType<typeof useProjectDataPageLazyQuery>;
 export type ProjectDataPageQueryResult = Apollo.QueryResult<ProjectDataPageQuery, ProjectDataPageQueryVariables>;
+export const UpdateProjectPermissionDocument = gql`
+    mutation UpdateProjectPermission($input: UpdateAccessmodProjectPermissionInput!) {
+  updateAccessmodProjectPermission(input: $input) {
+    success
+    permission {
+      id
+      mode
+    }
+    errors
+  }
+}
+    `;
+export type UpdateProjectPermissionMutationFn = Apollo.MutationFunction<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>;
+
+/**
+ * __useUpdateProjectPermissionMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectPermissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectPermissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectPermissionMutation, { data, loading, error }] = useUpdateProjectPermissionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectPermissionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>(UpdateProjectPermissionDocument, options);
+      }
+export type UpdateProjectPermissionMutationHookResult = ReturnType<typeof useUpdateProjectPermissionMutation>;
+export type UpdateProjectPermissionMutationResult = Apollo.MutationResult<UpdateProjectPermissionMutation>;
+export type UpdateProjectPermissionMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>;
 export const ProjectPageDocument = gql`
     query ProjectPage($id: String!) {
   project: accessmodProject(id: $id) {
@@ -2508,9 +3438,10 @@ export type ProjectPageQueryHookResult = ReturnType<typeof useProjectPageQuery>;
 export type ProjectPageLazyQueryHookResult = ReturnType<typeof useProjectPageLazyQuery>;
 export type ProjectPageQueryResult = Apollo.QueryResult<ProjectPageQuery, ProjectPageQueryVariables>;
 export const ProjectsPageDocument = gql`
-    query ProjectsPage($term: String, $countries: [String!], $page: Int = 1, $perPage: Int = 20) {
+    query ProjectsPage($term: String, $countries: [String!], $teams: [String!], $page: Int = 1, $perPage: Int = 20) {
   accessmodProjects(
     term: $term
+    teams: $teams
     countries: $countries
     page: $page
     perPage: $perPage
@@ -2540,6 +3471,7 @@ export const ProjectsPageDocument = gql`
  *   variables: {
  *      term: // value for 'term'
  *      countries: // value for 'countries'
+ *      teams: // value for 'teams'
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *   },
@@ -2592,10 +3524,12 @@ export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPassw
 export const SettingsPageDocument = gql`
     query SettingsPage {
   me {
-    id
-    email
-    firstName
-    lastName
+    user {
+      id
+      email
+      firstName
+      lastName
+    }
   }
 }
     `;
@@ -2632,12 +3566,19 @@ export const TeamPageDocument = gql`
     id
     name
     createdAt
+    authorizedActions
     ...TeamMembersTable_team
     ...InviteTeamMemberTrigger_team
+    ...TeamFormDialog_team
+    ...DeleteTeamTrigger_team
+    ...TeamProjectsTable_team
   }
 }
     ${TeamMembersTable_TeamFragmentDoc}
-${InviteTeamMemberTrigger_TeamFragmentDoc}`;
+${InviteTeamMemberTrigger_TeamFragmentDoc}
+${TeamFormDialog_TeamFragmentDoc}
+${DeleteTeamTrigger_TeamFragmentDoc}
+${TeamProjectsTable_TeamFragmentDoc}`;
 
 /**
  * __useTeamPageQuery__
@@ -2668,6 +3609,9 @@ export type TeamPageLazyQueryHookResult = ReturnType<typeof useTeamPageLazyQuery
 export type TeamPageQueryResult = Apollo.QueryResult<TeamPageQuery, TeamPageQueryVariables>;
 export const TeamsPageDocument = gql`
     query TeamsPage($page: Int = 1, $perPage: Int = 20) {
+  me {
+    authorizedActions
+  }
   teams(page: $page, perPage: $perPage) {
     pageNumber
     totalPages

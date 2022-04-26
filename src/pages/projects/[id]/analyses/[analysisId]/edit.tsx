@@ -6,6 +6,7 @@ import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisForm from "features/analysis/AnalysisForm";
 import { getLabelFromAnalysisType } from "libs/analysis";
 import {
+  AccessmodAnalysisAuthorizedActions,
   AccessmodAnalysisStatus,
   AnalysisEditPageQuery,
   useAnalysisEditPageQuery,
@@ -109,6 +110,7 @@ export const getServerSideProps = createGetServerSideProps({
             type
             name
             status
+            authorizedActions
             ...AnalysisForm_analysis
           }
         }
@@ -123,7 +125,10 @@ export const getServerSideProps = createGetServerSideProps({
         AccessmodAnalysisStatus.Draft,
         AccessmodAnalysisStatus.Ready,
         undefined,
-      ].includes(response.data?.analysis?.status)
+      ].includes(response.data?.analysis?.status) ||
+      !response.data?.analysis?.authorizedActions.includes(
+        AccessmodAnalysisAuthorizedActions.Update
+      )
     ) {
       return {
         notFound: true,
