@@ -51,7 +51,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "filesize": "^8.0.7",
-    "graphql": "^16.4.0",
+    "graphql": "^15.0.0",
     "husky": "^7.0.4",
     "isomorphic-unfetch": "^3.1.0",
     "jest-environment-jsdom": "^28.0.1",
