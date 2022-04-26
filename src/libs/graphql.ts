@@ -1266,6 +1266,10 @@ export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __type
 
 export type DeleteTeamTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
 
+export type EditTeamTrigger_TeamFragment = { __typename?: 'Team', authorizedActions: Array<TeamAuthorizedActions>, id: string, name: string };
+
+export type TeamActionsMenu_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
+
 export type CreateTeamMutationVariables = Exact<{
   input: CreateTeamInput;
 }>;
@@ -1695,6 +1699,18 @@ export const DeleteMembershipTrigger_MembershipFragmentDoc = gql`
   }
 }
     `;
+export const TeamFormDialog_TeamFragmentDoc = gql`
+    fragment TeamFormDialog_team on Team {
+  id
+  name
+}
+    `;
+export const EditTeamTrigger_TeamFragmentDoc = gql`
+    fragment EditTeamTrigger_team on Team {
+  ...TeamFormDialog_team
+  authorizedActions
+}
+    ${TeamFormDialog_TeamFragmentDoc}`;
 export const DeleteTeamTrigger_TeamFragmentDoc = gql`
     fragment DeleteTeamTrigger_team on Team {
   id
@@ -1702,12 +1718,13 @@ export const DeleteTeamTrigger_TeamFragmentDoc = gql`
   authorizedActions
 }
     `;
-export const TeamFormDialog_TeamFragmentDoc = gql`
-    fragment TeamFormDialog_team on Team {
+export const TeamActionsMenu_TeamFragmentDoc = gql`
+    fragment TeamActionsMenu_team on Team {
   id
   name
+  ...DeleteTeamTrigger_team
 }
-    `;
+    ${DeleteTeamTrigger_TeamFragmentDoc}`;
 export const TeamProjectsTable_TeamFragmentDoc = gql`
     fragment TeamProjectsTable_team on Team {
   id
@@ -3688,15 +3705,15 @@ export const TeamPageDocument = gql`
     ...TeamMembersTable_team
     ...InviteTeamMemberTrigger_team
     ...TeamFormDialog_team
-    ...DeleteTeamTrigger_team
     ...TeamProjectsTable_team
+    ...TeamActionsMenu_team
   }
 }
     ${TeamMembersTable_TeamFragmentDoc}
 ${InviteTeamMemberTrigger_TeamFragmentDoc}
 ${TeamFormDialog_TeamFragmentDoc}
-${DeleteTeamTrigger_TeamFragmentDoc}
-${TeamProjectsTable_TeamFragmentDoc}`;
+${TeamProjectsTable_TeamFragmentDoc}
+${TeamActionsMenu_TeamFragmentDoc}`;
 
 /**
  * __useTeamPageQuery__

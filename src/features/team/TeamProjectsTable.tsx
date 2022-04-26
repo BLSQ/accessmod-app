@@ -58,47 +58,47 @@ const TeamProjectsTable: NextPageWithPrefetch & NextPageWithFragments = ({
 
   return (
     <div>
-      <table className="who">
-        <thead>
-          <tr>
-            <th>{t("Name")}</th>
-            <th>{t("Author")}</th>
-            <th>{t("Created on")}</th>
-            <th>
-              <span className="sr-only">{t("Actions")}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.items.map((project) => (
-            <tr
-              key={project.id}
-              className="cursor-pointer"
-              onClick={(e) => onRowClick(e, project)}
-            >
-              <td>
-                <Link
-                  href={{
-                    pathname: routes.project,
-                    query: { projectId: project.id },
-                  }}
-                >
-                  <a className="hover:underline">{project.name}</a>
-                </Link>
-              </td>
-              <td>
-                <User user={project.author} small />
-              </td>
-              <td>
-                <Time datetime={project.createdAt} />
-              </td>
-              <td></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {projects.items.length > 0 ? (
+      {projects.items.length > 0 && (
         <>
+          <table className="who">
+            <thead>
+              <tr>
+                <th>{t("Name")}</th>
+                <th>{t("Author")}</th>
+                <th>{t("Created on")}</th>
+                <th>
+                  <span className="sr-only">{t("Actions")}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.items.map((project) => (
+                <tr
+                  key={project.id}
+                  className="cursor-pointer"
+                  onClick={(e) => onRowClick(e, project)}
+                >
+                  <td>
+                    <Link
+                      href={{
+                        pathname: routes.project,
+                        query: { projectId: project.id },
+                      }}
+                    >
+                      <a className="hover:underline">{project.name}</a>
+                    </Link>
+                  </td>
+                  <td>
+                    <User user={project.author} small />
+                  </td>
+                  <td>
+                    <Time datetime={project.createdAt} />
+                  </td>
+                  <td></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           <footer className="mt-6">
             <Pagination
               perPage={10}
@@ -111,7 +111,8 @@ const TeamProjectsTable: NextPageWithPrefetch & NextPageWithFragments = ({
             />
           </footer>
         </>
-      ) : (
+      )}
+      {projects.items.length === 0 && (
         <p className="text-center text-sm italic text-gray-700">
           {t("There is no project linked to this team")}
         </p>

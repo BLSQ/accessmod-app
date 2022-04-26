@@ -5,17 +5,12 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
-import Toggle from "components/Toggle";
 import InviteTeamMemberTrigger from "features/InviteTeamMemberTrigger";
-import DeleteTeamTrigger from "features/team/DeleteTeamTrigger";
+import TeamActionsMenu from "features/team/TeamActionsMenu";
 import TeamFormDialog from "features/team/TeamFormDialog";
 import TeamProjectsTable from "features/team/TeamProjectsTable";
 import TeamMembersTable from "features/TeamMembersTable";
-import {
-  TeamAuthorizedActions,
-  TeamPageQueryVariables,
-  useTeamPageQuery,
-} from "libs/graphql";
+import { TeamPageQueryVariables, useTeamPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
@@ -51,32 +46,7 @@ const TeamPage = ({
         </Breadcrumbs>
         <div className="flex items-start justify-between gap-2">
           <h1 className="text-3xl font-bold text-white">{team.name}</h1>
-
-          <div className="flex items-center gap-2">
-            <Toggle>
-              {({ toggle, isToggled }) => (
-                <>
-                  <TeamFormDialog
-                    onClose={toggle}
-                    open={isToggled}
-                    team={team}
-                  />
-                  <Button
-                    onClick={toggle}
-                    variant="white"
-                    disabled={
-                      !team.authorizedActions.includes(
-                        TeamAuthorizedActions.Update
-                      )
-                    }
-                  >
-                    {t("Edit")}
-                  </Button>
-                </>
-              )}
-            </Toggle>
-            <DeleteTeamTrigger team={team} />
-          </div>
+          <TeamActionsMenu team={team} />
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
@@ -134,14 +104,14 @@ export const getServerSideProps = createGetServerSideProps({
             ...TeamMembersTable_team
             ...InviteTeamMemberTrigger_team
             ...TeamFormDialog_team
-            ...DeleteTeamTrigger_team
             ...TeamProjectsTable_team
+            ...TeamActionsMenu_team
           }
         }
+        ${TeamActionsMenu.fragments.team}
         ${InviteTeamMemberTrigger.fragments.team}
         ${TeamMembersTable.fragments.team}
         ${TeamFormDialog.fragments.team}
-        ${DeleteTeamTrigger.fragments.team}
         ${TeamProjectsTable.fragments.team}
       `,
       variables,
