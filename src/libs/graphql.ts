@@ -1067,7 +1067,14 @@ export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?
 
 export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
-export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', status: AccessmodFilesetStatus };
+export type PollDatasetStatusQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type PollDatasetStatusQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus, metadata: any } | null };
+
+export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus };
 
 export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
@@ -1486,6 +1493,7 @@ export const DatasetFormDialog_DatasetFragmentDoc = gql`
     `;
 export const DatasetStatusBadge_DatasetFragmentDoc = gql`
     fragment DatasetStatusBadge_dataset on AccessmodFileset {
+  id
   status
 }
     `;
@@ -2078,6 +2086,43 @@ export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
 export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
 export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
+export const PollDatasetStatusDocument = gql`
+    query PollDatasetStatus($id: String!) {
+  dataset: accessmodFileset(id: $id) {
+    id
+    status
+    metadata
+  }
+}
+    `;
+
+/**
+ * __usePollDatasetStatusQuery__
+ *
+ * To run a query within a React component, call `usePollDatasetStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePollDatasetStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollDatasetStatusQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePollDatasetStatusQuery(baseOptions: Apollo.QueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
+      }
+export function usePollDatasetStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
+        }
+export type PollDatasetStatusQueryHookResult = ReturnType<typeof usePollDatasetStatusQuery>;
+export type PollDatasetStatusLazyQueryHookResult = ReturnType<typeof usePollDatasetStatusLazyQuery>;
+export type PollDatasetStatusQueryResult = Apollo.QueryResult<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -3425,6 +3470,7 @@ export const DatasetDetailPageDocument = gql`
     ...DownloadDatasetButton_dataset
     ...TabularDatasetTable_dataset
     ...DeleteDatasetTrigger_dataset
+    ...VectorDatasetMap_dataset
     id
     name
     createdAt
@@ -3450,6 +3496,7 @@ export const DatasetDetailPageDocument = gql`
 ${DownloadDatasetButton_DatasetFragmentDoc}
 ${TabularDatasetTable_DatasetFragmentDoc}
 ${DeleteDatasetTrigger_DatasetFragmentDoc}
+${VectorDatasetMap_DatasetFragmentDoc}
 ${User_UserFragmentDoc}`;
 
 /**

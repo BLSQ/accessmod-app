@@ -173,6 +173,7 @@ export const getServerSideProps = createGetServerSideProps({
             ...DownloadDatasetButton_dataset
             ...TabularDatasetTable_dataset
             ...DeleteDatasetTrigger_dataset
+            ...VectorDatasetMap_dataset
             id
             name
             createdAt
@@ -199,6 +200,7 @@ export const getServerSideProps = createGetServerSideProps({
         ${DeleteDatasetTrigger.fragments.project}
         ${User.fragments.user}
         ${TabularDatasetTable.fragments.dataset}
+        ${VectorDatasetMap.fragments.dataset}
       `,
       variables,
     });

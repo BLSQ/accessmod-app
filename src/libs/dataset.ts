@@ -174,6 +174,8 @@ export function formatDatasetStatus(status: AccessmodFilesetStatus) {
       return i18n!.t("Pending");
     case AccessmodFilesetStatus.Valid:
       return i18n!.t("Valid");
+    case AccessmodFilesetStatus.Validating:
+      return i18n!.t("Validating");
   }
 }
 

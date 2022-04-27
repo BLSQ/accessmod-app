@@ -34,6 +34,7 @@
   "Cancel": "Cancel",
   "Catchments Areas": "Catchments Areas",
   "Contact Support": "Contact Support",
+  "Content": "Content",
   "Coordinate Reference System Code": "Coordinate Reference System Code",
   "Country": "Country",
   "Country Flag": "Country Flag",
@@ -117,7 +118,10 @@
   "Owner": "Owner",
   "Password": "Password",
   "Pending": "Pending",
+<<<<<<< HEAD
   "Preparing download": "Preparing download",
+=======
+>>>>>>> main
   "Previous": "Previous",
   "Project": "Project",
   "Project name": "Project name",
@@ -179,6 +183,10 @@
   "User": "User",
   "Users": "Users",
   "Valid": "Valid",
+<<<<<<< HEAD
+=======
+  "Validating": "Validating",
+>>>>>>> main
   "Vector": "Vector",
   "View all": "View all",
   "Viewer": "Viewer",

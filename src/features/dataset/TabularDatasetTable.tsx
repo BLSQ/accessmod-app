@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import DataGrid, { Column } from "components/DataGrid";
 import SimpleSelect from "components/forms/SimpleSelect";
 import Spinner from "components/Spinner";
-import { getFileContent, getTabularFileContent } from "libs/dataset";
+import { getTabularFileContent } from "libs/dataset";
 import { TabularDatasetTable_DatasetFragment } from "libs/graphql";
 import { Unpacked } from "libs/types";
 import { useTranslation } from "next-i18next";
