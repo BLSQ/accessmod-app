@@ -4,7 +4,7 @@ import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
 import Time from "components/Time";
 import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
-import DatasetStatusBadge from "features/DatasetStatusBadge";
+import DatasetStatusBadge from "features/dataset/DatasetStatusBadge";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
@@ -16,7 +16,7 @@ import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useState } from "react";
-import DatasetFormDialog from "../DatasetFormDialog";
+import DatasetFormDialog from "features/dataset/DatasetFormDialog";
 import User from "../User";
 
 const PROJECT_DATASETS_QUERY = gql`

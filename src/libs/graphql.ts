@@ -1042,42 +1042,6 @@ export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProj
 
 export type CreateAnalysisTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string };
 
-export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
-
-export type CreateFilesetMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodFilesetInput>;
-}>;
-
-
-export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } } | null } };
-
-export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
-
-export type DatasetFormDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
-
-export type DatasetPickerQueryVariables = Exact<{
-  projectId: Scalars['String'];
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
-  roleId?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } }> } };
-
-export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
-
-export type PollDatasetStatusQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type PollDatasetStatusQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus, metadata: any } | null };
-
-export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus };
-
-export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
-
 export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1123,6 +1087,14 @@ export type UpdateAccessibilityAnalysisMutationVariables = Exact<{
 
 export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<UpdateAccessmodAccessibilityAnalysisError>, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } };
 
+export type AccessibilityAnalysisOutput_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+type AccessibilityAnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', name: string, id: string } | null };
+
+type AccessibilityAnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, status: AccessmodAnalysisStatus };
+
+export type AccessibilityAnalysisOutput_AnalysisFragment = AccessibilityAnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment | AccessibilityAnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 type AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> };
@@ -1139,17 +1111,49 @@ type AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __ty
 
 export type AnalysisForm_AnalysisFragment = AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
 
-type AnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
-
-type AnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, status: AccessmodAnalysisStatus };
-
-export type AnalysisOutput_AnalysisFragment = AnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
-
 type AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', status: AccessmodAnalysisStatus };
 
 type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus };
 
 export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+
+export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
+
+export type CreateFilesetMutationVariables = Exact<{
+  input?: InputMaybe<CreateAccessmodFilesetInput>;
+}>;
+
+
+export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } } | null } };
+
+export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type DatasetFormDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
+
+export type DatasetPickerQueryVariables = Exact<{
+  projectId: Scalars['String'];
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  roleId?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } }> } };
+
+export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
+
+export type PollDatasetStatusQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type PollDatasetStatusQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus, metadata: any } | null };
+
+export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus };
+
+export type DatasetViewer_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type DatasetViewer_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
 export type DeleteDatasetMutationVariables = Exact<{
   input: DeleteAccessmodFilesetInput;
@@ -1161,6 +1165,21 @@ export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFi
 export type DeleteDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type DeleteDatasetTrigger_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, authorizedActions: Array<AccessmodFilesetAuthorizedActions> };
+
+export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+
+export type PreviewDatasetDialogQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type PreviewDatasetDialogQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
+
+export type PreviewDatasetDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type PreviewDatasetDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
+
+export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
 export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFileset', role: { __typename?: 'AccessmodFilesetRole', format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
@@ -1383,7 +1402,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, landCover?: { __typename?: 'AccessmodFileset', name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', name: string } | null, slope?: { __typename?: 'AccessmodFileset', name: string } | null, water?: { __typename?: 'AccessmodFileset', name: string } | null, barrier?: { __typename?: 'AccessmodFileset', name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, frictionSurface?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, catchmentAreas?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1485,18 +1504,6 @@ export const UserMenu_UserFragmentDoc = gql`
   }
 }
     `;
-export const DatasetFormDialog_DatasetFragmentDoc = gql`
-    fragment DatasetFormDialog_dataset on AccessmodFileset {
-  id
-  name
-}
-    `;
-export const DatasetStatusBadge_DatasetFragmentDoc = gql`
-    fragment DatasetStatusBadge_dataset on AccessmodFileset {
-  id
-  status
-}
-    `;
 export const InviteTeamMemberDialog_TeamFragmentDoc = gql`
     fragment InviteTeamMemberDialog_team on Team {
   id
@@ -1512,6 +1519,32 @@ export const InviteTeamMemberTrigger_TeamFragmentDoc = gql`
 export const TeamMembersTable_TeamFragmentDoc = gql`
     fragment TeamMembersTable_team on Team {
   id
+}
+    `;
+export const AccessibilityAnalysisOutput_ProjectFragmentDoc = gql`
+    fragment AccessibilityAnalysisOutput_project on AccessmodProject {
+  id
+}
+    `;
+export const AccessibilityAnalysisOutput_AnalysisFragmentDoc = gql`
+    fragment AccessibilityAnalysisOutput_analysis on AccessmodAnalysis {
+  __typename
+  id
+  status
+  ... on AccessmodAccessibilityAnalysis {
+    travelTimes {
+      name
+      id
+    }
+    frictionSurface {
+      name
+      id
+    }
+    catchmentAreas {
+      name
+      id
+    }
+  }
 }
     `;
 export const AnalysisActionsButton_ProjectFragmentDoc = gql`
@@ -1607,45 +1640,22 @@ export const AnalysisForm_AnalysisFragmentDoc = gql`
   ...AccessibilityAnalysisForm_analysis
 }
     ${AccessibilityAnalysisForm_AnalysisFragmentDoc}`;
-export const DownloadDatasetButton_DatasetFragmentDoc = gql`
-    fragment DownloadDatasetButton_dataset on AccessmodFileset {
-  id
-  name
-  files {
-    id
-    name
-    mimeType
-  }
-}
-    `;
-export const AnalysisOutput_AnalysisFragmentDoc = gql`
-    fragment AnalysisOutput_analysis on AccessmodAnalysis {
-  __typename
-  id
-  status
-  ... on AccessmodAccessibilityAnalysis {
-    travelTimes {
-      ...DownloadDatasetButton_dataset
-    }
-    frictionSurface {
-      ...DownloadDatasetButton_dataset
-    }
-    catchmentAreas {
-      ...DownloadDatasetButton_dataset
-    }
-  }
-}
-    ${DownloadDatasetButton_DatasetFragmentDoc}`;
 export const AnalysisStatus_AnalysisFragmentDoc = gql`
     fragment AnalysisStatus_analysis on AccessmodAnalysis {
   __typename
   status
 }
     `;
-export const DeleteDatasetTrigger_DatasetFragmentDoc = gql`
-    fragment DeleteDatasetTrigger_dataset on AccessmodFileset {
+export const DatasetFormDialog_DatasetFragmentDoc = gql`
+    fragment DatasetFormDialog_dataset on AccessmodFileset {
   id
-  authorizedActions
+  name
+}
+    `;
+export const DatasetStatusBadge_DatasetFragmentDoc = gql`
+    fragment DatasetStatusBadge_dataset on AccessmodFileset {
+  id
+  status
 }
     `;
 export const TabularDatasetTable_DatasetFragmentDoc = gql`
@@ -1673,6 +1683,70 @@ export const VectorDatasetMap_DatasetFragmentDoc = gql`
     name
     mimeType
   }
+}
+    `;
+export const RasterDatasetMap_DatasetFragmentDoc = gql`
+    fragment RasterDatasetMap_dataset on AccessmodFileset {
+  id
+  role {
+    code
+    format
+  }
+  files {
+    id
+    name
+    mimeType
+  }
+}
+    `;
+export const DatasetViewer_DatasetFragmentDoc = gql`
+    fragment DatasetViewer_dataset on AccessmodFileset {
+  id
+  role {
+    id
+    code
+    name
+    format
+  }
+  ...TabularDatasetTable_dataset
+  ...VectorDatasetMap_dataset
+  ...RasterDatasetMap_dataset
+}
+    ${TabularDatasetTable_DatasetFragmentDoc}
+${VectorDatasetMap_DatasetFragmentDoc}
+${RasterDatasetMap_DatasetFragmentDoc}`;
+export const DeleteDatasetTrigger_DatasetFragmentDoc = gql`
+    fragment DeleteDatasetTrigger_dataset on AccessmodFileset {
+  id
+  authorizedActions
+}
+    `;
+export const DownloadDatasetButton_DatasetFragmentDoc = gql`
+    fragment DownloadDatasetButton_dataset on AccessmodFileset {
+  id
+  name
+  files {
+    id
+    name
+    mimeType
+  }
+}
+    `;
+export const DatasetViewer_ProjectFragmentDoc = gql`
+    fragment DatasetViewer_project on AccessmodProject {
+  id
+}
+    `;
+export const PreviewDatasetDialog_ProjectFragmentDoc = gql`
+    fragment PreviewDatasetDialog_project on AccessmodProject {
+  id
+  ...DatasetViewer_project
+}
+    ${DatasetViewer_ProjectFragmentDoc}`;
+export const PreviewDatasetDialog_DatasetFragmentDoc = gql`
+    fragment PreviewDatasetDialog_dataset on AccessmodFileset {
+  id
+  name
 }
     `;
 export const ProjectCard_ProjectFragmentDoc = gql`
@@ -1989,140 +2063,6 @@ export function useCreateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type CreateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useCreateAccessibilityAnalysisMutation>;
 export type CreateAccessibilityAnalysisMutationResult = Apollo.MutationResult<CreateAccessibilityAnalysisMutation>;
 export type CreateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
-export const CreateFilesetDocument = gql`
-    mutation CreateFileset($input: CreateAccessmodFilesetInput) {
-  createAccessmodFileset(input: $input) {
-    success
-    errors
-    fileset {
-      id
-      name
-      role {
-        id
-        code
-        name
-      }
-    }
-  }
-}
-    `;
-export type CreateFilesetMutationFn = Apollo.MutationFunction<CreateFilesetMutation, CreateFilesetMutationVariables>;
-
-/**
- * __useCreateFilesetMutation__
- *
- * To run a mutation, you first call `useCreateFilesetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateFilesetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createFilesetMutation, { data, loading, error }] = useCreateFilesetMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateFilesetMutation(baseOptions?: Apollo.MutationHookOptions<CreateFilesetMutation, CreateFilesetMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateFilesetMutation, CreateFilesetMutationVariables>(CreateFilesetDocument, options);
-      }
-export type CreateFilesetMutationHookResult = ReturnType<typeof useCreateFilesetMutation>;
-export type CreateFilesetMutationResult = Apollo.MutationResult<CreateFilesetMutation>;
-export type CreateFilesetMutationOptions = Apollo.BaseMutationOptions<CreateFilesetMutation, CreateFilesetMutationVariables>;
-export const DatasetPickerDocument = gql`
-    query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String) {
-  filesets: accessmodFilesets(
-    projectId: $projectId
-    page: $page
-    perPage: $perPage
-    roleId: $roleId
-  ) {
-    items {
-      id
-      name
-      role {
-        id
-        name
-        format
-      }
-      createdAt
-      updatedAt
-    }
-    totalItems
-  }
-}
-    `;
-
-/**
- * __useDatasetPickerQuery__
- *
- * To run a query within a React component, call `useDatasetPickerQuery` and pass it any options that fit your needs.
- * When your component renders, `useDatasetPickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDatasetPickerQuery({
- *   variables: {
- *      projectId: // value for 'projectId'
- *      page: // value for 'page'
- *      perPage: // value for 'perPage'
- *      roleId: // value for 'roleId'
- *   },
- * });
- */
-export function useDatasetPickerQuery(baseOptions: Apollo.QueryHookOptions<DatasetPickerQuery, DatasetPickerQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DatasetPickerQuery, DatasetPickerQueryVariables>(DatasetPickerDocument, options);
-      }
-export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetPickerQuery, DatasetPickerQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DatasetPickerQuery, DatasetPickerQueryVariables>(DatasetPickerDocument, options);
-        }
-export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
-export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
-export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
-export const PollDatasetStatusDocument = gql`
-    query PollDatasetStatus($id: String!) {
-  dataset: accessmodFileset(id: $id) {
-    id
-    status
-    metadata
-  }
-}
-    `;
-
-/**
- * __usePollDatasetStatusQuery__
- *
- * To run a query within a React component, call `usePollDatasetStatusQuery` and pass it any options that fit your needs.
- * When your component renders, `usePollDatasetStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePollDatasetStatusQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function usePollDatasetStatusQuery(baseOptions: Apollo.QueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
-      }
-export function usePollDatasetStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
-        }
-export type PollDatasetStatusQueryHookResult = ReturnType<typeof usePollDatasetStatusQuery>;
-export type PollDatasetStatusLazyQueryHookResult = ReturnType<typeof usePollDatasetStatusLazyQuery>;
-export type PollDatasetStatusQueryResult = Apollo.QueryResult<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -2321,6 +2261,140 @@ export function useUpdateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type UpdateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useUpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationResult = Apollo.MutationResult<UpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
+export const CreateFilesetDocument = gql`
+    mutation CreateFileset($input: CreateAccessmodFilesetInput) {
+  createAccessmodFileset(input: $input) {
+    success
+    errors
+    fileset {
+      id
+      name
+      role {
+        id
+        code
+        name
+      }
+    }
+  }
+}
+    `;
+export type CreateFilesetMutationFn = Apollo.MutationFunction<CreateFilesetMutation, CreateFilesetMutationVariables>;
+
+/**
+ * __useCreateFilesetMutation__
+ *
+ * To run a mutation, you first call `useCreateFilesetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFilesetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFilesetMutation, { data, loading, error }] = useCreateFilesetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateFilesetMutation(baseOptions?: Apollo.MutationHookOptions<CreateFilesetMutation, CreateFilesetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFilesetMutation, CreateFilesetMutationVariables>(CreateFilesetDocument, options);
+      }
+export type CreateFilesetMutationHookResult = ReturnType<typeof useCreateFilesetMutation>;
+export type CreateFilesetMutationResult = Apollo.MutationResult<CreateFilesetMutation>;
+export type CreateFilesetMutationOptions = Apollo.BaseMutationOptions<CreateFilesetMutation, CreateFilesetMutationVariables>;
+export const DatasetPickerDocument = gql`
+    query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String) {
+  filesets: accessmodFilesets(
+    projectId: $projectId
+    page: $page
+    perPage: $perPage
+    roleId: $roleId
+  ) {
+    items {
+      id
+      name
+      role {
+        id
+        name
+        format
+      }
+      createdAt
+      updatedAt
+    }
+    totalItems
+  }
+}
+    `;
+
+/**
+ * __useDatasetPickerQuery__
+ *
+ * To run a query within a React component, call `useDatasetPickerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDatasetPickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDatasetPickerQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      roleId: // value for 'roleId'
+ *   },
+ * });
+ */
+export function useDatasetPickerQuery(baseOptions: Apollo.QueryHookOptions<DatasetPickerQuery, DatasetPickerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DatasetPickerQuery, DatasetPickerQueryVariables>(DatasetPickerDocument, options);
+      }
+export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetPickerQuery, DatasetPickerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DatasetPickerQuery, DatasetPickerQueryVariables>(DatasetPickerDocument, options);
+        }
+export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
+export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
+export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
+export const PollDatasetStatusDocument = gql`
+    query PollDatasetStatus($id: String!) {
+  dataset: accessmodFileset(id: $id) {
+    id
+    status
+    metadata
+  }
+}
+    `;
+
+/**
+ * __usePollDatasetStatusQuery__
+ *
+ * To run a query within a React component, call `usePollDatasetStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePollDatasetStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollDatasetStatusQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePollDatasetStatusQuery(baseOptions: Apollo.QueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
+      }
+export function usePollDatasetStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
+        }
+export type PollDatasetStatusQueryHookResult = ReturnType<typeof usePollDatasetStatusQuery>;
+export type PollDatasetStatusLazyQueryHookResult = ReturnType<typeof usePollDatasetStatusLazyQuery>;
+export type PollDatasetStatusQueryResult = Apollo.QueryResult<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>;
 export const DeleteDatasetDocument = gql`
     mutation DeleteDataset($input: DeleteAccessmodFilesetInput!) {
   deleteAccessmodFileset(input: $input) {
@@ -2354,6 +2428,43 @@ export function useDeleteDatasetMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteDatasetMutationHookResult = ReturnType<typeof useDeleteDatasetMutation>;
 export type DeleteDatasetMutationResult = Apollo.MutationResult<DeleteDatasetMutation>;
 export type DeleteDatasetMutationOptions = Apollo.BaseMutationOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
+export const PreviewDatasetDialogDocument = gql`
+    query PreviewDatasetDialog($id: String!) {
+  dataset: accessmodFileset(id: $id) {
+    ...DatasetViewer_dataset
+    ...DownloadDatasetButton_dataset
+  }
+}
+    ${DatasetViewer_DatasetFragmentDoc}
+${DownloadDatasetButton_DatasetFragmentDoc}`;
+
+/**
+ * __usePreviewDatasetDialogQuery__
+ *
+ * To run a query within a React component, call `usePreviewDatasetDialogQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePreviewDatasetDialogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePreviewDatasetDialogQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePreviewDatasetDialogQuery(baseOptions: Apollo.QueryHookOptions<PreviewDatasetDialogQuery, PreviewDatasetDialogQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PreviewDatasetDialogQuery, PreviewDatasetDialogQueryVariables>(PreviewDatasetDialogDocument, options);
+      }
+export function usePreviewDatasetDialogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PreviewDatasetDialogQuery, PreviewDatasetDialogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PreviewDatasetDialogQuery, PreviewDatasetDialogQueryVariables>(PreviewDatasetDialogDocument, options);
+        }
+export type PreviewDatasetDialogQueryHookResult = ReturnType<typeof usePreviewDatasetDialogQuery>;
+export type PreviewDatasetDialogLazyQueryHookResult = ReturnType<typeof usePreviewDatasetDialogLazyQuery>;
+export type PreviewDatasetDialogQueryResult = Apollo.QueryResult<PreviewDatasetDialogQuery, PreviewDatasetDialogQueryVariables>;
 export const CreateProjectMembershipDocument = gql`
     mutation CreateProjectMembership($input: CreateAccessmodProjectPermissionInput!) {
   createAccessmodProjectPermission(input: $input) {
@@ -3345,6 +3456,7 @@ export const AnalysisDetailPageDocument = gql`
     id
     name
     ...AnalysisActionsButton_project
+    ...AccessibilityAnalysisOutput_project
   }
   analysis: accessmodAnalysis(id: $analysisId) {
     __typename
@@ -3356,39 +3468,47 @@ export const AnalysisDetailPageDocument = gql`
     status
     ...AnalysisActionsButton_analysis
     ...AnalysisStatus_analysis
-    ...AnalysisOutput_analysis
+    ...AccessibilityAnalysisOutput_analysis
     author {
       ...User_user
     }
     ... on AccessmodAccessibilityAnalysis {
       landCover {
+        id
         name
       }
       transportNetwork {
+        id
         name
       }
       slope {
+        id
         name
       }
       water {
+        id
         name
       }
       barrier {
+        id
         name
       }
       movingSpeeds {
+        id
         name
       }
       healthFacilities {
+        id
         name
       }
     }
   }
 }
     ${AnalysisActionsButton_ProjectFragmentDoc}
+${AccessibilityAnalysisOutput_ProjectFragmentDoc}
 ${AnalysisActionsButton_AnalysisFragmentDoc}
 ${AnalysisStatus_AnalysisFragmentDoc}
-${AnalysisOutput_AnalysisFragmentDoc}
+${AccessibilityAnalysisOutput_AnalysisFragmentDoc}
 ${User_UserFragmentDoc}`;
 
 /**
@@ -3464,13 +3584,13 @@ export const DatasetDetailPageDocument = gql`
     id
     name
     ...DeleteDatasetTrigger_project
+    ...DatasetViewer_project
   }
   dataset: accessmodFileset(id: $datasetId) {
     __typename
+    ...DatasetViewer_dataset
     ...DownloadDatasetButton_dataset
-    ...TabularDatasetTable_dataset
     ...DeleteDatasetTrigger_dataset
-    ...VectorDatasetMap_dataset
     id
     name
     createdAt
@@ -3493,10 +3613,10 @@ export const DatasetDetailPageDocument = gql`
   }
 }
     ${DeleteDatasetTrigger_ProjectFragmentDoc}
+${DatasetViewer_ProjectFragmentDoc}
+${DatasetViewer_DatasetFragmentDoc}
 ${DownloadDatasetButton_DatasetFragmentDoc}
-${TabularDatasetTable_DatasetFragmentDoc}
 ${DeleteDatasetTrigger_DatasetFragmentDoc}
-${VectorDatasetMap_DatasetFragmentDoc}
 ${User_UserFragmentDoc}`;
 
 /**

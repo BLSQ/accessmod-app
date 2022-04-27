@@ -35,28 +35,28 @@ export async function launchAnalysis(analysis: {
   id: string;
 }): Promise<boolean> {
   const client = getApolloClient();
-
-  const { data } = await client.mutate({
-    mutation: gql`
-      mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
-        launchAccessmodAnalysis(input: $input) {
-          success
-          errors
-          analysis {
-            status
-            updatedAt
+  try {
+    const { data } = await client.mutate({
+      mutation: gql`
+        mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
+          launchAccessmodAnalysis(input: $input) {
+            success
+            errors
+            analysis {
+              status
+              updatedAt
+            }
           }
         }
-      }
-    `,
-    variables: {
-      input: { id: analysis.id },
-    },
-  });
+      `,
+      variables: {
+        input: { id: analysis.id },
+      },
+    });
 
-  if (data.launchAccessmodAnalysis.success) {
-    return true;
-  } else {
+    return data.launchAccessmodAnalysis.success;
+  } catch (err) {
+    console.error(err);
     return false;
   }
 }

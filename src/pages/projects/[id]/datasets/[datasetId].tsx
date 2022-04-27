@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { DocumentTextIcon } from "@heroicons/react/outline";
+import { ClockIcon, DocumentTextIcon } from "@heroicons/react/outline";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import type { Column } from "components/DataGrid";
@@ -9,7 +9,7 @@ import Time from "components/Time";
 import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
 import TabularDatasetTable from "features/dataset/TabularDatasetTable";
 import VectorDatasetMap from "features/dataset/VectorDatasetMap";
-import DownloadDatasetButton from "features/DownloadDatasetButton";
+import DownloadDatasetButton from "features/dataset/DownloadDatasetButton";
 import User from "features/User";
 import { getFormatLabel } from "libs/constants";
 import {
@@ -19,9 +19,10 @@ import {
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+import DatasetViewer from "features/dataset/DatasetViewer";
+import { DateTime } from "luxon";
 
 type Props = {
   defaultVariables: { id: string; datasetId: string };
@@ -33,8 +34,6 @@ const Classes = {
   inactiveTab:
     "whitespace-nowrap border-b-2 px-1.5 pb-2 text-lg font-medium border-transparent text-lochmara-500 text-opacity-80 hover:border-lochmara hover:text-opacity-100",
 };
-
-const DatasetMap = dynamic(() => import("features/DatasetMap"), { ssr: false });
 
 const DatasetPage = ({ defaultVariables }: Props) => {
   const router = useRouter();
@@ -120,27 +119,28 @@ const DatasetPage = ({ defaultVariables }: Props) => {
                 </div>
               )}
               <User user={dataset.author} small textColor="text-white" />
+              <div className="flex items-center">
+                <ClockIcon className="mr-1.5 h-4" />
+                <span>
+                  {t("Updated at {{date}}", {
+                    date: DateTime.fromISO(dataset.updatedAt).toLocaleString(
+                      DateTime.DATETIME_SHORT
+                    ),
+                  })}
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <DeleteDatasetTrigger dataset={dataset} project={data.project} />
-            <DownloadDatasetButton variant="white" dataset={dataset} />
+            <DownloadDatasetButton variant="primary" dataset={dataset} />
           </div>
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
-        {dataset.role?.format === AccessmodFilesetFormat.Vector && (
-          <Block>
-            <div className="relative h-[600px] w-full">
-              <VectorDatasetMap dataset={dataset} />
-            </div>
-          </Block>
-        )}
-        {hasTabularData && (
-          <Block>
-            <TabularDatasetTable dataset={dataset} />
-          </Block>
-        )}
+        <Block>
+          <DatasetViewer dataset={dataset} project={data.project} />
+        </Block>
       </PageContent>
     </Page>
   );
@@ -167,13 +167,13 @@ export const getServerSideProps = createGetServerSideProps({
             id
             name
             ...DeleteDatasetTrigger_project
+            ...DatasetViewer_project
           }
           dataset: accessmodFileset(id: $datasetId) {
             __typename
+            ...DatasetViewer_dataset
             ...DownloadDatasetButton_dataset
-            ...TabularDatasetTable_dataset
             ...DeleteDatasetTrigger_dataset
-            ...VectorDatasetMap_dataset
             id
             name
             createdAt
@@ -199,8 +199,8 @@ export const getServerSideProps = createGetServerSideProps({
         ${DeleteDatasetTrigger.fragments.dataset}
         ${DeleteDatasetTrigger.fragments.project}
         ${User.fragments.user}
-        ${TabularDatasetTable.fragments.dataset}
-        ${VectorDatasetMap.fragments.dataset}
+        ${DatasetViewer.fragments.dataset}
+        ${DatasetViewer.fragments.project}
       `,
       variables,
     });

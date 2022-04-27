@@ -59,7 +59,7 @@ const Item = ({
   className = MenuClasses.Item,
 }: {
   children: ReactNode;
-  onClick: ((event: { preventDefault: Function }) => void) | undefined;
+  onClick?: ((event: { preventDefault: Function }) => void) | undefined;
   className?: string;
   activeClassName?: string;
 }) => (
