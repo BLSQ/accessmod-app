@@ -1,14 +1,18 @@
 import { gql } from "@apollo/client";
 import { getVectorFileContent } from "libs/dataset";
 import { VectorDatasetMap_DatasetFragment } from "libs/graphql";
+import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 
 type VectorDatasetMapProps = {
   dataset: VectorDatasetMap_DatasetFragment;
 };
 
+const DynamicClientVectorMap = dynamic(() => import("./ClientVectorMap"), {
+  ssr: false,
+});
+
 const VectorDatasetMap = ({ dataset }: VectorDatasetMapProps) => {
-  const [isLoading, setLoading] = useState(true);
   const [geoJSON, setGeoJSON] = useState(null);
 
   const supportedFile = useMemo(
@@ -20,18 +24,15 @@ const VectorDatasetMap = ({ dataset }: VectorDatasetMapProps) => {
   );
 
   useEffect(() => {
-    setLoading(true);
     if (supportedFile) {
       getVectorFileContent(supportedFile).then((data) => {
         setGeoJSON(data);
         console.log(data);
-        setLoading(false);
       });
-    } else {
-      setLoading(false);
     }
   }, [dataset, supportedFile]);
-  return null;
+
+  return <DynamicClientVectorMap geoJSON={geoJSON} />;
 };
 
 VectorDatasetMap.fragments = {

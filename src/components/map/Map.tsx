@@ -3,7 +3,7 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet/dist/leaflet.css";
 import { MapContainer, MapContainerProps, TileLayer } from "react-leaflet";
 
-type MapProps = MapContainerProps;
+export type MapProps = MapContainerProps;
 const Map = (props: MapProps) => {
   const {
     children,

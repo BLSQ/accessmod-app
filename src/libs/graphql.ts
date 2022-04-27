@@ -168,7 +168,8 @@ export enum AccessmodFilesetRoleCode {
 export enum AccessmodFilesetStatus {
   Invalid = 'INVALID',
   Pending = 'PENDING',
-  Valid = 'VALID'
+  Valid = 'VALID',
+  Validating = 'VALIDATING'
 }
 
 export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {

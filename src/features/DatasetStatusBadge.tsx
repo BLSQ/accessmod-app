@@ -6,7 +6,6 @@ import {
   AccessmodFilesetStatus,
   DatasetStatusBadge_DatasetFragment,
 } from "libs/graphql";
-import { useMemo } from "react";
 
 type DatasetStatusBadgeProps = {
   dataset: DatasetStatusBadge_DatasetFragment;
@@ -20,7 +19,9 @@ const DatasetStatusBadge = (props: DatasetStatusBadgeProps) => {
     dataset.status === AccessmodFilesetStatus.Pending &&
       "bg-lochmara-100 text-white",
     dataset.status === AccessmodFilesetStatus.Valid &&
-      "bg-emerald-500 text-white"
+      "bg-emerald-500 text-white",
+    dataset.status === AccessmodFilesetStatus.Validating &&
+      "bg-purple-300 text-white"
   );
   return (
     <Badge className={className} size="xs">

@@ -213,5 +213,10 @@ export async function getVectorFileContent(
     const downloadUrl = await getFileDownloadUrl(file.id);
     fileContent = await fetch(downloadUrl).then((resp) => resp.text());
   }
+  try {
+    sessionStorage.setItem(file.id, fileContent);
+  } catch (err) {
+    console.error(err);
+  }
   return JSON.parse(fileContent);
 }
