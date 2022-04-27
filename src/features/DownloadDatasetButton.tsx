@@ -35,14 +35,12 @@ const DownloadDatasetButton = ({ dataset, ...delegated }: Props) => {
 
   return (
     <Button disabled={isPreparing} {...delegated} onClick={handleDownload}>
-      {isPreparing ? (
-        <span className="flex items-center">
-          <Spinner className="mr-1" size="xs" />
-          <span>{t("Preparing download")}</span>
+      <span className="flex items-center">
+        {isPreparing && <Spinner className="mr-1" size="xs" />}
+        <span>
+          {t("Download {{count}} files", { count: dataset.files.length })}
         </span>
-      ) : (
-        t("Download {{count}} files", { count: dataset.files.length })
-      )}
+      </span>
     </Button>
   );
 };

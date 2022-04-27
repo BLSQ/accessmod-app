@@ -8,6 +8,7 @@ import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
 import TabularDatasetTable from "features/dataset/TabularDatasetTable";
+import VectorDatasetMap from "features/dataset/VectorDatasetMap";
 import DownloadDatasetButton from "features/DownloadDatasetButton";
 import User from "features/User";
 import { getFormatLabel } from "libs/constants";
@@ -128,10 +129,10 @@ const DatasetPage = ({ defaultVariables }: Props) => {
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
-        {hasMapData && (
+        {dataset.role?.format === AccessmodFilesetFormat.Vector && (
           <Block>
             <div className="relative h-[600px] w-full">
-              <DatasetMap dataset={dataset} />
+              <VectorDatasetMap dataset={dataset} />
             </div>
           </Block>
         )}
@@ -172,6 +173,7 @@ export const getServerSideProps = createGetServerSideProps({
             ...DownloadDatasetButton_dataset
             ...TabularDatasetTable_dataset
             ...DeleteDatasetTrigger_dataset
+            ...VectorDatasetMap_dataset
             id
             name
             createdAt
@@ -198,6 +200,7 @@ export const getServerSideProps = createGetServerSideProps({
         ${DeleteDatasetTrigger.fragments.project}
         ${User.fragments.user}
         ${TabularDatasetTable.fragments.dataset}
+        ${VectorDatasetMap.fragments.dataset}
       `,
       variables,
     });

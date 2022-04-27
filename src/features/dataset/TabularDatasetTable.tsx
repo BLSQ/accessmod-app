@@ -1,9 +1,11 @@
 import { gql } from "@apollo/client";
 import DataGrid, { Column } from "components/DataGrid";
 import SimpleSelect from "components/forms/SimpleSelect";
-import { getFileContent } from "libs/dataset";
+import Spinner from "components/Spinner";
+import { getTabularFileContent } from "libs/dataset";
 import { TabularDatasetTable_DatasetFragment } from "libs/graphql";
 import { Unpacked } from "libs/types";
+import { useTranslation } from "next-i18next";
 import { useEffect, useMemo, useState } from "react";
 
 type TabularDatasetTableProps = {
@@ -16,6 +18,7 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
   const { dataset } = props;
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(false);
+  const { t } = useTranslation();
   const [currentFile, setCurrentFile] = useState<CurrentFile | null>();
   const tabularFiles = useMemo(
     () =>
@@ -34,8 +37,7 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
   useEffect(() => {
     if (!currentFile) return;
     setLoading(true);
-    getFileContent(currentFile)?.then((content) => {
-      console.log(content);
+    getTabularFileContent(currentFile)?.then((content) => {
       setData(content);
       setLoading(false);
     });
@@ -56,7 +58,8 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
 
   return (
     <div>
-      {tabularFiles?.length > 0 && (
+      <h3 className="mb-4 flex items-center justify-between">{t("Content")}</h3>
+      {tabularFiles?.length > 1 && (
         <SimpleSelect
           required
           value={currentFile?.id ?? ""}
@@ -81,6 +84,11 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
           totalItems={data?.length ?? 0}
           sortable
         />
+      )}
+      {isLoading && (
+        <div className="mt-4 flex w-full items-center justify-center">
+          <Spinner size="md" />
+        </div>
       )}
     </div>
   );

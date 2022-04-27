@@ -234,7 +234,7 @@ const ProjectPermissionsBlock = (props: {
         Header: t("Mode"),
         accessor: "mode",
 
-        Cell: (cell: CellProps<{}>) => (
+        Cell: (cell) => (
           <>
             {cell.row.state.isEdited ? (
               <ProjectPermissionPicker
