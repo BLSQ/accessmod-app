@@ -1156,6 +1156,8 @@ export type DeleteDatasetTrigger_DatasetFragment = { __typename?: 'AccessmodFile
 
 export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFileset', role: { __typename?: 'AccessmodFilesetRole', format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
+export type VectorDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+
 export type CreateProjectMembershipMutationVariables = Exact<{
   input: CreateAccessmodProjectPermissionInput;
 }>;
@@ -1647,6 +1649,20 @@ export const TabularDatasetTable_DatasetFragmentDoc = gql`
     name
     mimeType
     id
+  }
+}
+    `;
+export const VectorDatasetMap_DatasetFragmentDoc = gql`
+    fragment VectorDatasetMap_dataset on AccessmodFileset {
+  id
+  role {
+    code
+    format
+  }
+  files {
+    id
+    name
+    mimeType
   }
 }
     `;

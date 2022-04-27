@@ -180,17 +180,38 @@ export function formatDatasetStatus(status: AccessmodFilesetStatus) {
 export async function getTabularFileContent(
   file: Pick<AccessmodFile, "id" | "mimeType">
 ) {
-  // const downloadUrl = await getFileDownloadUrl(file.id);
-  const downloadUrl =
-    "https://raw.githubusercontent.com/google/dspl/master/samples/google/canonical/countries.csv";
-  const textContent = await fetch(downloadUrl).then((resp) => resp.text());
+  let textContent;
+  try {
+    textContent = sessionStorage.getItem(file.id);
+  } catch (err) {
+    console.error(err);
+  }
+  if (!textContent) {
+    const downloadUrl = await getFileDownloadUrl(file.id);
+    textContent = await fetch(downloadUrl).then((resp) => resp.text());
+  }
+
+  try {
+    sessionStorage.setItem(file.id, textContent);
+  } catch (err) {
+    console.error(err);
+  }
   return parse(textContent, { delimiter: ",", columns: true });
 }
 
-export function getFileContent(
-  file: Partial<AccessmodFile> & Pick<AccessmodFile, "id" | "mimeType">
+export async function getVectorFileContent(
+  file: Pick<AccessmodFile, "id" | "mimeType">
 ) {
-  if (validateFileFormat(file, AccessmodFilesetFormat.Tabular)) {
-    return getTabularFileContent(file);
+  let fileContent;
+
+  try {
+    fileContent = sessionStorage.getItem(file.id);
+  } catch (err) {
+    console.error(err);
   }
+  if (!fileContent) {
+    const downloadUrl = await getFileDownloadUrl(file.id);
+    fileContent = await fetch(downloadUrl).then((resp) => resp.text());
+  }
+  return JSON.parse(fileContent);
 }
