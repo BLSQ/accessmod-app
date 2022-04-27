@@ -33,6 +33,7 @@ type DataGridTheme = {
   tr?: string;
   pagination?: string;
 };
+
 interface IDataGridProps {
   columns: ReadonlyArray<Column>;
   data: object[];
@@ -85,7 +86,7 @@ const DataGrid = (props: DataGridProps) => {
     totalItems,
     idKey,
     pageSizeOptions,
-    defaultSortBy,
+    defaultSortBy = [],
     defaultPageSize = 10,
   } = props;
 

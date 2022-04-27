@@ -168,7 +168,8 @@ export enum AccessmodFilesetRoleCode {
 export enum AccessmodFilesetStatus {
   Invalid = 'INVALID',
   Pending = 'PENDING',
-  Valid = 'VALID'
+  Valid = 'VALID',
+  Validating = 'VALIDATING'
 }
 
 export type AccessmodGeographicCoverageAnalysis = AccessmodAnalysis & {
@@ -1066,6 +1067,15 @@ export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?
 
 export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
+export type PollDatasetStatusQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type PollDatasetStatusQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus, metadata: any } | null };
+
+export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus };
+
 export type DownloadDatasetButton_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
 export type FilesetRolePickerQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1140,6 +1150,21 @@ type AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typen
 type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus };
 
 export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+
+export type DeleteDatasetMutationVariables = Exact<{
+  input: DeleteAccessmodFilesetInput;
+}>;
+
+
+export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
+
+export type DeleteDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type DeleteDatasetTrigger_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, authorizedActions: Array<AccessmodFilesetAuthorizedActions> };
+
+export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFileset', role: { __typename?: 'AccessmodFilesetRole', format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
+
+export type VectorDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
 export type CreateProjectMembershipMutationVariables = Exact<{
   input: CreateAccessmodProjectPermissionInput;
@@ -1221,16 +1246,9 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, files: Array<{ __typename: 'AccessmodFile' }> }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, createdAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
-export type DeleteDatasetMutationVariables = Exact<{
-  input?: InputMaybe<DeleteAccessmodFilesetInput>;
-}>;
-
-
-export type DeleteDatasetMutation = { __typename?: 'Mutation', deleteAccessmodFileset: { __typename?: 'DeleteAccessmodFilesetResult', success: boolean } };
-
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPermissionPicker_ProjectFragment = { __typename?: 'AccessmodProject', permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, id: string }> };
 
@@ -1260,6 +1278,10 @@ export type DeleteTeamMutationVariables = Exact<{
 export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'DeleteTeamResult', success: boolean, errors: Array<DeleteTeamError> } };
 
 export type DeleteTeamTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
+
+export type EditTeamTrigger_TeamFragment = { __typename?: 'Team', authorizedActions: Array<TeamAuthorizedActions>, id: string, name: string };
+
+export type TeamActionsMenu_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
 
 export type CreateTeamMutationVariables = Exact<{
   input: CreateTeamInput;
@@ -1370,6 +1392,14 @@ export type ProjectAnalysesPageQueryVariables = Exact<{
 
 export type ProjectAnalysesPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
+export type DatasetDetailPageQueryVariables = Exact<{
+  id: Scalars['String'];
+  datasetId: Scalars['String'];
+}>;
+
+
+export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, createdAt: any, uri: string, id: string }>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+
 export type ProjectDataPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1384,14 +1414,14 @@ export type UpdateProjectPermissionMutationVariables = Exact<{
 
 export type UpdateProjectPermissionMutation = { __typename?: 'Mutation', updateAccessmodProjectPermission: { __typename?: 'UpdateAccessmodProjectPermissionResult', success: boolean, errors: Array<UpdateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode } | null } };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, spatialResolution: number, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, spatialResolution: number, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
@@ -1459,6 +1489,12 @@ export const DatasetFormDialog_DatasetFragmentDoc = gql`
     fragment DatasetFormDialog_dataset on AccessmodFileset {
   id
   name
+}
+    `;
+export const DatasetStatusBadge_DatasetFragmentDoc = gql`
+    fragment DatasetStatusBadge_dataset on AccessmodFileset {
+  id
+  status
 }
     `;
 export const InviteTeamMemberDialog_TeamFragmentDoc = gql`
@@ -1606,6 +1642,39 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
   status
 }
     `;
+export const DeleteDatasetTrigger_DatasetFragmentDoc = gql`
+    fragment DeleteDatasetTrigger_dataset on AccessmodFileset {
+  id
+  authorizedActions
+}
+    `;
+export const TabularDatasetTable_DatasetFragmentDoc = gql`
+    fragment TabularDatasetTable_dataset on AccessmodFileset {
+  role {
+    format
+    code
+  }
+  files {
+    name
+    mimeType
+    id
+  }
+}
+    `;
+export const VectorDatasetMap_DatasetFragmentDoc = gql`
+    fragment VectorDatasetMap_dataset on AccessmodFileset {
+  id
+  role {
+    code
+    format
+  }
+  files {
+    id
+    name
+    mimeType
+  }
+}
+    `;
 export const ProjectCard_ProjectFragmentDoc = gql`
     fragment ProjectCard_project on AccessmodProject {
   id
@@ -1658,6 +1727,18 @@ export const DeleteMembershipTrigger_MembershipFragmentDoc = gql`
   }
 }
     `;
+export const TeamFormDialog_TeamFragmentDoc = gql`
+    fragment TeamFormDialog_team on Team {
+  id
+  name
+}
+    `;
+export const EditTeamTrigger_TeamFragmentDoc = gql`
+    fragment EditTeamTrigger_team on Team {
+  ...TeamFormDialog_team
+  authorizedActions
+}
+    ${TeamFormDialog_TeamFragmentDoc}`;
 export const DeleteTeamTrigger_TeamFragmentDoc = gql`
     fragment DeleteTeamTrigger_team on Team {
   id
@@ -1665,12 +1746,13 @@ export const DeleteTeamTrigger_TeamFragmentDoc = gql`
   authorizedActions
 }
     `;
-export const TeamFormDialog_TeamFragmentDoc = gql`
-    fragment TeamFormDialog_team on Team {
+export const TeamActionsMenu_TeamFragmentDoc = gql`
+    fragment TeamActionsMenu_team on Team {
   id
   name
+  ...DeleteTeamTrigger_team
 }
-    `;
+    ${DeleteTeamTrigger_TeamFragmentDoc}`;
 export const TeamProjectsTable_TeamFragmentDoc = gql`
     fragment TeamProjectsTable_team on Team {
   id
@@ -1695,6 +1777,12 @@ export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
   id
 }
     `;
+export const DeleteDatasetTrigger_ProjectFragmentDoc = gql`
+    fragment DeleteDatasetTrigger_project on AccessmodProject {
+  id
+  name
+}
+    `;
 export const User_UserFragmentDoc = gql`
     fragment User_user on User {
   firstName
@@ -1709,12 +1797,14 @@ export const User_UserFragmentDoc = gql`
     `;
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
+  ...DeleteDatasetTrigger_project
   id
   author {
     ...User_user
   }
 }
-    ${User_UserFragmentDoc}`;
+    ${DeleteDatasetTrigger_ProjectFragmentDoc}
+${User_UserFragmentDoc}`;
 export const CreateAnalysisDialog_ProjectFragmentDoc = gql`
     fragment CreateAnalysisDialog_project on AccessmodProject {
   id
@@ -1809,6 +1899,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
     flag
   }
   createdAt
+  updatedAt
   spatialResolution
   author {
     ...User_user
@@ -1995,6 +2086,43 @@ export function useDatasetPickerLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type DatasetPickerQueryHookResult = ReturnType<typeof useDatasetPickerQuery>;
 export type DatasetPickerLazyQueryHookResult = ReturnType<typeof useDatasetPickerLazyQuery>;
 export type DatasetPickerQueryResult = Apollo.QueryResult<DatasetPickerQuery, DatasetPickerQueryVariables>;
+export const PollDatasetStatusDocument = gql`
+    query PollDatasetStatus($id: String!) {
+  dataset: accessmodFileset(id: $id) {
+    id
+    status
+    metadata
+  }
+}
+    `;
+
+/**
+ * __usePollDatasetStatusQuery__
+ *
+ * To run a query within a React component, call `usePollDatasetStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePollDatasetStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePollDatasetStatusQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePollDatasetStatusQuery(baseOptions: Apollo.QueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
+      }
+export function usePollDatasetStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>(PollDatasetStatusDocument, options);
+        }
+export type PollDatasetStatusQueryHookResult = ReturnType<typeof usePollDatasetStatusQuery>;
+export type PollDatasetStatusLazyQueryHookResult = ReturnType<typeof usePollDatasetStatusLazyQuery>;
+export type PollDatasetStatusQueryResult = Apollo.QueryResult<PollDatasetStatusQuery, PollDatasetStatusQueryVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -2193,6 +2321,39 @@ export function useUpdateAccessibilityAnalysisMutation(baseOptions?: Apollo.Muta
 export type UpdateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useUpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationResult = Apollo.MutationResult<UpdateAccessibilityAnalysisMutation>;
 export type UpdateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<UpdateAccessibilityAnalysisMutation, UpdateAccessibilityAnalysisMutationVariables>;
+export const DeleteDatasetDocument = gql`
+    mutation DeleteDataset($input: DeleteAccessmodFilesetInput!) {
+  deleteAccessmodFileset(input: $input) {
+    success
+  }
+}
+    `;
+export type DeleteDatasetMutationFn = Apollo.MutationFunction<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
+
+/**
+ * __useDeleteDatasetMutation__
+ *
+ * To run a mutation, you first call `useDeleteDatasetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDatasetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDatasetMutation, { data, loading, error }] = useDeleteDatasetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteDatasetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDatasetMutation, DeleteDatasetMutationVariables>(DeleteDatasetDocument, options);
+      }
+export type DeleteDatasetMutationHookResult = ReturnType<typeof useDeleteDatasetMutation>;
+export type DeleteDatasetMutationResult = Apollo.MutationResult<DeleteDatasetMutation>;
+export type DeleteDatasetMutationOptions = Apollo.BaseMutationOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
 export const CreateProjectMembershipDocument = gql`
     mutation CreateProjectMembership($input: CreateAccessmodProjectPermissionInput!) {
   createAccessmodProjectPermission(input: $input) {
@@ -2508,6 +2669,8 @@ export const ProjectDatasetsTableDocument = gql`
   ) {
     items {
       ...DatasetFormDialog_dataset
+      ...DatasetStatusBadge_dataset
+      ...DeleteDatasetTrigger_dataset
       id
       name
       role {
@@ -2525,9 +2688,7 @@ export const ProjectDatasetsTableDocument = gql`
           color
         }
       }
-      files {
-        __typename
-      }
+      status
       createdAt
     }
     pageNumber
@@ -2535,7 +2696,9 @@ export const ProjectDatasetsTableDocument = gql`
     totalItems
   }
 }
-    ${DatasetFormDialog_DatasetFragmentDoc}`;
+    ${DatasetFormDialog_DatasetFragmentDoc}
+${DatasetStatusBadge_DatasetFragmentDoc}
+${DeleteDatasetTrigger_DatasetFragmentDoc}`;
 
 /**
  * __useProjectDatasetsTableQuery__
@@ -2567,39 +2730,6 @@ export function useProjectDatasetsTableLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type ProjectDatasetsTableQueryHookResult = ReturnType<typeof useProjectDatasetsTableQuery>;
 export type ProjectDatasetsTableLazyQueryHookResult = ReturnType<typeof useProjectDatasetsTableLazyQuery>;
 export type ProjectDatasetsTableQueryResult = Apollo.QueryResult<ProjectDatasetsTableQuery, ProjectDatasetsTableQueryVariables>;
-export const DeleteDatasetDocument = gql`
-    mutation DeleteDataset($input: DeleteAccessmodFilesetInput) {
-  deleteAccessmodFileset(input: $input) {
-    success
-  }
-}
-    `;
-export type DeleteDatasetMutationFn = Apollo.MutationFunction<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
-
-/**
- * __useDeleteDatasetMutation__
- *
- * To run a mutation, you first call `useDeleteDatasetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteDatasetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteDatasetMutation, { data, loading, error }] = useDeleteDatasetMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteDatasetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteDatasetMutation, DeleteDatasetMutationVariables>(DeleteDatasetDocument, options);
-      }
-export type DeleteDatasetMutationHookResult = ReturnType<typeof useDeleteDatasetMutation>;
-export type DeleteDatasetMutationResult = Apollo.MutationResult<DeleteDatasetMutation>;
-export type DeleteDatasetMutationOptions = Apollo.BaseMutationOptions<DeleteDatasetMutation, DeleteDatasetMutationVariables>;
 export const ProjectPickerDocument = gql`
     query ProjectPicker {
   accessmodProjects(page: 1, perPage: 40) {
@@ -3328,6 +3458,75 @@ export function useProjectAnalysesPageLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type ProjectAnalysesPageQueryHookResult = ReturnType<typeof useProjectAnalysesPageQuery>;
 export type ProjectAnalysesPageLazyQueryHookResult = ReturnType<typeof useProjectAnalysesPageLazyQuery>;
 export type ProjectAnalysesPageQueryResult = Apollo.QueryResult<ProjectAnalysesPageQuery, ProjectAnalysesPageQueryVariables>;
+export const DatasetDetailPageDocument = gql`
+    query DatasetDetailPage($id: String!, $datasetId: String!) {
+  project: accessmodProject(id: $id) {
+    id
+    name
+    ...DeleteDatasetTrigger_project
+  }
+  dataset: accessmodFileset(id: $datasetId) {
+    __typename
+    ...DownloadDatasetButton_dataset
+    ...TabularDatasetTable_dataset
+    ...DeleteDatasetTrigger_dataset
+    ...VectorDatasetMap_dataset
+    id
+    name
+    createdAt
+    updatedAt
+    role {
+      id
+      name
+      code
+      format
+    }
+    files {
+      name
+      mimeType
+      createdAt
+      uri
+    }
+    author {
+      ...User_user
+    }
+  }
+}
+    ${DeleteDatasetTrigger_ProjectFragmentDoc}
+${DownloadDatasetButton_DatasetFragmentDoc}
+${TabularDatasetTable_DatasetFragmentDoc}
+${DeleteDatasetTrigger_DatasetFragmentDoc}
+${VectorDatasetMap_DatasetFragmentDoc}
+${User_UserFragmentDoc}`;
+
+/**
+ * __useDatasetDetailPageQuery__
+ *
+ * To run a query within a React component, call `useDatasetDetailPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDatasetDetailPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDatasetDetailPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      datasetId: // value for 'datasetId'
+ *   },
+ * });
+ */
+export function useDatasetDetailPageQuery(baseOptions: Apollo.QueryHookOptions<DatasetDetailPageQuery, DatasetDetailPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DatasetDetailPageQuery, DatasetDetailPageQueryVariables>(DatasetDetailPageDocument, options);
+      }
+export function useDatasetDetailPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetDetailPageQuery, DatasetDetailPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DatasetDetailPageQuery, DatasetDetailPageQueryVariables>(DatasetDetailPageDocument, options);
+        }
+export type DatasetDetailPageQueryHookResult = ReturnType<typeof useDatasetDetailPageQuery>;
+export type DatasetDetailPageLazyQueryHookResult = ReturnType<typeof useDatasetDetailPageLazyQuery>;
+export type DatasetDetailPageQueryResult = Apollo.QueryResult<DatasetDetailPageQuery, DatasetDetailPageQueryVariables>;
 export const ProjectDataPageDocument = gql`
     query ProjectDataPage($id: String!) {
   accessmodProject(id: $id) {
@@ -3574,15 +3773,15 @@ export const TeamPageDocument = gql`
     ...TeamMembersTable_team
     ...InviteTeamMemberTrigger_team
     ...TeamFormDialog_team
-    ...DeleteTeamTrigger_team
     ...TeamProjectsTable_team
+    ...TeamActionsMenu_team
   }
 }
     ${TeamMembersTable_TeamFragmentDoc}
 ${InviteTeamMemberTrigger_TeamFragmentDoc}
 ${TeamFormDialog_TeamFragmentDoc}
-${DeleteTeamTrigger_TeamFragmentDoc}
-${TeamProjectsTable_TeamFragmentDoc}`;
+${TeamProjectsTable_TeamFragmentDoc}
+${TeamActionsMenu_TeamFragmentDoc}`;
 
 /**
  * __useTeamPageQuery__

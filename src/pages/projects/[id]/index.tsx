@@ -101,7 +101,7 @@ const LatestDatasetsBlock = ({
       <h3 className="mb-4 flex items-center justify-between">
         <Link
           href={{
-            pathname: routes.project_dataset_list,
+            pathname: routes.project_datasets_list,
             query: { projectId: project.id },
           }}
         >
@@ -124,7 +124,7 @@ const LatestDatasetsBlock = ({
           </CreateDatasetTrigger>
           <Link
             href={{
-              pathname: routes.project_dataset_list,
+              pathname: routes.project_datasets_list,
               query: { projectId: project.id },
             }}
           >
@@ -180,6 +180,15 @@ const ProjectGeneralInformationBlock = (props: {
         >
           <span className="text-md">{project.crs}</span>
         </DescriptionList.Item>
+        <DescriptionList.Item
+          label={t("Author")}
+          help={t("The user that created this project")}
+        >
+          <User small user={project.author} />
+        </DescriptionList.Item>
+        <DescriptionList.Item label={t("Creation date")}>
+          <Time datetime={project.createdAt} format={DateTime.DATE_MED} />
+        </DescriptionList.Item>
       </DescriptionList>
     </Block>
   );
@@ -224,21 +233,25 @@ const ProjectPermissionsBlock = (props: {
       {
         Header: t("Mode"),
         accessor: "mode",
-        Cell: (cell) =>
-          cell.row.state.isEdited ? (
-            <ProjectPermissionPicker
-              project={project}
-              permission={cell.row.original}
-              className="w-full"
-              required
-              value={cell.row.state.mode ?? cell.value}
-              onChange={(value) =>
-                cell.row.setState({ isEdited: true, mode: value })
-              }
-            />
-          ) : (
-            formatPermissionMode(cell.value)
-          ),
+
+        Cell: (cell) => (
+          <>
+            {cell.row.state.isEdited ? (
+              <ProjectPermissionPicker
+                project={project}
+                permission={cell.row.original}
+                className="w-full"
+                required
+                value={cell.row.state.mode ?? cell.value}
+                onChange={(value) =>
+                  cell.row.setState({ isEdited: true, mode: value })
+                }
+              />
+            ) : (
+              formatPermissionMode(cell.value)
+            )}
+          </>
+        ),
       },
       {
         Header: t("Created at"),
@@ -390,13 +403,10 @@ const ProjectPage: NextPageWithFragments = () => {
               <div className="flex items-center">
                 <ClockIcon className="mr-1.5 h-4" />
                 <span>
-                  {t("Created at {{date}} by {{user}}", {
-                    date: DateTime.fromISO(project.createdAt).toLocaleString(
+                  {t("Updated at {{date}}", {
+                    date: DateTime.fromISO(project.updatedAt).toLocaleString(
                       DateTime.DATETIME_SHORT
                     ),
-                    user: [project.author.firstName, project.author.lastName]
-                      .filter(Boolean)
-                      .join(" "),
                   })}
                 </span>
               </div>
@@ -418,6 +428,7 @@ const ProjectPage: NextPageWithFragments = () => {
             project={project}
           />
         )}
+        <ProjectPermissionsBlock project={project} />
         <LatestAnalysisBlock project={project} />
         <LatestDatasetsBlock project={project} />
         <ProjectPermissionsBlock project={project} />
@@ -467,6 +478,7 @@ ProjectPage.fragments = {
         flag
       }
       createdAt
+      updatedAt
       spatialResolution
       author {
         ...User_user

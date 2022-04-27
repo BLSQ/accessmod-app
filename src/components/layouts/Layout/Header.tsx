@@ -27,7 +27,7 @@ const Header = ({ user }: Props) => {
   return (
     <>
       <nav className="bg-lochmara">
-        <div className="mx-auto max-w-5xl sm:px-4 md:px-8">
+        <div className="mx-auto max-w-6xl sm:px-4 md:px-8">
           <div className="border-b border-white">
             <div className="flex h-16 items-center justify-between px-4 sm:px-0">
               <div className="flex h-full items-center gap-5 text-white">

@@ -1,7 +1,11 @@
 import { gql } from "@apollo/client";
+import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
+import { parse } from "csv-parse/sync";
 import {
+  AccessmodFile,
   AccessmodFilesetFormat,
+  AccessmodFilesetStatus,
   CreateFileMutation,
   GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
@@ -123,7 +127,21 @@ export const ACCEPTED_MIMETYPES = {
   [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],
 };
 
-export async function getFileDownloadUrl(fileId: string) {
+export function validateFileFormat(
+  file: Pick<AccessmodFile, "mimeType">,
+  format: AccessmodFilesetFormat
+) {
+  if (
+    format === AccessmodFilesetFormat.Tabular &&
+    ["application/csv", "text/csv"].includes(file.mimeType)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+export async function getFileDownloadUrl(fileId: string): Promise<string> {
   const client = getApolloClient();
   const { data } = await client.mutate<GetFileDownloadUrlMutation>({
     mutation: gql`
@@ -146,4 +164,61 @@ export async function getFileDownloadUrl(fileId: string) {
   } else {
     throw new Error("File cannot be downloaded");
   }
+}
+
+export function formatDatasetStatus(status: AccessmodFilesetStatus) {
+  switch (status) {
+    case AccessmodFilesetStatus.Invalid:
+      return i18n!.t("Invalid");
+    case AccessmodFilesetStatus.Pending:
+      return i18n!.t("Pending");
+    case AccessmodFilesetStatus.Valid:
+      return i18n!.t("Valid");
+    case AccessmodFilesetStatus.Validating:
+      return i18n!.t("Validating");
+  }
+}
+
+export async function getTabularFileContent(
+  file: Pick<AccessmodFile, "id" | "mimeType">
+) {
+  let textContent;
+  try {
+    textContent = sessionStorage.getItem(file.id);
+  } catch (err) {
+    console.error(err);
+  }
+  if (!textContent) {
+    const downloadUrl = await getFileDownloadUrl(file.id);
+    textContent = await fetch(downloadUrl).then((resp) => resp.text());
+  }
+
+  try {
+    sessionStorage.setItem(file.id, textContent);
+  } catch (err) {
+    console.error(err);
+  }
+  return parse(textContent, { delimiter: ",", columns: true });
+}
+
+export async function getVectorFileContent(
+  file: Pick<AccessmodFile, "id" | "mimeType">
+) {
+  let fileContent;
+
+  try {
+    fileContent = sessionStorage.getItem(file.id);
+  } catch (err) {
+    console.error(err);
+  }
+  if (!fileContent) {
+    const downloadUrl = await getFileDownloadUrl(file.id);
+    fileContent = await fetch(downloadUrl).then((resp) => resp.text());
+  }
+  try {
+    sessionStorage.setItem(file.id, fileContent);
+  } catch (err) {
+    console.error(err);
+  }
+  return JSON.parse(fileContent);
 }
