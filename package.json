@@ -57,6 +57,7 @@
     "graphql": "^15.0.0",
     "husky": "^7.0.4",
     "isomorphic-unfetch": "^3.1.0",
+    "jest-environment-jsdom": "^28.0.2",
     "leaflet": "^1.8.0",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "lodash.isequal": "^4.5.0",
