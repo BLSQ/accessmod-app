@@ -59,7 +59,7 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
   return (
     <div>
       <h3 className="mb-4 flex items-center justify-between">{t("Content")}</h3>
-      {tabularFiles?.length > 1 && (
+      {tabularFiles?.length > 1 ? (
         <SimpleSelect
           required
           value={currentFile?.id ?? ""}
@@ -75,8 +75,8 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
             </option>
           ))}
         </SimpleSelect>
-      )}
-      {!isLoading && data?.length && (
+      ) : null}
+      {!isLoading && data?.length > 0 && (
         <DataGrid
           data={data}
           columns={columns}

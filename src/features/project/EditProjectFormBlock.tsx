@@ -153,6 +153,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
         >
           <Textarea
             rows={5}
+            name="description"
             disabled={form.isSubmitting}
             onChange={form.handleInputChange}
           >
