@@ -18,14 +18,6 @@ function coordsToLatLng(coords: any) {
 
 const ClientVectorMap = (props: Props) => {
   const { geoJSON, ...delegated } = props;
-  const style = useMemo(
-    () => ({
-      color: "#ff7800",
-      weight: 5,
-      opacity: 0.65,
-    }),
-    []
-  );
 
   const filter: GeoJSONOptions["filter"] = (feat) => {
     return feat.properties.fid < 2200;
