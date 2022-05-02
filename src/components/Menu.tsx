@@ -63,9 +63,12 @@ const Item = ({
   className?: string;
   activeClassName?: string;
 }) => (
-  <HeadlessMenu.Item onClick={onClick}>
+  <HeadlessMenu.Item>
     {({ active }) => (
-      <button className={clsx(className, active && activeClassName)}>
+      <button
+        onClick={onClick}
+        className={clsx(className, active && activeClassName)}
+      >
         {children}
       </button>
     )}
