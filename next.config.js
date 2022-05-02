@@ -5,7 +5,6 @@ const { i18n } = require("./next-i18next.config");
 
 const config = {
   reactStrictMode: true,
-  swcMinify: false, // Disable until it's more stable
   i18n,
 };
 
