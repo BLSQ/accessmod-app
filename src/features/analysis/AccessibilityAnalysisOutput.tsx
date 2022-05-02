@@ -16,6 +16,9 @@ type Props = {
 const AccessibilityAnalysisOutput = ({ analysis, project }: Props) => {
   const { t } = useTranslation();
 
+  if (analysis.__typename !== "AccessmodAccessibilityAnalysis") {
+    return null;
+  }
   return (
     <DescriptionList>
       {analysis.frictionSurface && (
