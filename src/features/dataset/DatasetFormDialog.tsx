@@ -24,8 +24,8 @@ import {
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useState } from "react";
-import FilesetRolePicker from "./FilesetRolePicker";
-import ProjectPicker from "./project/ProjectPicker";
+import FilesetRolePicker from "../FilesetRolePicker";
+import ProjectPicker from "../project/ProjectPicker";
 
 type Props = {
   onClose: (

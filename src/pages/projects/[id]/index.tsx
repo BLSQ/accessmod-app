@@ -10,7 +10,7 @@ import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
-import CreateDatasetTrigger from "features/CreateDatasetTrigger";
+import CreateDatasetTrigger from "features/dataset/CreateDatasetTrigger";
 import CreateMembershipForm from "features/project/CreateMembershipForm";
 import DeleteProjectPermissionTrigger from "features/project/DeleteProjectPermissionTrigger";
 import EditProjectFormBlock from "features/project/EditProjectFormBlock";

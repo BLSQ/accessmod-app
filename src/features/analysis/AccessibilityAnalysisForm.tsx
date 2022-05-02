@@ -23,7 +23,7 @@ import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import DatasetPicker from "../DatasetPicker";
+import DatasetPicker from "../dataset/DatasetPicker";
 import AnalysisStep from "./AnalysisStep";
 
 type AccessibilityForm = {

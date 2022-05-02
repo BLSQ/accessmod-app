@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
+import Menu from "components/Menu";
 import {
   AccessmodAnalysisAuthorizedActions,
   AccessmodAnalysisStatus,
@@ -39,34 +40,41 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
         analysis.authorizedActions.includes(
           AccessmodAnalysisAuthorizedActions.Run
         ) && <Button variant="primary">{t("Run")}</Button>}
-      {[AccessmodAnalysisStatus.Ready, AccessmodAnalysisStatus.Draft].includes(
-        analysis.status
-      ) &&
-        analysis.authorizedActions.includes(
-          AccessmodAnalysisAuthorizedActions.Update
-        ) && (
-          <Link
-            href={{
-              pathname: routes.project_analysis_edit,
-              query: { projectId: project.id, analysisId: analysis.id },
-            }}
-          >
-            <a>
-              <Button variant="white">{t("Edit")}</Button>
-            </a>
-          </Link>
-        )}
-      {![
-        AccessmodAnalysisStatus.Running,
-        AccessmodAnalysisStatus.Queued,
-      ].includes(analysis.status) &&
-        analysis.authorizedActions.includes(
-          AccessmodAnalysisAuthorizedActions.Delete
-        ) && (
-          <Button variant="outlined" onClick={onDeleteClick}>
-            {t("Delete")}
-          </Button>
-        )}
+      <Menu label={t("Actions")}>
+        {[
+          AccessmodAnalysisStatus.Ready,
+          AccessmodAnalysisStatus.Draft,
+        ].includes(analysis.status) &&
+          analysis.authorizedActions.includes(
+            AccessmodAnalysisAuthorizedActions.Update
+          ) && (
+            <Menu.Item>
+              <Link
+                href={{
+                  pathname: routes.project_analysis_edit,
+                  query: { projectId: project.id, analysisId: analysis.id },
+                }}
+              >
+                <a className="w-full text-left">{t("Edit")}</a>
+              </Link>
+            </Menu.Item>
+          )}
+
+        {![
+          AccessmodAnalysisStatus.Running,
+          AccessmodAnalysisStatus.Queued,
+        ].includes(analysis.status) &&
+          analysis.authorizedActions.includes(
+            AccessmodAnalysisAuthorizedActions.Delete
+          ) && (
+            <Menu.Item
+              onClick={onDeleteClick}
+              activeClassName="bg-red-500 text-white"
+            >
+              {t("Delete")}
+            </Menu.Item>
+          )}
+      </Menu>
     </div>
   );
 };

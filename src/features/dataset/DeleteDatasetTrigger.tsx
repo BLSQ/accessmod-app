@@ -3,9 +3,7 @@ import Button from "components/Button";
 import useCacheKey from "hooks/useCacheKey";
 import {
   AccessmodFilesetAuthorizedActions,
-  AccessmodProjectAuthorizedActions,
   useDeleteDatasetMutation,
-  useDeleteProjectMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";

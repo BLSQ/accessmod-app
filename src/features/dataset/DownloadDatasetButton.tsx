@@ -5,13 +5,14 @@ import { getFileDownloadUrl } from "libs/dataset";
 import { downloadURL } from "libs/file";
 import { DownloadDatasetButton_DatasetFragment } from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 type Props = {
   dataset: DownloadDatasetButton_DatasetFragment;
+  children?: ReactNode;
 } & ButtonProps;
 
-const DownloadDatasetButton = ({ dataset, ...delegated }: Props) => {
+const DownloadDatasetButton = ({ dataset, children, ...delegated }: Props) => {
   const { t } = useTranslation();
   const [isPreparing, setPreparing] = useState(false);
   const handleDownload = async () => {
@@ -37,9 +38,7 @@ const DownloadDatasetButton = ({ dataset, ...delegated }: Props) => {
     <Button disabled={isPreparing} {...delegated} onClick={handleDownload}>
       <span className="flex items-center">
         {isPreparing && <Spinner className="mr-1" size="xs" />}
-        <span>
-          {t("Download {{count}} files", { count: dataset.files.length })}
-        </span>
+        <span>{children ?? t("Download")}</span>
       </span>
     </Button>
   );

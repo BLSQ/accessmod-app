@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisActionsButton from "features/analysis/AnalysisActionsButton";
-import AnalysisOutput from "features/analysis/AnalysisOutput";
+import AccessibilityAnalysisOutput from "features/analysis/AccessibilityAnalysisOutput";
 import AnalysisStatus from "features/analysis/AnalysisStatus";
 import User from "features/User";
 import { getLabelFromAnalysisType } from "libs/analysis";
@@ -115,7 +115,7 @@ const AnalysisPage = () => {
         {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
           <Block>
             <h3 className="mb-4 flex items-center justify-between">
-              {t("Input Parameters")}
+              {t("Parameters")}
             </h3>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
               <div className="sm:col-span-1">
@@ -182,7 +182,12 @@ const AnalysisPage = () => {
             <h3 className="mb-4 flex items-center justify-between">
               {t("Output")}
             </h3>
-            <AnalysisOutput analysis={data.analysis} />
+            {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
+              <AccessibilityAnalysisOutput
+                analysis={data.analysis}
+                project={data.project}
+              />
+            )}
           </Block>
         )}
       </PageContent>
@@ -206,6 +211,7 @@ export const getServerSideProps = createGetServerSideProps({
             id
             name
             ...AnalysisActionsButton_project
+            ...AccessibilityAnalysisOutput_project
           }
           analysis: accessmodAnalysis(id: $analysisId) {
             __typename
@@ -217,31 +223,38 @@ export const getServerSideProps = createGetServerSideProps({
             status
             ...AnalysisActionsButton_analysis
             ...AnalysisStatus_analysis
-            ...AnalysisOutput_analysis
+            ...AccessibilityAnalysisOutput_analysis
             author {
               ...User_user
             }
 
             ... on AccessmodAccessibilityAnalysis {
               landCover {
+                id
                 name
               }
               transportNetwork {
+                id
                 name
               }
               slope {
+                id
                 name
               }
               water {
+                id
                 name
               }
               barrier {
+                id
                 name
               }
               movingSpeeds {
+                id
                 name
               }
               healthFacilities {
+                id
                 name
               }
             }
@@ -250,7 +263,8 @@ export const getServerSideProps = createGetServerSideProps({
         ${AnalysisActionsButton.fragments.project}
         ${AnalysisActionsButton.fragments.analysis}
         ${AnalysisStatus.fragments.analysis}
-        ${AnalysisOutput.fragments.analysis}
+        ${AccessibilityAnalysisOutput.fragments.analysis}
+        ${AccessibilityAnalysisOutput.fragments.project}
         ${User.fragments.user}
       `,
       variables: {

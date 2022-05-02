@@ -59,13 +59,16 @@ const Item = ({
   className = MenuClasses.Item,
 }: {
   children: ReactNode;
-  onClick: ((event: { preventDefault: Function }) => void) | undefined;
+  onClick?: ((event: { preventDefault: Function }) => void) | undefined;
   className?: string;
   activeClassName?: string;
 }) => (
-  <HeadlessMenu.Item onClick={onClick}>
+  <HeadlessMenu.Item>
     {({ active }) => (
-      <button className={clsx(className, active && activeClassName)}>
+      <button
+        onClick={onClick}
+        className={clsx(className, active && activeClassName)}
+      >
         {children}
       </button>
     )}

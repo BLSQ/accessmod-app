@@ -1,5 +1,5 @@
+import BigGeoJsonLayer from "components/map/BigGeoJsonLayer";
 import Map, { MapProps } from "components/map/Map";
-import { CRS } from "leaflet";
 
 type Props = {
   geoJSON?: any;
@@ -8,7 +8,11 @@ type Props = {
 const ClientVectorMap = (props: Props) => {
   const { geoJSON, ...delegated } = props;
 
-  return <Map {...delegated} crs={CRS.EPSG3857}></Map>;
+  return (
+    <Map loading={!geoJSON} {...delegated}>
+      {geoJSON && <BigGeoJsonLayer data={geoJSON} />}
+    </Map>
+  );
 };
 
 export default ClientVectorMap;

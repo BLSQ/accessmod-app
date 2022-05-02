@@ -27,12 +27,15 @@ const VectorDatasetMap = ({ dataset }: VectorDatasetMapProps) => {
     if (supportedFile) {
       getVectorFileContent(supportedFile).then((data) => {
         setGeoJSON(data);
-        console.log(data);
       });
     }
   }, [dataset, supportedFile]);
 
-  return <DynamicClientVectorMap geoJSON={geoJSON} />;
+  return (
+    <>
+      <DynamicClientVectorMap geoJSON={geoJSON} zoom={4} />
+    </>
+  );
 };
 
 VectorDatasetMap.fragments = {

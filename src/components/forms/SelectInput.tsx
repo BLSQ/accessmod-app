@@ -133,7 +133,7 @@ export interface BaseSelectInputProps<
   labelKey?: string;
   onInputChange?: (value: any, actionMeta: InputActionMeta) => void;
   valueKey?: string;
-  loadOptions?: (str: string) => OptionsOrGroups<Option, Group>;
+  loadOptions?: (str: string) => Promise<OptionsOrGroups<Option, Group>>;
   cacheOptions?: boolean;
   defaultOptions?: boolean | OptionsOrGroups<Option, Group>;
   onMenuScrollToBottom?: (event: WheelEvent | TouchEvent) => void;

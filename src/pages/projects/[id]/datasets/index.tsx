@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
-import CreateDatasetDialog from "features/DatasetFormDialog";
+import CreateDatasetDialog from "features/dataset/DatasetFormDialog";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
 import {
   AccessmodProjectAuthorizedActions,
