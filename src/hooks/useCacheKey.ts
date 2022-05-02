@@ -41,7 +41,7 @@ const useCacheKey = (keys: string | string[], listener?: () => void) => {
   }, [cachedKeys, emit]);
 
   const onEvent = useCallback(
-    (event) => {
+    (event: CustomEvent) => {
       if (!listener) {
         // We may use this hook only to propagate a cache reset (and we cannot call a hook in a conditional statement)
         return;

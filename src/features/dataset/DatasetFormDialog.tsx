@@ -301,10 +301,8 @@ const DatasetFormDialog = (props: Props) => {
               </Dropzone>
             </Field>
 
-            {(form.submitError || filesetError) && (
-              <div className="mt-3 text-sm text-danger">
-                {form.submitError || filesetError}
-              </div>
+            {form.submitError && (
+              <div className="mt-3 text-sm text-danger">{form.submitError}</div>
             )}
           </div>
         </Dialog.Content>
