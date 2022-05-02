@@ -2,15 +2,15 @@ import { gql } from "@apollo/client";
 import { LinkIcon } from "@heroicons/react/outline";
 import DescriptionList from "components/DescriptionList";
 import {
-  AnalysisOutput_AnalysisFragment,
-  AnalysisOutput_ProjectFragment,
+  AccessibilityAnalysisOutput_AnalysisFragment,
+  AccessibilityAnalysisOutput_ProjectFragment,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 
 type Props = {
-  analysis: AnalysisOutput_AnalysisFragment;
-  project: AnalysisOutput_ProjectFragment;
+  analysis: AccessibilityAnalysisOutput_AnalysisFragment;
+  project: AccessibilityAnalysisOutput_ProjectFragment;
 };
 
 const AccessibilityAnalysisOutput = ({ analysis, project }: Props) => {
