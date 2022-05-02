@@ -217,6 +217,13 @@ export enum AccessmodProjectAuthorizedActions {
   Update = 'UPDATE'
 }
 
+export enum AccessmodProjectOrder {
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
 export type AccessmodProjectPage = {
   __typename?: 'AccessmodProjectPage';
   items: Array<AccessmodProject>;
@@ -826,6 +833,7 @@ export type QueryAccessmodProjectArgs = {
 
 export type QueryAccessmodProjectsArgs = {
   countries?: InputMaybe<Array<Scalars['String']>>;
+  orderBy?: InputMaybe<AccessmodProjectOrder>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   teams?: InputMaybe<Array<Scalars['String']>>;
@@ -3768,6 +3776,7 @@ export const ProjectsPageDocument = gql`
     countries: $countries
     page: $page
     perPage: $perPage
+    orderBy: UPDATED_AT_DESC
   ) {
     ...ProjectsList_projects
     pageNumber
