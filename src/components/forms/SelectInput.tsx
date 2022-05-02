@@ -48,7 +48,7 @@ export default function SelectInput({
   );
 
   const onSelectCreateOption = useCallback(
-    async (newOptionValue) => {
+    async (newOptionValue: string) => {
       if (!onCreateOption) {
         throw new Error("This should not happen");
       }

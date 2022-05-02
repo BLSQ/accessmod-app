@@ -35,6 +35,7 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
   };
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
+    ssrForceFetchDelay: 100, // in milliseconds
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
@@ -74,6 +75,11 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
       typePolicies: {
         Team: {
           merge: true,
+          fields: {
+            permissions: {
+              merge: true,
+            },
+          },
         },
         AccessmodProjectPermission: {
           merge: true,

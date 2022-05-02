@@ -19,9 +19,7 @@ export const useCheckboxColumn: UseCheckboxColumn = (hooks) => {
       ),
       // The cell can use the individual row's getToggleRowSelectedProps method
       // to the render a checkbox
-      Cell: ({ row }: Cell) => (
-        <Checkbox {...row.getToggleRowSelectedProps()} />
-      ),
+      Cell: (cell) => <Checkbox {...cell.row.getToggleRowSelectedProps()} />,
     },
     ...columns,
   ]);
