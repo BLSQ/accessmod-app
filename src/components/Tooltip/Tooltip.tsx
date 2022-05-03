@@ -32,28 +32,29 @@ const Tooltip = (props: Props) => {
       ) : (
         props.renderTrigger(setTriggerRef)
       )}
-      {ReactDOM.createPortal(
-        <Transition
-          show={visible}
-          enter="transition-opacity duration-75"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-150"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div
-            ref={setTooltipRef}
-            {...getTooltipProps({
-              className: styles["tooltip"],
-            })}
+      {typeof window !== "undefined" &&
+        ReactDOM.createPortal(
+          <Transition
+            show={visible}
+            enter="transition-opacity duration-75"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-150"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
-            <div {...getArrowProps({ className: styles["arrow"] })} />
-            {label}
-          </div>
-        </Transition>,
-        document.body
-      )}
+            <div
+              ref={setTooltipRef}
+              {...getTooltipProps({
+                className: styles["tooltip"],
+              })}
+            >
+              <div {...getArrowProps({ className: styles["arrow"] })} />
+              {label}
+            </div>
+          </Transition>,
+          document.body
+        )}
     </>
   );
 };

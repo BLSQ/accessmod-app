@@ -59,18 +59,6 @@ const LatestAnalysisBlock = ({
           </a>
         </Link>
         <div className="flex items-center space-x-2">
-          <CreateAnalysisTrigger project={project}>
-            {({ onClick }) => (
-              <Button
-                variant="secondary"
-                onClick={onClick}
-                size="sm"
-                leadingIcon={<PlusIcon className="h-4 w-4" />}
-              >
-                {t("New Analysis")}
-              </Button>
-            )}
-          </CreateAnalysisTrigger>
           <Link
             href={{
               pathname: routes.project_analyses_list,
@@ -83,6 +71,18 @@ const LatestAnalysisBlock = ({
               </Button>
             </a>
           </Link>
+          <CreateAnalysisTrigger project={project}>
+            {({ onClick }) => (
+              <Button
+                variant="secondary"
+                onClick={onClick}
+                size="sm"
+                leadingIcon={<PlusIcon className="h-4 w-4" />}
+              >
+                {t("New Analysis")}
+              </Button>
+            )}
+          </CreateAnalysisTrigger>
         </div>
       </h3>
       <ProjectAnalysesTable project={project} />
@@ -110,18 +110,6 @@ const LatestDatasetsBlock = ({
           </a>
         </Link>
         <div className="flex items-center space-x-2">
-          <CreateDatasetTrigger project={project}>
-            {({ onClick }) => (
-              <Button
-                variant="secondary"
-                onClick={onClick}
-                size="sm"
-                leadingIcon={<PlusIcon className="h-4 w-4" />}
-              >
-                {t("New Dataset")}
-              </Button>
-            )}
-          </CreateDatasetTrigger>
           <Link
             href={{
               pathname: routes.project_datasets_list,
@@ -134,6 +122,18 @@ const LatestDatasetsBlock = ({
               </Button>
             </a>
           </Link>
+          <CreateDatasetTrigger project={project}>
+            {({ onClick }) => (
+              <Button
+                variant="secondary"
+                onClick={onClick}
+                size="sm"
+                leadingIcon={<PlusIcon className="h-4 w-4" />}
+              >
+                {t("New Dataset")}
+              </Button>
+            )}
+          </CreateDatasetTrigger>
         </div>
       </h3>
       <ProjectDatasetsTable project={project} />
@@ -428,7 +428,6 @@ const ProjectPage: NextPageWithFragments = () => {
             project={project}
           />
         )}
-        <ProjectPermissionsBlock project={project} />
         <LatestAnalysisBlock project={project} />
         <LatestDatasetsBlock project={project} />
         <ProjectPermissionsBlock project={project} />
