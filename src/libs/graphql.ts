@@ -1683,11 +1683,6 @@ export const DatasetStatusBadge_DatasetFragmentDoc = gql`
   status
 }
     `;
-export const DatasetStatusIcon_DatasetFragmentDoc = gql`
-    fragment DatasetStatusIcon_dataset on AccessmodFileset {
-  status
-}
-    `;
 export const TabularDatasetTable_DatasetFragmentDoc = gql`
     fragment TabularDatasetTable_dataset on AccessmodFileset {
   role {
