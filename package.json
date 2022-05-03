@@ -99,7 +99,7 @@
     "@types/lodash.merge": "^4.6.7",
     "@types/luxon": "^2.3.1",
     "@types/react-table": "^7.7.11",
-    "autoprefixer": "^10.4.6",
+    "autoprefixer": "10.4.5",
     "babel-jest": "^28.0.3",
     "i18next-parser": "^6.4.0",
     "jest": "^28.0.3",
