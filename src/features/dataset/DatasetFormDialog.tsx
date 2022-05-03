@@ -23,7 +23,7 @@ import {
   useCreateFilesetMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FilesetRolePicker from "../FilesetRolePicker";
 import ProjectPicker from "../project/ProjectPicker";
 
@@ -88,7 +88,7 @@ type FilesetFile = JobFile & {
 const DatasetFormDialog = (props: Props) => {
   const { open, onClose, project, role, dataset } = props;
   const [progress, setProgress] = useState(0);
-  const [createFileset, { error: filesetError }] = useCreateFilesetMutation();
+  const [createFileset] = useCreateFilesetMutation();
   const clearFilesets = useCacheKey(["filesets"]);
   const { t } = useTranslation();
   const form = useForm<Form>({
@@ -200,22 +200,6 @@ const DatasetFormDialog = (props: Props) => {
     }
   }, [project, role, form]);
 
-  const validator = useCallback(
-    (file: File) => {
-      if (!role) return null;
-      const ext = file.name.slice(file.name.lastIndexOf("."));
-
-      if (!ACCEPTED_MIMETYPES[role.format].includes(ext)) {
-        return {
-          code: "wrong-file-type",
-          message: t("Filetype {{ext}} is not a valid one.", { ext }),
-        };
-      }
-      return null;
-    },
-    [role, t]
-  );
-
   const handleClose = () => {
     form.resetForm();
     onClose("cancel");
@@ -284,12 +268,10 @@ const DatasetFormDialog = (props: Props) => {
             >
               <Dropzone
                 className="mt-1"
+                maxFiles={1}
                 label={t("Select your files")}
                 onChange={(files) => form.setFieldValue("files", files)}
-                accept={
-                  role ? ACCEPTED_MIMETYPES[role.format].join(", ") : undefined
-                }
-                validator={validator}
+                accept={role ? ACCEPTED_MIMETYPES[role.format] : undefined}
               >
                 {form.formData.files?.length ? (
                   <div>

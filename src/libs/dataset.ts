@@ -111,20 +111,19 @@ export async function getFilesetRoles() {
   return response.data?.roles || [];
 }
 
+// Based on https://www.iana.org/assignments/media-types/media-types.xhtml
 export const ACCEPTED_MIMETYPES = {
-  [AccessmodFilesetFormat.Vector]: [
-    ".gpkg",
-    ".shp",
-    ".prj",
-    ".dbf",
-    ".shx",
-    ".json",
-    ".cpg",
-    ".geojson",
-    ".cpg",
-  ],
-  [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
-  [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],
+  [AccessmodFilesetFormat.Vector]: {
+    "application/geopackage+sqlite3": [".gpkg"],
+    "application/geo+json": [".geojson"],
+  },
+  [AccessmodFilesetFormat.Raster]: {
+    "image/tiff": [".tif", ".tiff"],
+  },
+  [AccessmodFilesetFormat.Tabular]: {
+    "text/plain": [".csv"],
+    "text/csv": [".csv"],
+  },
 };
 
 export function validateFileFormat(
