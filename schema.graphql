@@ -197,6 +197,13 @@ enum AccessmodProjectAuthorizedActions {
   CREATE_PERMISSION
 }
 
+enum AccessmodProjectOrder {
+  UPDATED_AT_DESC
+  UPDATED_AT_ASC
+  NAME_DESC
+  NAME_ASC
+}
+
 type AccessmodProjectPage {
   pageNumber: Int!
   totalPages: Int!
@@ -607,7 +614,7 @@ type Query {
   organizations: [Organization!]!
   countries: [Country!]!
   accessmodProject(id: String): AccessmodProject
-  accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int): AccessmodProjectPage!
+  accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int, orderBy: AccessmodProjectOrder): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
   accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole

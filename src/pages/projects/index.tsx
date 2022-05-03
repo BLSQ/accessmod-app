@@ -167,6 +167,7 @@ export const getServerSideProps = createGetServerSideProps({
             countries: $countries
             page: $page
             perPage: $perPage
+            orderBy: UPDATED_AT_DESC
           ) {
             ...ProjectsList_projects
             pageNumber
