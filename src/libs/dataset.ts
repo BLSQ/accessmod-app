@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
 import { parse } from "csv-parse/sync";
@@ -109,6 +109,14 @@ export async function getFilesetRoles() {
   });
 
   return response.data?.roles || [];
+}
+
+export function useFilesetRoles() {
+  const { data, loading } = useQuery<GetFilesetRolesQuery>(GET_FILESET_ROLES, {
+    fetchPolicy: "cache-first",
+  });
+
+  return { loading, roles: data?.roles ?? undefined } as const;
 }
 
 // Based on https://www.iana.org/assignments/media-types/media-types.xhtml
