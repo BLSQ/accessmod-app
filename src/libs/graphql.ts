@@ -1162,6 +1162,8 @@ export type PollDatasetStatusQuery = { __typename?: 'Query', dataset?: { __typen
 
 export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus };
 
+export type DatasetStatusIcon_DatasetFragment = { __typename?: 'AccessmodFileset', status: AccessmodFilesetStatus };
+
 export type DatasetViewer_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type DatasetViewer_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
@@ -1597,6 +1599,11 @@ export const AnalysisForm_ProjectFragmentDoc = gql`
   ...AccessibilityAnalysisForm_project
 }
     ${AccessibilityAnalysisForm_ProjectFragmentDoc}`;
+export const DatasetStatusIcon_DatasetFragmentDoc = gql`
+    fragment DatasetStatusIcon_dataset on AccessmodFileset {
+  status
+}
+    `;
 export const DatasetPicker_DatasetFragmentDoc = gql`
     fragment DatasetPicker_dataset on AccessmodFileset {
   id
@@ -1609,8 +1616,9 @@ export const DatasetPicker_DatasetFragmentDoc = gql`
   createdAt
   updatedAt
   status
+  ...DatasetStatusIcon_dataset
 }
-    `;
+    ${DatasetStatusIcon_DatasetFragmentDoc}`;
 export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
     fragment AccessibilityAnalysisForm_analysis on AccessmodAccessibilityAnalysis {
   __typename

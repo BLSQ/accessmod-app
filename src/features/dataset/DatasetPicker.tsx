@@ -1,17 +1,11 @@
 import { gql } from "@apollo/client";
-import {
-  CheckCircleIcon,
-  PauseIcon,
-  SelectorIcon,
-} from "@heroicons/react/outline";
-import { ExclamationCircleIcon, PlusIcon } from "@heroicons/react/solid";
+import { SelectorIcon } from "@heroicons/react/outline";
+import { PlusIcon } from "@heroicons/react/solid";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
-import Tooltip from "components/Tooltip";
 import { useFilesetRoles } from "libs/dataset";
 import {
   AccessmodFilesetRoleCode,
-  AccessmodFilesetStatus,
   AccessmodProjectAuthorizedActions,
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
@@ -19,6 +13,7 @@ import {
 import { i18n, useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CreateDatasetDialog from "./DatasetFormDialog";
+import DatasetStatusIcon from "./DatasetStatusIcon";
 
 type Props = {
   dataset?: any;
@@ -36,27 +31,6 @@ const RECOMMENDED_OPTION = {
   get name() {
     return i18n!.t("Use recommended dataset");
   },
-};
-
-const DatasetStatusIcon = ({ dataset }: { dataset: any }) => {
-  const { t } = useTranslation();
-  switch (dataset.status) {
-    case AccessmodFilesetStatus.Invalid:
-      return (
-        <Tooltip
-          label={t("This dataset is invalid. Please update its metadata.")}
-        >
-          <ExclamationCircleIcon className="h-4 text-amber-300" />
-        </Tooltip>
-      );
-    case AccessmodFilesetStatus.Valid:
-      return <CheckCircleIcon className="h-4 text-teal-400" />;
-    case AccessmodFilesetStatus.Pending:
-    case AccessmodFilesetStatus.Validating:
-      return <PauseIcon className="h-4 text-blue-400" />;
-  }
-
-  return null;
 };
 
 const DatasetPicker = (props: Props) => {
@@ -177,7 +151,9 @@ DatasetPicker.fragments = {
       createdAt
       updatedAt
       status
+      ...DatasetStatusIcon_dataset
     }
+    ${DatasetStatusIcon.fragments.dataset}
   `,
   project: gql`
     fragment DatasetPicker_project on AccessmodProject {
