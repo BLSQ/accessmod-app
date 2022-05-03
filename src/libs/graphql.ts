@@ -1086,14 +1086,14 @@ export type User_UserFragment = { __typename?: 'User', firstName?: string | null
 
 export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
-export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+export type AccessibilityAnalysisForm_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null };
 
 export type UpdateAccessibilityAnalysisMutationVariables = Exact<{
   input?: InputMaybe<UpdateAccessmodAccessibilityAnalysisInput>;
 }>;
 
 
-export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<UpdateAccessmodAccessibilityAnalysisError>, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | null } };
+export type UpdateAccessibilityAnalysisMutation = { __typename?: 'Mutation', updateAccessmodAccessibilityAnalysis: { __typename?: 'UpdateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<UpdateAccessmodAccessibilityAnalysisError>, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null } | null } };
 
 export type AccessibilityAnalysisOutput_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -1113,7 +1113,7 @@ export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analy
 
 export type AnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
-type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, status: AccessmodAnalysisStatus, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null };
 
 type AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis' };
 
@@ -1138,17 +1138,20 @@ export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject
 
 export type DatasetFormDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
 
+export type DatasetPicker_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } };
+
+export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
+
 export type DatasetPickerQueryVariables = Exact<{
   projectId: Scalars['String'];
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   roleId?: InputMaybe<Scalars['String']>;
+  term?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } }> } };
-
-export type DatasetPicker_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
+export type DatasetPickerQuery = { __typename?: 'Query', filesets: { __typename?: 'AccessmodFilesetPage', totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } }> } };
 
 export type PollDatasetStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1402,7 +1405,7 @@ export type AnalysisEditPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
+export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, maxSlope?: number | null, priorityRoads?: boolean | null, priorityLandCover?: Array<number> | null, waterAllTouched?: boolean | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, movingSpeeds?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
 
 export type AnalysisDetailPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1594,18 +1597,30 @@ export const AnalysisForm_ProjectFragmentDoc = gql`
   ...AccessibilityAnalysisForm_project
 }
     ${AccessibilityAnalysisForm_ProjectFragmentDoc}`;
+export const DatasetPicker_DatasetFragmentDoc = gql`
+    fragment DatasetPicker_dataset on AccessmodFileset {
+  id
+  name
+  role {
+    id
+    name
+    format
+  }
+  createdAt
+  updatedAt
+  status
+}
+    `;
 export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
     fragment AccessibilityAnalysisForm_analysis on AccessmodAccessibilityAnalysis {
   __typename
   id
   name
   movingSpeeds {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   healthFacilities {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   type
   maxSlope
@@ -1618,31 +1633,25 @@ export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
   maxTravelTime
   status
   landCover {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   dem {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   barrier {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   water {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   slope {
-    id
-    name
+    ...DatasetPicker_dataset
   }
   transportNetwork {
-    id
-    name
+    ...DatasetPicker_dataset
   }
 }
-    `;
+    ${DatasetPicker_DatasetFragmentDoc}`;
 export const AnalysisForm_AnalysisFragmentDoc = gql`
     fragment AnalysisForm_analysis on AccessmodAnalysis {
   ...AccessibilityAnalysisForm_analysis
@@ -2313,28 +2322,21 @@ export type CreateFilesetMutationHookResult = ReturnType<typeof useCreateFileset
 export type CreateFilesetMutationResult = Apollo.MutationResult<CreateFilesetMutation>;
 export type CreateFilesetMutationOptions = Apollo.BaseMutationOptions<CreateFilesetMutation, CreateFilesetMutationVariables>;
 export const DatasetPickerDocument = gql`
-    query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String) {
+    query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String, $term: String) {
   filesets: accessmodFilesets(
     projectId: $projectId
     page: $page
+    term: $term
     perPage: $perPage
     roleId: $roleId
   ) {
     items {
-      id
-      name
-      role {
-        id
-        name
-        format
-      }
-      createdAt
-      updatedAt
+      ...DatasetPicker_dataset
     }
     totalItems
   }
 }
-    `;
+    ${DatasetPicker_DatasetFragmentDoc}`;
 
 /**
  * __useDatasetPickerQuery__
@@ -2352,6 +2354,7 @@ export const DatasetPickerDocument = gql`
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *      roleId: // value for 'roleId'
+ *      term: // value for 'term'
  *   },
  * });
  */

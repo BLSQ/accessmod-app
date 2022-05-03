@@ -210,7 +210,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Dem}
-              value={form.formData.dem}
+              dataset={form.formData.dem}
               required
               onChange={(value) => form.setFieldValue("dem", value)}
             />
@@ -219,7 +219,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.LandCover}
-              value={form.formData.landCover}
+              dataset={form.formData.landCover}
               required
               onChange={(value) => form.setFieldValue("landCover", value)}
             />
@@ -228,7 +228,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.TransportNetwork}
-              value={form.formData.transportNetwork}
+              dataset={form.formData.transportNetwork}
               required
               onChange={(value) =>
                 form.setFieldValue("transportNetwork", value)
@@ -239,7 +239,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Barrier}
-              value={form.formData.barrier}
+              dataset={form.formData.barrier}
               required
               onChange={(value) => form.setFieldValue("barrier", value)}
             />
@@ -248,7 +248,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Water}
-              value={form.formData.water}
+              dataset={form.formData.water}
               required
               onChange={(value) => form.setFieldValue("water", value)}
             />
@@ -257,7 +257,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Slope}
-              value={form.formData.slope}
+              dataset={form.formData.slope}
               required
               onChange={(value) => form.setFieldValue("slope", value)}
             />
@@ -306,7 +306,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             project={project}
             required
             roleCode={AccessmodFilesetRoleCode.HealthFacilities}
-            value={form.formData.healthFacilities}
+            dataset={form.formData.healthFacilities}
             onChange={(value) => form.setFieldValue("healthFacilities", value)}
           />
         </Field>
@@ -328,7 +328,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             project={project}
             required
             roleCode={AccessmodFilesetRoleCode.MovingSpeeds}
-            value={form.formData.movingSpeeds}
+            dataset={form.formData.movingSpeeds}
             onChange={(value) => form.setFieldValue("movingSpeeds", value)}
           />
         </Field>
@@ -431,12 +431,10 @@ AccessibilityAnalysisForm.fragments = {
       id
       name
       movingSpeeds {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       healthFacilities {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       type
       maxSlope
@@ -450,30 +448,25 @@ AccessibilityAnalysisForm.fragments = {
       maxTravelTime
       status
       landCover {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       dem {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       barrier {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       water {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       slope {
-        id
-        name
+        ...DatasetPicker_dataset
       }
       transportNetwork {
-        id
-        name
+        ...DatasetPicker_dataset
       }
     }
+    ${DatasetPicker.fragments.dataset}
   `,
 };
 

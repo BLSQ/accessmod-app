@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
 import { parse } from "csv-parse/sync";
@@ -111,20 +111,27 @@ export async function getFilesetRoles() {
   return response.data?.roles || [];
 }
 
+export function useFilesetRoles() {
+  const { data, loading } = useQuery<GetFilesetRolesQuery>(GET_FILESET_ROLES, {
+    fetchPolicy: "cache-first",
+  });
+
+  return { loading, roles: data?.roles ?? undefined } as const;
+}
+
+// Based on https://www.iana.org/assignments/media-types/media-types.xhtml
 export const ACCEPTED_MIMETYPES = {
-  [AccessmodFilesetFormat.Vector]: [
-    ".gpkg",
-    ".shp",
-    ".prj",
-    ".dbf",
-    ".shx",
-    ".json",
-    ".cpg",
-    ".geojson",
-    ".cpg",
-  ],
-  [AccessmodFilesetFormat.Raster]: [".tif", ".tiff", ".img"],
-  [AccessmodFilesetFormat.Tabular]: [".csv", ".xls", ".xlsx"],
+  [AccessmodFilesetFormat.Vector]: {
+    "application/geopackage+sqlite3": [".gpkg"],
+    "application/geo+json": [".geojson"],
+  },
+  [AccessmodFilesetFormat.Raster]: {
+    "image/tiff": [".tif", ".tiff"],
+  },
+  [AccessmodFilesetFormat.Tabular]: {
+    "text/plain": [".csv"],
+    "text/csv": [".csv"],
+  },
 };
 
 export function validateFileFormat(
