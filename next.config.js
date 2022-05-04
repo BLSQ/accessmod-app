@@ -4,6 +4,11 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const { i18n } = require("./next-i18next.config");
 
 const config = {
+  publicRuntimeConfig: {
+    GRAPHQL_ENDPOINT: process.env.GRAPHQL_ENDPOINT,
+    SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
+  },
   reactStrictMode: true,
   i18n,
 };
