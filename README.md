@@ -2,6 +2,9 @@
 
 This repository contains the code of the frontend application of the AccessMod project.
 
+Docker image can be found in the 
+[Github package repository](https://github.com/BLSQ/accessmod-app/pkgs/container/accessmod-app).
+
 ## Architecture overview
 
 The AccessMod application is a [Next.js](https://nextjs.org/) application. It is a frontend app designed to connect
