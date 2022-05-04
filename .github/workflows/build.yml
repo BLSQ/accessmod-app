@@ -1,5 +1,4 @@
 # See https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
-
 name: Create and publish Docker image
 
 on:
@@ -13,7 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{github.repository}}
 
 jobs:
   build-and-push-image:
@@ -29,15 +28,15 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{env.REGISTRY}}
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@b2391d37b4157fa4aa2e118d643f417910ff3242
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
           tags: |
             type=pep440,pattern={{version}}
 
@@ -46,8 +45,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{steps.meta.outputs.tags}}
+          labels: ${{steps.meta.outputs.labels}}
           build-args: |
-            "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
-            "RELEASE=${{ steps.meta.outputs.tags }}"
+            "SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}"
+            "RELEASE=${{github.event.release.tag_name}}"
