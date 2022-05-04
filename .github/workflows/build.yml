@@ -50,3 +50,5 @@ jobs:
           build-args: |
             "SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}"
             "RELEASE=${{github.event.release.tag_name}}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
