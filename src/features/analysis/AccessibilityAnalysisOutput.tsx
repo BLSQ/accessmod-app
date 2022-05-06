@@ -49,20 +49,6 @@ const AccessibilityAnalysisOutput = ({ analysis, project }: Props) => {
           </Link>
         </DescriptionList.Item>
       )}
-      {analysis.catchmentAreas && (
-        <DescriptionList.Item label={t("Catchments Areas")}>
-          <Link
-            href={`/projects/${encodeURIComponent(
-              project.id
-            )}/datasets/${encodeURIComponent(analysis.catchmentAreas.id)}/`}
-          >
-            <a className="flex items-center text-gray-800 hover:text-gray-600">
-              {analysis.catchmentAreas.name}
-              <LinkIcon className="ml-1 inline w-4" />{" "}
-            </a>
-          </Link>
-        </DescriptionList.Item>
-      )}
     </DescriptionList>
   );
 };
@@ -84,10 +70,6 @@ AccessibilityAnalysisOutput.fragments = {
           id
         }
         frictionSurface {
-          name
-          id
-        }
-        catchmentAreas {
           name
           id
         }

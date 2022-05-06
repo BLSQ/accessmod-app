@@ -23,6 +23,7 @@ export type { Cell, SortingRule } from "react-table";
 
 export type Column = ReactTableColumn & {
   Header: string | null;
+  [key: string]: any;
 };
 type DataGridTheme = {
   table?: string;
@@ -39,6 +40,7 @@ interface IDataGridProps {
   data: object[];
   theme?: DataGridTheme;
   manualSortBy?: boolean;
+  extraTableProps?: object;
   onSelectionChange?: (
     pageRows: object[],
     allIds: Record<string, boolean>
@@ -53,20 +55,21 @@ interface IDataGridProps {
   totalItems?: number;
   idKey?: string;
   defaultPageSize?: number;
+  className?: string;
   defaultSortBy?: SortingRule<object>[];
   pageSizeOptions?: number[];
 }
 
 type DataGridProps = IDataGridProps;
 
-const DEFAULT_THEME = {
+export const DATA_GRID_DEFAULT_THEME = {
   table: "divide-y divide-gray-200 w-full",
   thead: "",
   tbody: "",
   th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-3 py-3",
   td: "whitespace-nowrap text-sm font-medium text-gray-800 px-3 py-1 md:py-2 flex items-center",
   tr: "hover:bg-gray-200",
-  pagination: "",
+  pagination: "px-3",
 };
 
 const DEFAULT_COLUMN = {
@@ -79,13 +82,15 @@ const DataGrid = (props: DataGridProps) => {
   const {
     columns,
     data,
-    theme = DEFAULT_THEME,
+    theme = DATA_GRID_DEFAULT_THEME,
     onSelectionChange,
     fetchData,
     sortable = false,
     totalItems,
     idKey,
+    className,
     pageSizeOptions,
+    extraTableProps = {},
     defaultSortBy = [],
     defaultPageSize = 10,
   } = props;
@@ -147,6 +152,8 @@ const DataGrid = (props: DataGridProps) => {
         sortBy: defaultSortBy,
         pageSize: defaultPageSize,
       },
+
+      ...extraTableProps,
     },
     ...hooks
   );
@@ -192,11 +199,11 @@ const DataGrid = (props: DataGridProps) => {
     onFetchData({ pageIndex, pageSize, sortBy });
   }, [onFetchData, pageIndex, pageSize, sortBy]);
   return (
-    <div>
+    <div className={className}>
       <table className={clsx(theme.table)} {...getTableProps()}>
         <thead className={clsx(theme.thead)}>
           {headerGroups.map((headerGroup, i) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr className={theme.tr} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
                   className={clsx(theme.th, column.className)}

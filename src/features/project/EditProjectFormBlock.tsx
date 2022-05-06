@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import clsx from "clsx";
 import Block from "components/Block";
 import Button from "components/Button";
 import Field from "components/forms/Field";
@@ -15,6 +14,7 @@ import {
   useUpdateProjectMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
+import { useEffect } from "react";
 
 type EditProjectFormProps = {
   project: EditProjectFormBlock_ProjectFragment;
@@ -137,6 +137,13 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
     },
   });
 
+  useEffect(() => {
+    if (data?.project) {
+      form.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   if (loading || !data?.project) {
     return (
       <Block>
@@ -174,16 +181,15 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
             name="description"
             disabled={form.isSubmitting}
             onChange={form.handleInputChange}
-          >
-            {form.formData.description}
-          </Textarea>
+            defaultValue={form.formData.description}
+          ></Textarea>
         </Field>
 
         <Field
           required
           className="col-span-2"
           label={t("Digital elevation model")}
-          name="dem"
+          name=""
           disabled={form.isSubmitting}
         >
           <DatasetPicker

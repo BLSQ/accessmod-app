@@ -10,10 +10,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Classes: { [key: string]: string } = {
   base: "relative inline-flex items-center justify-center transition-all border border-transparent font-medium shadow-sm rounded focus:outline-none h-fit disabled:opacity-50 disabled:cursor-not-allowed",
-  primary: "text-white bg-midnight-blue hover:bg-midnight-blue-500",
-  secondary: "text-white bg-lochmara hover:bg-lochmara-600",
-  white: "text-gray-800 border-gray-300 bg-white hover:bg-gray-50",
-  outlined: "text-white hover:bg-white hover:text-gray-800 border-white",
+  primary:
+    "text-white bg-midnight-blue hover:bg-midnight-blue-500 disabled:hover:bg-midnight-blue",
+  secondary:
+    "text-white bg-lochmara hover:bg-lochmara-600 disabled:hover:bg-lochmara",
+  white:
+    "text-gray-800 border-gray-300 bg-white hover:bg-gray-50 disabled:hover:bg-white",
+  outlined:
+    "text-white hover:bg-white hover:text-gray-800 border-white disabled:hover:bg-white",
 
   // Sizes
   sm: "text-xs px-2 py-1",

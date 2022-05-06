@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Menu from "components/Menu";
+import { launchAnalysis } from "libs/analysis";
 import {
   AccessmodAnalysisAuthorizedActions,
   AccessmodAnalysisStatus,
@@ -34,12 +35,21 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
     }
   };
 
+  const onRun = () => {
+    launchAnalysis(analysis);
+  };
+
   return (
     <div className="flex items-center gap-2">
       {analysis.status === AccessmodAnalysisStatus.Ready &&
         analysis.authorizedActions.includes(
           AccessmodAnalysisAuthorizedActions.Run
-        ) && <Button variant="primary">{t("Run")}</Button>}
+        ) && (
+          <Button onClick={onRun} variant="primary">
+            {t("Run")}
+          </Button>
+        )}
+
       <Menu label={t("Actions")}>
         {[
           AccessmodAnalysisStatus.Ready,

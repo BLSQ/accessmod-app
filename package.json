@@ -6,7 +6,7 @@
     "node": ">= 16"
   },
   "scripts": {
-    "dev": "npm-run-all --parallel dev 'codegen -- --watch'",
+    "dev": "npm-run-all --parallel next 'codegen -- --watch'",
     "next": "next dev",
     "build": "next build",
     "start": "next start -p $PORT",

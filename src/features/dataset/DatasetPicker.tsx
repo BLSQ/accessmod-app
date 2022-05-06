@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
-import { SelectorIcon } from "@heroicons/react/outline";
-import { PlusIcon } from "@heroicons/react/solid";
+import { UploadIcon } from "@heroicons/react/outline";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
 import { useFilesetRoles } from "libs/dataset";
@@ -24,6 +23,7 @@ type Props = {
   required?: boolean;
   placeholder?: string;
   recommendedOption?: boolean;
+  multiple?: boolean;
 };
 
 const RECOMMENDED_OPTION = {
@@ -41,7 +41,9 @@ const DatasetPicker = (props: Props) => {
     roleCode,
     dataset,
     onChange,
-    required,
+    disabled = false,
+    multiple = false,
+    required = false,
   } = props;
   const [query, setQuery] = useState("");
   const [isDialogOpen, showCreationDialog] = useState(false);
@@ -92,20 +94,24 @@ const DatasetPicker = (props: Props) => {
       />
 
       <Combobox
+        disabled={disabled}
         loading={loading}
+        multiple={multiple}
         value={dataset}
         onChange={onChange}
         required={required}
         placeholder={placeholder}
-        renderIcon={({ value }) => (
-          <div className="flex items-center gap-0.5">
-            {value && <DatasetStatusIcon dataset={value} />}
-            <SelectorIcon className="h-4" />
-          </div>
-        )}
+        renderIcon={({ value }) =>
+          value && <DatasetStatusIcon dataset={value} />
+        }
         displayValue={(value) => value?.name}
         onInputChange={(event) => setQuery(event.target.value)}
       >
+        {options.length === 0 && !loading && (
+          <p className="p-2 text-center text-xs italic text-gray-500">
+            {t("There is no result")}
+          </p>
+        )}
         {options.map((option) => (
           <Combobox.CheckOption
             key={option.id}
@@ -127,7 +133,7 @@ const DatasetPicker = (props: Props) => {
               size="sm"
               variant="secondary"
               onClick={() => showCreationDialog(true)}
-              leadingIcon={<PlusIcon className="h-4" />}
+              leadingIcon={<UploadIcon className="h-4" />}
             >
               {t("Create a new dataset")}
             </Button>
