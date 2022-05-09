@@ -71,6 +71,7 @@ const CREATE_FILESET_MUTATION = gql`
       fileset {
         id
         name
+        status
         role {
           id
           code
