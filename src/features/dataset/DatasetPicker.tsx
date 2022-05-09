@@ -92,6 +92,7 @@ const DatasetPicker = (props: Props) => {
       />
 
       <Combobox
+        withPortal
         loading={loading}
         value={dataset}
         onChange={onChange}
