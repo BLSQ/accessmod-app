@@ -339,7 +339,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
       <AnalysisStep
         id="advancedSettings"
         title={"Optional Settings"}
-        titleClassName="opacity-50"
         className="space-y-4"
       >
         <Field name="algorithm" label="Cost distance analysis method" required>
