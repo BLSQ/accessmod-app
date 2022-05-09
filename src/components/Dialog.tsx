@@ -118,7 +118,7 @@ function Dialog(props: DialogProps) {
           >
             <div
               className={clsx(
-                "inline-block transform overflow-hidden text-left align-bottom transition-all sm:my-8 sm:w-full sm:p-6 sm:align-middle",
+                "inline-block transform text-left align-bottom transition-all sm:my-8 sm:w-full sm:p-6 sm:align-middle",
                 maxWidth
               )}
             >
