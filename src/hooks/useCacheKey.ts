@@ -60,8 +60,6 @@ const useCacheKey = (keys: string | string[], listener?: () => void) => {
       });
 
       // Let's call the listener :)
-      console.log("listener", listener);
-      console.log("keys", cachedKeys);
       listener();
     },
     [cachedKeys, listener]
