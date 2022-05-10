@@ -35,7 +35,7 @@ const ClassCell = ({
   column,
   updateData,
   isEdited,
-}: CellProps<any>) => {
+}: CellProps<any> & { updateData: Function; isEdited: boolean }) => {
   const inputType = (column as any).inputType;
   const onBlur: FocusEventHandler<HTMLInputElement> = (event) => {
     updateData(
@@ -65,6 +65,7 @@ const ClassCell = ({
 const arrayToScenario = (data: { class: string; speed: number }[]) => {
   return data.reduce((acc, val) => {
     if (val.class) {
+      console.log("Add");
       acc[val.class] = val.speed;
     }
     return acc;
@@ -121,13 +122,21 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
       setData([{ class: "", speed: 0 }]);
       setEdited(true);
     } else {
-      setEdited(Object.keys(scenario).length === 0);
-      setData(
-        Object.entries(scenario).map(([key, speed]) => ({
+      const willBeEdited = Object.keys(scenario).length === 0;
+      setEdited(willBeEdited);
+      const data = [
+        ...Object.entries(scenario).map(([key, speed]) => ({
           class: key,
           speed,
-        }))
-      );
+        })),
+      ];
+      if (willBeEdited) {
+        data.push({
+          class: "",
+          speed: 0,
+        });
+      }
+      setData(data);
     }
   }, [scenario]);
 

@@ -39,7 +39,7 @@ type AccessibilityForm = {
   landCover?: { id: string } | null;
   transportNetwork?: { id: string } | null;
   movingSpeeds: { [key: string]: number };
-  priorities: object;
+  stackPriorities: object;
   healthFacilities: { id: string } | null;
   travelDirection: string;
   algorithm?: AccessmodAccessibilityAnalysisAlgorithm;
@@ -68,7 +68,7 @@ function getInitialFormState(
     water: analysis?.water,
     healthFacilities: analysis?.healthFacilities,
     movingSpeeds: analysis?.movingSpeeds,
-    priorities: analysis?.priorities,
+    stackPriorities: analysis?.stackPriorities,
   };
 }
 
@@ -95,7 +95,7 @@ function getMutationInput(
     algorithm: formData.algorithm,
   };
 
-  if (formData.useExistingStack) {
+  if (formData.useExistingStack === "y") {
     input.stackId = datasetToInput(formData.stack);
   } else {
     input = {
@@ -105,9 +105,11 @@ function getMutationInput(
       waterId: datasetToInput(formData.water),
       barrierId: datasetToInput(formData.barrier),
       waterAllTouched: formData.waterAllTouched,
-      priorities: formData.priorities,
+      stackPriorities: formData.stackPriorities,
     };
   }
+
+  console.log(input);
 
   return input;
 }
@@ -132,8 +134,8 @@ const validateForm = (values: Partial<AccessibilityForm>) => {
       }
     });
 
-    if (!values.priorities) {
-      errors.priorities = i18n!.t("Enter layer priorities");
+    if (!values.stackPriorities) {
+      errors.stackPriorities = i18n!.t("Enter layer priorities");
     }
   }
 
@@ -203,7 +205,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
   }, [analysis, form, project, router]);
 
   const onChangePriorities = useCallback(
-    (value) => form.setFieldValue("priorities", value),
+    (value) => form.setFieldValue("stackPriorities", value),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -373,12 +375,15 @@ const AccessibilityAnalysisForm = (props: Props) => {
                   <Field
                     label={t("Layer priorities")}
                     className="col-span-2"
-                    name="priorities"
+                    name="stackPriorities"
                     required
-                    error={form.touched.priorities && form.errors.priorities}
+                    error={
+                      form.touched.stackPriorities &&
+                      form.errors.stackPriorities
+                    }
                   >
                     <StackLayerPriorities
-                      value={form.formData.priorities}
+                      value={form.formData.stackPriorities}
                       onChange={onChangePriorities}
                     />
                   </Field>
@@ -542,7 +547,7 @@ AccessibilityAnalysisForm.fragments = {
       }
       type
       waterAllTouched
-      priorities
+      stackPriorities
       knightMove
       algorithm
       invertDirection

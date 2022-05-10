@@ -35,6 +35,7 @@ const Button = (props: ButtonProps) => {
     children,
     leadingIcon,
     disabled,
+    type = "button",
     ...delegated
   } = props;
 
@@ -45,7 +46,7 @@ const Button = (props: ButtonProps) => {
     className
   );
   return (
-    <button className={classes} disabled={disabled} {...delegated}>
+    <button type={type} className={classes} disabled={disabled} {...delegated}>
       {leadingIcon ? <LeadingIcon>{leadingIcon}</LeadingIcon> : null}
       {children}
     </button>

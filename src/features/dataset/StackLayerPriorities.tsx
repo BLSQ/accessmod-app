@@ -11,6 +11,12 @@ type StackLayerPrioritiesProps = {
   disabled?: boolean;
 };
 
+const PLACEHOLDER = `[
+  {name: "<dataset-name>", class: "<class-in-dataset>"},
+  ...
+]
+`;
+
 const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
   const { value, onChange, className, disabled } = props;
   const { t } = useTranslation();
@@ -41,6 +47,7 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
       <Textarea
         rows={10}
         className={clsx(className)}
+        placeholder={PLACEHOLDER}
         value={internalTextValue}
         onChange={(event) => setInternalTextValue(event.target.value)}
         disabled={disabled}

@@ -242,7 +242,7 @@ export const getServerSideProps = createGetServerSideProps({
                 id
                 name
               }
-              priorities
+              stackPriorities
               movingSpeeds
               healthFacilities {
                 id
