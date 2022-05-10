@@ -159,7 +159,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
   const [updateAnalysis] = useUpdateAccessibilityAnalysisMutation();
 
   const form = useForm<AccessibilityForm>({
-    validate: validateForm,
+    // validate: validateForm,
     getInitialState: () => getInitialFormState(analysis),
     onSubmit: async (values) => {
       const { data } = await updateAnalysis({
@@ -252,7 +252,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
               project={project}
               roleCode={AccessmodFilesetRoleCode.Dem}
               dataset={form.formData.dem}
-              required
               onChange={(value) => form.setFieldValue("dem", value)}
             />
           </Field>
@@ -296,7 +295,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
                     project={project}
                     roleCode={AccessmodFilesetRoleCode.Stack}
                     dataset={form.formData.stack}
-                    required
                     onChange={(value) => form.setFieldValue("stack", value)}
                   />
                 </Field>
@@ -311,7 +309,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
                     <DatasetPicker
                       project={project}
                       roleCode={AccessmodFilesetRoleCode.LandCover}
-                      required
                       dataset={form.formData.landCover}
                       onChange={(value) =>
                         form.setFieldValue("landCover", value)
@@ -331,26 +328,12 @@ const AccessibilityAnalysisForm = (props: Props) => {
                       project={project}
                       roleCode={AccessmodFilesetRoleCode.TransportNetwork}
                       dataset={form.formData.transportNetwork}
-                      required
                       onChange={(value) =>
                         form.setFieldValue("transportNetwork", value)
                       }
                     />
                   </Field>
-                  <Field
-                    label={t("Barriers")}
-                    name="barrier"
-                    required
-                    error={form.touched.barrier && form.errors.barrier}
-                  >
-                    <DatasetPicker
-                      project={project}
-                      roleCode={AccessmodFilesetRoleCode.Barrier}
-                      dataset={form.formData.barrier}
-                      required
-                      onChange={(value) => form.setFieldValue("barrier", value)}
-                    />
-                  </Field>
+
                   <Field
                     label={t("Water")}
                     name="water"
@@ -361,8 +344,19 @@ const AccessibilityAnalysisForm = (props: Props) => {
                       project={project}
                       roleCode={AccessmodFilesetRoleCode.Water}
                       dataset={form.formData.water}
-                      required
                       onChange={(value) => form.setFieldValue("water", value)}
+                    />
+                  </Field>
+                  <Field
+                    label={t("Barriers")}
+                    name="barrier"
+                    error={form.touched.barrier && form.errors.barrier}
+                  >
+                    <DatasetPicker
+                      project={project}
+                      roleCode={AccessmodFilesetRoleCode.Barrier}
+                      dataset={form.formData.barrier}
+                      onChange={(value) => form.setFieldValue("barrier", value)}
                     />
                   </Field>
                   <Checkbox
@@ -411,7 +405,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
         >
           <DatasetPicker
             project={project}
-            required
             roleCode={AccessmodFilesetRoleCode.HealthFacilities}
             dataset={form.formData.healthFacilities}
             onChange={(value) => form.setFieldValue("healthFacilities", value)}
