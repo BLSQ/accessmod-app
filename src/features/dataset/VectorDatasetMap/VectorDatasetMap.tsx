@@ -14,6 +14,7 @@ const DynamicClientVectorMap = dynamic(() => import("./ClientVectorMap"), {
 
 const VectorDatasetMap = ({ dataset }: VectorDatasetMapProps) => {
   const [geoJSON, setGeoJSON] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const supportedFile = useMemo(
     () =>
@@ -25,16 +26,33 @@ const VectorDatasetMap = ({ dataset }: VectorDatasetMapProps) => {
 
   useEffect(() => {
     if (supportedFile) {
-      getVectorFileContent(supportedFile).then((data) => {
-        setGeoJSON(data);
-      });
+      setLoading(true);
+      getVectorFileContent(supportedFile).then(
+        (data) => {
+          setGeoJSON(data);
+          setLoading(false);
+        },
+        () => setLoading(false)
+      );
     }
   }, [dataset, supportedFile]);
 
   return (
-    <>
-      <DynamicClientVectorMap geoJSON={geoJSON} zoom={4} />
-    </>
+    <div>
+      {!supportedFile ? (
+        <div className="w-full p-2 text-center text-sm italic text-gray-700">
+          We do not support this type of dataset. Only geojson files are
+          supported.
+        </div>
+      ) : (
+        <DynamicClientVectorMap
+          height={600}
+          loading={loading}
+          geoJSON={geoJSON}
+          zoom={4}
+        />
+      )}
+    </div>
   );
 };
 

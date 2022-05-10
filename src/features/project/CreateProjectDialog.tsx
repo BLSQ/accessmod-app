@@ -188,7 +188,6 @@ const CreateProjectDialog = (props: Props) => {
 
         <Dialog.Actions>
           <Button
-            role="button"
             onClick={onCancel}
             disabled={form.isSubmitting}
             variant="outlined"
@@ -197,7 +196,7 @@ const CreateProjectDialog = (props: Props) => {
           </Button>
           <Button
             disabled={form.isSubmitting}
-            role="submit"
+            type="submit"
             className="space-x-2"
           >
             {form.isSubmitting && <Spinner size="xs" />}

@@ -127,8 +127,10 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   );
 
   const handleSubmit = useCallback(
-    async (event?: { preventDefault: Function }) => {
+    async (event?: { preventDefault: Function; stopPropagation: Function }) => {
       event?.preventDefault();
+      event?.stopPropagation();
+
       if (isSubmitting) return;
 
       setSubmitError(null);
