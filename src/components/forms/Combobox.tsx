@@ -2,6 +2,7 @@ import { Combobox as UICombobox } from "@headlessui/react";
 import { CheckIcon, SelectorIcon, XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import Spinner from "components/Spinner";
+import { usePopper } from "react-popper";
 import {
   ChangeEvent,
   Fragment,
@@ -14,6 +15,9 @@ import {
   useState,
 } from "react";
 import Input from "./Input";
+import { sameWidthModifier } from "libs/popper";
+import { createPortal } from "react-dom";
+import { Modifier } from "@popperjs/core";
 
 type ComboboxProps = {
   value: any;
@@ -30,6 +34,7 @@ type ComboboxProps = {
   onClose?: () => void;
   placeholder?: string;
   displayValue: (value: any) => string;
+  withPortal?: boolean;
 };
 
 const OptionsWrapper = (props: {
@@ -51,13 +56,14 @@ const Classes = {
   trailingIcon:
     "flex items-center rounded-r-md gap-0.5 focus:outline-none text-gray-400",
   Options:
-    "absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
+    "max-h-60 z-10 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
 };
 
 const Combobox = (props: ComboboxProps) => {
   const {
     loading = false,
     required = false,
+    withPortal = false,
     children,
     onOpen,
     onClose,
@@ -72,6 +78,22 @@ const Combobox = (props: ComboboxProps) => {
 
   const btnRef = useRef<HTMLButtonElement>(null);
   const openRef = useRef<boolean>(false);
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
+
+  const modifiers = useMemo(() => {
+    return [
+      { name: "offset", options: { offset: [0, 4] } },
+      withPortal && sameWidthModifier,
+    ].filter(Boolean) as Modifier<any, any>[];
+  }, [withPortal]);
+
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    strategy: withPortal ? "fixed" : "absolute",
+    placement: "bottom-start",
+    modifiers,
+  });
 
   // const handleFocus = useCallback(() => {
   //   // Simulate a click on the button to open the menu ...
@@ -104,6 +126,24 @@ const Combobox = (props: ComboboxProps) => {
     openRef.current = false;
   }, [openRef, onChange]);
 
+  const optionsElement = (
+    <UICombobox.Options
+      className={Classes.Options}
+      ref={setPopperElement}
+      style={styles.popper}
+      {...attributes.popper}
+    >
+      {({ open }) => {
+        openRef.current = open; // Store the last 'open' value to avoid to "double trigger" the open event
+        return (
+          <OptionsWrapper open={open} onOpen={onOpen} onClose={onClose}>
+            <>{children}</>
+          </OptionsWrapper>
+        );
+      }}
+    </UICombobox.Options>
+  );
+
   return (
     <UICombobox
       {...delegated}
@@ -112,7 +152,7 @@ const Combobox = (props: ComboboxProps) => {
       as="div"
       nullable={!required}
     >
-      <div className="relative mt-1">
+      <div className="relative" ref={setReferenceElement}>
         <UICombobox.Input
           as={Fragment}
           onChange={onInputChange}
@@ -138,11 +178,9 @@ const Combobox = (props: ComboboxProps) => {
           />
         </UICombobox.Input>
 
-        <UICombobox.Options className={Classes.Options}>
-          <OptionsWrapper onOpen={handleOpen} onClose={handleClose}>
-            <>{children}</>
-          </OptionsWrapper>
-        </UICombobox.Options>
+        {typeof window !== "undefined" && withPortal
+          ? createPortal(optionsElement, document.body)
+          : optionsElement}
       </div>
     </UICombobox>
   );

@@ -28,6 +28,8 @@ const DatasetStatusIcon = ({
     case AccessmodFilesetStatus.Pending:
     case AccessmodFilesetStatus.Validating:
       return <PauseIcon className="h-4 text-lochmara-100" />;
+    default:
+      return null;
   }
 };
 

@@ -95,6 +95,7 @@ const DatasetPicker = (props: Props) => {
 
       <Combobox
         disabled={disabled}
+        withPortal
         loading={loading}
         multiple={multiple}
         value={dataset}

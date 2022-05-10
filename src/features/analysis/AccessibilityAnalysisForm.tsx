@@ -438,7 +438,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
       <AnalysisStep
         id="advancedSettings"
         title={t("Optional Settings")}
-        titleClassName="opacity-50"
         className="space-y-4"
       >
         <Field
