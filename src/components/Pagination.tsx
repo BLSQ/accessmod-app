@@ -93,11 +93,7 @@ const Pagination = (props: Props) => {
             </p>
           </div>
         )}
-        {!loading && totalPages <= 1 && (
-          <div>
-            <p className="text-sm text-gray-700">{t("Showing all results")}</p>
-          </div>
-        )}
+        {!loading && totalPages <= 1 && <div></div>}
         <div className="flex items-center space-x-2">
           {perPageOptions && (
             <SimpleSelect

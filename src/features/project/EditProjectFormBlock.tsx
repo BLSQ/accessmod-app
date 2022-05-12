@@ -1,18 +1,20 @@
 import { gql } from "@apollo/client";
-import clsx from "clsx";
 import Block from "components/Block";
 import Button from "components/Button";
 import Field from "components/forms/Field";
 import Textarea from "components/forms/Textarea";
 import Spinner from "components/Spinner";
+import DatasetPicker from "features/dataset/DatasetPicker";
 import useForm from "hooks/useForm";
 import {
+  AccessmodFilesetRoleCode,
   EditProjectFormBlock_ProjectFragment,
   UpdateAccessmodProjectError,
   useEditProjectQuery,
   useUpdateProjectMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
+import { useEffect } from "react";
 
 type EditProjectFormProps = {
   project: EditProjectFormBlock_ProjectFragment;
@@ -25,6 +27,7 @@ type Form = {
   description: string;
   crs: string | number;
   spatialResolution: string | number;
+  dem: { id: string } | null;
 };
 
 const EDIT_PROJECT_QUERY = gql`
@@ -35,8 +38,15 @@ const EDIT_PROJECT_QUERY = gql`
       crs
       description
       spatialResolution
+      dem {
+        id
+        ...DatasetPicker_dataset
+      }
+      ...DatasetPicker_project
     }
   }
+  ${DatasetPicker.fragments.project}
+  ${DatasetPicker.fragments.dataset}
 `;
 
 const UPDATE_PROJECT_MUTATION = gql`
@@ -50,9 +60,15 @@ const UPDATE_PROJECT_MUTATION = gql`
         description
         crs
         spatialResolution
+        dem {
+          id
+          name
+          ...DatasetPicker_dataset
+        }
       }
     }
   }
+  ${DatasetPicker.fragments.dataset}
 `;
 
 const EditProjectFormBlock = (props: EditProjectFormProps) => {
@@ -74,6 +90,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
               values.spatialResolution.toString(),
               10
             ),
+            demId: values.dem?.id ?? undefined,
             crs: parseInt(values.crs.toString(), 10),
           },
         },
@@ -100,6 +117,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
       return {
         name: data?.project?.name ?? "",
         crs: data?.project?.crs ?? "",
+        dem: data?.project?.dem,
         description: data?.project?.description ?? "",
         spatialResolution: data?.project?.spatialResolution ?? "",
       };
@@ -119,7 +137,14 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
     },
   });
 
-  if (loading) {
+  useEffect(() => {
+    if (data?.project) {
+      form.resetForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  if (loading || !data?.project) {
     return (
       <Block>
         <div className="flex h-72 items-center justify-center">
@@ -156,9 +181,25 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
             name="description"
             disabled={form.isSubmitting}
             onChange={form.handleInputChange}
-          >
-            {form.formData.description}
-          </Textarea>
+            defaultValue={form.formData.description}
+          ></Textarea>
+        </Field>
+
+        <Field
+          required
+          className="col-span-2"
+          label={t("Digital elevation model")}
+          name=""
+          disabled={form.isSubmitting}
+        >
+          <DatasetPicker
+            dataset={form.formData.dem}
+            project={data.project}
+            roleCode={AccessmodFilesetRoleCode.Dem}
+            onChange={(value) => form.setFieldValue("dem", value)}
+            disabled={form.isSubmitting}
+            recommendedOption
+          />
         </Field>
 
         <Field

@@ -6,17 +6,24 @@ interface RadioOption {
   label: string;
 }
 
-type OptionId = string;
+type OptionId = string | number;
 
 interface RadioGroupProps extends InputHTMLAttributes<HTMLInputElement> {
   options: RadioOption[];
   value?: OptionId;
+  className?: string;
   name: string;
 }
 
-const RadioGroup = ({ name, options, onChange, value }: RadioGroupProps) => {
+const RadioGroup = ({
+  name,
+  options,
+  onChange,
+  value,
+  className,
+}: RadioGroupProps) => {
   return (
-    <fieldset className="flex gap-4">
+    <fieldset className={clsx("flex gap-4", className)}>
       {options.map((option) => (
         <div key={option.id} className="flex items-center">
           <input

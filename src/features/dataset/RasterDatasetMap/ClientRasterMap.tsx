@@ -4,12 +4,13 @@ import Map, { MapProps } from "components/map/Map";
 
 type Props = {
   url?: string;
+  loading?: boolean;
 } & MapProps;
 
 const ClientRasterMap = (props: Props) => {
-  const { url, ...delegated } = props;
+  const { url, loading, ...delegated } = props;
   return (
-    <Map loading={!url} {...delegated}>
+    <Map loading={loading} {...delegated}>
       {url && (
         <GeoRasterLayer
           path={url}

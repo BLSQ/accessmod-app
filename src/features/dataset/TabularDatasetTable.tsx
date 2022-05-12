@@ -1,38 +1,31 @@
 import { gql } from "@apollo/client";
-import DataGrid, { Column } from "components/DataGrid";
-import SimpleSelect from "components/forms/SimpleSelect";
+import DataGrid, { Column, DATA_GRID_DEFAULT_THEME } from "components/DataGrid";
 import Spinner from "components/Spinner";
 import { getTabularFileContent } from "libs/dataset";
 import { TabularDatasetTable_DatasetFragment } from "libs/graphql";
-import { Unpacked } from "libs/types";
-import { useTranslation } from "next-i18next";
 import { useEffect, useMemo, useState } from "react";
 
 type TabularDatasetTableProps = {
   dataset: TabularDatasetTable_DatasetFragment;
+  onChange?: (dataset: any) => void;
+  pageSize?: number;
 };
 
-type CurrentFile = Unpacked<TabularDatasetTable_DatasetFragment["files"]>;
+const GRID_THEME = {
+  ...DATA_GRID_DEFAULT_THEME,
+  tbody: "divide-y divide-gray-200",
+};
 
 const TabularDatasetTable = (props: TabularDatasetTableProps) => {
-  const { dataset } = props;
+  const { dataset, pageSize = 10 } = props;
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(false);
-  const { t } = useTranslation();
-  const [currentFile, setCurrentFile] = useState<CurrentFile | null>();
-  const tabularFiles = useMemo(
-    () =>
-      dataset.files.filter((file) =>
-        ["application/csv", "text/csv"].includes(file.mimeType)
-      ),
-    [dataset]
-  );
-
-  useEffect(() => {
-    if (tabularFiles.length > 0) {
-      setCurrentFile(tabularFiles[0]);
-    }
-  }, [tabularFiles]);
+  const currentFile = useMemo(() => {
+    const files = dataset.files.filter((file) =>
+      ["application/csv", "text/csv"].includes(file.mimeType)
+    );
+    return files?.length > 0 ? files[0] : null;
+  }, [dataset]);
 
   useEffect(() => {
     if (!currentFile) return;
@@ -54,34 +47,18 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
     }
   }, [data]);
 
-  const pageSizeOptions = useMemo(() => [10, 25, 50], []);
+  const pageSizeOptions = useMemo(() => [5, 10, 25, 50], []);
 
   return (
     <div>
-      <h3 className="mb-4 flex items-center justify-between">{t("Content")}</h3>
-      {tabularFiles?.length > 1 ? (
-        <SimpleSelect
-          required
-          value={currentFile?.id ?? ""}
-          onChange={(event) =>
-            setCurrentFile(
-              tabularFiles.find((f) => f.id === event.target.value)
-            )
-          }
-        >
-          {tabularFiles.map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.name}
-            </option>
-          ))}
-        </SimpleSelect>
-      ) : null}
       {!isLoading && data?.length > 0 && (
         <DataGrid
           data={data}
           columns={columns}
           pageSizeOptions={pageSizeOptions}
+          defaultPageSize={pageSize}
           totalItems={data?.length ?? 0}
+          theme={GRID_THEME}
           sortable
         />
       )}

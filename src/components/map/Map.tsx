@@ -6,12 +6,16 @@ import "leaflet/dist/leaflet.css";
 import { useTranslation } from "next-i18next";
 import { MapContainer, MapContainerProps, TileLayer } from "react-leaflet";
 
-export type MapProps = { loading?: boolean } & MapContainerProps;
+export type MapProps = {
+  loading?: boolean;
+  height?: number;
+} & MapContainerProps;
 const Map = (props: MapProps) => {
   const {
     children,
     center = [12.2395, -1.5584094],
     zoom = 7,
+    height = 600,
     loading,
     className,
     ...delegated
@@ -19,7 +23,9 @@ const Map = (props: MapProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className={clsx(className, "relative h-full w-full")}>
+    <div
+      className={clsx(className, "relative h-full w-full", `h-[${height}px]`)}
+    >
       <MapContainer
         center={center}
         zoom={zoom}

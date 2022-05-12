@@ -18,6 +18,7 @@ import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import DescriptionList from "components/DescriptionList";
 
 const AnalysisPage = () => {
   const router = useRouter();
@@ -117,64 +118,48 @@ const AnalysisPage = () => {
             <h3 className="mb-4 flex items-center justify-between">
               {t("Parameters")}
             </h3>
-            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Land Cover")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.landCover?.name ?? "Automatic"}
-                </dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Barrier")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.barrier?.name ?? "Automatic"}
-                </dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Water")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.water?.name ?? "Automatic"}
-                </dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Health Facilities")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.healthFacilities?.name ?? "Automatic"}
-                </dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Slope")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.slope?.name ?? "Automatic"}
-                </dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Travel Scenario")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.movingSpeeds?.name ?? "Automatic"}
-                </dd>
-              </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm font-medium text-gray-500">
-                  {t("Transport Network")}
-                </dt>
-                <dd className="col-span-2 mt-1 text-sm text-gray-900">
-                  {data.analysis.transportNetwork?.name ?? "Automatic"}
-                </dd>
-              </div>
-            </dl>
+            <DescriptionList>
+              <DescriptionList.Item label={t("Land Cover")}>
+                {data.analysis.landCover?.name ?? "Automatic"}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Stack")}>
+                {data.analysis.stack?.name ?? "Automatic"}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Health Facilities")}>
+                {data.analysis.healthFacilities?.name ?? "Automatic"}{" "}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Land Cover")}>
+                {data.analysis.landCover?.name ?? "Automatic"}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Land Cover")}>
+                {data.analysis.landCover?.name ?? "Automatic"}
+              </DescriptionList.Item>
+              <div></div>
+              <DescriptionList.Item label={t("Travel Scenario")}>
+                {data.analysis.movingSpeeds ? (
+                  <table className="who">
+                    <thead>
+                      <tr>
+                        <th>{t("Class")}</th>
+                        <th>{t("Speed (in km/h)")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries<[string, string]>(
+                        data.analysis.movingSpeeds
+                      ).map(([key, value]) => (
+                        <tr key={key}>
+                          <td>{key}</td>
+                          <td>{value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  t("No travel scenario")
+                )}
+              </DescriptionList.Item>
+            </DescriptionList>
           </Block>
         )}
         {data.analysis.status === AccessmodAnalysisStatus.Success && (
@@ -237,10 +222,6 @@ export const getServerSideProps = createGetServerSideProps({
                 id
                 name
               }
-              slope {
-                id
-                name
-              }
               water {
                 id
                 name
@@ -249,10 +230,16 @@ export const getServerSideProps = createGetServerSideProps({
                 id
                 name
               }
-              movingSpeeds {
+              stack {
                 id
                 name
               }
+              dem {
+                id
+                name
+              }
+              stackPriorities
+              movingSpeeds
               healthFacilities {
                 id
                 name

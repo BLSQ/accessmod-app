@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { PlusIcon } from "@heroicons/react/outline";
+import { PlusIcon, UserIcon, UsersIcon } from "@heroicons/react/outline";
 import { ClockIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
@@ -164,6 +164,9 @@ const ProjectGeneralInformationBlock = (props: {
             {project.description}
           </div>
         </DescriptionList.Item>
+        <DescriptionList.Item label={t("Digital elevation model")}>
+          {project.dem?.name ?? t("Automatic dataset")}
+        </DescriptionList.Item>
         <DescriptionList.Item
           label={t("Spatial Resolution")}
           help={t(
@@ -180,6 +183,7 @@ const ProjectGeneralInformationBlock = (props: {
         >
           <span className="text-md">{project.crs}</span>
         </DescriptionList.Item>
+
         <DescriptionList.Item
           label={t("Author")}
           help={t("The user that created this project")}
@@ -400,6 +404,24 @@ const ProjectPage: NextPageWithFragments = () => {
                 <span>{project.country.name}</span>
               </div>
 
+              {data.project.owner && (
+                <div className="flex items-center">
+                  {data.project.owner.__typename === "Team" ? (
+                    <UsersIcon className="mr-1.5 h-4" />
+                  ) : (
+                    <UserIcon className="mr-1.5 h-4" />
+                  )}
+                  <span>
+                    {data.project.owner.__typename === "Team"
+                      ? data.project.owner.name
+                      : [
+                          data.project.owner.firstName,
+                          data.project.owner.lastName,
+                        ].join(" ")}
+                  </span>
+                </div>
+              )}
+
               <div className="flex items-center">
                 <ClockIcon className="mr-1.5 h-4" />
                 <span>
@@ -453,6 +475,10 @@ ProjectPage.fragments = {
       ...CreateMembershipForm_project
       ...ProjectPermissionPicker_project
       authorizedActions
+      dem {
+        id
+        name
+      }
       permissions {
         ...DeleteProjectPermissionTrigger_permission
         ...ProjectPermissionPicker_permission
@@ -482,6 +508,16 @@ ProjectPage.fragments = {
       author {
         ...User_user
         email
+      }
+      owner {
+        __typename
+        ... on User {
+          firstName
+          lastName
+        }
+        ... on Team {
+          name
+        }
       }
     }
     ${DeleteProjectPermissionTrigger.fragments.permission}

@@ -22,13 +22,13 @@ const DatasetViewer = (props: DatasetViewerProps) => {
     return <TabularDatasetTable dataset={dataset} />;
   } else if (dataset.role.format === AccessmodFilesetFormat.Vector) {
     return (
-      <div className="relative h-[600px] w-full">
+      <div className="relative w-full">
         <VectorDatasetMap dataset={dataset} />
       </div>
     );
   } else if (dataset.role.format === AccessmodFilesetFormat.Raster) {
     return (
-      <div className="relative h-[600px] w-full">
+      <div className="relative w-full">
         <RasterDatasetMap dataset={dataset} />
       </div>
     );

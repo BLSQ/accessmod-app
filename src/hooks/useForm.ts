@@ -23,7 +23,10 @@ type UseFormResult<T> = {
   >;
   setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
-  handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
+  handleSubmit: (event?: {
+    preventDefault: Function;
+    stopPropagation: Function;
+  }) => Promise<void> | void;
   touched: { [key in keyof Partial<T>]: boolean };
   isValid: boolean;
   isDirty: boolean;
@@ -127,8 +130,10 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   );
 
   const handleSubmit = useCallback(
-    async (event?: { preventDefault: Function }) => {
+    async (event?: { preventDefault: Function; stopPropagation: Function }) => {
       event?.preventDefault();
+      event?.stopPropagation();
+
       if (isSubmitting) return;
 
       setSubmitError(null);

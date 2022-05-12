@@ -1,11 +1,14 @@
 import { gql } from "@apollo/client";
+import { InformationCircleIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Button from "components/Button";
 import Checkbox from "components/forms/Checkbox";
 import Field from "components/forms/Field";
 import RadioGroup from "components/forms/RadioGroup";
+import Spinner from "components/Spinner";
+import ScenarioEditor from "features/dataset/ScenarioEditor";
+import StackLayerPriorities from "features/dataset/StackLayerPriorities";
 import useBeforeUnload from "hooks/useBeforeUnload";
-import useDebounce from "hooks/useDebounce";
 import useForm from "hooks/useForm";
 import { launchAnalysis } from "libs/analysis";
 import {
@@ -18,9 +21,8 @@ import {
   UpdateAccessmodAccessibilityAnalysisInput,
   useUpdateAccessibilityAnalysisMutation,
 } from "libs/graphql";
-import { InformationCircleIcon } from "@heroicons/react/solid";
 import { routes } from "libs/router";
-import { useTranslation } from "next-i18next";
+import { i18n, useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import DatasetPicker from "../dataset/DatasetPicker";
@@ -29,21 +31,21 @@ import AnalysisStep from "./AnalysisStep";
 type AccessibilityForm = {
   name: string;
   maxTravelTime: string;
-  landCover: any;
-  transportNetwork: any;
-  dem: any;
-  slope: any;
-  water: any;
-  barrier: any;
-  movingSpeeds: any;
-  healthFacilities: any;
+  dem: { id: string } | null;
+  stack?: { id: string } | null;
+  useExistingStack: "y" | "n";
+  water?: { id: string } | null;
+  barrier?: { id: string } | null;
+  landCover?: { id: string } | null;
+  transportNetwork?: { id: string } | null;
+  movingSpeeds: { [key: string]: number };
+  stackPriorities: object;
+  healthFacilities: { id: string } | null;
   travelDirection: string;
   algorithm?: AccessmodAccessibilityAnalysisAlgorithm;
   waterAllTouched?: boolean;
   analysis: AccessmodAccessibilityAnalysisAlgorithm;
-  maxSlope: string;
   knightMove?: boolean;
-  priorityRoads?: boolean;
 };
 
 function getInitialFormState(
@@ -52,25 +54,25 @@ function getInitialFormState(
   return {
     name: analysis?.name,
     maxTravelTime: analysis?.maxTravelTime?.toString() ?? "120",
+    useExistingStack: analysis.stack ? "y" : "n",
     algorithm:
       analysis?.algorithm ??
       AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
     waterAllTouched: analysis?.waterAllTouched ?? undefined,
-    priorityRoads: analysis?.priorityRoads ?? undefined,
     travelDirection: analysis?.invertDirection ? "from" : "towards",
     dem: analysis?.dem,
     landCover: analysis?.landCover,
     knightMove: analysis?.knightMove ?? undefined,
     transportNetwork: analysis?.transportNetwork,
-    slope: analysis?.slope,
     barrier: analysis?.barrier,
     water: analysis?.water,
     healthFacilities: analysis?.healthFacilities,
     movingSpeeds: analysis?.movingSpeeds,
+    stackPriorities: analysis?.stackPriorities,
   };
 }
 
-function datasetToInput(dataset?: { id: string }) {
+function datasetToInput(dataset?: { id: string } | null) {
   if (dataset?.id === "AUTO") {
     return undefined;
   }
@@ -81,29 +83,65 @@ function getMutationInput(
   analysis: AccessibilityAnalysisForm_AnalysisFragment,
   formData: Partial<AccessibilityForm>
 ): UpdateAccessmodAccessibilityAnalysisInput {
-  return {
+  let input: UpdateAccessmodAccessibilityAnalysisInput = {
     id: analysis.id,
     name: formData.name,
     knightMove: formData.knightMove ?? undefined,
     maxTravelTime: parseInt(formData.maxTravelTime ?? "", 10),
-    landCoverId: datasetToInput(formData.landCover),
     demId: datasetToInput(formData.dem),
-    transportNetworkId: datasetToInput(formData.transportNetwork),
-    slopeId: datasetToInput(formData.slope),
-    waterId: datasetToInput(formData.water),
-    barrierId: datasetToInput(formData.barrier),
-    movingSpeedsId: datasetToInput(formData.movingSpeeds),
+    movingSpeeds: formData.movingSpeeds,
     healthFacilitiesId: datasetToInput(formData.healthFacilities),
     invertDirection: formData.travelDirection === "from",
     algorithm: formData.algorithm,
-    waterAllTouched: formData.waterAllTouched,
-    priorityRoads: formData.priorityRoads,
-    maxSlope: formData.maxSlope ? parseInt(formData.maxSlope, 10) : undefined,
   };
+
+  if (formData.useExistingStack === "y") {
+    input.stackId = datasetToInput(formData.stack);
+  } else {
+    input = {
+      ...input,
+      landCoverId: datasetToInput(formData.landCover),
+      transportNetworkId: datasetToInput(formData.transportNetwork),
+      waterId: datasetToInput(formData.water),
+      barrierId: datasetToInput(formData.barrier),
+      waterAllTouched: formData.waterAllTouched,
+      stackPriorities: formData.stackPriorities,
+    };
+  }
+
+  console.log(input);
+
+  return input;
 }
 
 const validateForm = (values: Partial<AccessibilityForm>) => {
   const errors = {} as any;
+
+  ["dem", "healthFacilities"].forEach((dataset) => {
+    if (!(values as any)[dataset]) {
+      errors[dataset] = i18n!.t("Select a dataset");
+    }
+  });
+
+  if (!values.stack && values.useExistingStack === "y") {
+    errors.stack = i18n!.t("Select an existing stack or upload your own");
+  }
+
+  if (values.useExistingStack === "n") {
+    ["landCover", "water", "barrier", "transportNetwork"].forEach((dataset) => {
+      if (!(values as any)[dataset]) {
+        errors[dataset] = i18n!.t("Select a dataset");
+      }
+    });
+
+    if (!values.stackPriorities) {
+      errors.stackPriorities = i18n!.t("Enter layer priorities");
+    }
+  }
+
+  if (Object.keys(values.movingSpeeds ?? {}).length === 0) {
+    errors.movingSpeeds = i18n!.t("Enter your scenario");
+  }
 
   return errors;
 };
@@ -117,12 +155,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
   const { project, analysis } = props;
   const { t } = useTranslation();
   const router = useRouter();
-  const [isTriggering, setTriggering] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [updateAnalysis] = useUpdateAccessibilityAnalysisMutation();
 
   const form = useForm<AccessibilityForm>({
-    validate: validateForm,
+    // validate: validateForm,
     getInitialState: () => getInitialFormState(analysis),
     onSubmit: async (values) => {
       const { data } = await updateAnalysis({
@@ -142,7 +179,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
       }
     },
   });
-  const debouncedFormData = useDebounce(form.formData, 500);
 
   useEffect(() => {
     form.resetForm();
@@ -150,22 +186,13 @@ const AccessibilityAnalysisForm = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analysis]);
 
-  useEffect(() => {
-    if (form.isDirty) {
-      form.handleSubmit();
-    }
-    // We only want to reset the form when the debounced form data changes, regardless of the form object itself
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedFormData]);
-
   useBeforeUnload(() => form.isDirty);
 
   const onCompute = useCallback(async () => {
-    setTriggering(true);
+    if (!form.isValid) return;
     if (form.isDirty) {
       await form.handleSubmit();
     }
-    if (!form.isValid) return;
 
     if (await launchAnalysis(analysis)) {
       await router.push({
@@ -173,23 +200,30 @@ const AccessibilityAnalysisForm = (props: Props) => {
         query: { projectId: project.id, analysisId: analysis.id },
       });
     } else {
-      setTriggering(false);
       setError("Computation failed. Check your input data");
     }
   }, [analysis, form, project, router]);
 
+  const onChangePriorities = useCallback(
+    (value) => form.setFieldValue("stackPriorities", value),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   return (
-    <div className="space-y-5">
+    <form className="space-y-5 text-gray-700" onSubmit={form.handleSubmit}>
       <Block className="space-y-4">
         <div className="flex items-start">
           <InformationCircleIcon className="mr-2 h-8 w-8 text-gray-500" />
           <p>
-            An accessibility analysis computes the traveling time surface,
-            informing the time needed to reach the nearest health facility.
+            {t(
+              "An accessibility analysis computes the traveling time surface, informing the time needed to reach the nearest health facility."
+            )}
           </p>
         </div>
         <Field
-          label="Analysis Name"
+          label={t("Analysis Name")}
+          error={form.touched.name && form.errors.name}
           name="name"
           required
           type="text"
@@ -201,90 +235,156 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 1 */}
 
-      <AnalysisStep id="friction" title="Friction Surface" defaultOpen>
+      <AnalysisStep id="friction" title={t("Friction Surface")} defaultOpen>
         <p className="mb-4">
-          Choose the geographic layers used to generate the friction surface.
+          {t(
+            "Choose the geographic layers used to generate the friction surface."
+          )}
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Digital Elevation Model" name="dem" required>
+          <Field
+            label={t("Digital Elevation Model")}
+            name="dem"
+            required
+            error={form.touched.dem && form.errors.dem}
+          >
             <DatasetPicker
               project={project}
               roleCode={AccessmodFilesetRoleCode.Dem}
               dataset={form.formData.dem}
-              required
               onChange={(value) => form.setFieldValue("dem", value)}
             />
           </Field>
-          <Field label="Land Cover" name="landCover" required>
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.LandCover}
-              dataset={form.formData.landCover}
+          <div />
+
+          <div className="col-span-2 -mx-2.5 rounded-md bg-gray-100 py-3 px-2.5">
+            <h5 className="mb-2 font-semibold">{t("Stack")}</h5>
+            <p className="mb-5 ">
+              {t(
+                "You have the choice to use an existing stack that you already uploaded or used in another analysis or you can create a new stack by uploading the different layers to merge together."
+              )}
+            </p>
+            <RadioGroup
+              className="col-span-2 mb-2"
+              value={form.formData.useExistingStack}
               required
-              onChange={(value) => form.setFieldValue("landCover", value)}
-            />
-          </Field>
-          <Field label="Transport Network" name="transportNetwork" required>
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.TransportNetwork}
-              dataset={form.formData.transportNetwork}
-              required
-              onChange={(value) =>
-                form.setFieldValue("transportNetwork", value)
+              onChange={(event) =>
+                form.setFieldValue("useExistingStack", event.target.value)
               }
+              name="useExistingStack"
+              options={[
+                {
+                  id: "n",
+                  label: t("Create a new stack by selecting the layers"),
+                },
+                {
+                  id: "y",
+                  label: t("Use an existing stack or upload your own"),
+                },
+              ]}
             />
-          </Field>
-          <Field label="Barriers" name="barrier" required>
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.Barrier}
-              dataset={form.formData.barrier}
-              required
-              onChange={(value) => form.setFieldValue("barrier", value)}
-            />
-          </Field>
-          <Field label="Water" name="water" required>
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.Water}
-              dataset={form.formData.water}
-              required
-              onChange={(value) => form.setFieldValue("water", value)}
-            />
-          </Field>
-          <Field label="Slope" name="slope" required>
-            <DatasetPicker
-              project={project}
-              roleCode={AccessmodFilesetRoleCode.Slope}
-              dataset={form.formData.slope}
-              required
-              onChange={(value) => form.setFieldValue("slope", value)}
-            />
-          </Field>
-          <Field
-            label="Max Slope (in %)"
-            name="maxSlope"
-            value={form.formData.maxSlope}
-            onChange={form.handleInputChange}
-            type="number"
-            placeholder="10%"
-            min={0}
-            max={1000}
-          />
-          <br />
-          <Checkbox
-            label="Roads have priority over water cells"
-            checked={form.formData.priorityRoads}
-            name="priorityRoads"
-            onChange={form.handleInputChange}
-          />
-          <Checkbox
-            label="All cells intersecting water are impassable"
-            checked={form.formData.waterAllTouched}
-            name="waterAllTouched"
-            onChange={form.handleInputChange}
-          />
+            <div className="grid gap-4  md:grid-cols-2">
+              {form.formData.useExistingStack === "y" ? (
+                <Field
+                  label={t("Stack")}
+                  name="stack"
+                  required
+                  error={form.errors.stack}
+                >
+                  <DatasetPicker
+                    project={project}
+                    roleCode={AccessmodFilesetRoleCode.Stack}
+                    dataset={form.formData.stack}
+                    onChange={(value) => form.setFieldValue("stack", value)}
+                  />
+                </Field>
+              ) : (
+                <>
+                  <Field
+                    label={t("Land Cover")}
+                    name="landCover"
+                    required
+                    error={form.touched.landCover && form.errors.landCover}
+                  >
+                    <DatasetPicker
+                      project={project}
+                      roleCode={AccessmodFilesetRoleCode.LandCover}
+                      dataset={form.formData.landCover}
+                      onChange={(value) =>
+                        form.setFieldValue("landCover", value)
+                      }
+                    />
+                  </Field>
+                  <Field
+                    label={t("Transport Network")}
+                    name="transportNetwork"
+                    required
+                    error={
+                      form.touched.transportNetwork &&
+                      form.errors.transportNetwork
+                    }
+                  >
+                    <DatasetPicker
+                      project={project}
+                      roleCode={AccessmodFilesetRoleCode.TransportNetwork}
+                      dataset={form.formData.transportNetwork}
+                      onChange={(value) =>
+                        form.setFieldValue("transportNetwork", value)
+                      }
+                    />
+                  </Field>
+
+                  <Field
+                    label={t("Water")}
+                    name="water"
+                    required
+                    error={form.touched.water && form.errors.water}
+                  >
+                    <DatasetPicker
+                      project={project}
+                      roleCode={AccessmodFilesetRoleCode.Water}
+                      dataset={form.formData.water}
+                      onChange={(value) => form.setFieldValue("water", value)}
+                    />
+                  </Field>
+                  <Field
+                    label={t("Barriers")}
+                    name="barrier"
+                    error={form.touched.barrier && form.errors.barrier}
+                  >
+                    <DatasetPicker
+                      project={project}
+                      roleCode={AccessmodFilesetRoleCode.Barrier}
+                      dataset={form.formData.barrier}
+                      onChange={(value) => form.setFieldValue("barrier", value)}
+                    />
+                  </Field>
+                  <Checkbox
+                    label={t("All cells intersecting water are impassable")}
+                    checked={form.formData.waterAllTouched}
+                    name="waterAllTouched"
+                    onChange={form.handleInputChange}
+                  />
+
+                  <Field
+                    label={t("Layer priorities")}
+                    className="col-span-2"
+                    name="stackPriorities"
+                    required
+                    error={
+                      form.touched.stackPriorities &&
+                      form.errors.stackPriorities
+                    }
+                  >
+                    <StackLayerPriorities
+                      value={form.formData.stackPriorities}
+                      onChange={onChangePriorities}
+                    />
+                  </Field>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </AnalysisStep>
 
@@ -292,19 +392,19 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       <AnalysisStep
         id="healthFacilities"
-        title={"Health Facilities"}
+        title={t("Health Facilities")}
         className="space-y-4"
       >
-        <p>Choose the health facilities layer.</p>
+        <p>{t("Choose the health facilities layer.")}</p>
         <Field
           name="healthFacilities"
           required
-          label="Health Facilities"
+          label={t("Health Facilities")}
           className="md:w-1/2 xl:w-1/3"
+          error={form.touched.healthFacilities && form.errors.healthFacilities}
         >
           <DatasetPicker
             project={project}
-            required
             roleCode={AccessmodFilesetRoleCode.HealthFacilities}
             dataset={form.formData.healthFacilities}
             onChange={(value) => form.setFieldValue("healthFacilities", value)}
@@ -314,34 +414,35 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 3 */}
 
-      <AnalysisStep id="travelScenario" title={"Travel Scenario"}>
+      <AnalysisStep id="travelScenario" title={t("Travel Scenario")}>
         <p className="mb-4">
-          Assign moving speeds to each category of road network and land cover.
+          {t(
+            "Assign moving speeds to each category of road network and land cover."
+          )}
         </p>
-        <Field
-          name="movingSpeeds"
-          required
-          label="Scenario"
-          className="md:w-1/2 xl:w-1/3"
-        >
-          <DatasetPicker
-            project={project}
-            required
-            roleCode={AccessmodFilesetRoleCode.MovingSpeeds}
-            dataset={form.formData.movingSpeeds}
-            onChange={(value) => form.setFieldValue("movingSpeeds", value)}
-          />
-        </Field>
+        <ScenarioEditor
+          scenario={form.formData.movingSpeeds ?? null}
+          onChange={(movingSpeeds) =>
+            form.setFieldValue("movingSpeeds", movingSpeeds)
+          }
+        />
+        {form.touched.movingSpeeds && form.errors.movingSpeeds && (
+          <div className="mt-2 text-red-500">{form.errors.movingSpeeds}</div>
+        )}
       </AnalysisStep>
 
       {/* Step 4 */}
 
       <AnalysisStep
         id="advancedSettings"
-        title={"Optional Settings"}
+        title={t("Optional Settings")}
         className="space-y-4"
       >
-        <Field name="algorithm" label="Cost distance analysis method" required>
+        <Field
+          name="algorithm"
+          label={t("Cost distance analysis method")}
+          required
+        >
           <RadioGroup
             name="algorithm"
             onChange={form.handleInputChange}
@@ -349,23 +450,23 @@ const AccessibilityAnalysisForm = (props: Props) => {
             options={[
               {
                 id: AccessmodAccessibilityAnalysisAlgorithm.Isotropic,
-                label: "Isotropic",
+                label: t("Isotropic"),
               },
               {
                 id: AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
-                label: "Anisotropic",
+                label: t("Anisotropic"),
               },
             ]}
           />
         </Field>
-        <Field name="travelDirection" label="Direction of travel" required>
+        <Field name="travelDirection" label={t("Direction of travel")} required>
           <RadioGroup
             name="travelDirection"
             onChange={form.handleInputChange}
             value={form.formData.travelDirection}
             options={[
-              { id: "towards", label: "Towards Facilities" },
-              { id: "from", label: "From facilities" },
+              { id: "towards", label: t("Towards Facilities") },
+              { id: "from", label: t("From facilities") },
             ]}
           />
         </Field>
@@ -376,12 +477,12 @@ const AccessibilityAnalysisForm = (props: Props) => {
           type="number"
           className="md:w-1/2 xl:w-1/3"
           required
-          label="Max travel time (in minutes)"
+          label={t("Max travel time (in minutes)")}
           placeholder={"60"}
           value={form.formData.maxTravelTime}
         />
         <Checkbox
-          label="Use Knight’s move in cost distance analysis"
+          label={t("Use Knight’s move in cost distance analysis")}
           checked={form.formData.knightMove}
           name="knightMove"
           onChange={form.handleInputChange}
@@ -395,24 +496,28 @@ const AccessibilityAnalysisForm = (props: Props) => {
       )}
       {analysis.status !== AccessmodAnalysisStatus.Ready && (
         <div className="text-right text-sm font-medium text-gray-600">
-          All fields need to be filled in to be able to run the analysis.
+          {t("All fields need to be filled in to be able to run the analysis.")}
         </div>
       )}
-
       <div className="flex justify-end gap-4">
+        <Button type="submit" disabled={form.isSubmitting || !form.isDirty}>
+          {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
+          {t("Save")}
+        </Button>
         <Button
-          disabled={
-            form.isSubmitting ||
-            isTriggering ||
-            analysis.status !== AccessmodAnalysisStatus.Ready
-          }
           type="button"
           onClick={onCompute}
+          disabled={
+            form.isSubmitting ||
+            !form.isDirty ||
+            analysis.status !== AccessmodAnalysisStatus.Ready
+          }
         >
-          {form.isSubmitting ? "Saving..." : "Compute"}
+          {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
+          {t("Save & Run")}
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 
@@ -429,18 +534,13 @@ AccessibilityAnalysisForm.fragments = {
       __typename
       id
       name
-      movingSpeeds {
-        ...DatasetPicker_dataset
-      }
+      movingSpeeds
       healthFacilities {
         ...DatasetPicker_dataset
       }
       type
-      maxSlope
-      priorityRoads
-      priorityLandCover
       waterAllTouched
-
+      stackPriorities
       knightMove
       algorithm
       invertDirection
@@ -452,19 +552,20 @@ AccessibilityAnalysisForm.fragments = {
       dem {
         ...DatasetPicker_dataset
       }
+      stack {
+        ...DatasetPicker_dataset
+      }
       barrier {
         ...DatasetPicker_dataset
       }
       water {
         ...DatasetPicker_dataset
       }
-      slope {
-        ...DatasetPicker_dataset
-      }
       transportNetwork {
         ...DatasetPicker_dataset
       }
     }
+
     ${DatasetPicker.fragments.dataset}
   `,
 };

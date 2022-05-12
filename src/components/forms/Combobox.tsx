@@ -1,5 +1,5 @@
 import { Combobox as UICombobox } from "@headlessui/react";
-import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
+import { CheckIcon, SelectorIcon, XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import Spinner from "components/Spinner";
 import { usePopper } from "react-popper";
@@ -40,34 +40,21 @@ type ComboboxProps = {
 const OptionsWrapper = (props: {
   onOpen?: () => void;
   onClose?: () => void;
-  open: boolean;
   children: ReactElement;
 }) => {
-  const { onOpen, onClose, open, children } = props;
-  const [isMounted, setMounted] = useState(false);
+  const { onOpen, onClose, children } = props;
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    // Don't call event handlers if we just mounted the component
-    if (!isMounted) return;
-
-    if (open) {
-      onOpen && onOpen();
-    } else {
-      onClose && onClose();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, onOpen, onClose]);
+    onOpen && onOpen();
+    return onClose;
+  }, [onOpen, onClose]);
 
   return children;
 };
 
 const Classes = {
-  Button:
-    "absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none text-gray-400 hover:text-gray-500",
+  trailingIcon:
+    "flex items-center rounded-r-md gap-0.5 focus:outline-none text-gray-400",
   Options:
     "max-h-60 z-10 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
 };
@@ -85,6 +72,7 @@ const Combobox = (props: ComboboxProps) => {
     renderIcon,
     value,
     placeholder,
+    onChange,
     ...delegated
   } = props;
 
@@ -107,13 +95,6 @@ const Combobox = (props: ComboboxProps) => {
     modifiers,
   });
 
-  const handleFocus = useCallback(() => {
-    // Simulate a click on the button to open the menu ...
-    // ... when the user focuses the input (and do nothing ...
-    // ... when the user already clicked on the button)
-    if (!openRef.current) btnRef.current?.click();
-  }, [btnRef]);
-
   const icon = useMemo(() => {
     if (loading) {
       return <Spinner size="xs" />;
@@ -121,6 +102,11 @@ const Combobox = (props: ComboboxProps) => {
       return renderIcon({ value });
     }
   }, [loading, renderIcon, value]);
+
+  const onClear = useCallback(() => {
+    onChange(null);
+    openRef.current = false;
+  }, [openRef, onChange]);
 
   const optionsElement = (
     <UICombobox.Options
@@ -132,15 +118,22 @@ const Combobox = (props: ComboboxProps) => {
       {({ open }) => {
         openRef.current = open; // Store the last 'open' value to avoid to "double trigger" the open event
         return (
-          <OptionsWrapper open={open} onOpen={onOpen} onClose={onClose}>
+          <OptionsWrapper onOpen={onOpen} onClose={onClose}>
             <>{children}</>
           </OptionsWrapper>
         );
       }}
     </UICombobox.Options>
   );
+
   return (
-    <UICombobox {...delegated} value={value} as="div" nullable={!required}>
+    <UICombobox
+      {...delegated}
+      onChange={onChange}
+      value={value}
+      as="div"
+      nullable={!required}
+    >
       <div className="relative" ref={setReferenceElement}>
         <UICombobox.Input
           as={Fragment}
@@ -149,16 +142,24 @@ const Combobox = (props: ComboboxProps) => {
         >
           <Input
             placeholder={placeholder}
-            onFocus={handleFocus}
             trailingIcon={
-              <UICombobox.Button className={Classes.Button} ref={btnRef}>
-                {icon ?? (
-                  <SelectorIcon className="h-5 w-5 " aria-hidden="true" />
+              <div className={Classes.trailingIcon}>
+                {icon}
+                {!required && value && (
+                  <XIcon
+                    onClick={onClear}
+                    className="h-4 w-4 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
                 )}
-              </UICombobox.Button>
+                <UICombobox.Button ref={btnRef} className="hover:text-gray-500">
+                  <SelectorIcon className="h-5 w-5" aria-hidden="true" />
+                </UICombobox.Button>
+              </div>
             }
           />
         </UICombobox.Input>
+
         {typeof window !== "undefined" && withPortal
           ? createPortal(optionsElement, document.body)
           : optionsElement}
