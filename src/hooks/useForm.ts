@@ -23,7 +23,10 @@ type UseFormResult<T> = {
   >;
   setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
-  handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
+  handleSubmit: (event?: {
+    preventDefault: Function;
+    stopPropagation: Function;
+  }) => Promise<void> | void;
   touched: { [key in keyof Partial<T>]: boolean };
   isValid: boolean;
   isDirty: boolean;

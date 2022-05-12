@@ -95,24 +95,6 @@ const Combobox = (props: ComboboxProps) => {
     modifiers,
   });
 
-  // const handleFocus = useCallback(() => {
-  //   // Simulate a click on the button to open the menu ...
-  //   // ... when the user focuses the input (and do nothing ...
-  //   // ... when the user already clicked on the button)
-  //   console.log("handleFocus", openRef.current);
-  //   if (!openRef.current) btnRef.current?.click();
-  // }, [openRef, btnRef]);
-
-  const handleOpen = useCallback(() => {
-    openRef.current = true;
-    onOpen && onOpen();
-  }, [onOpen, openRef]);
-
-  const handleClose = useCallback(() => {
-    openRef.current = false;
-    onClose && onClose();
-  }, [onClose, openRef]);
-
   const icon = useMemo(() => {
     if (loading) {
       return <Spinner size="xs" />;
@@ -136,7 +118,7 @@ const Combobox = (props: ComboboxProps) => {
       {({ open }) => {
         openRef.current = open; // Store the last 'open' value to avoid to "double trigger" the open event
         return (
-          <OptionsWrapper open={open} onOpen={onOpen} onClose={onClose}>
+          <OptionsWrapper onOpen={onOpen} onClose={onClose}>
             <>{children}</>
           </OptionsWrapper>
         );
