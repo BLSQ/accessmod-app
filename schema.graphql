@@ -21,12 +21,10 @@ type AccessmodAccessibilityAnalysis implements AccessmodAnalysis & AccessmodOwne
   barrier: AccessmodFileset
   stack: AccessmodFileset
   stackPriorities: StackPriorities
-  slope: AccessmodFileset
   movingSpeeds: MovingSpeeds
   healthFacilities: AccessmodFileset
   invertDirection: Boolean
   maxTravelTime: Int
-  maxSlope: Float
   waterAllTouched: Boolean
   algorithm: AccessmodAccessibilityAnalysisAlgorithm
   knightMove: Boolean
@@ -142,7 +140,6 @@ enum AccessmodFilesetRoleCode {
   LAND_COVER
   MOVING_SPEEDS
   POPULATION
-  SLOPE
   TRANSPORT_NETWORK
   TRAVEL_TIMES
   WATER
@@ -700,14 +697,12 @@ input UpdateAccessmodAccessibilityAnalysisInput {
   stackId: String
   stackPriorities: StackPriorities
   transportNetworkId: String
-  slopeId: String
   waterId: String
   barrierId: String
   movingSpeeds: MovingSpeeds
   healthFacilitiesId: String
   invertDirection: Boolean
   maxTravelTime: Int
-  maxSlope: Float
   waterAllTouched: Boolean
   algorithm: AccessmodAccessibilityAnalysisAlgorithm
   knightMove: Boolean

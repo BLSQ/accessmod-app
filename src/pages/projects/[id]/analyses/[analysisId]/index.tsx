@@ -222,10 +222,6 @@ export const getServerSideProps = createGetServerSideProps({
                 id
                 name
               }
-              slope {
-                id
-                name
-              }
               water {
                 id
                 name

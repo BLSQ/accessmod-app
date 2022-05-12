@@ -34,12 +34,10 @@ export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & AccessmodOwners
   invertDirection?: Maybe<Scalars['Boolean']>;
   knightMove?: Maybe<Scalars['Boolean']>;
   landCover?: Maybe<AccessmodFileset>;
-  maxSlope?: Maybe<Scalars['Float']>;
   maxTravelTime?: Maybe<Scalars['Int']>;
   movingSpeeds?: Maybe<Scalars['MovingSpeeds']>;
   name: Scalars['String'];
   owner?: Maybe<AccessmodOwner>;
-  slope?: Maybe<AccessmodFileset>;
   stack?: Maybe<AccessmodFileset>;
   stackPriorities?: Maybe<Scalars['StackPriorities']>;
   status: AccessmodAnalysisStatus;
@@ -162,7 +160,6 @@ export enum AccessmodFilesetRoleCode {
   LandCover = 'LAND_COVER',
   MovingSpeeds = 'MOVING_SPEEDS',
   Population = 'POPULATION',
-  Slope = 'SLOPE',
   Stack = 'STACK',
   TransportNetwork = 'TRANSPORT_NETWORK',
   TravelTimes = 'TRAVEL_TIMES',
@@ -938,11 +935,9 @@ export type UpdateAccessmodAccessibilityAnalysisInput = {
   invertDirection?: InputMaybe<Scalars['Boolean']>;
   knightMove?: InputMaybe<Scalars['Boolean']>;
   landCoverId?: InputMaybe<Scalars['String']>;
-  maxSlope?: InputMaybe<Scalars['Float']>;
   maxTravelTime?: InputMaybe<Scalars['Int']>;
   movingSpeeds?: InputMaybe<Scalars['MovingSpeeds']>;
   name?: InputMaybe<Scalars['String']>;
-  slopeId?: InputMaybe<Scalars['String']>;
   stackId?: InputMaybe<Scalars['String']>;
   stackPriorities?: InputMaybe<Scalars['StackPriorities']>;
   transportNetworkId?: InputMaybe<Scalars['String']>;
@@ -1438,7 +1433,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', stackPriorities?: any | null, movingSpeeds?: any | null, id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, slope?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', stackPriorities?: any | null, movingSpeeds?: any | null, id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -3590,10 +3585,6 @@ export const AnalysisDetailPageDocument = gql`
         name
       }
       transportNetwork {
-        id
-        name
-      }
-      slope {
         id
         name
       }
