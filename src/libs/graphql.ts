@@ -169,6 +169,7 @@ export enum AccessmodFilesetRoleCode {
 export enum AccessmodFilesetStatus {
   Invalid = 'INVALID',
   Pending = 'PENDING',
+  ToAcquire = 'TO_ACQUIRE',
   Valid = 'VALID',
   Validating = 'VALIDATING'
 }
@@ -330,6 +331,7 @@ export type CreateAccessmodFilesetInput = {
   name: Scalars['String'];
   projectId: Scalars['String'];
   roleId: Scalars['String'];
+  status?: InputMaybe<AccessmodFilesetStatus>;
 };
 
 export type CreateAccessmodFilesetResult = {
@@ -1411,6 +1413,13 @@ export type GetFileDownloadUrlMutationVariables = Exact<{
 
 
 export type GetFileDownloadUrlMutation = { __typename?: 'Mutation', prepareAccessmodFileDownload: { __typename?: 'PrepareAccessmodFileDownloadResult', success: boolean, downloadUrl?: string | null } };
+
+export type CreateDatasetToAcquireMutationVariables = Exact<{
+  input: CreateAccessmodFilesetInput;
+}>;
+
+
+export type CreateDatasetToAcquireMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat } } | null } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -3476,6 +3485,50 @@ export function useGetFileDownloadUrlMutation(baseOptions?: Apollo.MutationHookO
 export type GetFileDownloadUrlMutationHookResult = ReturnType<typeof useGetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationResult = Apollo.MutationResult<GetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationOptions = Apollo.BaseMutationOptions<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>;
+export const CreateDatasetToAcquireDocument = gql`
+    mutation CreateDatasetToAcquire($input: CreateAccessmodFilesetInput!) {
+  createAccessmodFileset(input: $input) {
+    success
+    fileset {
+      id
+      name
+      status
+      role {
+        id
+        code
+        name
+        format
+      }
+    }
+  }
+}
+    `;
+export type CreateDatasetToAcquireMutationFn = Apollo.MutationFunction<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>;
+
+/**
+ * __useCreateDatasetToAcquireMutation__
+ *
+ * To run a mutation, you first call `useCreateDatasetToAcquireMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDatasetToAcquireMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDatasetToAcquireMutation, { data, loading, error }] = useCreateDatasetToAcquireMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDatasetToAcquireMutation(baseOptions?: Apollo.MutationHookOptions<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>(CreateDatasetToAcquireDocument, options);
+      }
+export type CreateDatasetToAcquireMutationHookResult = ReturnType<typeof useCreateDatasetToAcquireMutation>;
+export type CreateDatasetToAcquireMutationResult = Apollo.MutationResult<CreateDatasetToAcquireMutation>;
+export type CreateDatasetToAcquireMutationOptions = Apollo.BaseMutationOptions<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {

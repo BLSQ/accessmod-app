@@ -84,6 +84,9 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
             },
           },
         },
+        AccessmodProject: {
+          merge: true,
+        },
         AccessmodProjectPermission: {
           merge: true,
         },

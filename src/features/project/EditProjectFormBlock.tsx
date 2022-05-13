@@ -198,7 +198,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
             roleCode={AccessmodFilesetRoleCode.Dem}
             onChange={(value) => form.setFieldValue("dem", value)}
             disabled={form.isSubmitting}
-            recommendedOption
           />
         </Field>
 
