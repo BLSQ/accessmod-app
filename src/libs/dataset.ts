@@ -1,11 +1,16 @@
 import { gql, useQuery } from "@apollo/client";
+import { parse } from "csv-parse/sync";
+import { DateTime } from "luxon";
 import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
-import { parse } from "csv-parse/sync";
 import {
   AccessmodFile,
   AccessmodFilesetFormat,
+  AccessmodFilesetRole,
   AccessmodFilesetStatus,
+  AccessmodProject,
+  CreateDatasetToAcquireMutation,
+  CreateDatasetToAcquireMutationVariables,
   CreateFileMutation,
   GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
@@ -228,4 +233,54 @@ export async function getVectorFileContent(
     console.error(err);
   }
   return JSON.parse(fileContent);
+}
+
+export async function createDatasetToAcquire({
+  name,
+  project,
+  role,
+}: {
+  name?: string;
+  project: Pick<AccessmodProject, "id">;
+  role: Pick<AccessmodFilesetRole, "id" | "name">;
+}) {
+  const client = getApolloClient();
+
+  const { data } = await client.mutate<
+    CreateDatasetToAcquireMutation,
+    CreateDatasetToAcquireMutationVariables
+  >({
+    mutation: gql`
+      mutation CreateDatasetToAcquire($input: CreateAccessmodFilesetInput!) {
+        createAccessmodFileset(input: $input) {
+          success
+          fileset {
+            id
+            name
+            status
+            role {
+              id
+              code
+              name
+              format
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      input: {
+        projectId: project.id,
+        roleId: role.id,
+        status: AccessmodFilesetStatus.ToAcquire,
+        name:
+          name ??
+          `Automatic ${role.name} (${DateTime.now().toLocaleString(
+            DateTime.DATETIME_SHORT
+          )})`,
+      },
+    },
+  });
+
+  return data?.createAccessmodFileset?.fileset;
 }

@@ -151,6 +151,7 @@ enum AccessmodFilesetStatus {
   VALIDATING
   VALID
   INVALID
+  TO_ACQUIRE
 }
 
 type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis & AccessmodOwnership {
@@ -301,6 +302,7 @@ input CreateAccessmodFilesetInput {
   name: String!
   projectId: String!
   roleId: String!
+  status: AccessmodFilesetStatus
 }
 
 type CreateAccessmodFilesetResult {

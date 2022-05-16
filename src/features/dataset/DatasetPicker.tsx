@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
-import { UploadIcon } from "@heroicons/react/outline";
+import { CloudIcon, UploadIcon } from "@heroicons/react/outline";
+import clsx from "clsx";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
 import { useFilesetRoles } from "libs/dataset";
@@ -9,7 +10,8 @@ import {
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
 } from "libs/graphql";
-import { i18n, useTranslation } from "next-i18next";
+import { createDatasetToAcquire } from "libs/dataset";
+import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CreateDatasetDialog from "./DatasetFormDialog";
 import DatasetStatusIcon from "./DatasetStatusIcon";
@@ -22,15 +24,8 @@ type Props = {
   onChange: (value: any) => void;
   required?: boolean;
   placeholder?: string;
-  recommendedOption?: boolean;
   multiple?: boolean;
-};
-
-const RECOMMENDED_OPTION = {
-  id: null,
-  get name() {
-    return i18n!.t("Use recommended dataset");
-  },
+  creatable?: boolean;
 };
 
 const DatasetPicker = (props: Props) => {
@@ -44,6 +39,7 @@ const DatasetPicker = (props: Props) => {
     disabled = false,
     multiple = false,
     required = false,
+    creatable = true,
   } = props;
   const [query, setQuery] = useState("");
   const [isDialogOpen, showCreationDialog] = useState(false);
@@ -69,7 +65,7 @@ const DatasetPicker = (props: Props) => {
         },
       });
     }
-  }, [fetch, role, project, query]);
+  }, [fetch, role, project, query, dataset]);
 
   const onCreateDialogClose = useCallback((reason?: string, fileset?: any) => {
     showCreationDialog(false);
@@ -83,6 +79,35 @@ const DatasetPicker = (props: Props) => {
   const options = useMemo(() => {
     return [...(data?.filesets?.items ?? [])];
   }, [data]);
+
+  const canCreate = useMemo(
+    () =>
+      project.authorizedActions.includes(
+        AccessmodProjectAuthorizedActions.CreateFileset
+      ) && creatable,
+    [creatable, project.authorizedActions]
+  );
+
+  const onAcquireClick = useCallback(async () => {
+    if (!role) return;
+    console.log("onAcquireClick");
+    const dataset = await createDatasetToAcquire({ project, role });
+    console.log(dataset);
+    onChange(dataset);
+  }, [onChange, project, role]);
+
+  const enableAcquire = useMemo(
+    () =>
+      role &&
+      [
+        AccessmodFilesetRoleCode.Dem,
+        AccessmodFilesetRoleCode.HealthFacilities,
+        AccessmodFilesetRoleCode.TransportNetwork,
+        AccessmodFilesetRoleCode.Water,
+        AccessmodFilesetRoleCode.LandCover,
+      ].includes(role.code),
+    [role]
+  );
 
   return (
     <>
@@ -99,47 +124,63 @@ const DatasetPicker = (props: Props) => {
         loading={loading}
         multiple={multiple}
         value={dataset}
+        inputClassName={clsx(dataset && "pr-16")}
         onChange={onChange}
         required={required}
         placeholder={placeholder}
+        footer={
+          canCreate && (
+            <div className="mt-1 flex gap-2 border-t border-gray-300 px-3 py-2 text-sm">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => showCreationDialog(true)}
+                leadingIcon={<UploadIcon className="h-4" />}
+              >
+                {t("Upload a dataset")}
+              </Button>
+              {enableAcquire && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={onAcquireClick}
+                  leadingIcon={<CloudIcon className="h-4 w-4" />}
+                >
+                  {t("Automatically Acquire")}
+                </Button>
+              )}
+            </div>
+          )
+        }
         renderIcon={({ value }) =>
           value && <DatasetStatusIcon dataset={value} />
         }
         displayValue={(value) => value?.name}
         onInputChange={(event) => setQuery(event.target.value)}
       >
-        {options.length === 0 && !loading && (
-          <p className="p-2 text-center text-xs italic text-gray-500">
-            {t("There is no result")}
-          </p>
-        )}
-        {options.map((option) => (
-          <Combobox.CheckOption
-            key={option.id}
-            value={option}
-            forceSelected={option.id === dataset?.id}
-          >
-            <div className="flex w-full items-center justify-between">
-              <span>{option.name}</span>
-              <DatasetStatusIcon dataset={option} />
-            </div>
-          </Combobox.CheckOption>
-        ))}
-
-        {project.authorizedActions.includes(
-          AccessmodProjectAuthorizedActions.CreateFileset
-        ) && (
-          <div className="mt-1 border-t border-gray-300 px-3 py-2 text-sm">
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => showCreationDialog(true)}
-              leadingIcon={<UploadIcon className="h-4" />}
-            >
-              {t("Create a new dataset")}
-            </Button>
+        <div className={clsx("relative")}>
+          {options.length === 0 && !loading && (
+            <p className="p-2 text-center text-xs italic text-gray-500">
+              {t("There is no result")}
+            </p>
+          )}
+          <div className="h-full overflow-auto">
+            {options.map((option) => (
+              <Combobox.CheckOption
+                key={option.id}
+                value={option}
+                forceSelected={option.id === dataset?.id}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="truncate">
+                    <span title={option.name}>{option.name}</span>
+                  </div>
+                  <DatasetStatusIcon dataset={option} />
+                </div>
+              </Combobox.CheckOption>
+            ))}
           </div>
-        )}
+        </div>
       </Combobox>
     </>
   );

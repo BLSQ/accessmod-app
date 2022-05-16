@@ -1,5 +1,9 @@
 import { gql } from "@apollo/client";
-import { CheckCircleIcon, PauseIcon } from "@heroicons/react/outline";
+import {
+  CheckCircleIcon,
+  PauseIcon,
+  CloudIcon,
+} from "@heroicons/react/outline";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
 import Tooltip from "components/Tooltip";
 import {
@@ -24,10 +28,29 @@ const DatasetStatusIcon = ({
         </Tooltip>
       );
     case AccessmodFilesetStatus.Valid:
-      return <CheckCircleIcon className="h-4 text-teal-400" />;
+      return (
+        <Tooltip label={t("Valid")}>
+          <CheckCircleIcon className="h-4 text-teal-400" />
+        </Tooltip>
+      );
+    case AccessmodFilesetStatus.ToAcquire:
+      return (
+        <Tooltip label={t("This dataset will be generated automatically.")}>
+          <CloudIcon className="h-4 w-4 text-lochmara-100" />
+        </Tooltip>
+      );
     case AccessmodFilesetStatus.Pending:
+      return (
+        <Tooltip label={t("Pending")}>
+          <PauseIcon className="h-4 text-lochmara-100" />
+        </Tooltip>
+      );
     case AccessmodFilesetStatus.Validating:
-      return <PauseIcon className="h-4 text-lochmara-100" />;
+      return (
+        <Tooltip label={t("Validating")}>
+          <PauseIcon className="h-4 text-lochmara-100" />
+        </Tooltip>
+      );
     default:
       return null;
   }

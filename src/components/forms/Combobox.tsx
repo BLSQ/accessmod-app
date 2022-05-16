@@ -27,7 +27,9 @@ type ComboboxProps = {
   required?: boolean;
   name?: string;
   disabled?: boolean;
+  inputClassName?: string;
   children: ReactNode;
+  footer?: ReactNode;
   loading?: boolean;
   renderIcon?: ({ value }: { value: any }) => ReactElement | undefined | null;
   onOpen?: () => void;
@@ -40,7 +42,7 @@ type ComboboxProps = {
 const OptionsWrapper = (props: {
   onOpen?: () => void;
   onClose?: () => void;
-  children: ReactElement;
+  children: ReactNode;
 }) => {
   const { onOpen, onClose, children } = props;
 
@@ -49,14 +51,15 @@ const OptionsWrapper = (props: {
     return onClose;
   }, [onOpen, onClose]);
 
-  return children;
+  return <>{children}</>;
 };
 
 const Classes = {
   trailingIcon:
     "flex items-center rounded-r-md gap-0.5 focus:outline-none text-gray-400",
   Options:
-    "max-h-60 z-10 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm",
+    "max-h-60 z-10 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm flex flex-col",
+  OptionsList: "overflow-auto flex-1",
 };
 
 const Combobox = (props: ComboboxProps) => {
@@ -65,9 +68,11 @@ const Combobox = (props: ComboboxProps) => {
     required = false,
     withPortal = false,
     children,
+    footer,
     onOpen,
     onClose,
     onInputChange,
+    inputClassName,
     displayValue,
     renderIcon,
     value,
@@ -118,9 +123,14 @@ const Combobox = (props: ComboboxProps) => {
       {({ open }) => {
         openRef.current = open; // Store the last 'open' value to avoid to "double trigger" the open event
         return (
-          <OptionsWrapper onOpen={onOpen} onClose={onClose}>
-            <>{children}</>
-          </OptionsWrapper>
+          <>
+            <div className={Classes.OptionsList}>
+              <OptionsWrapper onOpen={onOpen} onClose={onClose}>
+                {children}
+              </OptionsWrapper>
+            </div>
+            {footer}
+          </>
         );
       }}
     </UICombobox.Options>
@@ -142,6 +152,7 @@ const Combobox = (props: ComboboxProps) => {
         >
           <Input
             placeholder={placeholder}
+            inputClassName={inputClassName}
             trailingIcon={
               <div className={Classes.trailingIcon}>
                 {icon}

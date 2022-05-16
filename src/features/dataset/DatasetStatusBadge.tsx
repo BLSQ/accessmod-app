@@ -38,13 +38,16 @@ const DatasetStatusBadge = (props: DatasetStatusBadgeProps) => {
       "bg-lochmara-100 text-white",
     dataset.status === AccessmodFilesetStatus.Valid && "bg-teal-400 text-white",
     dataset.status === AccessmodFilesetStatus.Validating &&
-      "bg-lochmara-100 text-white"
+      "bg-lochmara-100 text-white",
+    dataset.status === AccessmodFilesetStatus.ToAcquire &&
+      "bg-pink-300 text-white"
   );
 
   useEffect(() => {
     if (
       dataset.status === AccessmodFilesetStatus.Validating ||
-      dataset.status === AccessmodFilesetStatus.Pending
+      dataset.status === AccessmodFilesetStatus.Pending ||
+      dataset.status === AccessmodFilesetStatus.ToAcquire
     ) {
       startPolling(2500);
     }
