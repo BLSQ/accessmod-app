@@ -21,7 +21,7 @@ type UseFormResult<T> = {
   handleInputChange: ChangeEventHandler<
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
   >;
-  setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
+  setFieldValue: (fieldName: keyof T, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
   handleSubmit: (event?: {
     preventDefault: Function;
@@ -91,9 +91,9 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
         event.target instanceof HTMLInputElement &&
         event.target.type === "checkbox"
       ) {
-        setFieldValue(event.target.name, event.target.checked);
+        setFieldValue(event.target.name as keyof T, event.target.checked);
       } else {
-        setFieldValue(event.target.name, event.target.value);
+        setFieldValue(event.target.name as keyof T, event.target.value);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,7 +101,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   );
 
   const setFieldValue = useCallback(
-    (field: string, value: any, isTouched = true) => {
+    (field: keyof T, value: any, isTouched = true) => {
       setFormData((formData) => ({
         ...formData,
         [field]: value,
