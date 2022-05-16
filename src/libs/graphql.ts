@@ -211,7 +211,7 @@ export type AccessmodProject = AccessmodOwnership & {
   crs: Scalars['Int'];
   dem?: Maybe<AccessmodFileset>;
   description: Scalars['String'];
-  extent?: Maybe<AccessmodFileset>;
+  extent?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   name: Scalars['String'];
   owner?: Maybe<AccessmodOwner>;
@@ -328,10 +328,10 @@ export enum CreateAccessmodFilesetError {
 }
 
 export type CreateAccessmodFilesetInput = {
+  automatic?: InputMaybe<Scalars['Boolean']>;
   name: Scalars['String'];
   projectId: Scalars['String'];
   roleId: Scalars['String'];
-  status?: InputMaybe<AccessmodFilesetStatus>;
 };
 
 export type CreateAccessmodFilesetResult = {
@@ -350,7 +350,7 @@ export type CreateAccessmodProjectInput = {
   country: CountryInput;
   crs: Scalars['Int'];
   description?: InputMaybe<Scalars['String']>;
-  extentId?: InputMaybe<Scalars['String']>;
+  extent?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   spatialResolution: Scalars['Int'];
 };
@@ -961,14 +961,11 @@ export enum UpdateAccessmodProjectError {
 }
 
 export type UpdateAccessmodProjectInput = {
-  country?: InputMaybe<CountryInput>;
-  crs?: InputMaybe<Scalars['Int']>;
   demId?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  extentId?: InputMaybe<Scalars['String']>;
+  extent?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
-  spatialResolution?: InputMaybe<Scalars['Int']>;
 };
 
 export enum UpdateAccessmodProjectPermissionError {
@@ -1147,16 +1144,7 @@ export type TabularDatasetEditor_DatasetFragment = { __typename?: 'AccessmodFile
 
 export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
 
-export type CreateFilesetMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodFilesetInput>;
-}>;
-
-
-export type CreateFilesetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string } } | null } };
-
 export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
-
-export type DatasetFormDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
 
 export type DatasetPicker_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } };
 
@@ -1257,14 +1245,14 @@ export type EditProjectQueryVariables = Exact<{
 }>;
 
 
-export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, spatialResolution: number, authorizedActions: Array<AccessmodProjectAuthorizedActions>, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null } | null };
+export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   input?: InputMaybe<UpdateAccessmodProjectInput>;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, crs: number, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null } | null } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat } } | null } | null } };
 
 export type EditProjectFormBlock_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -1414,12 +1402,12 @@ export type GetFileDownloadUrlMutationVariables = Exact<{
 
 export type GetFileDownloadUrlMutation = { __typename?: 'Mutation', prepareAccessmodFileDownload: { __typename?: 'PrepareAccessmodFileDownloadResult', success: boolean, downloadUrl?: string | null } };
 
-export type CreateDatasetToAcquireMutationVariables = Exact<{
+export type CreateDatasetMutationVariables = Exact<{
   input: CreateAccessmodFilesetInput;
 }>;
 
 
-export type CreateDatasetToAcquireMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat } } | null } };
+export type CreateDatasetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat } } | null } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -1693,12 +1681,6 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
 export const TabularDatasetEditor_DatasetFragmentDoc = gql`
     fragment TabularDatasetEditor_dataset on AccessmodFileset {
   id
-}
-    `;
-export const DatasetFormDialog_DatasetFragmentDoc = gql`
-    fragment DatasetFormDialog_dataset on AccessmodFileset {
-  id
-  name
 }
     `;
 export const DatasetStatusBadge_DatasetFragmentDoc = gql`
@@ -2371,50 +2353,6 @@ export function useTabularDatasetEditorLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type TabularDatasetEditorQueryHookResult = ReturnType<typeof useTabularDatasetEditorQuery>;
 export type TabularDatasetEditorLazyQueryHookResult = ReturnType<typeof useTabularDatasetEditorLazyQuery>;
 export type TabularDatasetEditorQueryResult = Apollo.QueryResult<TabularDatasetEditorQuery, TabularDatasetEditorQueryVariables>;
-export const CreateFilesetDocument = gql`
-    mutation CreateFileset($input: CreateAccessmodFilesetInput) {
-  createAccessmodFileset(input: $input) {
-    success
-    errors
-    fileset {
-      id
-      name
-      status
-      role {
-        id
-        code
-        name
-      }
-    }
-  }
-}
-    `;
-export type CreateFilesetMutationFn = Apollo.MutationFunction<CreateFilesetMutation, CreateFilesetMutationVariables>;
-
-/**
- * __useCreateFilesetMutation__
- *
- * To run a mutation, you first call `useCreateFilesetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateFilesetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createFilesetMutation, { data, loading, error }] = useCreateFilesetMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateFilesetMutation(baseOptions?: Apollo.MutationHookOptions<CreateFilesetMutation, CreateFilesetMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateFilesetMutation, CreateFilesetMutationVariables>(CreateFilesetDocument, options);
-      }
-export type CreateFilesetMutationHookResult = ReturnType<typeof useCreateFilesetMutation>;
-export type CreateFilesetMutationResult = Apollo.MutationResult<CreateFilesetMutation>;
-export type CreateFilesetMutationOptions = Apollo.BaseMutationOptions<CreateFilesetMutation, CreateFilesetMutationVariables>;
 export const DatasetPickerDocument = gql`
     query DatasetPicker($projectId: String!, $page: Int = 1, $perPage: Int = 15, $roleId: String, $term: String) {
   filesets: accessmodFilesets(
@@ -2715,9 +2653,7 @@ export const EditProjectDocument = gql`
   project: accessmodProject(id: $projectId) {
     id
     name
-    crs
     description
-    spatialResolution
     dem {
       id
       ...DatasetPicker_dataset
@@ -2764,8 +2700,6 @@ export const UpdateProjectDocument = gql`
       id
       name
       description
-      crs
-      spatialResolution
       dem {
         id
         name
@@ -2895,7 +2829,6 @@ export const ProjectDatasetsTableDocument = gql`
     term: $term
   ) {
     items {
-      ...DatasetFormDialog_dataset
       ...DatasetStatusBadge_dataset
       ...DeleteDatasetTrigger_dataset
       id
@@ -2923,8 +2856,7 @@ export const ProjectDatasetsTableDocument = gql`
     totalItems
   }
 }
-    ${DatasetFormDialog_DatasetFragmentDoc}
-${DatasetStatusBadge_DatasetFragmentDoc}
+    ${DatasetStatusBadge_DatasetFragmentDoc}
 ${DeleteDatasetTrigger_DatasetFragmentDoc}`;
 
 /**
@@ -3485,10 +3417,11 @@ export function useGetFileDownloadUrlMutation(baseOptions?: Apollo.MutationHookO
 export type GetFileDownloadUrlMutationHookResult = ReturnType<typeof useGetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationResult = Apollo.MutationResult<GetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationOptions = Apollo.BaseMutationOptions<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>;
-export const CreateDatasetToAcquireDocument = gql`
-    mutation CreateDatasetToAcquire($input: CreateAccessmodFilesetInput!) {
+export const CreateDatasetDocument = gql`
+    mutation CreateDataset($input: CreateAccessmodFilesetInput!) {
   createAccessmodFileset(input: $input) {
     success
+    errors
     fileset {
       id
       name
@@ -3503,32 +3436,32 @@ export const CreateDatasetToAcquireDocument = gql`
   }
 }
     `;
-export type CreateDatasetToAcquireMutationFn = Apollo.MutationFunction<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>;
+export type CreateDatasetMutationFn = Apollo.MutationFunction<CreateDatasetMutation, CreateDatasetMutationVariables>;
 
 /**
- * __useCreateDatasetToAcquireMutation__
+ * __useCreateDatasetMutation__
  *
- * To run a mutation, you first call `useCreateDatasetToAcquireMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateDatasetToAcquireMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateDatasetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDatasetMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createDatasetToAcquireMutation, { data, loading, error }] = useCreateDatasetToAcquireMutation({
+ * const [createDatasetMutation, { data, loading, error }] = useCreateDatasetMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateDatasetToAcquireMutation(baseOptions?: Apollo.MutationHookOptions<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>) {
+export function useCreateDatasetMutation(baseOptions?: Apollo.MutationHookOptions<CreateDatasetMutation, CreateDatasetMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>(CreateDatasetToAcquireDocument, options);
+        return Apollo.useMutation<CreateDatasetMutation, CreateDatasetMutationVariables>(CreateDatasetDocument, options);
       }
-export type CreateDatasetToAcquireMutationHookResult = ReturnType<typeof useCreateDatasetToAcquireMutation>;
-export type CreateDatasetToAcquireMutationResult = Apollo.MutationResult<CreateDatasetToAcquireMutation>;
-export type CreateDatasetToAcquireMutationOptions = Apollo.BaseMutationOptions<CreateDatasetToAcquireMutation, CreateDatasetToAcquireMutationVariables>;
+export type CreateDatasetMutationHookResult = ReturnType<typeof useCreateDatasetMutation>;
+export type CreateDatasetMutationResult = Apollo.MutationResult<CreateDatasetMutation>;
+export type CreateDatasetMutationOptions = Apollo.BaseMutationOptions<CreateDatasetMutation, CreateDatasetMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {

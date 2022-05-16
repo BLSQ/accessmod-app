@@ -25,8 +25,6 @@ type EditProjectFormProps = {
 type Form = {
   name: string;
   description: string;
-  crs: string | number;
-  spatialResolution: string | number;
   dem: { id: string } | null;
 };
 
@@ -35,9 +33,7 @@ const EDIT_PROJECT_QUERY = gql`
     project: accessmodProject(id: $projectId) {
       id
       name
-      crs
       description
-      spatialResolution
       dem {
         id
         ...DatasetPicker_dataset
@@ -58,8 +54,6 @@ const UPDATE_PROJECT_MUTATION = gql`
         id
         name
         description
-        crs
-        spatialResolution
         dem {
           id
           name
@@ -86,12 +80,7 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
             id: props.project.id,
             name: values.name,
             description: values.description,
-            spatialResolution: parseInt(
-              values.spatialResolution.toString(),
-              10
-            ),
             demId: values.dem?.id ?? undefined,
-            crs: parseInt(values.crs.toString(), 10),
           },
         },
       });
@@ -116,10 +105,8 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
     getInitialState: () => {
       return {
         name: data?.project?.name ?? "",
-        crs: data?.project?.crs ?? "",
         dem: data?.project?.dem,
         description: data?.project?.description ?? "",
-        spatialResolution: data?.project?.spatialResolution ?? "",
       };
     },
     validate: (values) => {
@@ -129,9 +116,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
       }
       if (!values.description) {
         errors.description = t("Enter a description");
-      }
-      if (!values.spatialResolution) {
-        errors.spatialResolution = t("Enter a spatial resolution");
       }
       return errors;
     },
@@ -200,38 +184,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
             disabled={form.isSubmitting}
           />
         </Field>
-
-        <Field
-          className="col-span-2"
-          required
-          label="Spatial Resolution"
-          help={t(
-            "The spatial resolution refers to the linear spacing of a measurement."
-          )}
-          name="spatialResolution"
-          type="number"
-          onChange={form.handleInputChange}
-          disabled={form.isSubmitting}
-          value={form.formData.spatialResolution}
-          error={
-            form.touched.spatialResolution && form.errors.spatialResolution
-          }
-        />
-
-        <Field
-          required
-          className="col-span-2"
-          label={t("Coordinate Reference System Code")}
-          name="crs"
-          type="number"
-          help={t(
-            "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
-          )}
-          onChange={form.handleInputChange}
-          value={form.formData.crs}
-          disabled={form.isSubmitting}
-          error={form.touched.crs && form.errors.crs}
-        />
 
         {form.submitError && (
           <p className="col-span-4 text-sm text-red-600">{form.submitError}</p>

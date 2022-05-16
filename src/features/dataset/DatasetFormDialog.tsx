@@ -1,31 +1,21 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Dialog from "components/Dialog";
-import Dropzone from "components/Dropzone";
 import Field from "components/forms/Field";
 import Spinner from "components/Spinner";
-import filesize from "filesize";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
-import {
-  ACCEPTED_MIMETYPES,
-  createFile,
-  getPresignedURL,
-  guessFileMimeType,
-} from "libs/dataset";
-import { JobFile, uploader } from "libs/file";
+import { createDataset, guessFileMimeType } from "libs/dataset";
 import {
   AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
-  CreateAccessmodFilesetError,
-  DatasetFormDialog_DatasetFragment,
   DatasetFormDialog_ProjectFragment,
-  useCreateFilesetMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import FilesetRolePicker from "../FilesetRolePicker";
 import ProjectPicker from "../project/ProjectPicker";
+import DatasetFileInput from "./DatasetFileInput";
 
 type Props = {
   onClose: (
@@ -44,7 +34,6 @@ type Props = {
     format: AccessmodFilesetFormat;
   };
   project?: DatasetFormDialog_ProjectFragment | { id: string; name: string };
-  dataset?: DatasetFormDialog_DatasetFragment;
 };
 
 type Form = {
@@ -54,42 +43,9 @@ type Form = {
   files: File[];
 };
 
-/*
-  What do we want to have ?
-    * Create a Fileset
-    * Get a presigned URL per file
-    * Upload the file using Dropzone
-    * On done create a File and attach it to the Fileset
-    *
-*/
-
-const CREATE_FILESET_MUTATION = gql`
-  mutation CreateFileset($input: CreateAccessmodFilesetInput) {
-    createAccessmodFileset(input: $input) {
-      success
-      errors
-      fileset {
-        id
-        name
-        status
-        role {
-          id
-          code
-          name
-        }
-      }
-    }
-  }
-`;
-
-type FilesetFile = JobFile & {
-  uri?: string;
-};
-
 const DatasetFormDialog = (props: Props) => {
-  const { open, onClose, project, role, dataset } = props;
+  const { open, onClose, project, role } = props;
   const [progress, setProgress] = useState(0);
-  const [createFileset] = useCreateFilesetMutation();
   const clearFilesets = useCacheKey(["filesets"]);
   const { t } = useTranslation();
   const form = useForm<Form>({
@@ -112,87 +68,34 @@ const DatasetFormDialog = (props: Props) => {
         }
       }
 
-      if (!dataset && !values.name) {
+      if (!values.name) {
         errors.name = t("Enter a name");
       }
-      if (!dataset && !values.project) {
+      if (!values.project) {
         errors.project = t("Select a project");
       }
-      if (!dataset && !values.role) {
+      if (!values.role) {
         errors.role = t("Select a role");
       }
       return errors;
     },
     onSubmit: async () => {
-      let ds = dataset;
-      if (!ds) {
-        // Create Fileset
-        const { data } = await createFileset({
-          variables: {
-            input: {
-              roleId: form.formData.role.id,
-              name: form.formData.name ?? "",
-              projectId: form.formData.project.id,
-            },
+      if (project) {
+        const dataset = await createDataset(
+          {
+            role: form.formData.role,
+            project,
+            automatic: false,
+            files: form.formData.files,
+            name: form.formData.name,
           },
-        });
-        if (!data) {
-          throw new Error();
-        }
-        const { success, fileset, errors } = data.createAccessmodFileset;
-        if (errors.includes(CreateAccessmodFilesetError.NameDuplicate)) {
-          throw new Error(t("A dataset with this name already exists"));
-        } else if (
-          errors.includes(CreateAccessmodFilesetError.PermissionDenied)
-        ) {
-          throw new Error(
-            t("You do not have sufficient permissions to perform this action")
-          );
-        } else if (!success) {
-          throw new Error(t("Dataset not created"));
-        }
-        ds = fileset!;
-      }
+          { onProgress: setProgress }
+        );
 
-      if (form.formData.files && form.formData.files.length > 0) {
-        await uploader.createUploadJob({
-          files: form.formData.files,
-          axiosConfig: { method: "PUT" },
-          onProgress: setProgress,
-          onBeforeFileUpload: async (file: FilesetFile) => {
-            const mimeType = guessFileMimeType(file);
-            if (!mimeType) {
-              throw new Error("Unknown mime type");
-            }
-            const data = await getPresignedURL(ds!.id, mimeType);
-            if (!data || !data.fileUri) {
-              throw new Error("No URI returned");
-            }
-            file.uri = data.fileUri;
-
-            return {
-              url: data!.uploadUrl as string,
-              headers: {
-                // FIXME: This header should be passed by the backend somehow
-                "x-amz-acl": "private",
-              },
-            };
-          },
-          onAfterFileUpload: async (file: FilesetFile) => {
-            if (!file.uri) {
-              throw new Error("File has no URI");
-            }
-            const mimeType = guessFileMimeType(file);
-            if (!mimeType) {
-              throw new Error("Unknown mime type");
-            }
-            await createFile(ds!.id, file.uri, mimeType);
-          },
-        });
+        form.resetForm();
+        onClose("submit", dataset);
+        clearFilesets();
       }
-      form.resetForm();
-      onClose("submit", ds);
-      clearFilesets();
     },
   });
 
@@ -218,75 +121,62 @@ const DatasetFormDialog = (props: Props) => {
       closeOnOutsideClick={false}
     >
       <form onSubmit={form.handleSubmit}>
-        <Dialog.Title>
-          {!dataset ? t("Create a dataset") : t("Add files to dataset")}
-        </Dialog.Title>
+        <Dialog.Title>{t("Create a dataset")}</Dialog.Title>
 
         <Dialog.Content className="px-9 py-8 ">
           <div className="space-y-4">
-            {!dataset && (
-              <>
-                <Field
-                  label={t("Name")}
-                  required
-                  name="name"
-                  onChange={form.handleInputChange}
-                  value={form.formData.name}
+            <Field
+              label={t("Name")}
+              required
+              name="name"
+              onChange={form.handleInputChange}
+              value={form.formData.name}
+              disabled={form.isSubmitting}
+              error={form.touched.name && form.errors.name}
+            />
+            {!project && (
+              <Field
+                label={t("Project")}
+                required
+                name="project"
+                error={form.touched.project && form.errors.project}
+              >
+                <ProjectPicker
                   disabled={form.isSubmitting}
-                  error={form.touched.name && form.errors.name}
-                />
-                {!project && (
-                  <Field
-                    label={t("Project")}
-                    required
-                    name="project"
-                    error={form.touched.project && form.errors.project}
-                  >
-                    <ProjectPicker
-                      disabled={form.isSubmitting}
-                      onChange={(value) => form.setFieldValue("project", value)}
-                      value={form.formData.project}
-                      required
-                    />
-                  </Field>
-                )}
-                <Field
-                  label={t("Role")}
+                  onChange={(value) => form.setFieldValue("project", value)}
+                  value={form.formData.project}
                   required
-                  name="role"
-                  error={form.touched.role && form.errors.role}
-                >
-                  <FilesetRolePicker
-                    disabled={form.isSubmitting || Boolean(props.role)}
-                    onChange={(value) => form.setFieldValue("role", value)}
-                    value={form.formData.role}
-                    required
-                  />
-                </Field>
-              </>
+                />
+              </Field>
             )}
             <Field
-              label={t("Files")}
+              label={t("Role")}
               required
-              name="files"
-              error={form.touched.files && form.errors.files}
+              name="role"
+              error={form.touched.role && form.errors.role}
             >
-              <Dropzone
-                className="mt-1"
-                maxFiles={1}
-                label={t("Select your files")}
-                onChange={(files) => form.setFieldValue("files", files)}
-                accept={role ? ACCEPTED_MIMETYPES[role.format] : undefined}
-              >
-                {form.formData.files?.length ? (
-                  <div>
-                    {form.formData.files
-                      .map((f) => `${f.name} (${filesize(f.size)})`)
-                      .join(", ")}
-                  </div>
-                ) : undefined}
-              </Dropzone>
+              <FilesetRolePicker
+                disabled={form.isSubmitting || Boolean(props.role)}
+                onChange={(value) => form.setFieldValue("role", value)}
+                value={form.formData.role}
+                required
+              />
             </Field>
+            {form.formData.role && (
+              <Field
+                label={t("Files")}
+                required
+                name="files"
+                error={form.touched.files && form.errors.files}
+              >
+                <DatasetFileInput
+                  disabled={!form.formData.role}
+                  role={form.formData.role}
+                  onChange={(files) => form.setFieldValue("files", files)}
+                  files={form.formData.files}
+                />
+              </Field>
+            )}
 
             {form.submitError && (
               <div className="mt-3 text-sm text-danger">{form.submitError}</div>
@@ -312,7 +202,7 @@ const DatasetFormDialog = (props: Props) => {
             {form.isSubmitting ? (
               <span>{t("Uploading ({{progress}}%)", { progress })}</span>
             ) : (
-              <span>{!dataset ? t("Create") : t("Add Files")}</span>
+              <span>{t("Create")}</span>
             )}
           </Button>
         </Dialog.Actions>
@@ -324,13 +214,6 @@ const DatasetFormDialog = (props: Props) => {
 DatasetFormDialog.fragments = {
   project: gql`
     fragment DatasetFormDialog_project on AccessmodProject {
-      id
-      name
-    }
-  `,
-
-  dataset: gql`
-    fragment DatasetFormDialog_dataset on AccessmodFileset {
       id
       name
     }
