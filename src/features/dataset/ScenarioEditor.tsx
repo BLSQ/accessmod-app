@@ -65,7 +65,6 @@ const ClassCell = ({
 const arrayToScenario = (data: { class: string; speed: number }[]) => {
   return data.reduce((acc, val) => {
     if (val.class) {
-      console.log("Add");
       acc[val.class] = val.speed;
     }
     return acc;

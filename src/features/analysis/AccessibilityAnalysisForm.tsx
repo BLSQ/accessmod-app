@@ -109,8 +109,6 @@ function getMutationInput(
     };
   }
 
-  console.log(input);
-
   return input;
 }
 
