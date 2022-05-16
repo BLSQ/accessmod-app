@@ -11,7 +11,6 @@ type Props = {
 const GeoTIFFLayer = (props: Props) => {
   const { url } = props;
   const context = useLeafletContext();
-  console.log("geotifflayer");
   useEffect(() => {
     const container = context.layerContainer || context.map;
     const renderer = L.LeafletGeotiff.plotty({});

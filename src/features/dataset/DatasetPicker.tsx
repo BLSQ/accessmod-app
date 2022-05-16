@@ -10,7 +10,7 @@ import {
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
 } from "libs/graphql";
-import { createDatasetToAcquire } from "libs/dataset";
+import { createDataset } from "libs/dataset";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CreateDatasetDialog from "./DatasetFormDialog";
@@ -90,9 +90,7 @@ const DatasetPicker = (props: Props) => {
 
   const onAcquireClick = useCallback(async () => {
     if (!role) return;
-    console.log("onAcquireClick");
-    const dataset = await createDatasetToAcquire({ project, role });
-    console.log(dataset);
+    const dataset = await createDataset({ automatic: true, project, role });
     onChange(dataset);
   }, [onChange, project, role]);
 

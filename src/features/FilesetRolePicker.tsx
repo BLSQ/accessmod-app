@@ -3,11 +3,15 @@ import clsx from "clsx";
 import Badge from "components/Badge";
 import SelectInput, { DefaultComponents } from "components/forms/SelectInput";
 import { getFormatLabel } from "libs/constants";
-import { useFilesetRolePickerQuery } from "libs/graphql";
+import { getFilesetRoles } from "libs/dataset";
+import { AccessmodFilesetFormat } from "libs/graphql";
+import { PromiseReturnType } from "libs/types";
+import { useEffect, useMemo, useState } from "react";
 
 type Props = {
   value: { [key: string]: string };
   onChange: (value: any) => void;
+  format?: AccessmodFilesetFormat;
   disabled?: boolean;
   required?: boolean;
 };
@@ -45,17 +49,31 @@ const QUERY = gql`
 `;
 
 const FilesetRolePicker = (props: Props) => {
-  const { value, onChange, disabled, required } = props;
-  const { data } = useFilesetRolePickerQuery();
+  const { value, format, onChange, disabled, required } = props;
+  const [roles, setRoles] = useState<
+    PromiseReturnType<ReturnType<typeof getFilesetRoles>>
+  >([]);
+  useEffect(() => {
+    getFilesetRoles().then(setRoles);
+  }, []);
+
+  const options = useMemo(() => {
+    if (format) {
+      return roles.filter((role) => role.format === format);
+    } else {
+      return roles;
+    }
+  }, [roles, format]);
+
   return (
     <SelectInput
-      options={data?.accessmodFilesetRoles ?? []}
+      options={options}
       value={value}
       onChange={onChange}
       labelKey="name"
       valueKey="id"
       required={required}
-      disabled={disabled}
+      disabled={disabled || !roles.length}
       components={COMPONENTS}
     />
   );

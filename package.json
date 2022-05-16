@@ -58,6 +58,7 @@
     "geojson-vt": "^3.2.1",
     "georaster": "^1.5.6",
     "georaster-layer-for-leaflet": "^3.8.0",
+    "geotiff": "^2.0.5",
     "graphql": "^16.4.0",
     "husky": "^7.0.4",
     "isomorphic-unfetch": "^3.1.0",

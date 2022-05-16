@@ -23,3 +23,5 @@ export type AppPropsWithLayout = AppProps & {
 };
 
 export type Unpacked<T> = T extends (infer U)[] ? U : T;
+
+export type PromiseReturnType<T> = T extends Promise<infer Return> ? Return : T;

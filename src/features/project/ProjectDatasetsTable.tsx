@@ -3,8 +3,8 @@ import Button from "components/Button";
 import Pagination from "components/Pagination";
 import SearchInput from "components/SearchInput";
 import Time from "components/Time";
-import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
 import DatasetStatusBadge from "features/dataset/DatasetStatusBadge";
+import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
@@ -16,7 +16,6 @@ import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useState } from "react";
-import DatasetFormDialog from "features/dataset/DatasetFormDialog";
 import User from "../User";
 
 const PROJECT_DATASETS_QUERY = gql`
@@ -33,7 +32,6 @@ const PROJECT_DATASETS_QUERY = gql`
       term: $term
     ) {
       items {
-        ...DatasetFormDialog_dataset
         ...DatasetStatusBadge_dataset
         ...DeleteDatasetTrigger_dataset
         id
@@ -63,7 +61,6 @@ const PROJECT_DATASETS_QUERY = gql`
   }
   ${DeleteDatasetTrigger.fragments.dataset}
   ${DatasetStatusBadge.fragments.dataset}
-  ${DatasetFormDialog.fragments.dataset}
 `;
 
 type Props = {

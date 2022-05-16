@@ -1,16 +1,17 @@
 import { ExclamationIcon, UploadIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import { useTranslation } from "next-i18next";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import type { Accept, FileError, FileRejection } from "react-dropzone";
 import { useDropzone } from "react-dropzone";
 
-type Props = {
+export type DropzoneProps = {
   className?: string;
   label?: ReactNode;
   help?: ReactNode;
   accept?: Accept;
-  children?: ReactElement;
+  disabled?: boolean;
+  children?: ReactNode;
   maxFiles?: number;
   onChange: <T extends File>(
     acceptedFiles: T[],
@@ -19,21 +20,28 @@ type Props = {
   validator?: <T extends File>(file: T) => FileError | FileError[] | null;
 };
 
-const Dropzone = (props: Props) => {
+const Dropzone = (props: DropzoneProps) => {
   const {
     className,
     help,
     label,
     validator,
+    disabled,
     accept,
-    maxFiles,
+    maxFiles = 0,
     onChange,
     children,
   } = props;
   const { t } = useTranslation();
   const [isMounted, setMounted] = useState(false);
   const { getInputProps, getRootProps, acceptedFiles, fileRejections } =
-    useDropzone({ validator, accept, maxFiles });
+    useDropzone({
+      validator,
+      accept,
+      maxFiles,
+      disabled,
+      multiple: maxFiles !== 1,
+    });
 
   useEffect(() => {
     setMounted(true);
@@ -49,7 +57,7 @@ const Dropzone = (props: Props) => {
   return (
     <div
       className={clsx(
-        "font flex w-full items-center justify-center rounded-md border border-dashed border-gray-300 bg-gray-50 px-5 py-5 text-sm text-gray-500 shadow-sm hover:border-gray-400",
+        "font flex w-full items-center justify-center rounded-md border border-dashed border-gray-300  px-5 py-5 text-sm text-gray-500 shadow-sm hover:border-gray-400",
         className
       )}
       {...getRootProps()}

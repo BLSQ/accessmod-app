@@ -1,16 +1,19 @@
 import { gql, useQuery } from "@apollo/client";
 import { parse } from "csv-parse/sync";
+import * as geotiff from "geotiff";
 import { DateTime } from "luxon";
 import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
+import { JobFile, uploader } from "./file";
 import {
   AccessmodFile,
   AccessmodFilesetFormat,
   AccessmodFilesetRole,
   AccessmodFilesetStatus,
   AccessmodProject,
-  CreateDatasetToAcquireMutation,
-  CreateDatasetToAcquireMutationVariables,
+  CreateAccessmodFilesetError,
+  CreateDatasetMutation,
+  CreateDatasetMutationVariables,
   CreateFileMutation,
   GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
@@ -139,18 +142,59 @@ export const ACCEPTED_MIMETYPES = {
   },
 };
 
-export function validateFileFormat(
-  file: Pick<AccessmodFile, "mimeType">,
-  format: AccessmodFilesetFormat
-) {
-  if (
-    format === AccessmodFilesetFormat.Tabular &&
-    ["application/csv", "text/csv"].includes(file.mimeType)
-  ) {
-    return true;
-  }
+type GeoFileMetadata = {
+  crs?: number;
+  bounds: number[];
+  geoKeys: { [key: string]: unknown };
+  resolution: number;
+  modelType: 0 | 1 | 2 | 3 | 32767; // See http://docs.opengeospatial.org/is/19-008r4/19-008r4.html#_requirements_class_gtmodeltypegeokey
+};
 
-  return false;
+interface GeoFile extends File {
+  geotiff?: geotiff.GeoTIFF;
+  geoMetadata?: GeoFileMetadata;
+}
+
+export async function getRasterMetadata(file: GeoFile) {
+  if (!file.geoMetadata) {
+    file.geotiff = await geotiff.fromBlob(file);
+    const image = await file.geotiff.getImage();
+    const geoKeys = image.getGeoKeys();
+    const metadata: GeoFileMetadata = {
+      bounds: image.getBoundingBox(),
+      geoKeys: image.getGeoKeys(),
+      resolution: image.getResolution()[0],
+      modelType: geoKeys.GTModelTypeGeoKey,
+    };
+
+    switch (metadata.modelType) {
+      case 1:
+        metadata.crs =
+          geoKeys.ProjectedCRSGeoKey ?? geoKeys.ProjectedCSTypeGeoKey;
+        break;
+      case 2:
+        metadata.crs =
+          geoKeys.GeodeticCRSGeoKey ?? geoKeys.GeographicTypeGeoKey;
+        break;
+    }
+
+    file.geoMetadata = metadata;
+  }
+  return file.geoMetadata;
+}
+
+export function getExtentPolygon(boundingBox: number[]) {
+  const [xmin, ymin, xmax, ymax] = boundingBox;
+  return JSON.stringify({
+    type: "Polygon",
+    coordinates: [
+      [xmin, ymin],
+      [xmax, ymin],
+      [xmax, ymax],
+      [xmin, ymax],
+      [xmin, ymin],
+    ],
+  });
 }
 
 export async function getFileDownloadUrl(fileId: string): Promise<string> {
@@ -188,6 +232,8 @@ export function formatDatasetStatus(status: AccessmodFilesetStatus) {
       return i18n!.t("Valid");
     case AccessmodFilesetStatus.Validating:
       return i18n!.t("Validating");
+    case AccessmodFilesetStatus.ToAcquire:
+      return i18n!.t("To acquire");
   }
 }
 
@@ -235,25 +281,44 @@ export async function getVectorFileContent(
   return JSON.parse(fileContent);
 }
 
-export async function createDatasetToAcquire({
-  name,
-  project,
-  role,
-}: {
+type CreateDatasetInput = {
   name?: string;
   project: Pick<AccessmodProject, "id">;
   role: Pick<AccessmodFilesetRole, "id" | "name">;
-}) {
+  files?: File[];
+  automatic?: boolean;
+};
+
+type CreateDatasetOptions = {
+  onProgress?: (progress: number) => void;
+};
+
+export async function createDataset(
+  { name, project, role, automatic = false, files = [] }: CreateDatasetInput,
+  { onProgress }: CreateDatasetOptions = {}
+) {
   const client = getApolloClient();
 
+  const input = {
+    projectId: project.id,
+    roleId: role.id,
+    automatic,
+    name:
+      name ??
+      `Automatic ${role.name} (${DateTime.now().toLocaleString(
+        DateTime.DATETIME_SHORT
+      )})`,
+  };
+
   const { data } = await client.mutate<
-    CreateDatasetToAcquireMutation,
-    CreateDatasetToAcquireMutationVariables
+    CreateDatasetMutation,
+    CreateDatasetMutationVariables
   >({
     mutation: gql`
-      mutation CreateDatasetToAcquire($input: CreateAccessmodFilesetInput!) {
+      mutation CreateDataset($input: CreateAccessmodFilesetInput!) {
         createAccessmodFileset(input: $input) {
           success
+          errors
           fileset {
             id
             name
@@ -269,18 +334,68 @@ export async function createDatasetToAcquire({
       }
     `,
     variables: {
-      input: {
-        projectId: project.id,
-        roleId: role.id,
-        status: AccessmodFilesetStatus.ToAcquire,
-        name:
-          name ??
-          `Automatic ${role.name} (${DateTime.now().toLocaleString(
-            DateTime.DATETIME_SHORT
-          )})`,
-      },
+      input,
     },
   });
 
-  return data?.createAccessmodFileset?.fileset;
+  if (!data) {
+    throw new Error(i18n!.t("An error occured"));
+  }
+
+  const { success, fileset, errors } = data.createAccessmodFileset;
+  if (errors.includes(CreateAccessmodFilesetError.NameDuplicate)) {
+    throw new Error(i18n!.t("A dataset with this name already exists"));
+  } else if (errors.includes(CreateAccessmodFilesetError.PermissionDenied)) {
+    throw new Error(
+      i18n!.t("You do not have sufficient permissions to perform this action")
+    );
+  } else if (!success || !fileset) {
+    throw new Error(i18n!.t("Dataset not created"));
+  }
+
+  // Upload files
+  await uploader.createUploadJob({
+    files,
+    axiosConfig: { method: "PUT" },
+    onProgress,
+    onBeforeFileUpload: async (
+      file: JobFile & {
+        uri?: string;
+      }
+    ) => {
+      const mimeType = guessFileMimeType(file);
+      if (!mimeType) {
+        throw new Error("Unknown mime type");
+      }
+      const data = await getPresignedURL(fileset.id, mimeType);
+      if (!data || !data.fileUri) {
+        throw new Error("No URI returned");
+      }
+      file.uri = data.fileUri;
+
+      return {
+        url: data!.uploadUrl as string,
+        headers: {
+          // FIXME: This header should be passed by the backend somehow
+          "x-amz-acl": "private",
+        },
+      };
+    },
+    onAfterFileUpload: async (
+      file: JobFile & {
+        uri?: string;
+      }
+    ) => {
+      if (!file.uri) {
+        throw new Error("File has no URI");
+      }
+      const mimeType = guessFileMimeType(file);
+      if (!mimeType) {
+        throw new Error("Unknown mime type");
+      }
+      await createFile(fileset.id, file.uri, mimeType);
+    },
+  });
+
+  return fileset;
 }
