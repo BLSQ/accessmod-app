@@ -487,33 +487,39 @@ const AccessibilityAnalysisForm = (props: Props) => {
         />
       </AnalysisStep>
 
-      {(form.submitError || error) && (
-        <div className="text-right text-sm text-danger">
-          {form.submitError || error}
+      <div className="flex items-center justify-between bg-gray-50">
+        <div>
+          {(form.submitError || error) && (
+            <div className="text-right text-sm text-danger">
+              {form.submitError || error}
+            </div>
+          )}
+          {analysis.status !== AccessmodAnalysisStatus.Ready && (
+            <div className="text-right text-sm font-medium text-gray-600">
+              {t(
+                "All fields need to be filled in to be able to run the analysis."
+              )}
+            </div>
+          )}
         </div>
-      )}
-      {analysis.status !== AccessmodAnalysisStatus.Ready && (
-        <div className="text-right text-sm font-medium text-gray-600">
-          {t("All fields need to be filled in to be able to run the analysis.")}
+        <div className="flex justify-end gap-4">
+          <Button type="submit" disabled={form.isSubmitting || !form.isDirty}>
+            {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
+            {t("Save")}
+          </Button>
+          <Button
+            type="button"
+            onClick={onCompute}
+            disabled={
+              form.isSubmitting ||
+              !form.isDirty ||
+              analysis.status !== AccessmodAnalysisStatus.Ready
+            }
+          >
+            {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
+            {t("Save & Run")}
+          </Button>
         </div>
-      )}
-      <div className="flex justify-end gap-4">
-        <Button type="submit" disabled={form.isSubmitting || !form.isDirty}>
-          {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
-          {t("Save")}
-        </Button>
-        <Button
-          type="button"
-          onClick={onCompute}
-          disabled={
-            form.isSubmitting ||
-            !form.isDirty ||
-            analysis.status !== AccessmodAnalysisStatus.Ready
-          }
-        >
-          {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
-          {t("Save & Run")}
-        </Button>
       </div>
     </form>
   );
