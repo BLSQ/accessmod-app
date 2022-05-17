@@ -81,7 +81,6 @@ const Combobox = (props: ComboboxProps) => {
   } = props;
 
   const btnRef = useRef<HTMLButtonElement>(null);
-  const openRef = useRef<boolean>(false);
   const [referenceElement, setReferenceElement] =
     useState<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
@@ -109,8 +108,7 @@ const Combobox = (props: ComboboxProps) => {
 
   const onClear = useCallback(() => {
     onChange(null);
-    openRef.current = false;
-  }, [openRef, onChange]);
+  }, [onChange]);
 
   const optionsElement = (
     <UICombobox.Options
