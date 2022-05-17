@@ -45,8 +45,8 @@ const Header = ({ user }: Props) => {
                     </a>
                   </Link>
                 </div>
-                <div className="text-bold text-xl uppercase ">
-                  {t("Access Mod")}
+                <div className="text-bold text-xl ">
+                  {t("AccessMod")}
                 </div>
                 {data && <Navbar navbar={data} />}
               </div>
