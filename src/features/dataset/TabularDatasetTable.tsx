@@ -36,7 +36,7 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
     });
   }, [currentFile]);
 
-  const columns = useMemo<Column[]>(() => {
+  const columns = useMemo<Column<any>[]>(() => {
     if (data?.length > 0) {
       return Object.keys(data[0]).map((key) => ({
         accessor: key,

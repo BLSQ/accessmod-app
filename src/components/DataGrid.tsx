@@ -21,7 +21,7 @@ import {
 import Pagination from "./Pagination";
 export type { Cell, SortingRule } from "react-table";
 
-export type Column = ReactTableColumn & {
+export type Column<D extends object = any> = ReactTableColumn<D> & {
   Header: string | null;
   [key: string]: any;
 };
@@ -36,7 +36,7 @@ type DataGridTheme = {
 };
 
 interface IDataGridProps {
-  columns: ReadonlyArray<Column>;
+  columns: ReadonlyArray<Column<any>>;
   data: object[];
   theme?: DataGridTheme;
   manualSortBy?: boolean;
