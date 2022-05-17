@@ -12,7 +12,7 @@ import useForm from "hooks/useForm";
 import { Country } from "libs/countries";
 import {
   createDataset,
-  getExtentPolygon,
+  getExtentCoords,
   getRasterMetadata,
 } from "libs/dataset";
 import {
@@ -94,7 +94,7 @@ const CreateProjectDialog = (props: Props) => {
             name: values.name,
             country: { code: values.country.code },
             crs: parseInt(values.crs, 10),
-            extent: values.extent ? getExtentPolygon(values.extent) : undefined,
+            extent: values.extent ? getExtentCoords(values.extent) : undefined,
           },
         },
       });

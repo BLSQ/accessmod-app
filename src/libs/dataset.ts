@@ -183,18 +183,15 @@ export async function getRasterMetadata(file: GeoFile) {
   return file.geoMetadata;
 }
 
-export function getExtentPolygon(boundingBox: number[]) {
+export function getExtentCoords(boundingBox: number[]) {
   const [xmin, ymin, xmax, ymax] = boundingBox;
-  return JSON.stringify({
-    type: "Polygon",
-    coordinates: [
-      [xmin, ymin],
-      [xmax, ymin],
-      [xmax, ymax],
-      [xmin, ymax],
-      [xmin, ymin],
-    ],
-  });
+  return [
+    [xmin, ymin],
+    [xmax, ymin],
+    [xmax, ymax],
+    [xmin, ymax],
+    [xmin, ymin],
+  ];
 }
 
 export async function getFileDownloadUrl(fileId: string): Promise<string> {
