@@ -31,8 +31,8 @@ const ProjectCard = (props: Props) => {
       )}
       onClick={onClick}
     >
-      <div className="mb-1 flex items-center justify-between gap-3">
-        <h3 className="truncate text-base font-medium text-gray-800">
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="truncate text-base font-semibold text-gray-600">
           <Link href={`/projects/${encodeURIComponent(project.id)}`}>
             {project.name}
           </Link>
@@ -41,17 +41,17 @@ const ProjectCard = (props: Props) => {
 
       <ul className="mb-2.5 flex list-none items-center text-sm text-gray-500">
         <li>
-          <div className="flex items-center">
+          <div className="flex shrink-0 items-center">
             <img
               alt="Country"
               src={project.country.flag}
               title={project.country.name}
               className="mr-1.5 h-3"
             />
-            <span>{project.country.name}</span>
+            <span className="shrink-0">{project.country.name}</span>
           </div>
         </li>
-        <li className="mx-3 text-gray-300">•</li>
+        <li className="mx-2 text-gray-300">•</li>
         {owner?.team && <li>{owner.team.name}</li>}
         {owner?.user && (
           <li>

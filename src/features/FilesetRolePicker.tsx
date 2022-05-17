@@ -53,6 +53,7 @@ const FilesetRolePicker = (props: Props) => {
   const [roles, setRoles] = useState<
     PromiseReturnType<ReturnType<typeof getFilesetRoles>>
   >([]);
+
   useEffect(() => {
     getFilesetRoles().then(setRoles);
   }, []);
