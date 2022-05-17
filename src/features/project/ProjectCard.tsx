@@ -48,7 +48,7 @@ const ProjectCard = (props: Props) => {
               title={project.country.name}
               className="mr-1.5 h-3"
             />
-            <span>{project.country.name}</span>
+            <span className="shrink-0">{project.country.name}</span>
           </div>
         </li>
         <li className="mx-2 text-gray-300">•</li>

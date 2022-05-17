@@ -401,7 +401,7 @@ const ProjectPage: NextPageWithFragments = () => {
                   className="mr-2 h-4"
                   src={project.country.flag}
                 />
-                <span>{project.country.name}</span>
+                <span className="shrink-0">{project.country.name}</span>
               </div>
 
               {data.project.owner && (
