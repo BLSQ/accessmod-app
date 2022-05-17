@@ -3509,10 +3509,12 @@ export const AnalysisEditPageDocument = gql`
     name
     status
     authorizedActions
+    ...AnalysisStatus_analysis
     ...AnalysisForm_analysis
   }
 }
     ${AnalysisForm_ProjectFragmentDoc}
+${AnalysisStatus_AnalysisFragmentDoc}
 ${AnalysisForm_AnalysisFragmentDoc}`;
 
 /**

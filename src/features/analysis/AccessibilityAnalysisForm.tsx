@@ -55,6 +55,7 @@ function getInitialFormState(
     name: analysis?.name,
     maxTravelTime: analysis?.maxTravelTime?.toString() ?? "120",
     useExistingStack: analysis.stack ? "y" : "n",
+    stack: analysis?.stack,
     algorithm:
       analysis?.algorithm ??
       AccessmodAccessibilityAnalysisAlgorithm.Anisotropic,
@@ -512,12 +513,11 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onClick={onCompute}
             disabled={
               form.isSubmitting ||
-              !form.isDirty ||
               analysis.status !== AccessmodAnalysisStatus.Ready
             }
           >
             {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
-            {t("Save & Run")}
+            {t("Run")}
           </Button>
         </div>
       </div>
