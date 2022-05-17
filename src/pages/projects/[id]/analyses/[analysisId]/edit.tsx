@@ -4,6 +4,7 @@ import Breadcrumbs from "components/Breadcrumbs";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import AnalysisForm from "features/analysis/AnalysisForm";
+import AnalysisStatus from "features/analysis/AnalysisStatus";
 import { getLabelFromAnalysisType } from "libs/analysis";
 import {
   AccessmodAnalysisAuthorizedActions,
@@ -78,6 +79,7 @@ const AnalysisEditPage = () => {
             <DocumentReportIcon className="mr-1.5 h-5" />
             {getLabelFromAnalysisType(data.analysis.type)}
           </div>
+          <AnalysisStatus analysis={data.analysis} />
         </div>
       </PageHeader>
       <PageContent>
@@ -111,10 +113,12 @@ export const getServerSideProps = createGetServerSideProps({
             name
             status
             authorizedActions
+            ...AnalysisStatus_analysis
             ...AnalysisForm_analysis
           }
         }
         ${AnalysisForm.fragments.project}
+        ${AnalysisStatus.fragments.analysis}
         ${AnalysisForm.fragments.analysis}
       `,
       variables: { id: params.id, analysisId: params.analysisId },
