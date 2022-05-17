@@ -94,7 +94,7 @@ const CreateProjectDialog = (props: Props) => {
             name: values.name,
             country: { code: values.country.code },
             crs: parseInt(values.crs, 10),
-            extent: values.extent ? getExtentCoords(values.extent) : undefined,
+            extent: values.extent ? JSON.stringify(values.extent) : undefined,
           },
         },
       });
@@ -144,7 +144,7 @@ const CreateProjectDialog = (props: Props) => {
       getRasterMetadata(configurationDataset.files[0]).then((metadata) => {
         form.setFieldValue("crs", metadata?.crs);
         form.setFieldValue("spatialResolution", metadata.resolution);
-        form.setFieldValue("extent", getExtentPolygon(metadata.bounds));
+        form.setFieldValue("extent", getExtentCoords(metadata.bounds));
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
