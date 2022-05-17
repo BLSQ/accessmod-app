@@ -11,6 +11,8 @@ const config = {
   },
   reactStrictMode: true,
   i18n,
+
+  swcMinify: false,
 };
 
 const sentryWebpackPluginOptions = {
