@@ -38,7 +38,7 @@ type AccessibilityForm = {
   barrier?: { id: string } | null;
   landCover?: { id: string } | null;
   transportNetwork?: { id: string } | null;
-  movingSpeeds: { [key: string]: number };
+  movingSpeeds: { kls: string; speed: number }[];
   stackPriorities: object;
   healthFacilities: { id: string } | null;
   travelDirection: string;
@@ -68,7 +68,9 @@ function getInitialFormState(
     barrier: analysis?.barrier,
     water: analysis?.water,
     healthFacilities: analysis?.healthFacilities,
-    movingSpeeds: analysis?.movingSpeeds,
+    movingSpeeds: Object.entries<number>(analysis?.movingSpeeds ?? {}).map(
+      ([kls, speed]) => ({ kls, speed })
+    ),
     stackPriorities: analysis?.stackPriorities,
   };
 }
@@ -90,7 +92,11 @@ function getMutationInput(
     knightMove: formData.knightMove ?? undefined,
     maxTravelTime: parseInt(formData.maxTravelTime ?? "", 10),
     demId: datasetToInput(formData.dem),
-    movingSpeeds: formData.movingSpeeds,
+    movingSpeeds:
+      formData.movingSpeeds?.reduce((acc: any, { kls, speed }) => {
+        acc[kls] = speed;
+        return acc;
+      }, {}) ?? {},
     healthFacilitiesId: datasetToInput(formData.healthFacilities),
     invertDirection: formData.travelDirection === "from",
     algorithm: formData.algorithm,
@@ -419,15 +425,17 @@ const AccessibilityAnalysisForm = (props: Props) => {
             "Assign moving speeds to each category of road network and land cover."
           )}
         </p>
-        <ScenarioEditor
-          scenario={form.formData.movingSpeeds ?? null}
-          onChange={(movingSpeeds) =>
-            form.setFieldValue("movingSpeeds", movingSpeeds)
-          }
-        />
-        {form.touched.movingSpeeds && form.errors.movingSpeeds && (
-          <div className="mt-2 text-red-500">{form.errors.movingSpeeds}</div>
-        )}
+        <div className="w-1/2">
+          <ScenarioEditor
+            scenario={form.formData.movingSpeeds}
+            onChange={(movingSpeeds) => {
+              form.setFieldValue("movingSpeeds", movingSpeeds);
+            }}
+          />
+          {form.touched.movingSpeeds && form.errors.movingSpeeds && (
+            <div className="mt-2 text-red-500">{form.errors.movingSpeeds}</div>
+          )}
+        </div>
       </AnalysisStep>
 
       {/* Step 4 */}

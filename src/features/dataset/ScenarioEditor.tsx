@@ -12,19 +12,17 @@ import {
 } from "react";
 import { Cell, CellProps } from "react-table";
 
-type ScenarioInput = {
-  [key: string]: number;
-};
-
+type ScenarioEntry = { kls: string; speed: number };
+type Scenario = ScenarioEntry[];
 type ScenarioEditorProps = {
-  scenario: ScenarioInput | null;
-  onChange: (data: object) => void;
+  scenario?: Scenario;
+  onChange: (data: Scenario) => void;
 };
 
 const PAGE_SIZE_OPTIONS = [5, 10, 25, 50];
 const GRID_THEME = {
   ...DATA_GRID_DEFAULT_THEME,
-  table: "divide-y divide-gray-200 w-full table-fixed",
+  table: "divide-y divide-gray-200 w-full",
   tbody: "divide-y divide-gray-200",
   tr: "divide-x divide-gray-200",
 };
@@ -34,7 +32,6 @@ const ClassCell = ({
   row,
   column,
   updateData,
-  isEdited,
 }: CellProps<any> & { updateData: Function; isEdited: boolean }) => {
   const inputType = (column as any).inputType;
   const onBlur: FocusEventHandler<HTMLInputElement> = (event) => {
@@ -46,10 +43,6 @@ const ClassCell = ({
         : event.target.value
     );
   };
-  if (!isEdited) {
-    return value;
-  }
-
   return (
     <>
       <Input
@@ -62,46 +55,35 @@ const ClassCell = ({
   );
 };
 
-const arrayToScenario = (data: { class: string; speed: number }[]) => {
-  return data.reduce((acc, val) => {
-    if (val.class) {
-      acc[val.class] = val.speed;
-    }
-    return acc;
-  }, {} as ScenarioInput);
-};
-
 const ScenarioEditor = (props: ScenarioEditorProps) => {
-  const { scenario, onChange } = props;
-  const [isEdited, setEdited] = useState(false);
-  const [data, setData] = useState<{ class: string; speed: number }[]>([]);
+  const { scenario = [], onChange } = props;
   const { t } = useTranslation();
   const columns = useMemo(() => {
-    const cols: Column[] = [
+    const cols: Column<ScenarioEntry>[] = [
       {
         Header: t("Class"),
-        accessor: "class",
+        id: "kls",
+        accessor: (row) => row.kls,
         Cell: ClassCell,
       },
       {
         Header: t("Speed (in km/h)"),
-        accessor: "speed",
+        id: "speed",
+        accessor: (row) => row.speed,
         Cell: ClassCell,
         inputType: "number",
       },
-    ];
-    if (isEdited) {
-      cols.push({
+      {
         id: "actions",
         Header: "",
-        width: 60,
+        width: 80,
         Cell: (cell: Cell) => (
           <div className="flex w-full justify-end">
             <Button
               onClick={() => {
-                const d = [...data];
+                const d = [...scenario];
                 d.splice(cell.row.index, 1);
-                setData(d);
+                onChange(d);
               }}
               variant="white"
               size="sm"
@@ -111,45 +93,28 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
             </Button>
           </div>
         ),
-      });
-    }
+      },
+    ];
     return cols;
-  }, [t, data, isEdited]);
+  }, [t, scenario, onChange]);
 
   useEffect(() => {
-    if (!scenario) {
-      setData([{ class: "", speed: 0 }]);
-      setEdited(true);
-    } else {
-      const willBeEdited = Object.keys(scenario).length === 0;
-      setEdited(willBeEdited);
-      const data = [
-        ...Object.entries(scenario).map(([key, speed]) => ({
-          class: key,
-          speed,
-        })),
-      ];
-      if (willBeEdited) {
-        data.push({
-          class: "",
-          speed: 0,
-        });
-      }
-      setData(data);
+    if (!scenario.length) {
+      onChange([{ kls: "", speed: 0 }]);
     }
-  }, [scenario]);
+  }, [scenario, onChange]);
 
   const onAddRow = () => {
-    setData([...data, { class: "", speed: 0 }]);
+    onChange(scenario.concat({ kls: "", speed: 0 }));
   };
 
   const updateData = useCallback(
-    (rowIndex: number, columnId: string, value: any) => {
-      setData((old) =>
-        old.map((row, index) => {
+    (rowIndex: number, columnId: string, value: string | number) => {
+      onChange(
+        scenario.map((row, index) => {
           if (index === rowIndex) {
             return {
-              ...old[rowIndex],
+              ...scenario[rowIndex],
               [columnId]: value,
             };
           }
@@ -157,41 +122,24 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
         })
       );
     },
-    []
+    [onChange, scenario]
   );
-  const onSave = useCallback(() => {
-    setEdited(false);
-    const scenario = arrayToScenario(data);
-    onChange(scenario);
-  }, [data, onChange]);
 
   return (
     <div>
       <div className="mb-2 flex justify-end gap-2">
-        {isEdited && (
-          <>
-            <Button onClick={onAddRow} variant="secondary" size="sm">
-              <PlusIcon className="mr-1 h-4 w-4" />
-              {t("Add a row")}
-            </Button>
-            <Button variant={"primary"} size="sm" onClick={onSave}>
-              {t("Save")}
-            </Button>
-          </>
-        )}
-        {!isEdited && (
-          <Button onClick={() => setEdited(true)} size="sm">
-            {t("Edit")}
-          </Button>
-        )}
+        <Button onClick={onAddRow} variant="secondary" size="sm">
+          <PlusIcon className="mr-1 h-4 w-4" />
+          {t("Add a row")}
+        </Button>
       </div>
       <DataGrid
-        data={data}
+        data={scenario}
         columns={columns}
         className="overflow-hidden rounded-md shadow ring-1 ring-black ring-opacity-5"
         pageSizeOptions={PAGE_SIZE_OPTIONS}
         defaultPageSize={5}
-        extraTableProps={{ updateData, isEdited }}
+        extraTableProps={{ updateData }}
         theme={GRID_THEME}
         sortable
       />
