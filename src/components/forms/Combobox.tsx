@@ -1,8 +1,9 @@
-import { Combobox as UICombobox } from "@headlessui/react";
+import { Combobox as UICombobox, Portal } from "@headlessui/react";
 import { CheckIcon, SelectorIcon, XIcon } from "@heroicons/react/outline";
+import { Modifier } from "@popperjs/core";
 import clsx from "clsx";
 import Spinner from "components/Spinner";
-import { usePopper } from "react-popper";
+import { sameWidthModifier } from "libs/popper";
 import {
   ChangeEvent,
   Fragment,
@@ -14,10 +15,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { usePopper } from "react-popper";
 import Input from "./Input";
-import { sameWidthModifier } from "libs/popper";
-import { createPortal } from "react-dom";
-import { Modifier } from "@popperjs/core";
 
 type ComboboxProps = {
   value: any;
@@ -120,19 +119,12 @@ const Combobox = (props: ComboboxProps) => {
       style={styles.popper}
       {...attributes.popper}
     >
-      {({ open }) => {
-        openRef.current = open; // Store the last 'open' value to avoid to "double trigger" the open event
-        return (
-          <>
-            <div className={Classes.OptionsList}>
-              <OptionsWrapper onOpen={onOpen} onClose={onClose}>
-                {children}
-              </OptionsWrapper>
-            </div>
-            {footer}
-          </>
-        );
-      }}
+      <div className={Classes.OptionsList}>
+        <OptionsWrapper onOpen={onOpen} onClose={onClose}>
+          {children}
+        </OptionsWrapper>
+      </div>
+      {footer}
     </UICombobox.Options>
   );
 
@@ -171,9 +163,7 @@ const Combobox = (props: ComboboxProps) => {
           />
         </UICombobox.Input>
 
-        {typeof window !== "undefined" && withPortal
-          ? createPortal(optionsElement, document.body)
-          : optionsElement}
+        {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}
       </div>
     </UICombobox>
   );
