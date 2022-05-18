@@ -149,7 +149,6 @@
   "Projects": "Projects",
   "Queued": "Queued",
   "Raster": "Raster",
-  "Raster File": "Raster File",
   "Ready": "Ready",
   "Regular": "Regular",
   "Remove": "Remove",
@@ -209,7 +208,6 @@
   "Updated on {{time}}": "Updated on {{time}}",
   "Upload a dataset": "Upload a dataset",
   "Uploading ({{progress}}%)": "Uploading ({{progress}}%)",
-  "Uploading {{progress}}%": "Uploading {{progress}}%",
   "Use an existing stack or upload your own": "Use an existing stack or upload your own",
   "Use Knight’s move in cost distance analysis": "Use Knight’s move in cost distance analysis",
   "User": "User",
@@ -222,7 +220,6 @@
   "Water": "Water",
   "We were unable to log you in. Please verify your credentials.": "We were unable to log you in. Please verify your credentials.",
   "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly.": "We’ve emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly.",
-  "You can configure your project by either uploading a raster file or by entering the spatial resolution and coordinate reference system.": "You can configure your project by either uploading a raster file or by entering the spatial resolution and coordinate reference system.",
   "You do not have sufficient permissions to perform this action": "You do not have sufficient permissions to perform this action",
   "You have the choice to use an existing stack that you already uploaded or used in another analysis or you can create a new stack by uploading the different layers to merge together.": "You have the choice to use an existing stack that you already uploaded or used in another analysis or you can create a new stack by uploading the different layers to merge together."
 }
