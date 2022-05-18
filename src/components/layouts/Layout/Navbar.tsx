@@ -1,18 +1,15 @@
 import { gql } from "@apollo/client";
 import clsx from "clsx";
-import useCacheKey from "hooks/useCacheKey";
 import { Navbar_NavbarFragment } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 type NavEntry = {
   label: string;
   link: string;
   items?: { label: string; link: string }[];
 };
-
-type NavState = NavEntry[];
 
 const NavEntry = (props: NavEntry) => {
   const { label, link, items } = props;
@@ -77,10 +74,10 @@ const Navbar = (props: NavbarProps) => {
     }
 
     return [
-      {
-        label: t("Dashboard"),
-        link: "/",
-      },
+      // {
+      //   label: t("Dashboard"),
+      //   link: "/",
+      // },
       {
         label: t("Projects"),
         link: "/projects",
