@@ -1,26 +1,14 @@
-import { Combobox as UICombobox, Portal } from "@headlessui/react";
-import { CheckIcon, SelectorIcon, XIcon } from "@heroicons/react/outline";
+import { Listbox as UIListbox, Portal } from "@headlessui/react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
 import { Modifier } from "@popperjs/core";
 import clsx from "clsx";
-import Spinner from "components/Spinner";
 import { sameWidthModifier } from "libs/popper";
-import {
-  ChangeEvent,
-  Fragment,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 
-type ComboboxProps = {
+type ListboxProps = {
   value: any;
   onChange: (value: any) => void;
-  onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   multiple?: boolean;
   required?: boolean;
   name?: string;
@@ -33,29 +21,10 @@ type ComboboxProps = {
     close: () => void;
     clear: () => void;
   }) => ReactNode;
-  loading?: boolean;
-  renderIcon?: ({ value }: { value: any }) => ReactElement | undefined | null;
-  onOpen?: () => void;
-  onClose?: () => void;
   placeholder?: string;
-  displayValue: (value: any) => string;
+  displayValue: (value: any) => ReactNode;
   withPortal?: boolean;
   className?: string;
-};
-
-const OptionsWrapper = (props: {
-  onOpen?: () => void;
-  onClose?: () => void;
-  children: ReactNode;
-}) => {
-  const { onOpen, onClose, children } = props;
-
-  useEffect(() => {
-    onOpen && onOpen();
-    return onClose;
-  }, [onOpen, onClose]);
-
-  return <>{children}</>;
 };
 
 const Classes = {
@@ -64,22 +33,18 @@ const Classes = {
   OptionsList: "overflow-auto flex-1",
 };
 
-const Combobox = (props: ComboboxProps) => {
+const Listbox = (props: ListboxProps) => {
   const {
-    loading = false,
     required = false,
     withPortal = false,
     children,
     footer,
-    onOpen,
-    onClose,
-    onInputChange,
     displayValue,
     className,
-    renderIcon,
     value,
     placeholder,
     onChange,
+    multiple,
     ...delegated
   } = props;
 
@@ -109,77 +74,57 @@ const Combobox = (props: ComboboxProps) => {
   }, [btnRef]);
 
   const optionsElement = (
-    <UICombobox.Options
+    <UIListbox.Options
       className={Classes.Options}
       ref={setPopperElement}
       style={styles.popper}
       {...attributes.popper}
     >
-      <div className={Classes.OptionsList}>
-        <OptionsWrapper onOpen={onOpen} onClose={onClose}>
-          {children}
-        </OptionsWrapper>
-      </div>
+      <div className={Classes.OptionsList}>{children}</div>
       {footer && footer({ close, clear: onClear })}
-    </UICombobox.Options>
+    </UIListbox.Options>
   );
 
   return (
-    <UICombobox
+    <UIListbox
       {...delegated}
       onChange={onChange}
       value={value}
       as="div"
-      nullable={!required}
+      multiple={multiple}
     >
       {({ open }) => (
         <div className="relative" ref={setReferenceElement}>
-          <div
+          <UIListbox.Button
+            ref={btnRef}
             className={clsx(
-              "form-input flex w-full items-center rounded-md border-gray-300 shadow-sm disabled:border-gray-300",
+              "form-input flex w-full items-center justify-between rounded-md border-gray-300 shadow-sm disabled:border-gray-300",
               "focus-within:outline-none focus:ring-transparent focus-visible:border-lochmara disabled:cursor-not-allowed disabled:bg-gray-50",
               "sm:text-sm",
               open ? "border-lochmara" : "hover:border-gray-400"
             )}
           >
-            <div className="mr-1 flex flex-1 items-center truncate">
-              <UICombobox.Input
-                as={Fragment}
-                onChange={onInputChange}
-                displayValue={displayValue}
-              >
-                <input
-                  className="flex-1 placeholder-gray-600 placeholder-opacity-70 outline-none"
-                  placeholder={placeholder}
-                />
-              </UICombobox.Input>
+            <div className="truncate">
+              {(!multiple && value) || value?.length > 0 ? (
+                displayValue(value)
+              ) : (
+                <span className="text-gray-600 text-opacity-70">
+                  {placeholder}
+                </span>
+              )}
             </div>
-            {renderIcon && renderIcon({ value })}
-            <UICombobox.Button ref={btnRef}>
-              <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
-                {!required && value && (
-                  <XIcon
-                    onClick={onClear}
-                    className="h-4 w-4 cursor-pointer hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                )}
-                {loading ? (
-                  <Spinner aria-hidden="true" size="sm" />
-                ) : (
-                  <SelectorIcon
-                    className="h-5 w-5 hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                )}
-              </div>
-            </UICombobox.Button>
-          </div>
+            <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
+              <SelectorIcon
+                className="h-5 w-5 hover:text-gray-500"
+                aria-hidden="true"
+              />
+            </div>
+          </UIListbox.Button>
 
           {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}
         </div>
       )}
-    </UICombobox>
+    </UIListbox>
   );
 };
 
@@ -199,7 +144,7 @@ type CheckOptionsProps = {
       }) => ReactNode);
 };
 
-Combobox.CheckOption = function CheckOption(props: CheckOptionsProps) {
+Listbox.CheckOption = function CheckOption(props: CheckOptionsProps) {
   const {
     value,
     className,
@@ -209,7 +154,7 @@ Combobox.CheckOption = function CheckOption(props: CheckOptionsProps) {
   } = props;
 
   return (
-    <UICombobox.Option
+    <UIListbox.Option
       value={value}
       disabled={disabled}
       className={({ active }) =>
@@ -249,8 +194,8 @@ Combobox.CheckOption = function CheckOption(props: CheckOptionsProps) {
           </span>
         </div>
       )}
-    </UICombobox.Option>
+    </UIListbox.Option>
   );
 };
 
-export default Combobox;
+export default Listbox;

@@ -129,9 +129,8 @@ const CreateProjectDialog = (props: Props) => {
             error={form.touched.country && form.errors.country}
           >
             <CountryPicker
-              required
               disabled={form.isSubmitting}
-              value={form.formData.country}
+              value={form.formData.country ?? null}
               onChange={(value) => form.setFieldValue("country", value)}
             />
           </Field>

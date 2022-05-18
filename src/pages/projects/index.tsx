@@ -91,14 +91,18 @@ const ProjectsPage = ({
                   onChange={(value) =>
                     setVariables({
                       ...variables,
-                      countries: ensureArray<Country>(value).map((x) => x.code),
+                      countries: value
+                        ? ensureArray<Country>(value).map((x) => x.code)
+                        : [],
                       page: 1,
                     })
                   }
                   multiple
-                  value={variables.countries.map((c) =>
-                    countries.find(({ code }) => code === c)
-                  )}
+                  value={
+                    variables.countries
+                      .map((c) => countries.find(({ code }) => code === c))
+                      .filter(Boolean) as Country[]
+                  }
                 />
               </div>
               <div className="col-span-2">

@@ -88,11 +88,15 @@ const DatasetPicker = (props: Props) => {
     [creatable, project.authorizedActions]
   );
 
-  const onAcquireClick = useCallback(async () => {
-    if (!role) return;
-    const dataset = await createDataset({ automatic: true, project, role });
-    onChange(dataset);
-  }, [onChange, project, role]);
+  const onAcquireClick = useCallback(
+    async (close: Function) => {
+      if (!role) return;
+      const dataset = await createDataset({ automatic: true, project, role });
+      onChange(dataset);
+      close();
+    },
+    [onChange, project, role]
+  );
 
   const enableAcquire = useMemo(
     () =>
@@ -122,11 +126,11 @@ const DatasetPicker = (props: Props) => {
         loading={loading}
         multiple={multiple}
         value={dataset}
-        inputClassName={clsx(dataset && "pr-16")}
+        onInputChange={(event) => setQuery(event.target.value)}
         onChange={onChange}
         required={required}
         placeholder={placeholder}
-        footer={
+        footer={({ close }) =>
           canCreate && (
             <div className="mt-1 flex gap-2 border-t border-gray-300 px-3 py-2 text-sm">
               <Button
@@ -141,7 +145,7 @@ const DatasetPicker = (props: Props) => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={onAcquireClick}
+                  onClick={() => onAcquireClick(close)}
                   leadingIcon={<CloudIcon className="h-4 w-4" />}
                 >
                   {t("Automatically Acquire")}
@@ -154,10 +158,9 @@ const DatasetPicker = (props: Props) => {
           value && <DatasetStatusIcon dataset={value} />
         }
         displayValue={(value) => value?.name}
-        onInputChange={(event) => setQuery(event.target.value)}
       >
         <div className={clsx("relative")}>
-          {options.length === 0 && !loading && (
+          {options.length === 0 && (
             <p className="p-2 text-center text-xs italic text-gray-500">
               {t("There is no result")}
             </p>
