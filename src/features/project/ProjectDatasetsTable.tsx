@@ -5,6 +5,7 @@ import SearchInput from "components/SearchInput";
 import Time from "components/Time";
 import DatasetStatusBadge from "features/dataset/DatasetStatusBadge";
 import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
+import Team from "features/team/Team";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
@@ -41,15 +42,10 @@ const PROJECT_DATASETS_QUERY = gql`
           id
           format
         }
-        author {
-          id
-          firstName
-          lastName
-          email
-          avatar {
-            initials
-            color
-          }
+        owner {
+          __typename
+          ...User_user
+          ...Team_team
         }
         status
         createdAt
@@ -61,6 +57,8 @@ const PROJECT_DATASETS_QUERY = gql`
   }
   ${DeleteDatasetTrigger.fragments.dataset}
   ${DatasetStatusBadge.fragments.dataset}
+  ${User.fragments.user}
+  ${Team.fragments.team}
 `;
 
 type Props = {
@@ -145,7 +143,12 @@ const ProjectDatasetsTable = (props: Props) => {
                   <td className="min-w-fit">{row.name}</td>
                   <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
                   <td>
-                    <User small user={row.author} />
+                    {row.owner?.__typename === "User" && (
+                      <User small user={row.owner} />
+                    )}
+                    {row.owner?.__typename === "Team" && (
+                      <Team team={row.owner} />
+                    )}
                   </td>
                   <td>
                     <Time datetime={row.createdAt} />
@@ -191,12 +194,8 @@ ProjectDatasetsTable.fragments = {
     fragment ProjectDatasetsTable_project on AccessmodProject {
       ...DeleteDatasetTrigger_project
       id
-      author {
-        ...User_user
-      }
     }
     ${DeleteDatasetTrigger.fragments.project}
-    ${User.fragments.user}
   `,
 };
 

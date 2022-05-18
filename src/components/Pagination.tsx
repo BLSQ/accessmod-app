@@ -1,11 +1,9 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { ReactElement } from "react";
 import clsx from "clsx";
-import Spinner from "./Spinner";
 import { useTranslation } from "next-i18next";
-import Input from "./forms/Input";
-import SelectInput from "./forms/SelectInput";
+import { ReactElement } from "react";
 import SimpleSelect from "./forms/SimpleSelect";
+import Spinner from "./Spinner";
 
 type Props = {
   loading?: boolean;
@@ -58,6 +56,11 @@ const Pagination = (props: Props) => {
   const start = (page - 1) * perPage + 1;
   const end = (page - 1) * perPage + countItems;
   const totalPages = props.totalPages ?? Math.ceil(totalItems / perPage);
+
+  if (totalPages < 2) {
+    return null;
+  }
+
   return (
     <div className={clsx("flex items-center justify-between py-3", className)}>
       <div className="flex flex-1 justify-between sm:hidden">

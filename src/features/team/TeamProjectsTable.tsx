@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { UserGroupIcon } from "@heroicons/react/outline";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
 import User from "features/User";
@@ -13,6 +14,7 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
+import Team from "./Team";
 
 type TeamProjectsTableProps = {
   team: TeamProjectsTable_TeamFragment;
@@ -63,7 +65,7 @@ const TeamProjectsTable: NextPageWithPrefetch & NextPageWithFragments = ({
             <thead>
               <tr>
                 <th>{t("Name")}</th>
-                <th>{t("Author")}</th>
+                <th>{t("Owner")}</th>
                 <th>{t("Created on")}</th>
                 <th>
                   <span className="sr-only">{t("Actions")}</span>
@@ -88,7 +90,12 @@ const TeamProjectsTable: NextPageWithPrefetch & NextPageWithFragments = ({
                     </Link>
                   </td>
                   <td>
-                    <User user={project.author} small />
+                    {project.owner?.__typename === "User" && (
+                      <User user={project.owner} small />
+                    )}
+                    {project.owner?.__typename === "Team" && (
+                      <Team team={project.owner} />
+                    )}
                   </td>
                   <td>
                     <Time datetime={project.createdAt} />
@@ -99,17 +106,16 @@ const TeamProjectsTable: NextPageWithPrefetch & NextPageWithFragments = ({
             </tbody>
           </table>
 
-          <footer className="mt-6">
-            <Pagination
-              perPage={10}
-              loading={loading}
-              countItems={projects.items.length}
-              page={variables.page}
-              onChange={(page) => setVariables({ ...variables, page })}
-              totalItems={projects.totalItems}
-              totalPages={projects.totalPages}
-            />
-          </footer>
+          <Pagination
+            perPage={10}
+            loading={loading}
+            className="mt-6"
+            countItems={projects.items.length}
+            page={variables.page}
+            onChange={(page) => setVariables({ ...variables, page })}
+            totalItems={projects.totalItems}
+            totalPages={projects.totalPages}
+          />
         </>
       )}
       {projects.items.length === 0 && (
@@ -151,12 +157,15 @@ TeamProjectsTable.prefetch = async (
             id
             name
             createdAt
-            author {
+            owner {
+              __typename
               ...User_user
+              ...Team_team
             }
           }
         }
       }
+      ${Team.fragments.team}
       ${User.fragments.user}
     `,
     variables: { page: 1, perPage: 10, teamIds: teamIds },
