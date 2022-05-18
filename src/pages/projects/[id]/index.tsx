@@ -174,7 +174,9 @@ const ProjectGeneralInformationBlock = (props: {
             "The spatial resolution refers to the linear spacing of a measurement."
           )}
         >
-          <span className="text-md">{project.spatialResolution}</span>
+          <span className="text-md">
+            {t("{{count}} meter", { count: project.spatialResolution })}
+          </span>
         </DescriptionList.Item>
         <DescriptionList.Item
           label={t("Coordinate Reference System Code")}
