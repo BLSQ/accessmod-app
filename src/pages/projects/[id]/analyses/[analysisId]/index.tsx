@@ -272,6 +272,7 @@ export const getServerSideProps = createGetServerSideProps({
         ${AccessibilityAnalysisOutput.fragments.analysis}
         ${AccessibilityAnalysisOutput.fragments.project}
         ${User.fragments.user}
+        ${Team.fragments.team}
       `,
       variables: {
         id: params.id as string,
