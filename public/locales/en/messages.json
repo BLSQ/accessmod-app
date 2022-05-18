@@ -1,6 +1,8 @@
 {
   "{{count}} members___one": "{{count}} members",
   "{{count}} members___other": "{{count}} members",
+  "{{count}} meter___one": "{{count}} meter",
+  "{{count}} meter___other": "{{count}} meter",
   "{{files}} is not a valid file___one": "{{files}} is not a valid file",
   "{{files}} is not a valid file___other": "{{files}} is not a valid file",
   "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth.": "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth.",
