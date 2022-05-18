@@ -19,6 +19,7 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import DescriptionList from "components/DescriptionList";
+import Team from "features/team/Team";
 
 const AnalysisPage = () => {
   const router = useRouter();
@@ -103,7 +104,22 @@ const AnalysisPage = () => {
                 <DocumentReportIcon className="mr-1.5 h-5" />
                 {getLabelFromAnalysisType(data.analysis.type)}
               </div>
-              <User small user={data.analysis.author} textColor="text-white" />
+
+              {data.analysis.__typename === "AccessmodAccessibilityAnalysis" &&
+                data.analysis.owner?.__typename === "User" && (
+                  <User
+                    small
+                    user={data.analysis.owner}
+                    textColor="text-white"
+                  />
+                )}
+              {data.analysis.__typename === "AccessmodAccessibilityAnalysis" &&
+                data.analysis.owner?.__typename === "Team" && (
+                  <Team
+                    team={data.analysis.owner}
+                    iconClassName="w-4 h-4 mr-1.5"
+                  />
+                )}
             </div>
           </div>
           <AnalysisActionsButton
@@ -209,11 +225,14 @@ export const getServerSideProps = createGetServerSideProps({
             ...AnalysisActionsButton_analysis
             ...AnalysisStatus_analysis
             ...AccessibilityAnalysisOutput_analysis
-            author {
-              ...User_user
-            }
 
             ... on AccessmodAccessibilityAnalysis {
+              owner {
+                __typename
+                ...User_user
+                ...Team_team
+              }
+
               landCover {
                 id
                 name

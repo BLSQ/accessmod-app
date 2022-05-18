@@ -1286,9 +1286,9 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, createdAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, createdAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } };
 
-export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } };
+export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 export type ProjectPermissionPicker_ProjectFragment = { __typename?: 'AccessmodProject', permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, id: string }> };
 
@@ -1320,6 +1320,8 @@ export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __type
 export type DeleteTeamTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
 
 export type EditTeamTrigger_TeamFragment = { __typename?: 'Team', authorizedActions: Array<TeamAuthorizedActions>, id: string, name: string };
+
+export type Team_TeamFragment = { __typename?: 'Team', id: string, name: string };
 
 export type TeamActionsMenu_TeamFragment = { __typename?: 'Team', id: string, name: string, authorizedActions: Array<TeamAuthorizedActions> };
 
@@ -1357,7 +1359,7 @@ export type TeamProjectsTableQueryVariables = Exact<{
 }>;
 
 
-export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } };
 
 export type LaunchAccessmodAnalysisMutationVariables = Exact<{
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
@@ -1430,7 +1432,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', stackPriorities?: any | null, movingSpeeds?: any | null, id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', stackPriorities?: any | null, movingSpeeds?: any | null, id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1445,14 +1447,14 @@ export type DatasetDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, createdAt: any, uri: string, id: string }>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, createdAt: any, uri: string, id: string }>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
 
 export type ProjectDataPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, author: { __typename?: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | null };
+export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
 export type UpdateProjectPermissionMutationVariables = Exact<{
   input: UpdateAccessmodProjectPermissionInput;
@@ -1461,14 +1463,14 @@ export type UpdateProjectPermissionMutationVariables = Exact<{
 
 export type UpdateProjectPermissionMutation = { __typename?: 'Mutation', updateAccessmodProjectPermission: { __typename?: 'UpdateAccessmodProjectPermissionResult', success: boolean, errors: Array<UpdateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode } | null } };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null } | null };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null } | null } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
@@ -1888,28 +1890,12 @@ export const DeleteDatasetTrigger_ProjectFragmentDoc = gql`
   name
 }
     `;
-export const User_UserFragmentDoc = gql`
-    fragment User_user on User {
-  firstName
-  lastName
-  email
-  id
-  avatar {
-    initials
-    color
-  }
-}
-    `;
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
     fragment ProjectDatasetsTable_project on AccessmodProject {
   ...DeleteDatasetTrigger_project
   id
-  author {
-    ...User_user
-  }
 }
-    ${DeleteDatasetTrigger_ProjectFragmentDoc}
-${User_UserFragmentDoc}`;
+    ${DeleteDatasetTrigger_ProjectFragmentDoc}`;
 export const CreateAnalysisDialog_ProjectFragmentDoc = gql`
     fragment CreateAnalysisDialog_project on AccessmodProject {
   id
@@ -1965,6 +1951,24 @@ export const ProjectPermissionPicker_PermissionFragmentDoc = gql`
   mode
 }
     `;
+export const User_UserFragmentDoc = gql`
+    fragment User_user on User {
+  firstName
+  lastName
+  email
+  id
+  avatar {
+    initials
+    color
+  }
+}
+    `;
+export const Team_TeamFragmentDoc = gql`
+    fragment Team_team on Team {
+  id
+  name
+}
+    `;
 export const ProjectPage_ProjectFragmentDoc = gql`
     fragment ProjectPage_project on AccessmodProject {
   id
@@ -2016,13 +2020,8 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   }
   owner {
     __typename
-    ... on User {
-      firstName
-      lastName
-    }
-    ... on Team {
-      name
-    }
+    ...User_user
+    ...Team_team
   }
 }
     ${ProjectActionsMenu_ProjectFragmentDoc}
@@ -2035,7 +2034,8 @@ ${CreateMembershipForm_ProjectFragmentDoc}
 ${ProjectPermissionPicker_ProjectFragmentDoc}
 ${DeleteProjectPermissionTrigger_PermissionFragmentDoc}
 ${ProjectPermissionPicker_PermissionFragmentDoc}
-${User_UserFragmentDoc}`;
+${User_UserFragmentDoc}
+${Team_TeamFragmentDoc}`;
 export const HeaderDocument = gql`
     query Header {
   me {
@@ -2838,15 +2838,10 @@ export const ProjectDatasetsTableDocument = gql`
         id
         format
       }
-      author {
-        id
-        firstName
-        lastName
-        email
-        avatar {
-          initials
-          color
-        }
+      owner {
+        __typename
+        ...User_user
+        ...Team_team
       }
       status
       createdAt
@@ -2857,7 +2852,9 @@ export const ProjectDatasetsTableDocument = gql`
   }
 }
     ${DatasetStatusBadge_DatasetFragmentDoc}
-${DeleteDatasetTrigger_DatasetFragmentDoc}`;
+${DeleteDatasetTrigger_DatasetFragmentDoc}
+${User_UserFragmentDoc}
+${Team_TeamFragmentDoc}`;
 
 /**
  * __useProjectDatasetsTableQuery__
@@ -3126,13 +3123,16 @@ export const TeamProjectsTableDocument = gql`
       id
       name
       createdAt
-      author {
+      owner {
+        __typename
         ...User_user
+        ...Team_team
       }
     }
   }
 }
-    ${User_UserFragmentDoc}`;
+    ${User_UserFragmentDoc}
+${Team_TeamFragmentDoc}`;
 
 /**
  * __useTeamProjectsTableQuery__
@@ -3564,10 +3564,12 @@ export const AnalysisDetailPageDocument = gql`
     ...AnalysisActionsButton_analysis
     ...AnalysisStatus_analysis
     ...AccessibilityAnalysisOutput_analysis
-    author {
-      ...User_user
-    }
     ... on AccessmodAccessibilityAnalysis {
+      owner {
+        __typename
+        ...User_user
+        ...Team_team
+      }
       landCover {
         id
         name
@@ -3606,7 +3608,8 @@ ${AccessibilityAnalysisOutput_ProjectFragmentDoc}
 ${AnalysisActionsButton_AnalysisFragmentDoc}
 ${AnalysisStatus_AnalysisFragmentDoc}
 ${AccessibilityAnalysisOutput_AnalysisFragmentDoc}
-${User_UserFragmentDoc}`;
+${User_UserFragmentDoc}
+${Team_TeamFragmentDoc}`;
 
 /**
  * __useAnalysisDetailPageQuery__
@@ -3704,8 +3707,10 @@ export const DatasetDetailPageDocument = gql`
       createdAt
       uri
     }
-    author {
+    owner {
+      __typename
       ...User_user
+      ...Team_team
     }
   }
 }
@@ -3714,7 +3719,8 @@ ${DatasetViewer_ProjectFragmentDoc}
 ${DatasetViewer_DatasetFragmentDoc}
 ${DownloadDatasetButton_DatasetFragmentDoc}
 ${DeleteDatasetTrigger_DatasetFragmentDoc}
-${User_UserFragmentDoc}`;
+${User_UserFragmentDoc}
+${Team_TeamFragmentDoc}`;
 
 /**
  * __useDatasetDetailPageQuery__

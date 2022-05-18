@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 import DatasetViewer from "features/dataset/DatasetViewer";
 import { DateTime } from "luxon";
+import Team from "features/team/Team";
 
 type Props = {
   defaultVariables: { id: string; datasetId: string };
@@ -118,7 +119,12 @@ const DatasetPage = ({ defaultVariables }: Props) => {
                   </span>
                 </div>
               )}
-              <User user={dataset.author} small textColor="text-white" />
+              {dataset.owner?.__typename === "User" && (
+                <User user={dataset.owner} small textColor="text-white" />
+              )}
+              {dataset.owner?.__typename === "Team" && (
+                <Team team={dataset.owner} iconClassName="h-4 w-4 mr-1.5" />
+              )}
               <div className="flex items-center">
                 <ClockIcon className="mr-1.5 h-4" />
                 <span>
@@ -190,8 +196,10 @@ export const getServerSideProps = createGetServerSideProps({
               createdAt
               uri
             }
-            author {
+            owner {
+              __typename
               ...User_user
+              ...Team_team
             }
           }
         }
@@ -199,6 +207,7 @@ export const getServerSideProps = createGetServerSideProps({
         ${DeleteDatasetTrigger.fragments.dataset}
         ${DeleteDatasetTrigger.fragments.project}
         ${User.fragments.user}
+        ${Team.fragments.team}
         ${DatasetViewer.fragments.dataset}
         ${DatasetViewer.fragments.project}
       `,

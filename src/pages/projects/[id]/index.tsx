@@ -18,6 +18,7 @@ import ProjectActionsMenu from "features/project/ProjectActionsMenu";
 import ProjectAnalysesTable from "features/project/ProjectAnalysesTable";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
 import ProjectPermissionPicker from "features/project/ProjectPermissionPicker";
+import Team from "features/team/Team";
 import User from "features/User";
 import useCacheKey from "hooks/useCacheKey";
 import useToggle from "hooks/useToggle";
@@ -231,7 +232,7 @@ const ProjectPermissionsBlock = (props: {
           cell.value.__typename === "User" ? (
             <User small user={cell.value} />
           ) : (
-            cell.value.name
+            <Team team={cell.value} />
           ),
       },
       {
@@ -404,22 +405,14 @@ const ProjectPage: NextPageWithFragments = () => {
                 <span className="shrink-0">{project.country.name}</span>
               </div>
 
-              {data.project.owner && (
-                <div className="flex items-center">
-                  {data.project.owner.__typename === "Team" ? (
-                    <UsersIcon className="mr-1.5 h-4" />
-                  ) : (
-                    <UserIcon className="mr-1.5 h-4" />
-                  )}
-                  <span>
-                    {data.project.owner.__typename === "Team"
-                      ? data.project.owner.name
-                      : [
-                          data.project.owner.firstName,
-                          data.project.owner.lastName,
-                        ].join(" ")}
-                  </span>
-                </div>
+              {data.project.owner?.__typename === "User" && (
+                <User small user={data.project.owner} textColor="text-white" />
+              )}
+              {data.project.owner?.__typename === "Team" && (
+                <Team
+                  iconClassName="h-5 w-5 mr-1.5"
+                  team={data.project.owner}
+                />
               )}
 
               <div className="flex items-center">
@@ -511,13 +504,8 @@ ProjectPage.fragments = {
       }
       owner {
         __typename
-        ... on User {
-          firstName
-          lastName
-        }
-        ... on Team {
-          name
-        }
+        ...User_user
+        ...Team_team
       }
     }
     ${DeleteProjectPermissionTrigger.fragments.permission}
@@ -525,6 +513,7 @@ ProjectPage.fragments = {
     ${ProjectPermissionPicker.fragments.permission}
     ${ProjectActionsMenu.fragments.project}
     ${User.fragments.user}
+    ${Team.fragments.team}
     ${ProjectDatasetsTable.fragments.project}
     ${ProjectAnalysesTable.fragments.project}
     ${CreateAnalysisTrigger.fragments.project}

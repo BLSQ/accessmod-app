@@ -25,7 +25,7 @@ const User = ({
       return "";
     }
     return [user.firstName, user.lastName].filter(Boolean).join(" ");
-  }, [user.firstName, user.lastName]);
+  }, [user]);
   return (
     <div className={clsx("group flex flex-shrink-0 items-center", className)}>
       <div>
