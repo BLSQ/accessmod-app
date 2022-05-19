@@ -88,6 +88,7 @@ type AccessmodFile {
 type AccessmodFileset implements AccessmodOwnership {
   id: String!
   name: String!
+  mode: AccessmodFilesetMode!
   status: AccessmodFilesetStatus!
   role: AccessmodFilesetRole!
   author: User!
@@ -112,6 +113,11 @@ enum AccessmodFilesetFormat {
 }
 
 scalar AccessmodFilesetMetadata
+
+enum AccessmodFilesetMode {
+  USER_INPUT
+  AUTOMATIC_ACQUISITION
+}
 
 type AccessmodFilesetPage {
   pageNumber: Int!
@@ -253,6 +259,8 @@ type Country {
   alpha3: String!
   name: String!
   flag: String!
+  defaultCRS: Int!
+  whoRegion: WHORegion
 }
 
 input CountryInput {
@@ -397,19 +405,6 @@ input DeleteAccessmodAnalysisInput {
 type DeleteAccessmodAnalysisResult {
   success: Boolean!
   errors: [DeleteAccessmodAnalysisError!]!
-}
-
-enum DeleteAccessmodFileError {
-  NOT_FOUND
-}
-
-input DeleteAccessmodFileInput {
-  id: String!
-}
-
-type DeleteAccessmodFileResult {
-  success: Boolean!
-  errors: [DeleteAccessmodFileError!]!
 }
 
 enum DeleteAccessmodFilesetError {
@@ -570,7 +565,6 @@ type Mutation {
   prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput): PrepareAccessmodFileUploadResult!
   prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput): PrepareAccessmodFileDownloadResult!
   createAccessmodFile(input: CreateAccessmodFileInput): CreateAccessmodFileResult!
-  deleteAccessmodFile(input: DeleteAccessmodFileInput): DeleteAccessmodFileResult!
   createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult!
   updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult!
   launchAccessmodAnalysis(input: LaunchAccessmodAnalysisInput): LaunchAccessmodAnalysisResult!
@@ -628,7 +622,7 @@ type Query {
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int, orderBy: AccessmodProjectOrder): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
-  accessmodFilesets(projectId: String!, roleId: String, term: String, page: Int, perPage: Int): AccessmodFilesetPage!
+  accessmodFilesets(projectId: String!, roleId: String, term: String, mode: AccessmodFilesetMode, page: Int, perPage: Int): AccessmodFilesetPage!
   accessmodFilesetRole(id: String!): AccessmodFilesetRole
   accessmodFilesetRoles: [AccessmodFilesetRole!]!
   accessmodAnalysis(id: String): AccessmodAnalysis
@@ -793,5 +787,10 @@ type User {
   avatar: Avatar!
   dateJoined: DateTime!
   lastLogin: DateTime
+}
+
+type WHORegion {
+  code: String!
+  name: String!
 }
 

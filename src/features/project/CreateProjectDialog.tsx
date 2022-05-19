@@ -7,15 +7,14 @@ import Textarea from "components/forms/Textarea";
 import Spinner from "components/Spinner";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
-import { Country } from "libs/countries";
-import { createDataset } from "libs/dataset";
 import {
+  Country,
   CreateAccessmodProjectError,
   useCreateProjectMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import CountryPicker from "../CountryPicker";
 
 type Props = {
@@ -28,7 +27,6 @@ type Form = {
   description: string;
   spatialResolution: string;
   country: Country;
-  crs: string;
   extent?: number[];
 };
 const MUTATION = gql`
@@ -49,6 +47,9 @@ const CreateProjectDialog = (props: Props) => {
   const [createProjectMutation] = useCreateProjectMutation();
   const { t } = useTranslation();
   const form = useForm<Form>({
+    initialState: {
+      spatialResolution: "100",
+    },
     validate: (values) => {
       const errors = {} as any;
       if (!values.name) {
@@ -63,9 +64,6 @@ const CreateProjectDialog = (props: Props) => {
       if (!values.spatialResolution) {
         errors.spatialResolution = t("Enter a spatial resolution");
       }
-      if (!values.crs) {
-        errors.crs = t("Enter a Coordinate Reference System");
-      }
 
       return errors;
     },
@@ -78,7 +76,7 @@ const CreateProjectDialog = (props: Props) => {
             spatialResolution: parseInt(values.spatialResolution, 10),
             name: values.name,
             country: { code: values.country.code },
-            crs: parseInt(values.crs, 10),
+            crs: values.country.defaultCRS,
             extent: values.extent ? JSON.stringify(values.extent) : undefined,
           },
         },
@@ -122,18 +120,38 @@ const CreateProjectDialog = (props: Props) => {
             onChange={form.handleInputChange}
             error={form.touched.name && form.errors.name}
           />
-          <Field
-            label={t("Country")}
-            required
-            name="country"
-            error={form.touched.country && form.errors.country}
-          >
-            <CountryPicker
+          <div className="grid grid-cols-2 gap-4">
+            <Field
+              label={t("Country")}
+              required
+              name="country"
+              error={form.touched.country && form.errors.country}
+            >
+              <CountryPicker
+                disabled={form.isSubmitting}
+                value={form.formData.country ?? null}
+                required
+                onChange={(value) => form.setFieldValue("country", value)}
+              />
+            </Field>
+
+            <Field
+              required
+              label="Spatial Resolution (in meters)"
+              value={form.formData.spatialResolution}
+              help={t(
+                "The spatial resolution refers to the linear spacing of a measurement."
+              )}
+              name="spatialResolution"
+              type="number"
+              onChange={form.handleInputChange}
               disabled={form.isSubmitting}
-              value={form.formData.country ?? null}
-              onChange={(value) => form.setFieldValue("country", value)}
+              error={
+                form.touched.spatialResolution && form.errors.spatialResolution
+              }
             />
-          </Field>
+          </div>
+
           <Field
             label={t("Description")}
             name="description"
@@ -149,35 +167,6 @@ const CreateProjectDialog = (props: Props) => {
               {form.formData.description}
             </Textarea>
           </Field>
-
-          <Field
-            required
-            label="Spatial Resolution (in meters)"
-            value={form.formData.spatialResolution}
-            help={t(
-              "The spatial resolution refers to the linear spacing of a measurement."
-            )}
-            name="spatialResolution"
-            type="number"
-            onChange={form.handleInputChange}
-            disabled={form.isSubmitting}
-            error={
-              form.touched.spatialResolution && form.errors.spatialResolution
-            }
-          />
-          <Field
-            required
-            label={t("Coordinate Reference System")}
-            name="crs"
-            type="number"
-            value={form.formData.crs}
-            help={t(
-              "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
-            )}
-            onChange={form.handleInputChange}
-            disabled={form.isSubmitting}
-            error={form.touched.crs && form.errors.crs}
-          />
 
           {form.submitError && (
             <p className={clsx("text-sm", "text-red-600")}>

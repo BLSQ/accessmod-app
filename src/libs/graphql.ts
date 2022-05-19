@@ -112,6 +112,7 @@ export type AccessmodFileset = AccessmodOwnership & {
   files: Array<AccessmodFile>;
   id: Scalars['String'];
   metadata: Scalars['AccessmodFilesetMetadata'];
+  mode: AccessmodFilesetMode;
   name: Scalars['String'];
   owner?: Maybe<AccessmodOwner>;
   role: AccessmodFilesetRole;
@@ -129,6 +130,11 @@ export enum AccessmodFilesetFormat {
   Raster = 'RASTER',
   Tabular = 'TABULAR',
   Vector = 'VECTOR'
+}
+
+export enum AccessmodFilesetMode {
+  AutomaticAcquisition = 'AUTOMATIC_ACQUISITION',
+  UserInput = 'USER_INPUT'
 }
 
 export type AccessmodFilesetPage = {
@@ -278,8 +284,10 @@ export type Country = {
   __typename?: 'Country';
   alpha3: Scalars['String'];
   code: Scalars['String'];
+  defaultCRS: Scalars['Int'];
   flag: Scalars['String'];
   name: Scalars['String'];
+  whoRegion?: Maybe<WhoRegion>;
 };
 
 export type CountryInput = {
@@ -427,20 +435,6 @@ export type DeleteAccessmodAnalysisInput = {
 export type DeleteAccessmodAnalysisResult = {
   __typename?: 'DeleteAccessmodAnalysisResult';
   errors: Array<DeleteAccessmodAnalysisError>;
-  success: Scalars['Boolean'];
-};
-
-export enum DeleteAccessmodFileError {
-  NotFound = 'NOT_FOUND'
-}
-
-export type DeleteAccessmodFileInput = {
-  id: Scalars['String'];
-};
-
-export type DeleteAccessmodFileResult = {
-  __typename?: 'DeleteAccessmodFileResult';
-  errors: Array<DeleteAccessmodFileError>;
   success: Scalars['Boolean'];
 };
 
@@ -599,7 +593,6 @@ export type Mutation = {
   createMembership: CreateMembershipResult;
   createTeam: CreateTeamResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
-  deleteAccessmodFile: DeleteAccessmodFileResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
   deleteAccessmodProjectPermission: DeleteAccessmodProjectPermissionResult;
@@ -657,11 +650,6 @@ export type MutationCreateTeamArgs = {
 
 export type MutationDeleteAccessmodAnalysisArgs = {
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
-};
-
-
-export type MutationDeleteAccessmodFileArgs = {
-  input?: InputMaybe<DeleteAccessmodFileInput>;
 };
 
 
@@ -830,6 +818,7 @@ export type QueryAccessmodFilesetRoleArgs = {
 
 
 export type QueryAccessmodFilesetsArgs = {
+  mode?: InputMaybe<AccessmodFilesetMode>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   projectId: Scalars['String'];
@@ -1036,6 +1025,12 @@ export type User = {
   id: Scalars['String'];
   lastLogin?: Maybe<Scalars['DateTime']>;
   lastName?: Maybe<Scalars['String']>;
+};
+
+export type WhoRegion = {
+  __typename?: 'WHORegion';
+  code: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type HeaderQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1377,6 +1372,11 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutResult', success: boolean } };
+
+export type FetchCountriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, defaultCRS: number, whoRegion?: { __typename?: 'WHORegion', code: string, name: string } | null }> };
 
 export type GetUploadUrlMutationVariables = Exact<{
   input?: InputMaybe<PrepareAccessmodFileUploadInput>;
@@ -3276,6 +3276,48 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const FetchCountriesDocument = gql`
+    query FetchCountries {
+  countries {
+    code
+    alpha3
+    name
+    flag
+    defaultCRS
+    whoRegion {
+      code
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchCountriesQuery__
+ *
+ * To run a query within a React component, call `useFetchCountriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchCountriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchCountriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFetchCountriesQuery(baseOptions?: Apollo.QueryHookOptions<FetchCountriesQuery, FetchCountriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchCountriesQuery, FetchCountriesQueryVariables>(FetchCountriesDocument, options);
+      }
+export function useFetchCountriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchCountriesQuery, FetchCountriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchCountriesQuery, FetchCountriesQueryVariables>(FetchCountriesDocument, options);
+        }
+export type FetchCountriesQueryHookResult = ReturnType<typeof useFetchCountriesQuery>;
+export type FetchCountriesLazyQueryHookResult = ReturnType<typeof useFetchCountriesLazyQuery>;
+export type FetchCountriesQueryResult = Apollo.QueryResult<FetchCountriesQuery, FetchCountriesQueryVariables>;
 export const GetUploadUrlDocument = gql`
     mutation GetUploadUrl($input: PrepareAccessmodFileUploadInput) {
   prepareAccessmodFileUpload(input: $input) {
