@@ -10,8 +10,7 @@ import ProjectsList from "features/project/ProjectsList";
 import TeamPicker from "features/team/TeamPicker";
 import usePrevious from "hooks/usePrevious";
 import { ensureArray } from "libs/array";
-import { countries, Country } from "libs/countries";
-import { useProjectsPageQuery } from "libs/graphql";
+import { Country, useProjectsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import _ from "lodash";
@@ -24,7 +23,7 @@ type Variables = {
   perPage: number;
   term: string;
   teams?: string[];
-  countries: string[];
+  countries: Country[];
 };
 
 const ProjectsPage = ({
@@ -40,7 +39,7 @@ const ProjectsPage = ({
       page: variables.page,
       term: variables.term,
       perPage: variables.perPage,
-      countries: variables.countries,
+      countries: variables.countries?.map((c) => c.code),
       teams: variables.teams?.map((team: any) => team.id) ?? undefined,
     },
   });
@@ -91,18 +90,12 @@ const ProjectsPage = ({
                   onChange={(value) =>
                     setVariables({
                       ...variables,
-                      countries: value
-                        ? ensureArray<Country>(value).map((x) => x.code)
-                        : [],
+                      countries: value ? ensureArray(value) : [],
                       page: 1,
                     })
                   }
                   multiple
-                  value={
-                    variables.countries
-                      .map((c) => countries.find(({ code }) => code === c))
-                      .filter(Boolean) as Country[]
-                  }
+                  value={variables.countries}
                 />
               </div>
               <div className="col-span-2">
@@ -153,7 +146,7 @@ export const getServerSideProps = createGetServerSideProps({
       page: parseInt(`${ctx.query.page}`, 10) || 1,
       perPage: parseInt(`${ctx.query.perPage}`, 10) || 10,
       term: (ctx.query.term as string) ?? "",
-      countries: ensureArray(ctx.query.countries || []),
+      countries: [],
     };
     await Layout.prefetch(client);
     await client.query({

@@ -77,6 +77,7 @@ const Combobox = (props: ComboboxProps) => {
     displayValue,
     className,
     renderIcon,
+    multiple,
     value,
     placeholder,
     onChange,
@@ -131,6 +132,7 @@ const Combobox = (props: ComboboxProps) => {
       value={value}
       as="div"
       nullable={!required}
+      multiple={multiple}
     >
       {({ open }) => (
         <div className="relative" ref={setReferenceElement}>
@@ -157,7 +159,7 @@ const Combobox = (props: ComboboxProps) => {
             {renderIcon && renderIcon({ value })}
             <UICombobox.Button ref={btnRef}>
               <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
-                {!required && value && (
+                {!required && (multiple ? value?.length > 0 : value) && (
                   <XIcon
                     onClick={onClear}
                     className="h-4 w-4 cursor-pointer hover:text-gray-500"
