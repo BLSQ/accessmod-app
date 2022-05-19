@@ -12,7 +12,7 @@ const config = {
   reactStrictMode: true,
   i18n,
 
-  swcMinify: false,
+  swcMinify: true,
 };
 
 const sentryWebpackPluginOptions = {
