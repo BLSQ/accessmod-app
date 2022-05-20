@@ -31,6 +31,7 @@ const PROJECT_DATASETS_QUERY = gql`
       page: $page
       perPage: $perPage
       term: $term
+      mode: USER_INPUT
     ) {
       items {
         ...DatasetStatusBadge_dataset

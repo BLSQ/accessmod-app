@@ -2361,6 +2361,7 @@ export const DatasetPickerDocument = gql`
     term: $term
     perPage: $perPage
     roleId: $roleId
+    mode: USER_INPUT
   ) {
     items {
       ...DatasetPicker_dataset
@@ -2827,6 +2828,7 @@ export const ProjectDatasetsTableDocument = gql`
     page: $page
     perPage: $perPage
     term: $term
+    mode: USER_INPUT
   ) {
     items {
       ...DatasetStatusBadge_dataset
