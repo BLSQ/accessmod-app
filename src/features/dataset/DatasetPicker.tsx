@@ -75,10 +75,13 @@ const DatasetPicker = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // We add the `Recommended dataset` option in the list if activated
   const options = useMemo(() => {
-    return [...(data?.filesets?.items ?? [])];
-  }, [data]);
+    const allOptions = [...(data?.filesets?.items ?? [])];
+    if (dataset && !allOptions.find((x) => x.id === dataset.id)) {
+      allOptions.splice(0, 0, dataset);
+    }
+    return allOptions;
+  }, [data, dataset]);
 
   const canCreate = useMemo(
     () =>
@@ -228,6 +231,7 @@ const QUERY = gql`
       term: $term
       perPage: $perPage
       roleId: $roleId
+      mode: USER_INPUT
     ) {
       items {
         ...DatasetPicker_dataset
