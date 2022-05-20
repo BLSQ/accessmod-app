@@ -284,10 +284,9 @@ export type Country = {
   __typename?: 'Country';
   alpha3: Scalars['String'];
   code: Scalars['String'];
-  defaultCRS: Scalars['Int'];
   flag: Scalars['String'];
   name: Scalars['String'];
-  whoRegion?: Maybe<WhoRegion>;
+  whoInfo: WhoInfo;
 };
 
 export type CountryInput = {
@@ -349,19 +348,18 @@ export type CreateAccessmodFilesetResult = {
   success: Scalars['Boolean'];
 };
 
+export type CreateAccessmodProjectByCountryInput = {
+  country: CountryInput;
+  crs: Scalars['Int'];
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  spatialResolution: Scalars['Int'];
+};
+
 export enum CreateAccessmodProjectError {
   NameDuplicate = 'NAME_DUPLICATE',
   PermissionDenied = 'PERMISSION_DENIED'
 }
-
-export type CreateAccessmodProjectInput = {
-  country: CountryInput;
-  crs: Scalars['Int'];
-  description?: InputMaybe<Scalars['String']>;
-  extent?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  spatialResolution: Scalars['Int'];
-};
 
 export enum CreateAccessmodProjectPermissionError {
   NotFound = 'NOT_FOUND',
@@ -588,7 +586,7 @@ export type Mutation = {
   createAccessmodAccessibilityAnalysis: CreateAccessmodAccessibilityAnalysisResult;
   createAccessmodFile: CreateAccessmodFileResult;
   createAccessmodFileset: CreateAccessmodFilesetResult;
-  createAccessmodProject: CreateAccessmodProjectResult;
+  createAccessmodProjectByCountry: CreateAccessmodProjectResult;
   createAccessmodProjectPermission: CreateAccessmodProjectPermissionResult;
   createMembership: CreateMembershipResult;
   createTeam: CreateTeamResult;
@@ -628,8 +626,8 @@ export type MutationCreateAccessmodFilesetArgs = {
 };
 
 
-export type MutationCreateAccessmodProjectArgs = {
-  input?: InputMaybe<CreateAccessmodProjectInput>;
+export type MutationCreateAccessmodProjectByCountryArgs = {
+  input?: InputMaybe<CreateAccessmodProjectByCountryInput>;
 };
 
 
@@ -788,6 +786,7 @@ export type Query = {
   accessmodProject?: Maybe<AccessmodProject>;
   accessmodProjects: AccessmodProjectPage;
   countries: Array<Country>;
+  country?: Maybe<Country>;
   me: Me;
   organizations: Array<Organization>;
   team?: Maybe<Team>;
@@ -839,6 +838,12 @@ export type QueryAccessmodProjectsArgs = {
   perPage?: InputMaybe<Scalars['Int']>;
   teams?: InputMaybe<Array<Scalars['String']>>;
   term?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryCountryArgs = {
+  alpha3?: InputMaybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -1027,6 +1032,13 @@ export type User = {
   lastName?: Maybe<Scalars['String']>;
 };
 
+export type WhoInfo = {
+  __typename?: 'WHOInfo';
+  defaultCRS: Scalars['Int'];
+  region?: Maybe<WhoRegion>;
+  simplifiedExtent?: Maybe<Array<Array<Scalars['Float']>>>;
+};
+
 export type WhoRegion = {
   __typename?: 'WHORegion';
   code: Scalars['String'];
@@ -1211,11 +1223,11 @@ export type CreateProjectMembershipMutation = { __typename?: 'Mutation', createA
 export type CreateMembershipForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, id: string, team?: { __typename: 'Team', id: string } | null }> };
 
 export type CreateProjectMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodProjectInput>;
+  input?: InputMaybe<CreateAccessmodProjectByCountryInput>;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProjectByCountry: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
 
 export type DeleteProjectPermissionMutationVariables = Exact<{
   input: DeleteAccessmodProjectPermissionInput;
@@ -1376,7 +1388,7 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: '
 export type FetchCountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, defaultCRS: number, whoRegion?: { __typename?: 'WHORegion', code: string, name: string } | null }> };
+export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, whoInfo: { __typename?: 'WHOInfo', defaultCRS: number, region?: { __typename?: 'WHORegion', code: string, name: string } | null } }> };
 
 export type GetUploadUrlMutationVariables = Exact<{
   input?: InputMaybe<PrepareAccessmodFileUploadInput>;
@@ -2547,8 +2559,8 @@ export type CreateProjectMembershipMutationHookResult = ReturnType<typeof useCre
 export type CreateProjectMembershipMutationResult = Apollo.MutationResult<CreateProjectMembershipMutation>;
 export type CreateProjectMembershipMutationOptions = Apollo.BaseMutationOptions<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>;
 export const CreateProjectDocument = gql`
-    mutation CreateProject($input: CreateAccessmodProjectInput) {
-  createAccessmodProject(input: $input) {
+    mutation CreateProject($input: CreateAccessmodProjectByCountryInput) {
+  createAccessmodProjectByCountry(input: $input) {
     success
     project {
       id
@@ -3285,10 +3297,12 @@ export const FetchCountriesDocument = gql`
     alpha3
     name
     flag
-    defaultCRS
-    whoRegion {
-      code
-      name
+    whoInfo {
+      defaultCRS
+      region {
+        code
+        name
+      }
     }
   }
 }

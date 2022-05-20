@@ -2,12 +2,11 @@ import Combobox from "components/forms/Combobox";
 import { ensureArray } from "libs/array";
 import { fetchCountries, REGIONS } from "libs/countries";
 import { Country } from "libs/graphql";
-import _ from "lodash";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type CountryPickerProps = {
-  onChange: (value: Country | Country[]) => void;
+  onChange: (value: Partial<Country> | Partial<Country>[]) => void;
   disabled?: boolean;
   placeholder?: string;
   required?: boolean;
@@ -15,11 +14,11 @@ type CountryPickerProps = {
 } & (
   | {
       multiple: true;
-      value: Country[] | null;
+      value: Partial<Country>[] | null;
     }
   | {
       multiple?: false;
-      value: Country | null;
+      value: Partial<Country> | null;
     }
 );
 
@@ -34,7 +33,7 @@ const CountryPicker = (props: CountryPickerProps) => {
     placeholder = t("Select a country"),
   } = props;
 
-  const [countries, setCountries] = useState<Country[] | null>(null);
+  const [countries, setCountries] = useState<any | null>(null);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -43,7 +42,7 @@ const CountryPicker = (props: CountryPickerProps) => {
 
   const filteredCountries = useMemo(
     () =>
-      countries?.filter((c) =>
+      countries?.filter((c: Country) =>
         c.name.toLowerCase().includes(query.toLowerCase())
       ),
     [countries, query]
@@ -57,18 +56,19 @@ const CountryPicker = (props: CountryPickerProps) => {
     const groups = [];
     for (const regionKey of REGIONS) {
       const regionOptions = filteredCountries.filter(
-        (country) => country.whoRegion?.code === regionKey
+        (country: Country) => country.whoInfo?.region?.code === regionKey
       );
+
       if (regionOptions.length > 0) {
         groups.push({
-          label: regionOptions[0].whoRegion!.name,
+          label: regionOptions[0].whoInfo.region?.name ?? "",
           options: regionOptions,
         });
       }
     }
 
     const orphanCountries = filteredCountries.filter(
-      (country) => !country.whoRegion
+      (country: Country) => !country.whoInfo?.region
     );
     if (orphanCountries.length > 0) {
       groups.push({
@@ -84,6 +84,7 @@ const CountryPicker = (props: CountryPickerProps) => {
     <Combobox
       required={required}
       onChange={onChange}
+      loading={!countries}
       displayValue={(value) =>
         multiple
           ? ensureArray(value)
