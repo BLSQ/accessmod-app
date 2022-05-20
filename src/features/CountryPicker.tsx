@@ -6,7 +6,6 @@ import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type CountryPickerProps = {
-  onChange: (value: Partial<Country> | Partial<Country>[]) => void;
   disabled?: boolean;
   placeholder?: string;
   required?: boolean;
@@ -14,11 +13,13 @@ type CountryPickerProps = {
 } & (
   | {
       multiple: true;
-      value: Partial<Country>[] | null;
+      value: Country[] | null;
+      onChange: (value: Country[] | null) => void;
     }
   | {
       multiple?: false;
-      value: Partial<Country> | null;
+      value: Country | null;
+      onChange: (value: Country | null) => void;
     }
 );
 
