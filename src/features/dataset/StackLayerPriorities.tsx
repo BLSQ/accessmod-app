@@ -1,5 +1,8 @@
+import { MenuIcon, PlusIcon, XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import Textarea from "components/forms/Textarea";
+import Button from "components/Button";
+import Input from "components/forms/Input";
+import { SortableList } from "components/Sortable";
 import useDebounce from "hooks/useDebounce";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
@@ -42,16 +45,39 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
     }
   }, [t, debouncedTextValue, onChange]);
 
+  const [items, setItems] = useState([
+    { id: "1", label: "test" },
+    { id: "2", label: "test2" },
+    { id: "3", label: "test3" },
+  ]);
+
   return (
-    <div className="relative">
-      <Textarea
-        rows={10}
-        className={clsx(className)}
-        placeholder={PLACEHOLDER}
-        value={internalTextValue}
-        onChange={(event) => setInternalTextValue(event.target.value)}
-        disabled={disabled}
-      />
+    <div className={clsx(className, "rounded-md bg-white px-4 py-2 pb-4")}>
+      <div className=" divide-y divide-gray-200">
+        <SortableList
+          items={items}
+          onChange={setItems}
+          handle
+          renderItem={(item, handleProps) => (
+            <div className="flex w-full items-center gap-2 py-3">
+              <div className="flex flex-1 gap-2">
+                <Input placeholder={t("Layer name")} />
+                <Input placeholder={t("Class")} />
+              </div>
+              <Button variant="outlined" size="sm">
+                <XIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
+              </Button>
+              <Button variant="outlined" {...handleProps} size="sm">
+                <MenuIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
+              </Button>
+            </div>
+          )}
+        />
+      </div>
+      <Button variant="secondary" className="mt-2" size="sm">
+        <PlusIcon className="mr-1.5 h-3 w-3" />
+        {t("Add a layer")}
+      </Button>
       {error && (
         <span className="absolute bottom-2 right-2 rounded-md bg-white p-2 text-sm text-red-400">
           {error}
