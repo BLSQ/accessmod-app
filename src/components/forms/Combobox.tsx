@@ -139,7 +139,7 @@ const Combobox = (props: ComboboxProps) => {
           <div
             className={clsx(
               "form-input flex w-full items-center rounded-md border-gray-300 shadow-sm disabled:border-gray-300",
-              "focus-within:outline-none focus:ring-transparent focus-visible:border-lochmara disabled:cursor-not-allowed disabled:bg-gray-50",
+              "focus-within:outline-none focus:ring-transparent focus-visible:border-lochmara disabled:cursor-not-allowed ",
               "sm:text-sm",
               open ? "border-lochmara" : "hover:border-gray-400"
             )}

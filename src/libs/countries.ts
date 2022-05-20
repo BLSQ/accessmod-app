@@ -12,10 +12,12 @@ export async function fetchCountries() {
           alpha3
           name
           flag
-          defaultCRS
-          whoRegion {
-            code
-            name
+          whoInfo {
+            defaultCRS
+            region {
+              code
+              name
+            }
           }
         }
       }
@@ -29,4 +31,4 @@ export async function fetchCountries() {
   return data.countries;
 }
 
-export const REGIONS = ["AMR", "AFR", "EUR", "EMR", "WPR", "SEAR"];
+export const REGIONS = ["AMRO", "AFRO", "EURO", "EMRO", "WPRO", "SEARO"];

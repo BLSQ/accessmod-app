@@ -14,7 +14,7 @@ import {
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler } from "react";
 import CountryPicker from "../CountryPicker";
 
 type Props = {
@@ -26,12 +26,12 @@ type Form = {
   name: string;
   description: string;
   spatialResolution: string;
+  crs: number;
   country: Country;
-  extent?: number[];
 };
 const MUTATION = gql`
-  mutation CreateProject($input: CreateAccessmodProjectInput) {
-    createAccessmodProject(input: $input) {
+  mutation CreateProject($input: CreateAccessmodProjectByCountryInput) {
+    createAccessmodProjectByCountry(input: $input) {
       success
       project {
         id
@@ -58,9 +58,6 @@ const CreateProjectDialog = (props: Props) => {
       if (!values.country) {
         errors.country = t("Select a country");
       }
-      if (!values.description) {
-        errors.description = t("Type a short description");
-      }
       if (!values.spatialResolution) {
         errors.spatialResolution = t("Enter a spatial resolution");
       }
@@ -76,8 +73,7 @@ const CreateProjectDialog = (props: Props) => {
             spatialResolution: parseInt(values.spatialResolution, 10),
             name: values.name,
             country: { code: values.country.code },
-            crs: values.country.defaultCRS,
-            extent: values.extent ? JSON.stringify(values.extent) : undefined,
+            crs: values.country.whoInfo?.defaultCRS,
           },
         },
       });
@@ -85,7 +81,8 @@ const CreateProjectDialog = (props: Props) => {
         throw new Error();
       }
 
-      const { success, project, errors } = mutation.data.createAccessmodProject;
+      const { success, project, errors } =
+        mutation.data.createAccessmodProjectByCountry;
 
       if (success && project) {
         router.push(`/projects/${encodeURIComponent(project.id)}`);
@@ -155,11 +152,9 @@ const CreateProjectDialog = (props: Props) => {
           <Field
             label={t("Description")}
             name="description"
-            required
             error={form.touched.description && form.errors.description}
           >
             <Textarea
-              required
               name="description"
               disabled={form.isSubmitting}
               onChange={form.handleInputChange}

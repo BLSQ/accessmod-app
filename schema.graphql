@@ -259,8 +259,7 @@ type Country {
   alpha3: String!
   name: String!
   flag: String!
-  defaultCRS: Int!
-  whoRegion: WHORegion
+  whoInfo: WHOInfo!
 }
 
 input CountryInput {
@@ -319,18 +318,17 @@ type CreateAccessmodFilesetResult {
   errors: [CreateAccessmodFilesetError!]!
 }
 
+input CreateAccessmodProjectByCountryInput {
+  name: String!
+  description: String
+  spatialResolution: Int!
+  crs: Int!
+  country: CountryInput!
+}
+
 enum CreateAccessmodProjectError {
   NAME_DUPLICATE
   PERMISSION_DENIED
-}
-
-input CreateAccessmodProjectInput {
-  name: String!
-  spatialResolution: Int!
-  description: String
-  crs: Int!
-  extent: String
-  country: CountryInput!
 }
 
 enum CreateAccessmodProjectPermissionError {
@@ -554,7 +552,7 @@ type Mutation {
   createMembership(input: CreateMembershipInput!): CreateMembershipResult!
   updateMembership(input: UpdateMembershipInput!): UpdateMembershipResult!
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
-  createAccessmodProject(input: CreateAccessmodProjectInput): CreateAccessmodProjectResult!
+  createAccessmodProjectByCountry(input: CreateAccessmodProjectByCountryInput): CreateAccessmodProjectResult!
   updateAccessmodProject(input: UpdateAccessmodProjectInput): UpdateAccessmodProjectResult!
   deleteAccessmodProject(input: DeleteAccessmodProjectInput): DeleteAccessmodProjectResult!
   createAccessmodProjectPermission(input: CreateAccessmodProjectPermissionInput!): CreateAccessmodProjectPermissionResult!
@@ -618,6 +616,7 @@ type Query {
   team(id: String!): Team
   teams(term: String, page: Int, perPage: Int): TeamPage!
   organizations: [Organization!]!
+  country(code: String, alpha3: String): Country
   countries: [Country!]!
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int, orderBy: AccessmodProjectOrder): AccessmodProjectPage!
@@ -787,6 +786,12 @@ type User {
   avatar: Avatar!
   dateJoined: DateTime!
   lastLogin: DateTime
+}
+
+type WHOInfo {
+  region: WHORegion
+  defaultCRS: Int!
+  simplifiedExtent: [[Float!]!]
 }
 
 type WHORegion {
