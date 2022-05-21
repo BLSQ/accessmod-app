@@ -43,10 +43,9 @@ const PROJECT_DATASETS_QUERY = gql`
           id
           format
         }
-        owner {
+        author {
           __typename
           ...User_user
-          ...Team_team
         }
         status
         createdAt
@@ -124,7 +123,7 @@ const ProjectDatasetsTable = (props: Props) => {
                   {t("Dataset Name")}
                 </th>
                 <th scope="column">{t("Role")}</th>
-                <th scope="column">{t("Owner")}</th>
+                <th scope="column">{t("Author")}</th>
                 <th scope="column">{t("Created")} At</th>
                 <th scope="column" className="whitespace-nowrap">
                   {t("Status")}
@@ -144,12 +143,7 @@ const ProjectDatasetsTable = (props: Props) => {
                   <td className="min-w-fit">{row.name}</td>
                   <td>{row.role?.name ?? <i>{t("Unknown")}</i>}</td>
                   <td>
-                    {row.owner?.__typename === "User" && (
-                      <User small user={row.owner} />
-                    )}
-                    {row.owner?.__typename === "Team" && (
-                      <Team team={row.owner} />
-                    )}
+                    <User small user={row.author} />
                   </td>
                   <td>
                     <Time datetime={row.createdAt} />
