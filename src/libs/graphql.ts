@@ -157,14 +157,12 @@ export type AccessmodFilesetRole = {
 
 export enum AccessmodFilesetRoleCode {
   Barrier = 'BARRIER',
-  CatchmentAreas = 'CATCHMENT_AREAS',
   Coverage = 'COVERAGE',
   Dem = 'DEM',
   FrictionSurface = 'FRICTION_SURFACE',
   Geometry = 'GEOMETRY',
   HealthFacilities = 'HEALTH_FACILITIES',
   LandCover = 'LAND_COVER',
-  MovingSpeeds = 'MOVING_SPEEDS',
   Population = 'POPULATION',
   Stack = 'STACK',
   TransportNetwork = 'TRANSPORT_NETWORK',
