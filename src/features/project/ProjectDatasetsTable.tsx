@@ -123,7 +123,7 @@ const ProjectDatasetsTable = (props: Props) => {
                 <th scope="column" className="whitespace-nowrap">
                   {t("Dataset Name")}
                 </th>
-                <th scope="column">{t("Role")}</th>
+                <th scope="column">{t("Class")}</th>
                 <th scope="column">{t("Owner")}</th>
                 <th scope="column">{t("Created")} At</th>
                 <th scope="column" className="whitespace-nowrap">

@@ -150,7 +150,7 @@ const DatasetFormDialog = (props: Props) => {
               </Field>
             )}
             <Field
-              label={t("Role")}
+              label={t("Class")}
               required
               name="role"
               error={form.touched.role && form.errors.role}
