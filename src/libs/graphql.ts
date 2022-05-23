@@ -1518,7 +1518,7 @@ export type TeamsPageQueryVariables = Exact<{
 }>;
 
 
-export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
+export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', role: MembershipRole, user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
 
 export const Navbar_NavbarFragmentDoc = gql`
     fragment Navbar_navbar on Query {

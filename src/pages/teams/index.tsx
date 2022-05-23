@@ -111,40 +111,37 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
                 </tr>
               </thead>
               <tbody>
-                {teams.items.map(
-                  (team) =>
-                    console.log(team.memberships.items) || (
-                      <tr
-                        key={team.id}
-                        className="cursor-pointer"
-                        onClick={(e) => onRowClick(e, team)}
+                {teams.items.map((team) => (
+                  <tr
+                    key={team.id}
+                    className="cursor-pointer"
+                    onClick={(e) => onRowClick(e, team)}
+                  >
+                    <td>
+                      <Link
+                        href={{
+                          pathname: routes.team,
+                          query: { teamId: team.id },
+                        }}
                       >
-                        <td>
-                          <Link
-                            href={{
-                              pathname: routes.team,
-                              query: { teamId: team.id },
-                            }}
-                          >
-                            <a className="hover:underline">{team.name}</a>
-                          </Link>
-                        </td>
-                        <td>
-                          {
-                            team.memberships.items.find(
-                              (t) => t.role === MembershipRole.Admin
-                            )?.user.displayName
-                          }
-                        </td>
-                        <td>
-                          {t("{{count}} members", {
-                            count: team.memberships.totalItems,
-                          })}
-                        </td>
-                        <td></td>
-                      </tr>
-                    )
-                )}
+                        <a className="hover:underline">{team.name}</a>
+                      </Link>
+                    </td>
+                    <td>
+                      {
+                        team.memberships.items.find(
+                          (t) => t.role === MembershipRole.Admin
+                        )?.user.displayName
+                      }
+                    </td>
+                    <td>
+                      {t("{{count}} members", {
+                        count: team.memberships.totalItems,
+                      })}
+                    </td>
+                    <td></td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             {teams.items.length > 0 ? (
