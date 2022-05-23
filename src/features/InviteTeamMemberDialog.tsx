@@ -95,16 +95,17 @@ const InviteTeamMemberDialog = (props: Props) => {
         </Dialog.Title>
 
         <Dialog.Content className="space-y-4 px-9 py-8">
-          <Dialog.Description>Lorem ipsum</Dialog.Description>
-          <Input
-            placeholder={t("Email address")}
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            onChange={form.handleInputChange}
-            error={form.touched.email && form.errors.email}
-          />
+          <Field name="email" label={t("Email address")} type="email" required>
+            <Input
+              placeholder={t("Email address")}
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              onChange={form.handleInputChange}
+              error={form.touched.email && form.errors.email}
+            />
+          </Field>
 
           <Field name="role" label={t("Role")} type="text" required>
             <MembershipRolePicker
