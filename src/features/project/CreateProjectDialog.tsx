@@ -73,7 +73,7 @@ const CreateProjectDialog = (props: Props) => {
             spatialResolution: parseInt(values.spatialResolution, 10),
             name: values.name,
             country: { code: values.country.code },
-            crs: values.country.whoInfo?.defaultCRS,
+            crs: values.country.whoInfo?.defaultCRS || 6933,
           },
         },
       });

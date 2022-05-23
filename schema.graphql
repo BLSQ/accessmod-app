@@ -42,6 +42,7 @@ interface AccessmodAnalysis {
   type: AccessmodAnalysisType!
   status: AccessmodAnalysisStatus!
   name: String!
+  owner: AccessmodOwner
   author: User!
   authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
   createdAt: DateTime!
@@ -163,8 +164,8 @@ type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis & Accessmo
   type: AccessmodAnalysisType!
   status: AccessmodAnalysisStatus!
   name: String!
-  author: User!
   owner: AccessmodOwner
+  author: User!
   authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -257,7 +258,7 @@ type Country {
   alpha3: String!
   name: String!
   flag: String!
-  whoInfo: WHOInfo!
+  whoInfo: WHOInfo
 }
 
 input CountryInput {
@@ -330,8 +331,10 @@ enum CreateAccessmodProjectError {
 }
 
 enum CreateAccessmodProjectPermissionError {
+  ALREADY_EXISTS
   PERMISSION_DENIED
   NOT_FOUND
+  NOT_IMPLEMENTED
 }
 
 input CreateAccessmodProjectPermissionInput {
@@ -428,6 +431,7 @@ input DeleteAccessmodProjectInput {
 enum DeleteAccessmodProjectPermissionError {
   PERMISSION_DENIED
   NOT_FOUND
+  NOT_IMPLEMENTED
 }
 
 input DeleteAccessmodProjectPermissionInput {
@@ -724,6 +728,7 @@ input UpdateAccessmodProjectInput {
 enum UpdateAccessmodProjectPermissionError {
   PERMISSION_DENIED
   NOT_FOUND
+  NOT_IMPLEMENTED
 }
 
 input UpdateAccessmodProjectPermissionInput {
@@ -781,6 +786,7 @@ type User {
   email: String!
   firstName: String
   lastName: String
+  displayName: String!
   avatar: Avatar!
   dateJoined: DateTime!
   lastLogin: DateTime

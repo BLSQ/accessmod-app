@@ -60,6 +60,7 @@ export type AccessmodAnalysis = {
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   name: Scalars['String'];
+  owner?: Maybe<AccessmodOwner>;
   status: AccessmodAnalysisStatus;
   type: AccessmodAnalysisType;
   updatedAt: Scalars['DateTime'];
@@ -284,7 +285,7 @@ export type Country = {
   code: Scalars['String'];
   flag: Scalars['String'];
   name: Scalars['String'];
-  whoInfo: WhoInfo;
+  whoInfo?: Maybe<WhoInfo>;
 };
 
 export type CountryInput = {
@@ -360,7 +361,9 @@ export enum CreateAccessmodProjectError {
 }
 
 export enum CreateAccessmodProjectPermissionError {
+  AlreadyExists = 'ALREADY_EXISTS',
   NotFound = 'NOT_FOUND',
+  NotImplemented = 'NOT_IMPLEMENTED',
   PermissionDenied = 'PERMISSION_DENIED'
 }
 
@@ -459,6 +462,7 @@ export type DeleteAccessmodProjectInput = {
 
 export enum DeleteAccessmodProjectPermissionError {
   NotFound = 'NOT_FOUND',
+  NotImplemented = 'NOT_IMPLEMENTED',
   PermissionDenied = 'PERMISSION_DENIED'
 }
 
@@ -962,6 +966,7 @@ export type UpdateAccessmodProjectInput = {
 
 export enum UpdateAccessmodProjectPermissionError {
   NotFound = 'NOT_FOUND',
+  NotImplemented = 'NOT_IMPLEMENTED',
   PermissionDenied = 'PERMISSION_DENIED'
 }
 
@@ -1023,6 +1028,7 @@ export type User = {
   __typename?: 'User';
   avatar: Avatar;
   dateJoined: Scalars['DateTime'];
+  displayName: Scalars['String'];
   email: Scalars['String'];
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1386,7 +1392,7 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: '
 export type FetchCountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, whoInfo: { __typename?: 'WHOInfo', defaultCRS: number, region?: { __typename?: 'WHORegion', code: string, name: string } | null } }> };
+export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, whoInfo?: { __typename?: 'WHOInfo', defaultCRS: number, region?: { __typename?: 'WHORegion', code: string, name: string } | null } | null }> };
 
 export type GetUploadUrlMutationVariables = Exact<{
   input?: InputMaybe<PrepareAccessmodFileUploadInput>;
@@ -1511,7 +1517,7 @@ export type TeamsPageQueryVariables = Exact<{
 }>;
 
 
-export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
+export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', role: MembershipRole, user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
 
 export const Navbar_NavbarFragmentDoc = gql`
     fragment Navbar_navbar on Query {
@@ -4042,11 +4048,13 @@ export const TeamsPageDocument = gql`
       memberships(page: 1, perPage: 5) {
         totalItems
         items {
+          role
           user {
             id
             email
             firstName
             lastName
+            displayName
             avatar {
               initials
               color

@@ -31,22 +31,20 @@ const Header = ({ user }: Props) => {
           <div className="border-b border-white">
             <div className="flex h-16 items-center justify-between px-4 sm:px-0">
               <div className="flex h-full items-center gap-5 text-white">
-                <div className="flex-shrink-0">
-                  <Link href="/">
-                    <a className="flex">
-                      <Image
-                        priority
-                        alt="who logo"
-                        src="/images/WHO-logo-watermark-white.png"
-                        layout="fixed"
-                        height="37"
-                        width="121"
-                      />
-                    </a>
-                  </Link>
+                <div className="flex flex-shrink-0">
+                  <Image
+                    priority
+                    alt="who logo"
+                    src="/images/WHO-logo-watermark-white.png"
+                    layout="fixed"
+                    height="37"
+                    width="121"
+                  />
                 </div>
                 <div className="text-bold text-xl ">
-                  {t("AccessMod")}
+                  <Link href="/">
+                    <a>{t("AccessMod")}</a>
+                  </Link>
                 </div>
                 {data && <Navbar navbar={data} />}
               </div>

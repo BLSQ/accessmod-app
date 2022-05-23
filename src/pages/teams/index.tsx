@@ -10,7 +10,11 @@ import Toggle from "components/Toggle";
 import CreateTeamDialog from "features/team/TeamFormDialog";
 import useCacheKey from "hooks/useCacheKey";
 import usePrevious from "hooks/usePrevious";
-import { MeAuthorizedActions, useTeamsPageQuery } from "libs/graphql";
+import {
+  MeAuthorizedActions,
+  MembershipRole,
+  useTeamsPageQuery,
+} from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import _ from "lodash";
@@ -99,7 +103,7 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
               <thead>
                 <tr>
                   <th>{t("Name")}</th>
-                  <th>{t("Created by")}</th>
+                  <th>{t("Admin")}</th>
                   <th>{t("Users")}</th>
                   <th>
                     <span className="sr-only">{t("Actions")}</span>
@@ -123,7 +127,11 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
                         <a className="hover:underline">{team.name}</a>
                       </Link>
                     </td>
-                    <td></td>
+                    <td>
+                      {team.memberships.items.find(
+                        (t) => t.role === MembershipRole.Admin
+                      )?.user.displayName || "-"}
+                    </td>
                     <td>
                       {t("{{count}} members", {
                         count: team.memberships.totalItems,
@@ -184,11 +192,13 @@ export const getServerSideProps = createGetServerSideProps({
               memberships(page: 1, perPage: 5) {
                 totalItems
                 items {
+                  role
                   user {
                     id
                     email
                     firstName
                     lastName
+                    displayName
                     avatar {
                       initials
                       color
