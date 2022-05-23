@@ -55,41 +55,17 @@ const Navbar = (props: NavbarProps) => {
   const { t } = useTranslation();
 
   const items = useMemo(() => {
-    const projects = navbar.projects.items.map((project) => ({
-      label: project.name,
-      link: `/projects/${encodeURIComponent(project.id)}`,
-    }));
-
-    const teams = navbar.teams.items.map((team) => ({
-      label: team.name,
-      link: `/teams/${encodeURIComponent(team.id)}`,
-    }));
-
-    if (projects.length > 0) {
-      projects.push({ label: t("See all projects"), link: "/projects" });
-    }
-
-    if (teams.length > 0) {
-      teams.push({ label: t("See all teams"), link: "/teams" });
-    }
-
     return [
-      // {
-      //   label: t("Dashboard"),
-      //   link: "/",
-      // },
       {
         label: t("Projects"),
         link: "/projects",
-        items: projects,
       },
       {
         label: t("Teams"),
         link: "/teams",
-        items: teams,
       },
     ];
-  }, [navbar, t]);
+  }, [t]);
 
   return (
     <div className="flex h-full items-stretch gap-2 uppercase text-white">
