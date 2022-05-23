@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
 import AnalysisStatus from "../analysis/AnalysisStatus";
+import User from "features/User";
 
 type Props = {
   project: ProjectAnalysesTable_ProjectFragment;
@@ -83,6 +84,7 @@ const ProjectAnalysesTable = (props: Props) => {
                 {t("Analysis")}
               </th>
               <th scope="column">{t("Type")}</th>
+              <th scope="column">{t("Author")}</th>
               <th scope="column">{t("Created")}</th>
               <th scope="column">{t("Status")}</th>
               <th scope="column">
@@ -99,6 +101,9 @@ const ProjectAnalysesTable = (props: Props) => {
               >
                 <td className="min-w-fit">{row.name}</td>
                 <td>{getLabelFromAnalysisType(row.type)}</td>
+                <td>
+                  <User small user={row.author} />
+                </td>
                 <td>
                   <Time datetime={row.createdAt} />
                 </td>
@@ -181,6 +186,10 @@ ProjectAnalysesTable.prefetch = async (
             id
             type
             name
+            author {
+              __typename
+              ...User_user
+            }
             createdAt
             status
             ...AnalysisStatus_analysis
@@ -191,6 +200,7 @@ ProjectAnalysesTable.prefetch = async (
         }
       }
       ${AnalysisStatus.fragments.analysis}
+      ${User.fragments.user}
     `,
     variables,
   });
