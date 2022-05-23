@@ -1,44 +1,37 @@
 import { gql } from "@apollo/client";
-import { PlusIcon, UserIcon, UsersIcon } from "@heroicons/react/outline";
+import { PlusIcon } from "@heroicons/react/outline";
 import { ClockIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
-import DataGrid, { Column } from "components/DataGrid";
 import DescriptionList from "components/DescriptionList";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
+import Toggle from "components/Toggle";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
 import CreateDatasetTrigger from "features/dataset/CreateDatasetTrigger";
-import CreateMembershipForm from "features/project/CreateMembershipForm";
-import DeleteProjectPermissionTrigger from "features/project/DeleteProjectPermissionTrigger";
+import ChangeProjectOwnerDialog from "features/project/ChangeProjectOwnerDialog";
 import EditProjectFormBlock from "features/project/EditProjectFormBlock";
 import ProjectActionsMenu from "features/project/ProjectActionsMenu";
 import ProjectAnalysesTable from "features/project/ProjectAnalysesTable";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
-import ProjectPermissionPicker from "features/project/ProjectPermissionPicker";
 import Team from "features/team/Team";
 import User from "features/User";
 import useCacheKey from "hooks/useCacheKey";
 import useToggle from "hooks/useToggle";
 import {
   AccessmodProjectAuthorizedActions,
-  AccessmodProjectPermissionAuthorizedActions,
-  PermissionMode,
   ProjectPage_ProjectFragment,
   useProjectPageQuery,
-  useUpdateProjectPermissionMutation,
 } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
-import { formatPermissionMode } from "libs/team";
 import { NextPageWithFragments } from "libs/types";
 import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
 
 const LatestAnalysisBlock = ({
   project,
@@ -187,179 +180,54 @@ const ProjectGeneralInformationBlock = (props: {
           <span className="text-md">{project.crs}</span>
         </DescriptionList.Item>
 
+        <DescriptionList.Item label={t("Creation date")}>
+          <Time datetime={project.createdAt} format={DateTime.DATE_MED} />
+        </DescriptionList.Item>
+
+        <DescriptionList.Item
+          label={t("Owner")}
+          help={t("The user or team responsible for this project")}
+        >
+          <div className="flex">
+            {project.owner?.__typename === "User" && (
+              <User small user={project.owner} />
+            )}
+            {project.owner?.__typename === "Team" && (
+              <Team team={project.owner} />
+            )}
+            {project.authorizedActions.includes(
+              AccessmodProjectAuthorizedActions.CreatePermission
+            ) && (
+              <Toggle>
+                {({ isToggled, toggle }) => (
+                  <>
+                    <Button
+                      className="ml-1.5"
+                      variant="outlined"
+                      size="sm"
+                      onClick={toggle}
+                    >
+                      {t("Edit")}
+                    </Button>
+                    <ChangeProjectOwnerDialog
+                      project={project}
+                      open={isToggled}
+                      onClose={toggle}
+                    />
+                  </>
+                )}
+              </Toggle>
+            )}
+          </div>
+        </DescriptionList.Item>
+
         <DescriptionList.Item
           label={t("Author")}
           help={t("The user that created this project")}
         >
           <User small user={project.author} />
         </DescriptionList.Item>
-        <DescriptionList.Item label={t("Creation date")}>
-          <Time datetime={project.createdAt} format={DateTime.DATE_MED} />
-        </DescriptionList.Item>
       </DescriptionList>
-    </Block>
-  );
-};
-
-const DEFAULT_PERMISSIONS_SORT = [{ id: "updatedAt", desc: true }];
-
-const UPDATE_PROJECT_PERMISSION = gql`
-  mutation UpdateProjectPermission(
-    $input: UpdateAccessmodProjectPermissionInput!
-  ) {
-    updateAccessmodProjectPermission(input: $input) {
-      success
-      permission {
-        id
-        mode
-      }
-      errors
-    }
-  }
-`;
-
-const ProjectPermissionsBlock = (props: {
-  project: ProjectPage_ProjectFragment;
-}) => {
-  const { project } = props;
-  const [updateProjectPermission] = useUpdateProjectPermissionMutation();
-  const { t } = useTranslation();
-
-  const columns = useMemo<Column[]>(
-    () => [
-      {
-        Header: t("Team or User"),
-        accessor: (row: any) => row["team"] || row["user"],
-        Cell: (cell) =>
-          cell.value.__typename === "User" ? (
-            <User small user={cell.value} />
-          ) : (
-            <Team team={cell.value} />
-          ),
-      },
-      {
-        Header: t("Mode"),
-        accessor: "mode",
-
-        Cell: (cell) => (
-          <>
-            {cell.row.state.isEdited ? (
-              <ProjectPermissionPicker
-                project={project}
-                permission={cell.row.original}
-                className="w-full"
-                required
-                value={cell.row.state.mode ?? cell.value}
-                onChange={(value) =>
-                  cell.row.setState({ isEdited: true, mode: value })
-                }
-              />
-            ) : (
-              formatPermissionMode(cell.value)
-            )}
-          </>
-        ),
-      },
-      {
-        Header: t("Created at"),
-        accessor: "createdAt",
-        Cell: (cell) => <Time datetime={cell.value} />,
-      },
-      {
-        Header: t("Updated at"),
-        accessor: "updatedAt",
-        Cell: (cell) => <Time datetime={cell.value} />,
-      },
-      {
-        id: "actions",
-        Header: "",
-        Cell: (cell) => (
-          <div className="flex flex-1 items-center justify-end gap-2">
-            {cell.row.state.isEdited ? (
-              <>
-                <Button
-                  variant="white"
-                  size="sm"
-                  onClick={() => {
-                    cell.row.setState({ isEdited: false });
-                  }}
-                >
-                  {t("Cancel")}
-                </Button>
-                <Button
-                  disabled={!Boolean(cell.row.state.mode)}
-                  variant="secondary"
-                  size="sm"
-                  onClick={async () => {
-                    await updateProjectPermission({
-                      variables: {
-                        input: {
-                          mode: cell.row.state.mode as PermissionMode,
-                          id: cell.row.id,
-                        },
-                      },
-                    });
-                    cell.row.setState({ isEdited: false });
-                  }}
-                >
-                  {t("Save")}
-                </Button>
-              </>
-            ) : (
-              <>
-                {(cell.row.original as any).authorizedActions.includes(
-                  AccessmodProjectPermissionAuthorizedActions.Update
-                ) && (
-                  <Button
-                    variant="white"
-                    size="sm"
-                    onClick={() =>
-                      cell.row.setState({
-                        isEdited: true,
-                        mode: null,
-                      })
-                    }
-                  >
-                    {t("Edit")}
-                  </Button>
-                )}
-                <DeleteProjectPermissionTrigger
-                  permission={cell.row.original as any}
-                >
-                  {({ onClick }) => (
-                    <Button variant="white" size="sm" onClick={onClick}>
-                      {t("Remove")}
-                    </Button>
-                  )}
-                </DeleteProjectPermissionTrigger>
-              </>
-            )}
-          </div>
-        ),
-      },
-    ],
-    [t, project, updateProjectPermission]
-  );
-  return (
-    <Block>
-      <h3 className="mb-4 flex items-center justify-between">
-        {t("Project Permissions")}
-      </h3>
-      <DataGrid
-        defaultSortBy={DEFAULT_PERMISSIONS_SORT}
-        idKey="id"
-        sortable
-        columns={columns}
-        data={project.permissions}
-        totalItems={project.permissions.length}
-        defaultPageSize={3}
-      />
-      <div className="mt-2 border-t border-gray-200 pt-4">
-        <h5 className="text-md mb-2 text-gray-700">
-          {t("Create a permission")}
-        </h5>
-        <CreateMembershipForm project={project} />
-      </div>
     </Block>
   );
 };
@@ -447,7 +315,6 @@ const ProjectPage: NextPageWithFragments = () => {
         )}
         <LatestAnalysisBlock project={project} />
         <LatestDatasetsBlock project={project} />
-        <ProjectPermissionsBlock project={project} />
       </PageContent>
     </Page>
   );
@@ -467,31 +334,13 @@ ProjectPage.fragments = {
       ...CreateAnalysisTrigger_project
       ...CreateDatasetTrigger_project
       ...EditProjectFormBlock_project
-      ...CreateMembershipForm_project
-      ...ProjectPermissionPicker_project
+      ...ChangeProjectOwnerDialog_project
       authorizedActions
       dem {
         id
         name
       }
-      permissions {
-        ...DeleteProjectPermissionTrigger_permission
-        ...ProjectPermissionPicker_permission
-        id
-        team {
-          __typename
-          id
-          name
-        }
-        authorizedActions
-        user {
-          __typename
-          ...User_user
-        }
-        mode
-        createdAt
-        updatedAt
-      }
+
       country {
         name
         code
@@ -510,18 +359,15 @@ ProjectPage.fragments = {
         ...Team_team
       }
     }
-    ${DeleteProjectPermissionTrigger.fragments.permission}
-    ${ProjectPermissionPicker.fragments.project}
-    ${ProjectPermissionPicker.fragments.permission}
     ${ProjectActionsMenu.fragments.project}
     ${User.fragments.user}
     ${Team.fragments.team}
     ${ProjectDatasetsTable.fragments.project}
+    ${ChangeProjectOwnerDialog.fragments.project}
     ${ProjectAnalysesTable.fragments.project}
     ${CreateAnalysisTrigger.fragments.project}
     ${CreateDatasetTrigger.fragments.project}
     ${EditProjectFormBlock.fragments.project}
-    ${CreateMembershipForm.fragments.project}
   `,
 };
 

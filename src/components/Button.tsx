@@ -17,7 +17,7 @@ export const Classes: { [key: string]: string } = {
   white:
     "text-gray-800 border-gray-300 bg-white hover:bg-gray-50 disabled:hover:bg-white",
   outlined:
-    "text-white hover:bg-white hover:text-gray-800 border-white disabled:hover:bg-white",
+    "text-gray-600 hover:bg-gray-100 hover:text-gray-800 disabled:hover:bg-white shadow-none outline-0 ",
 
   // Sizes
   sm: "text-xs px-2 py-1",
