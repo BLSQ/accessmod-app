@@ -22,7 +22,7 @@ type SortableListProps = {
   items: any[];
   handle?: boolean;
   onChange: (items: any[]) => void;
-  renderItem: (item: any, handleProps: any) => ReactNode;
+  renderItem: (item: any, index: number, handleProps: any) => ReactNode;
   getItemId?: (item: any) => string;
 };
 
@@ -32,7 +32,7 @@ const SortableList = (props: SortableListProps) => {
     onChange,
     handle,
     renderItem,
-    getItemId = (item) => item?.id,
+    getItemId = (item) => item?.id ?? "",
   } = props;
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -58,9 +58,9 @@ const SortableList = (props: SortableListProps) => {
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-        {ids.map((id) => (
+        {ids.map((id, index) => (
           <SortableItem handle={handle} key={id} id={id}>
-            {(handleProps) => renderItem(itemsMap[id], handleProps)}
+            {(handleProps) => renderItem(itemsMap[id], index, handleProps)}
           </SortableItem>
         ))}
       </SortableContext>

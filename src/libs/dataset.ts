@@ -9,6 +9,7 @@ import {
   AccessmodFile,
   AccessmodFilesetFormat,
   AccessmodFilesetRole,
+  AccessmodFilesetRoleCode,
   AccessmodFilesetStatus,
   AccessmodProject,
   CreateAccessmodFilesetError,
@@ -395,4 +396,49 @@ export async function createDataset(
   });
 
   return fileset;
+}
+
+export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
+  switch (roleCode) {
+    case AccessmodFilesetRoleCode.LandCover:
+      return {
+        labels: {
+          "20": i18n!.t("Shrubs"),
+          "30": i18n!.t("Herbaceous vegetation"),
+          "40": i18n!.t("Cropland"),
+          "50": i18n!.t("Urban"),
+          "60": i18n!.t("Sparse vegetation"),
+          "70": i18n!.t("Snow"),
+          "80": i18n!.t("Permanent water bodies"),
+          "90": i18n!.t("Herbaceous wetland"),
+          "100": i18n!.t("Moss and lichen"),
+          "110": i18n!.t("Closed forest"),
+          "120": i18n!.t("Open forest"),
+          "200": i18n!.t("Open sea"),
+        },
+      };
+    case AccessmodFilesetRoleCode.TransportNetwork:
+      return {
+        columns: ["highway", "surface", "smoothness", "tracktype"],
+        category_column: "highway",
+        values: [
+          "primary",
+          "primary_link",
+          "secondary",
+          "secondary_link",
+          "tertiary",
+          "tertiary_link",
+          "trunk",
+          "trunk_link",
+          "unclassified",
+          "residential",
+          "living_street",
+          "service",
+          "track",
+          "path",
+        ],
+      };
+    default:
+      return {};
+  }
 }
