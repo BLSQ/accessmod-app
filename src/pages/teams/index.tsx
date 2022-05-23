@@ -103,7 +103,7 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
               <thead>
                 <tr>
                   <th>{t("Name")}</th>
-                  <th>{t("Created by")}</th>
+                  <th>{t("Admin")}</th>
                   <th>{t("Users")}</th>
                   <th>
                     <span className="sr-only">{t("Actions")}</span>
@@ -128,11 +128,9 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
                       </Link>
                     </td>
                     <td>
-                      {
-                        team.memberships.items.find(
-                          (t) => t.role === MembershipRole.Admin
-                        )?.user.displayName
-                      }
+                      {team.memberships.items.find(
+                        (t) => t.role === MembershipRole.Admin
+                      )?.user.displayName || "-"}
                     </td>
                     <td>
                       {t("{{count}} members", {
