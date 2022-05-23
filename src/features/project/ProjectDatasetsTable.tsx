@@ -58,7 +58,6 @@ const PROJECT_DATASETS_QUERY = gql`
   ${DeleteDatasetTrigger.fragments.dataset}
   ${DatasetStatusBadge.fragments.dataset}
   ${User.fragments.user}
-  ${Team.fragments.team}
 `;
 
 type Props = {

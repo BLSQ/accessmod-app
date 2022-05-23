@@ -52,19 +52,6 @@ const UserMenu = (props: UserMenuProps) => {
           <Menu.Item>
             {({ active }) => (
               <MenuLink
-                href="/help"
-                className={clsx(
-                  "mx-1 block rounded px-4 py-2 text-sm",
-                  active && "bg-gray-200"
-                )}
-              >
-                {t("Help")}
-              </MenuLink>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <MenuLink
                 href="/logout"
                 className={clsx(
                   "mx-1 block rounded px-4 py-2 text-sm",
