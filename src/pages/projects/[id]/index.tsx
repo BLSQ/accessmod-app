@@ -9,8 +9,10 @@ import DescriptionList from "components/DescriptionList";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
+import Toggle from "components/Toggle";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
 import CreateDatasetTrigger from "features/dataset/CreateDatasetTrigger";
+import ChangeProjectOwnerDialog from "features/project/ChangeProjectOwnerDialog";
 import CreateMembershipForm from "features/project/CreateMembershipForm";
 import DeleteProjectPermissionTrigger from "features/project/DeleteProjectPermissionTrigger";
 import EditProjectFormBlock from "features/project/EditProjectFormBlock";
@@ -187,14 +189,52 @@ const ProjectGeneralInformationBlock = (props: {
           <span className="text-md">{project.crs}</span>
         </DescriptionList.Item>
 
+        <DescriptionList.Item label={t("Creation date")}>
+          <Time datetime={project.createdAt} format={DateTime.DATE_MED} />
+        </DescriptionList.Item>
+
+        <DescriptionList.Item
+          label={t("Owner")}
+          help={t("The user or team responsible for this project")}
+        >
+          <div className="flex">
+            {project.owner?.__typename === "User" && (
+              <User small user={project.owner} />
+            )}
+            {project.owner?.__typename === "Team" && (
+              <Team team={project.owner} />
+            )}
+            {project.authorizedActions.includes(
+              AccessmodProjectAuthorizedActions.CreatePermission
+            ) && (
+              <Toggle>
+                {({ isToggled, toggle }) => (
+                  <>
+                    <Button
+                      className="ml-1.5"
+                      variant="outlined"
+                      size="sm"
+                      onClick={toggle}
+                    >
+                      {t("Edit")}
+                    </Button>
+                    <ChangeProjectOwnerDialog
+                      project={project}
+                      open={isToggled}
+                      onClose={toggle}
+                    />
+                  </>
+                )}
+              </Toggle>
+            )}
+          </div>
+        </DescriptionList.Item>
+
         <DescriptionList.Item
           label={t("Author")}
           help={t("The user that created this project")}
         >
           <User small user={project.author} />
-        </DescriptionList.Item>
-        <DescriptionList.Item label={t("Creation date")}>
-          <Time datetime={project.createdAt} format={DateTime.DATE_MED} />
         </DescriptionList.Item>
       </DescriptionList>
     </Block>
@@ -469,6 +509,7 @@ ProjectPage.fragments = {
       ...EditProjectFormBlock_project
       ...CreateMembershipForm_project
       ...ProjectPermissionPicker_project
+      ...ChangeProjectOwnerDialog_project
       authorizedActions
       dem {
         id
@@ -517,6 +558,7 @@ ProjectPage.fragments = {
     ${User.fragments.user}
     ${Team.fragments.team}
     ${ProjectDatasetsTable.fragments.project}
+    ${ChangeProjectOwnerDialog.fragments.project}
     ${ProjectAnalysesTable.fragments.project}
     ${CreateAnalysisTrigger.fragments.project}
     ${CreateDatasetTrigger.fragments.project}

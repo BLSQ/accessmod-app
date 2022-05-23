@@ -1211,6 +1211,15 @@ export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFiles
 
 export type VectorDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
 
+export type ChangeProjectOwnershipMutationVariables = Exact<{
+  input: CreateAccessmodProjectPermissionInput;
+}>;
+
+
+export type ChangeProjectOwnershipMutation = { __typename?: 'Mutation', createAccessmodProjectPermission: { __typename?: 'CreateAccessmodProjectPermissionResult', success: boolean, errors: Array<CreateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string } | null } };
+
+export type ChangeProjectOwnerDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
+
 export type CreateProjectMembershipMutationVariables = Exact<{
   input: CreateAccessmodProjectPermissionInput;
 }>;
@@ -1261,7 +1270,7 @@ export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodPr
 
 export type EditProjectFormBlock_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> };
+export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
 
 export type DeleteAnalysisMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
@@ -1882,13 +1891,27 @@ export const DeleteProjectTrigger_ProjectFragmentDoc = gql`
   authorizedActions
 }
     `;
+export const ChangeProjectOwnerDialog_ProjectFragmentDoc = gql`
+    fragment ChangeProjectOwnerDialog_project on AccessmodProject {
+  id
+  owner {
+    __typename
+    ... on Team {
+      id
+      name
+    }
+  }
+}
+    `;
 export const ProjectActionsMenu_ProjectFragmentDoc = gql`
     fragment ProjectActionsMenu_project on AccessmodProject {
   id
   name
   ...DeleteProjectTrigger_project
+  ...ChangeProjectOwnerDialog_project
 }
-    ${DeleteProjectTrigger_ProjectFragmentDoc}`;
+    ${DeleteProjectTrigger_ProjectFragmentDoc}
+${ChangeProjectOwnerDialog_ProjectFragmentDoc}`;
 export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
     fragment ProjectAnalysesTable_project on AccessmodProject {
   id
@@ -1993,6 +2016,7 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   ...EditProjectFormBlock_project
   ...CreateMembershipForm_project
   ...ProjectPermissionPicker_project
+  ...ChangeProjectOwnerDialog_project
   authorizedActions
   dem {
     id
@@ -2042,6 +2066,7 @@ ${CreateDatasetTrigger_ProjectFragmentDoc}
 ${EditProjectFormBlock_ProjectFragmentDoc}
 ${CreateMembershipForm_ProjectFragmentDoc}
 ${ProjectPermissionPicker_ProjectFragmentDoc}
+${ChangeProjectOwnerDialog_ProjectFragmentDoc}
 ${DeleteProjectPermissionTrigger_PermissionFragmentDoc}
 ${ProjectPermissionPicker_PermissionFragmentDoc}
 ${User_UserFragmentDoc}
@@ -2519,6 +2544,43 @@ export function usePreviewDatasetDialogLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type PreviewDatasetDialogQueryHookResult = ReturnType<typeof usePreviewDatasetDialogQuery>;
 export type PreviewDatasetDialogLazyQueryHookResult = ReturnType<typeof usePreviewDatasetDialogLazyQuery>;
 export type PreviewDatasetDialogQueryResult = Apollo.QueryResult<PreviewDatasetDialogQuery, PreviewDatasetDialogQueryVariables>;
+export const ChangeProjectOwnershipDocument = gql`
+    mutation ChangeProjectOwnership($input: CreateAccessmodProjectPermissionInput!) {
+  createAccessmodProjectPermission(input: $input) {
+    success
+    errors
+    permission {
+      id
+    }
+  }
+}
+    `;
+export type ChangeProjectOwnershipMutationFn = Apollo.MutationFunction<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>;
+
+/**
+ * __useChangeProjectOwnershipMutation__
+ *
+ * To run a mutation, you first call `useChangeProjectOwnershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeProjectOwnershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeProjectOwnershipMutation, { data, loading, error }] = useChangeProjectOwnershipMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useChangeProjectOwnershipMutation(baseOptions?: Apollo.MutationHookOptions<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>(ChangeProjectOwnershipDocument, options);
+      }
+export type ChangeProjectOwnershipMutationHookResult = ReturnType<typeof useChangeProjectOwnershipMutation>;
+export type ChangeProjectOwnershipMutationResult = Apollo.MutationResult<ChangeProjectOwnershipMutation>;
+export type ChangeProjectOwnershipMutationOptions = Apollo.BaseMutationOptions<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>;
 export const CreateProjectMembershipDocument = gql`
     mutation CreateProjectMembership($input: CreateAccessmodProjectPermissionInput!) {
   createAccessmodProjectPermission(input: $input) {
