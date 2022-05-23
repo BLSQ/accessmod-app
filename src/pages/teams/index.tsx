@@ -10,7 +10,11 @@ import Toggle from "components/Toggle";
 import CreateTeamDialog from "features/team/TeamFormDialog";
 import useCacheKey from "hooks/useCacheKey";
 import usePrevious from "hooks/usePrevious";
-import { MeAuthorizedActions, useTeamsPageQuery } from "libs/graphql";
+import {
+  MeAuthorizedActions,
+  MembershipRole,
+  useTeamsPageQuery,
+} from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import _ from "lodash";
@@ -107,31 +111,40 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
                 </tr>
               </thead>
               <tbody>
-                {teams.items.map((team) => (
-                  <tr
-                    key={team.id}
-                    className="cursor-pointer"
-                    onClick={(e) => onRowClick(e, team)}
-                  >
-                    <td>
-                      <Link
-                        href={{
-                          pathname: routes.team,
-                          query: { teamId: team.id },
-                        }}
+                {teams.items.map(
+                  (team) =>
+                    console.log(team.memberships.items) || (
+                      <tr
+                        key={team.id}
+                        className="cursor-pointer"
+                        onClick={(e) => onRowClick(e, team)}
                       >
-                        <a className="hover:underline">{team.name}</a>
-                      </Link>
-                    </td>
-                    <td></td>
-                    <td>
-                      {t("{{count}} members", {
-                        count: team.memberships.totalItems,
-                      })}
-                    </td>
-                    <td></td>
-                  </tr>
-                ))}
+                        <td>
+                          <Link
+                            href={{
+                              pathname: routes.team,
+                              query: { teamId: team.id },
+                            }}
+                          >
+                            <a className="hover:underline">{team.name}</a>
+                          </Link>
+                        </td>
+                        <td>
+                          {
+                            team.memberships.items.find(
+                              (t) => t.role === MembershipRole.Admin
+                            )?.user.displayName
+                          }
+                        </td>
+                        <td>
+                          {t("{{count}} members", {
+                            count: team.memberships.totalItems,
+                          })}
+                        </td>
+                        <td></td>
+                      </tr>
+                    )
+                )}
               </tbody>
             </table>
             {teams.items.length > 0 ? (
@@ -184,11 +197,13 @@ export const getServerSideProps = createGetServerSideProps({
               memberships(page: 1, perPage: 5) {
                 totalItems
                 items {
+                  role
                   user {
                     id
                     email
                     firstName
                     lastName
+                    displayName
                     avatar {
                       initials
                       color

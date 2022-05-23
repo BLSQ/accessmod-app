@@ -4108,11 +4108,13 @@ export const TeamsPageDocument = gql`
       memberships(page: 1, perPage: 5) {
         totalItems
         items {
+          role
           user {
             id
             email
             firstName
             lastName
+            displayName
             avatar {
               initials
               color
