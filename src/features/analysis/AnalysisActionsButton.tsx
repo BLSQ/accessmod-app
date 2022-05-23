@@ -65,7 +65,9 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
                   query: { projectId: project.id, analysisId: analysis.id },
                 }}
               >
-                <a className="w-full text-left">{t("Edit")}</a>
+                <a className="-mx-2 -my-2 block flex-1 px-2 py-2 text-left">
+                  {t("Edit")}
+                </a>
               </Link>
             </Menu.Item>
           )}
