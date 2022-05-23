@@ -13,9 +13,6 @@ type Props = {
 };
 
 const EditTeamTrigger = ({ team, children }: Props) => {
-  if (!team.authorizedActions.includes(TeamAuthorizedActions.Update)) {
-    return null;
-  }
   return (
     <Toggle>
       {({ isToggled, toggle }) => (

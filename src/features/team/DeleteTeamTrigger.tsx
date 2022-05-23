@@ -46,9 +46,6 @@ const DeleteTeamTrigger = ({ team, children, className }: Props) => {
     }
   }, [team, router, deleteTeam, t, clearCache]);
 
-  if (!team.authorizedActions.includes(TeamAuthorizedActions.Delete)) {
-    return null;
-  }
   if (children) {
     return children({ onClick: onDeleteClick });
   } else {
