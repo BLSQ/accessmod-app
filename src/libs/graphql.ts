@@ -1220,15 +1220,6 @@ export type ChangeProjectOwnershipMutation = { __typename?: 'Mutation', createAc
 
 export type ChangeProjectOwnerDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
 
-export type CreateProjectMembershipMutationVariables = Exact<{
-  input: CreateAccessmodProjectPermissionInput;
-}>;
-
-
-export type CreateProjectMembershipMutation = { __typename?: 'Mutation', createAccessmodProjectPermission: { __typename?: 'CreateAccessmodProjectPermissionResult', success: boolean, errors: Array<CreateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string } | null } };
-
-export type CreateMembershipForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, id: string, team?: { __typename: 'Team', id: string } | null }> };
-
 export type CreateProjectMutationVariables = Exact<{
   input?: InputMaybe<CreateAccessmodProjectByCountryInput>;
 }>;
@@ -1475,21 +1466,14 @@ export type ProjectDataPageQueryVariables = Exact<{
 
 export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
-export type UpdateProjectPermissionMutationVariables = Exact<{
-  input: UpdateAccessmodProjectPermissionInput;
-}>;
-
-
-export type UpdateProjectPermissionMutation = { __typename?: 'Mutation', updateAccessmodProjectPermission: { __typename?: 'UpdateAccessmodProjectPermissionResult', success: boolean, errors: Array<UpdateAccessmodProjectPermissionError>, permission?: { __typename?: 'AccessmodProjectPermission', id: string, mode: PermissionMode } | null } };
-
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, permissions: Array<{ __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions>, mode: PermissionMode, createdAt: any, updatedAt: any, team?: { __typename: 'Team', id: string, name: string } | null, user?: { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }>, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, firstName?: string | null, lastName?: string | null, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', firstName?: string | null, lastName?: string | null, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
@@ -1801,6 +1785,26 @@ export const PreviewDatasetDialog_DatasetFragmentDoc = gql`
   name
 }
     `;
+export const DeleteProjectPermissionTrigger_PermissionFragmentDoc = gql`
+    fragment DeleteProjectPermissionTrigger_permission on AccessmodProjectPermission {
+  id
+  authorizedActions
+}
+    `;
+export const ProjectPermissionPicker_ProjectFragmentDoc = gql`
+    fragment ProjectPermissionPicker_project on AccessmodProject {
+  permissions {
+    mode
+    id
+  }
+}
+    `;
+export const ProjectPermissionPicker_PermissionFragmentDoc = gql`
+    fragment ProjectPermissionPicker_permission on AccessmodProjectPermission {
+  id
+  mode
+}
+    `;
 export const ProjectCard_ProjectFragmentDoc = gql`
     fragment ProjectCard_project on AccessmodProject {
   id
@@ -1951,39 +1955,6 @@ export const EditProjectFormBlock_ProjectFragmentDoc = gql`
   id
 }
     `;
-export const ProjectPermissionPicker_ProjectFragmentDoc = gql`
-    fragment ProjectPermissionPicker_project on AccessmodProject {
-  permissions {
-    mode
-    id
-  }
-}
-    `;
-export const CreateMembershipForm_ProjectFragmentDoc = gql`
-    fragment CreateMembershipForm_project on AccessmodProject {
-  id
-  ...ProjectPermissionPicker_project
-  permissions {
-    mode
-    team {
-      __typename
-      id
-    }
-  }
-}
-    ${ProjectPermissionPicker_ProjectFragmentDoc}`;
-export const DeleteProjectPermissionTrigger_PermissionFragmentDoc = gql`
-    fragment DeleteProjectPermissionTrigger_permission on AccessmodProjectPermission {
-  id
-  authorizedActions
-}
-    `;
-export const ProjectPermissionPicker_PermissionFragmentDoc = gql`
-    fragment ProjectPermissionPicker_permission on AccessmodProjectPermission {
-  id
-  mode
-}
-    `;
 export const User_UserFragmentDoc = gql`
     fragment User_user on User {
   firstName
@@ -2014,31 +1985,11 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   ...CreateAnalysisTrigger_project
   ...CreateDatasetTrigger_project
   ...EditProjectFormBlock_project
-  ...CreateMembershipForm_project
-  ...ProjectPermissionPicker_project
   ...ChangeProjectOwnerDialog_project
   authorizedActions
   dem {
     id
     name
-  }
-  permissions {
-    ...DeleteProjectPermissionTrigger_permission
-    ...ProjectPermissionPicker_permission
-    id
-    team {
-      __typename
-      id
-      name
-    }
-    authorizedActions
-    user {
-      __typename
-      ...User_user
-    }
-    mode
-    createdAt
-    updatedAt
   }
   country {
     name
@@ -2064,11 +2015,7 @@ ${ProjectDatasetsTable_ProjectFragmentDoc}
 ${CreateAnalysisTrigger_ProjectFragmentDoc}
 ${CreateDatasetTrigger_ProjectFragmentDoc}
 ${EditProjectFormBlock_ProjectFragmentDoc}
-${CreateMembershipForm_ProjectFragmentDoc}
-${ProjectPermissionPicker_ProjectFragmentDoc}
 ${ChangeProjectOwnerDialog_ProjectFragmentDoc}
-${DeleteProjectPermissionTrigger_PermissionFragmentDoc}
-${ProjectPermissionPicker_PermissionFragmentDoc}
 ${User_UserFragmentDoc}
 ${Team_TeamFragmentDoc}`;
 export const HeaderDocument = gql`
@@ -2581,43 +2528,6 @@ export function useChangeProjectOwnershipMutation(baseOptions?: Apollo.MutationH
 export type ChangeProjectOwnershipMutationHookResult = ReturnType<typeof useChangeProjectOwnershipMutation>;
 export type ChangeProjectOwnershipMutationResult = Apollo.MutationResult<ChangeProjectOwnershipMutation>;
 export type ChangeProjectOwnershipMutationOptions = Apollo.BaseMutationOptions<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>;
-export const CreateProjectMembershipDocument = gql`
-    mutation CreateProjectMembership($input: CreateAccessmodProjectPermissionInput!) {
-  createAccessmodProjectPermission(input: $input) {
-    success
-    errors
-    permission {
-      id
-    }
-  }
-}
-    `;
-export type CreateProjectMembershipMutationFn = Apollo.MutationFunction<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>;
-
-/**
- * __useCreateProjectMembershipMutation__
- *
- * To run a mutation, you first call `useCreateProjectMembershipMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProjectMembershipMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createProjectMembershipMutation, { data, loading, error }] = useCreateProjectMembershipMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateProjectMembershipMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>(CreateProjectMembershipDocument, options);
-      }
-export type CreateProjectMembershipMutationHookResult = ReturnType<typeof useCreateProjectMembershipMutation>;
-export type CreateProjectMembershipMutationResult = Apollo.MutationResult<CreateProjectMembershipMutation>;
-export type CreateProjectMembershipMutationOptions = Apollo.BaseMutationOptions<CreateProjectMembershipMutation, CreateProjectMembershipMutationVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($input: CreateAccessmodProjectByCountryInput) {
   createAccessmodProjectByCountry(input: $input) {
@@ -3911,44 +3821,6 @@ export function useProjectDataPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type ProjectDataPageQueryHookResult = ReturnType<typeof useProjectDataPageQuery>;
 export type ProjectDataPageLazyQueryHookResult = ReturnType<typeof useProjectDataPageLazyQuery>;
 export type ProjectDataPageQueryResult = Apollo.QueryResult<ProjectDataPageQuery, ProjectDataPageQueryVariables>;
-export const UpdateProjectPermissionDocument = gql`
-    mutation UpdateProjectPermission($input: UpdateAccessmodProjectPermissionInput!) {
-  updateAccessmodProjectPermission(input: $input) {
-    success
-    permission {
-      id
-      mode
-    }
-    errors
-  }
-}
-    `;
-export type UpdateProjectPermissionMutationFn = Apollo.MutationFunction<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>;
-
-/**
- * __useUpdateProjectPermissionMutation__
- *
- * To run a mutation, you first call `useUpdateProjectPermissionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProjectPermissionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProjectPermissionMutation, { data, loading, error }] = useUpdateProjectPermissionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProjectPermissionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>(UpdateProjectPermissionDocument, options);
-      }
-export type UpdateProjectPermissionMutationHookResult = ReturnType<typeof useUpdateProjectPermissionMutation>;
-export type UpdateProjectPermissionMutationResult = Apollo.MutationResult<UpdateProjectPermissionMutation>;
-export type UpdateProjectPermissionMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPermissionMutation, UpdateProjectPermissionMutationVariables>;
 export const ProjectPageDocument = gql`
     query ProjectPage($id: String!) {
   project: accessmodProject(id: $id) {
