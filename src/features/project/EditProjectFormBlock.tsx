@@ -169,22 +169,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
           ></Textarea>
         </Field>
 
-        <Field
-          required
-          className="col-span-2"
-          label={t("Digital elevation model")}
-          name=""
-          disabled={form.isSubmitting}
-        >
-          <DatasetPicker
-            dataset={form.formData.dem}
-            project={data.project}
-            roleCode={AccessmodFilesetRoleCode.Dem}
-            onChange={(value) => form.setFieldValue("dem", value)}
-            disabled={form.isSubmitting}
-          />
-        </Field>
-
         {form.submitError && (
           <p className="col-span-4 text-sm text-red-600">{form.submitError}</p>
         )}
