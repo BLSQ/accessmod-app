@@ -287,7 +287,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             </p>
             <RadioGroup
               className="col-span-2 mb-2"
-              value={form.formData.useExistingStack}
+              value={form.formData.useExistingStack ?? "n"}
               required
               onChange={(event) =>
                 form.setFieldValue("useExistingStack", event.target.value)
@@ -339,7 +339,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
                   <Field
                     label={t("Transport Network")}
                     name="transportNetwork"
-                    required
                     error={
                       form.touched.transportNetwork &&
                       form.errors.transportNetwork
@@ -358,7 +357,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
                   <Field
                     label={t("Water")}
                     name="water"
-                    required
                     error={form.touched.water && form.errors.water}
                   >
                     <DatasetPicker
