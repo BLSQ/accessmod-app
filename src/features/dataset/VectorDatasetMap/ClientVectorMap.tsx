@@ -11,7 +11,7 @@ const ClientVectorMap = (props: Props) => {
   const { geoJSON, height, loading = false, ...delegated } = props;
 
   return (
-    <Map height={height} loading={loading} {...delegated}>
+    <Map style={{ height }} loading={loading} {...delegated}>
       {geoJSON && <BigGeoJsonLayer data={geoJSON} />}
     </Map>
   );

@@ -8,22 +8,22 @@ import { MapContainer, MapContainerProps, TileLayer } from "react-leaflet";
 
 export type MapProps = {
   loading?: boolean;
-  height?: number;
+  style?: object;
 } & MapContainerProps;
 const Map = (props: MapProps) => {
   const {
     children,
     center = [12.2395, -1.5584094],
     zoom = 7,
-    height = 600,
     loading,
     className,
+    style = { height: 600 },
     ...delegated
   } = props;
   const { t } = useTranslation();
 
   return (
-    <div className={clsx(className, "relative w-full", `h-[${height}px]`)}>
+    <div className={clsx(className, "relative h-full w-full")} style={style}>
       <MapContainer
         center={center}
         zoom={zoom}
