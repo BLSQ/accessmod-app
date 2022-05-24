@@ -286,7 +286,7 @@ type CreateDatasetInput = {
   role: Pick<AccessmodFilesetRole, "id" | "name">;
   files?: File[];
   automatic?: boolean;
-  metadata: Scalars["AccessmodFilesetMetadata"];
+  metadata?: Scalars["AccessmodFilesetMetadata"];
 };
 
 type CreateDatasetOptions = {
