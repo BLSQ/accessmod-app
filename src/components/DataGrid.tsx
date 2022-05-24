@@ -54,6 +54,7 @@ interface IDataGridProps {
   totalPages?: number;
   totalItems?: number;
   idKey?: string;
+  skipPageReset?: boolean;
   defaultPageSize?: number;
   className?: string;
   defaultSortBy?: SortingRule<object>[];
@@ -84,6 +85,7 @@ const DataGrid = (props: DataGridProps) => {
     data,
     theme = DATA_GRID_DEFAULT_THEME,
     onSelectionChange,
+    skipPageReset = false,
     fetchData,
     sortable = false,
     totalItems,
@@ -145,6 +147,7 @@ const DataGrid = (props: DataGridProps) => {
 
       // Pagination
       manualPagination: Boolean(fetchData),
+      autoResetPage: !skipPageReset,
       ...(Boolean(fetchData) ? { pageCount: -1 } : {}),
 
       // Initial state

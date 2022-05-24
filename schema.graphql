@@ -409,6 +409,7 @@ type DeleteAccessmodAnalysisResult {
 
 enum DeleteAccessmodFilesetError {
   NOT_FOUND
+  FILESET_IN_USE
 }
 
 input DeleteAccessmodFilesetInput {
@@ -561,11 +562,12 @@ type Mutation {
   createAccessmodProjectPermission(input: CreateAccessmodProjectPermissionInput!): CreateAccessmodProjectPermissionResult!
   updateAccessmodProjectPermission(input: UpdateAccessmodProjectPermissionInput!): UpdateAccessmodProjectPermissionResult!
   deleteAccessmodProjectPermission(input: DeleteAccessmodProjectPermissionInput!): DeleteAccessmodProjectPermissionResult!
-  createAccessmodFileset(input: CreateAccessmodFilesetInput): CreateAccessmodFilesetResult!
-  deleteAccessmodFileset(input: DeleteAccessmodFilesetInput): DeleteAccessmodFilesetResult!
-  prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput): PrepareAccessmodFileUploadResult!
-  prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput): PrepareAccessmodFileDownloadResult!
-  createAccessmodFile(input: CreateAccessmodFileInput): CreateAccessmodFileResult!
+  createAccessmodFileset(input: CreateAccessmodFilesetInput!): CreateAccessmodFilesetResult!
+  updateAccessmodFileset(input: UpdateAccessmodFilesetInput!): UpdateAccessmodFilesetResult!
+  deleteAccessmodFileset(input: DeleteAccessmodFilesetInput!): DeleteAccessmodFilesetResult!
+  prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput!): PrepareAccessmodFileUploadResult!
+  prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput!): PrepareAccessmodFileDownloadResult!
+  createAccessmodFile(input: CreateAccessmodFileInput!): CreateAccessmodFileResult!
   createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult!
   updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult!
   launchAccessmodAnalysis(input: LaunchAccessmodAnalysisInput): LaunchAccessmodAnalysisResult!
@@ -710,6 +712,26 @@ type UpdateAccessmodAccessibilityAnalysisResult {
   success: Boolean!
   analysis: AccessmodAccessibilityAnalysis
   errors: [UpdateAccessmodAccessibilityAnalysisError!]!
+}
+
+enum UpdateAccessmodFilesetError {
+  NOT_FOUND
+  NAME_DUPLICATE
+  INVALID
+  PERMISSION_DENIED
+}
+
+input UpdateAccessmodFilesetInput {
+  id: String!
+  name: String
+  roleId: String
+  metadata: AccessmodFilesetMetadata
+}
+
+type UpdateAccessmodFilesetResult {
+  success: Boolean!
+  fileset: AccessmodFileset
+  errors: [UpdateAccessmodFilesetError!]!
 }
 
 enum UpdateAccessmodProjectError {

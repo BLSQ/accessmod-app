@@ -5,7 +5,12 @@ import Field from "components/forms/Field";
 import Spinner from "components/Spinner";
 import useCacheKey from "hooks/useCacheKey";
 import useForm from "hooks/useForm";
-import { createDataset, guessFileMimeType } from "libs/dataset";
+import {
+  createDataset,
+  guessFileMimeType,
+  MetadataFormValues,
+  toMetadataInput,
+} from "libs/dataset";
 import {
   AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
@@ -43,13 +48,12 @@ type Form = {
   project: any;
   name: string;
   files: File[];
-  metadata: Scalars["AccessmodFilesetMetadata"];
+  metadata: MetadataFormValues;
 };
 
 const DatasetFormDialog = (props: Props) => {
   const { open, onClose, project, role } = props;
   const [progress, setProgress] = useState(0);
-  const clearFilesets = useCacheKey(["filesets"]);
   const { t } = useTranslation();
   const form = useForm<Form>({
     initialState: {
@@ -92,14 +96,13 @@ const DatasetFormDialog = (props: Props) => {
             automatic: false,
             files: form.formData.files,
             name: form.formData.name,
-            metadata: form.formData.metadata,
+            metadata: toMetadataInput(form.formData.metadata),
           },
           { onProgress: setProgress }
         );
 
         form.resetForm();
         onClose("submit", dataset);
-        clearFilesets();
       }
     },
   });
@@ -198,7 +201,7 @@ const DatasetFormDialog = (props: Props) => {
               <DatasetMetadataForm
                 roleCode={form.formData.role.code}
                 files={form.formData.files}
-                metadata={form.formData.metadata}
+                metadata={form.formData.metadata!}
                 onChange={(metadata) =>
                   form.setFieldValue("metadata", metadata)
                 }

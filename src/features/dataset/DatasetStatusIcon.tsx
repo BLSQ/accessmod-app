@@ -22,6 +22,7 @@ const DatasetStatusIcon = ({
     case AccessmodFilesetStatus.Invalid:
       return (
         <Tooltip
+          as="span"
           label={t("This dataset is invalid: {{message}}", {
             message: dataset.metadata?.validation_error ?? t("Unknown error"),
           })}
@@ -31,25 +32,28 @@ const DatasetStatusIcon = ({
       );
     case AccessmodFilesetStatus.Valid:
       return (
-        <Tooltip label={t("Valid")}>
+        <Tooltip label={t("Valid")} as="span">
           <CheckCircleIcon className="h-5 text-teal-400" />
         </Tooltip>
       );
     case AccessmodFilesetStatus.ToAcquire:
       return (
-        <Tooltip label={t("This dataset will be generated automatically.")}>
+        <Tooltip
+          label={t("This dataset will be generated automatically.")}
+          as="span"
+        >
           <CloudIcon className="h-5 w-5 text-lochmara-100" />
         </Tooltip>
       );
     case AccessmodFilesetStatus.Pending:
       return (
-        <Tooltip label={t("Pending")}>
+        <Tooltip label={t("Pending")} as="span">
           <PauseIcon className="h-5 text-lochmara-100" />
         </Tooltip>
       );
     case AccessmodFilesetStatus.Validating:
       return (
-        <Tooltip label={t("Validating")}>
+        <Tooltip label={t("Validating")} as="span">
           <PauseIcon className="h-5 text-lochmara-100" />
         </Tooltip>
       );
