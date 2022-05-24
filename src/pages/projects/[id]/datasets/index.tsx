@@ -82,7 +82,7 @@ const ProjectDataPage = () => {
               onClick={() => toggleUploadDialog(true)}
               leadingIcon={<PlusIcon className="h-4 w-4" />}
             >
-              {t("New Dataset")}
+              {t("Upload dataset")}
             </Button>
           )}
         </div>

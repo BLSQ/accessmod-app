@@ -124,7 +124,7 @@ const LatestDatasetsBlock = ({
                 size="sm"
                 leadingIcon={<PlusIcon className="h-4 w-4" />}
               >
-                {t("New Dataset")}
+                {t("Upload dataset")}
               </Button>
             )}
           </CreateDatasetTrigger>

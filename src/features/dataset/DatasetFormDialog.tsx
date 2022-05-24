@@ -121,7 +121,7 @@ const DatasetFormDialog = (props: Props) => {
       closeOnOutsideClick={false}
     >
       <form onSubmit={form.handleSubmit}>
-        <Dialog.Title>{t("Create a dataset")}</Dialog.Title>
+        <Dialog.Title>{t("Upload dataset")}</Dialog.Title>
 
         <Dialog.Content className="px-9 py-8 ">
           <div className="space-y-4">
