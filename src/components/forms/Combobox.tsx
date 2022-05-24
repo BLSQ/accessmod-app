@@ -152,6 +152,7 @@ const Combobox = (props: ComboboxProps) => {
               >
                 <input
                   className="flex-1 placeholder-gray-600 placeholder-opacity-70 outline-none"
+                  autoComplete="off"
                   placeholder={placeholder}
                 />
               </UICombobox.Input>
