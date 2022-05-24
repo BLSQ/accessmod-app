@@ -19,6 +19,7 @@ import {
   GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
   GetUploadUrlMutation,
+  Scalars,
 } from "./graphql";
 
 const GET_PRESIGNED_MUTATION = gql`
@@ -285,6 +286,7 @@ type CreateDatasetInput = {
   role: Pick<AccessmodFilesetRole, "id" | "name">;
   files?: File[];
   automatic?: boolean;
+  metadata?: Scalars["AccessmodFilesetMetadata"];
 };
 
 type CreateDatasetOptions = {
@@ -292,7 +294,14 @@ type CreateDatasetOptions = {
 };
 
 export async function createDataset(
-  { name, project, role, automatic = false, files = [] }: CreateDatasetInput,
+  {
+    name,
+    project,
+    role,
+    automatic = false,
+    files = [],
+    metadata = {},
+  }: CreateDatasetInput,
   { onProgress }: CreateDatasetOptions = {}
 ) {
   const client = getApolloClient();
@@ -301,6 +310,7 @@ export async function createDataset(
     projectId: project.id,
     roleId: role.id,
     automatic,
+    metadata,
     name:
       name ??
       `Automatic ${role.name} (${DateTime.now().toLocaleString(

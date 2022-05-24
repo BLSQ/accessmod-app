@@ -30,7 +30,7 @@ type Form = {
   country: Country;
 };
 const MUTATION = gql`
-  mutation CreateProject($input: CreateAccessmodProjectByCountryInput) {
+  mutation CreateProject($input: CreateAccessmodProjectByCountryInput!) {
     createAccessmodProjectByCountry(input: $input) {
       success
       project {

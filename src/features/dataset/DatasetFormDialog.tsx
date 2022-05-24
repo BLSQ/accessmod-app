@@ -10,12 +10,14 @@ import {
   AccessmodFilesetFormat,
   AccessmodFilesetRoleCode,
   DatasetFormDialog_ProjectFragment,
+  Scalars,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import FilesetRolePicker from "../FilesetRolePicker";
 import ProjectPicker from "../project/ProjectPicker";
 import DatasetFileInput from "./DatasetFileInput";
+import DatasetMetadataForm from "./DatasetMetadataForm";
 
 type Props = {
   onClose: (
@@ -41,6 +43,7 @@ type Form = {
   project: any;
   name: string;
   files: File[];
+  metadata: Scalars["AccessmodFilesetMetadata"];
 };
 
 const DatasetFormDialog = (props: Props) => {
@@ -54,6 +57,7 @@ const DatasetFormDialog = (props: Props) => {
       files: [],
       name: "",
       project,
+      metadata: {},
     },
     validate: (values) => {
       const errors = {} as any;
@@ -88,6 +92,7 @@ const DatasetFormDialog = (props: Props) => {
             automatic: false,
             files: form.formData.files,
             name: form.formData.name,
+            metadata: form.formData.metadata,
           },
           { onProgress: setProgress }
         );
@@ -107,6 +112,17 @@ const DatasetFormDialog = (props: Props) => {
       form.setFieldValue("role", role, false);
     }
   }, [project, role, form]);
+
+  useEffect(() => {
+    if (!form.formData.name && form.formData.files?.length) {
+      form.setFieldValue(
+        "name",
+        form.formData.files[0].name.split(".").slice(0, -1).join("")
+      );
+    }
+    // We only want this useEffect to be triggered when the user changes the files
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.formData.files]);
 
   const handleClose = () => {
     form.resetForm();
@@ -178,6 +194,16 @@ const DatasetFormDialog = (props: Props) => {
               </Field>
             )}
 
+            {form.formData.role && form.formData.files?.length ? (
+              <DatasetMetadataForm
+                roleCode={form.formData.role.code}
+                files={form.formData.files}
+                metadata={form.formData.metadata}
+                onChange={(metadata) =>
+                  form.setFieldValue("metadata", metadata)
+                }
+              />
+            ) : undefined}
             {form.submitError && (
               <div className="mt-3 text-sm text-danger">{form.submitError}</div>
             )}

@@ -335,6 +335,7 @@ export enum CreateAccessmodFilesetError {
 
 export type CreateAccessmodFilesetInput = {
   automatic?: InputMaybe<Scalars['Boolean']>;
+  metadata?: InputMaybe<Scalars['AccessmodFilesetMetadata']>;
   name: Scalars['String'];
   projectId: Scalars['String'];
   roleId: Scalars['String'];
@@ -629,7 +630,7 @@ export type MutationCreateAccessmodFilesetArgs = {
 
 
 export type MutationCreateAccessmodProjectByCountryArgs = {
-  input?: InputMaybe<CreateAccessmodProjectByCountryInput>;
+  input: CreateAccessmodProjectByCountryInput;
 };
 
 
@@ -659,7 +660,7 @@ export type MutationDeleteAccessmodFilesetArgs = {
 
 
 export type MutationDeleteAccessmodProjectArgs = {
-  input?: InputMaybe<DeleteAccessmodProjectInput>;
+  input: DeleteAccessmodProjectInput;
 };
 
 
@@ -714,7 +715,7 @@ export type MutationUpdateAccessmodAccessibilityAnalysisArgs = {
 
 
 export type MutationUpdateAccessmodProjectArgs = {
-  input?: InputMaybe<UpdateAccessmodProjectInput>;
+  input: UpdateAccessmodProjectInput;
 };
 
 
@@ -1227,7 +1228,7 @@ export type ChangeProjectOwnershipMutation = { __typename?: 'Mutation', createAc
 export type ChangeProjectOwnerDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
 
 export type CreateProjectMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodProjectByCountryInput>;
+  input: CreateAccessmodProjectByCountryInput;
 }>;
 
 
@@ -1243,7 +1244,7 @@ export type DeleteProjectPermissionMutation = { __typename?: 'Mutation', deleteA
 export type DeleteProjectPermissionTrigger_PermissionFragment = { __typename?: 'AccessmodProjectPermission', id: string, authorizedActions: Array<AccessmodProjectPermissionAuthorizedActions> };
 
 export type DeleteProjectMutationVariables = Exact<{
-  input?: InputMaybe<DeleteAccessmodProjectInput>;
+  input: DeleteAccessmodProjectInput;
 }>;
 
 
@@ -1259,7 +1260,7 @@ export type EditProjectQueryVariables = Exact<{
 export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
-  input?: InputMaybe<UpdateAccessmodProjectInput>;
+  input: UpdateAccessmodProjectInput;
 }>;
 
 
@@ -2537,7 +2538,7 @@ export type ChangeProjectOwnershipMutationHookResult = ReturnType<typeof useChan
 export type ChangeProjectOwnershipMutationResult = Apollo.MutationResult<ChangeProjectOwnershipMutation>;
 export type ChangeProjectOwnershipMutationOptions = Apollo.BaseMutationOptions<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>;
 export const CreateProjectDocument = gql`
-    mutation CreateProject($input: CreateAccessmodProjectByCountryInput) {
+    mutation CreateProject($input: CreateAccessmodProjectByCountryInput!) {
   createAccessmodProjectByCountry(input: $input) {
     success
     project {
@@ -2607,7 +2608,7 @@ export type DeleteProjectPermissionMutationHookResult = ReturnType<typeof useDel
 export type DeleteProjectPermissionMutationResult = Apollo.MutationResult<DeleteProjectPermissionMutation>;
 export type DeleteProjectPermissionMutationOptions = Apollo.BaseMutationOptions<DeleteProjectPermissionMutation, DeleteProjectPermissionMutationVariables>;
 export const DeleteProjectDocument = gql`
-    mutation DeleteProject($input: DeleteAccessmodProjectInput) {
+    mutation DeleteProject($input: DeleteAccessmodProjectInput!) {
   deleteAccessmodProject(input: $input) {
     success
   }
@@ -2683,7 +2684,7 @@ export type EditProjectQueryHookResult = ReturnType<typeof useEditProjectQuery>;
 export type EditProjectLazyQueryHookResult = ReturnType<typeof useEditProjectLazyQuery>;
 export type EditProjectQueryResult = Apollo.QueryResult<EditProjectQuery, EditProjectQueryVariables>;
 export const UpdateProjectDocument = gql`
-    mutation UpdateProject($input: UpdateAccessmodProjectInput) {
+    mutation UpdateProject($input: UpdateAccessmodProjectInput!) {
   updateAccessmodProject(input: $input) {
     success
     errors
