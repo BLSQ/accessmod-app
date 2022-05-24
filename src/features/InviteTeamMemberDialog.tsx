@@ -121,7 +121,7 @@ const InviteTeamMemberDialog = (props: Props) => {
         </Dialog.Content>
 
         <Dialog.Actions>
-          <Button type="button" onClick={handleClose} variant="blank">
+          <Button type="button" onClick={handleClose} variant="white">
             {t("Cancel")}
           </Button>
           <Button
