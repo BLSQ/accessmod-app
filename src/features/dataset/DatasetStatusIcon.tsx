@@ -22,7 +22,9 @@ const DatasetStatusIcon = ({
     case AccessmodFilesetStatus.Invalid:
       return (
         <Tooltip
-          label={t("This dataset is invalid. Please update its metadata.")}
+          label={t("This dataset is invalid: {{message}}", {
+            message: dataset.metadata?.validation_error ?? t("Unknown error"),
+          })}
         >
           <ExclamationCircleIcon className="h-4 text-amber-300" />
         </Tooltip>
@@ -60,6 +62,7 @@ DatasetStatusIcon.fragments = {
   dataset: gql`
     fragment DatasetStatusIcon_dataset on AccessmodFileset {
       status
+      metadata
     }
   `,
 };

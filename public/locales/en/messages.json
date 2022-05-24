@@ -199,7 +199,7 @@
   "There is no result": "There is no result",
   "There is no team": "There is no team",
   "This dataset cannot be opened in the browser. Please download it.": "This dataset cannot be opened in the browser. Please download it.",
-  "This dataset is invalid. Please update its metadata.": "This dataset is invalid. Please update its metadata.",
+  "This dataset is invalid: {{message}}": "This dataset is invalid: {{message}}",
   "This dataset will be generated automatically.": "This dataset will be generated automatically.",
   "This layer does not exist anymore": "This layer does not exist anymore",
   "This project is currently a user project. By selecting a team below it will become a team project and be shared with all of the users of the team.": "This project is currently a user project. By selecting a team below it will become a team project and be shared with all of the users of the team.",
