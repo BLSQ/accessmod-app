@@ -14,7 +14,7 @@ import {
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useEffect } from "react";
 import CountryPicker from "../CountryPicker";
 
 type Props = {
@@ -26,7 +26,7 @@ type Form = {
   name: string;
   description: string;
   spatialResolution: string;
-  crs: number;
+  crs: string;
   country: Country;
 };
 const MUTATION = gql`
@@ -62,6 +62,10 @@ const CreateProjectDialog = (props: Props) => {
         errors.spatialResolution = t("Enter a spatial resolution");
       }
 
+      if (!values.crs) {
+        errors.crs = t("Enter a CRS");
+      }
+
       return errors;
     },
 
@@ -73,7 +77,7 @@ const CreateProjectDialog = (props: Props) => {
             spatialResolution: parseInt(values.spatialResolution, 10),
             name: values.name,
             country: { code: values.country.code },
-            crs: values.country.whoInfo?.defaultCRS || 6933,
+            crs: parseInt(values.crs, 10),
           },
         },
       });
@@ -85,8 +89,9 @@ const CreateProjectDialog = (props: Props) => {
         mutation.data.createAccessmodProjectByCountry;
 
       if (success && project) {
-        router.push(`/projects/${encodeURIComponent(project.id)}`);
+        form.resetForm();
         clearCache();
+        await router.push(`/projects/${encodeURIComponent(project.id)}`);
         onClose();
       } else if (errors.includes(CreateAccessmodProjectError.NameDuplicate)) {
         throw new Error(t("A project already exists with this name"));
@@ -95,6 +100,16 @@ const CreateProjectDialog = (props: Props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (!form.formData.country) return;
+    form.setFieldValue(
+      "crs",
+      `${form.formData.country.whoInfo?.defaultCRS || 6933}`
+    );
+    // We do not add form as a dependency to only trigger the useEffect when country changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.formData.country]);
 
   const clearCache = useCacheKey("projects");
 
@@ -108,20 +123,22 @@ const CreateProjectDialog = (props: Props) => {
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{t("Create a new Project")}</Dialog.Title>
         <Dialog.Content className="space-y-4 px-9 py-8">
-          <Field
-            label={t("Project name")}
-            required
-            name="name"
-            disabled={form.isSubmitting}
-            type="text"
-            onChange={form.handleInputChange}
-            error={form.touched.name && form.errors.name}
-          />
           <div className="grid grid-cols-2 gap-4">
+            <Field
+              label={t("Project name")}
+              required
+              className="col-span-2"
+              name="name"
+              disabled={form.isSubmitting}
+              type="text"
+              onChange={form.handleInputChange}
+              error={form.touched.name && form.errors.name}
+            />
             <Field
               label={t("Country")}
               required
               name="country"
+              className="col-span-2"
               error={form.touched.country && form.errors.country}
             >
               <CountryPicker
@@ -146,6 +163,19 @@ const CreateProjectDialog = (props: Props) => {
               error={
                 form.touched.spatialResolution && form.errors.spatialResolution
               }
+            />
+            <Field
+              required
+              label={t("Coordinate Reference System")}
+              name="crs"
+              type="number"
+              value={form.formData.crs}
+              help={t(
+                "A coordinate reference system (CRS) defines, with the help of coordinates, how the two-dimensional, projected map in your GIS is related to real places on the earth."
+              )}
+              onChange={form.handleInputChange}
+              disabled={form.isSubmitting}
+              error={form.touched.crs && form.errors.crs}
             />
           </div>
 
