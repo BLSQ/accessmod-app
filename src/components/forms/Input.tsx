@@ -5,6 +5,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string | null | false | true;
   trailingIcon?: ReactNode;
   inputClassName?: string;
+  autoComplete?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -15,6 +16,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     className,
     trailingIcon,
     inputClassName,
+    autoComplete = "off",
     ...delegated
   } = props;
 
@@ -38,6 +40,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         aria-invalid={Boolean(error)}
         aria-describedby={`${name}-description`}
         className={inputClasses}
+        autoComplete={autoComplete}
         {...delegated}
         ref={ref}
       />
