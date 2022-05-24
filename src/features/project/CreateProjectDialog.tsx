@@ -174,7 +174,7 @@ const CreateProjectDialog = (props: Props) => {
           <Button
             onClick={onCancel}
             disabled={form.isSubmitting}
-            variant="outlined"
+            variant="white"
           >
             {t("Cancel")}
           </Button>
