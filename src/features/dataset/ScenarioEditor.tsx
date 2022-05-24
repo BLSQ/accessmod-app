@@ -2,14 +2,10 @@ import { PlusIcon, XIcon } from "@heroicons/react/outline";
 import Button from "components/Button";
 import DataGrid, { Column, DATA_GRID_DEFAULT_THEME } from "components/DataGrid";
 import Input from "components/forms/Input";
+import { getDatasetDefaultMetadata } from "libs/dataset";
+import { AccessmodFilesetRoleCode } from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import {
-  FocusEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { FocusEventHandler, useCallback, useEffect, useMemo } from "react";
 import { Cell, CellProps } from "react-table";
 
 type ScenarioEntry = { kls: string; speed: number };
@@ -24,7 +20,7 @@ const GRID_THEME = {
   ...DATA_GRID_DEFAULT_THEME,
   table: "divide-y divide-gray-200 w-full",
   tbody: "divide-y divide-gray-200",
-  tr: "divide-x divide-gray-200",
+  tr: "",
 };
 
 const ClassCell = ({
@@ -46,6 +42,7 @@ const ClassCell = ({
   return (
     <>
       <Input
+        list={inputType !== "number" ? "classes" : undefined}
         onBlur={onBlur}
         className="w-full"
         defaultValue={value}
@@ -76,7 +73,6 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
       {
         id: "actions",
         Header: "",
-        width: 80,
         Cell: (cell: Cell) => (
           <div className="flex w-full justify-end">
             <Button
@@ -125,14 +121,25 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     [onChange, scenario]
   );
 
+  // FIXME: Use actual data from the datasets
+  const listOptions = useMemo(() => {
+    return [
+      ...(getDatasetDefaultMetadata(AccessmodFilesetRoleCode.TransportNetwork)
+        .columns ?? []),
+      ...Object.keys(
+        getDatasetDefaultMetadata(AccessmodFilesetRoleCode.LandCover).labels ??
+          {}
+      ),
+    ];
+  }, []);
+
   return (
     <div>
-      <div className="mb-2 flex justify-end gap-2">
-        <Button onClick={onAddRow} variant="secondary" size="sm">
-          <PlusIcon className="mr-1 h-4 w-4" />
-          {t("Add a row")}
-        </Button>
-      </div>
+      <datalist id="classes">
+        {listOptions.map((opt) => (
+          <option key={opt} value={opt} />
+        ))}
+      </datalist>
       <DataGrid
         data={scenario}
         columns={columns}
@@ -143,6 +150,12 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
         theme={GRID_THEME}
         sortable
       />
+      <div className="mt-2 flex justify-start gap-2">
+        <Button onClick={onAddRow} variant="secondary" size="sm">
+          <PlusIcon className="mr-1 h-4 w-4" />
+          {t("Add a row")}
+        </Button>
+      </div>
     </div>
   );
 };

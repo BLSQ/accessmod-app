@@ -189,7 +189,7 @@ const DatasetFormDialog = (props: Props) => {
             type="button"
             onClick={handleClose}
             disabled={form.isSubmitting}
-            variant="outlined"
+            variant="white"
           >
             {t("Cancel")}
           </Button>

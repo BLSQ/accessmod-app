@@ -17,30 +17,32 @@ import {
   AccessmodAccessibilityAnalysisAlgorithm,
   AccessmodAnalysisStatus,
   AccessmodFilesetRoleCode,
+  DatasetPicker_DatasetFragment,
   UpdateAccessmodAccessibilityAnalysisError,
   UpdateAccessmodAccessibilityAnalysisInput,
   useUpdateAccessibilityAnalysisMutation,
 } from "libs/graphql";
 import { routes } from "libs/router";
+import { isTruthy } from "libs/types";
 import { i18n, useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DatasetPicker from "../dataset/DatasetPicker";
 import AnalysisStep from "./AnalysisStep";
 
 type AccessibilityForm = {
   name: string;
   maxTravelTime: string;
-  dem: { id: string } | null;
-  stack?: { id: string } | null;
+  dem: DatasetPicker_DatasetFragment | null;
+  stack?: DatasetPicker_DatasetFragment | null;
   useExistingStack: "y" | "n";
-  water?: { id: string } | null;
-  barrier?: { id: string } | null;
-  landCover?: { id: string } | null;
-  transportNetwork?: { id: string } | null;
+  water?: DatasetPicker_DatasetFragment | null;
+  barrier?: DatasetPicker_DatasetFragment | null;
+  landCover?: DatasetPicker_DatasetFragment | null;
+  transportNetwork?: DatasetPicker_DatasetFragment | null;
   movingSpeeds: { kls: string; speed: number }[];
-  stackPriorities: object;
-  healthFacilities: { id: string } | null;
+  stackPriorities: { id: string | null; class: string | null }[];
+  healthFacilities: DatasetPicker_DatasetFragment | null;
   travelDirection: string;
   algorithm?: AccessmodAccessibilityAnalysisAlgorithm;
   waterAllTouched?: boolean;
@@ -215,6 +217,20 @@ const AccessibilityAnalysisForm = (props: Props) => {
     []
   );
 
+  const availableLayers = useMemo(() => {
+    return [
+      form.formData.barrier,
+      form.formData.transportNetwork,
+      form.formData.water,
+      form.formData.landCover,
+    ].filter(isTruthy);
+  }, [
+    form.formData.barrier,
+    form.formData.transportNetwork,
+    form.formData.water,
+    form.formData.landCover,
+  ]);
+
   return (
     <form className="space-y-5 text-gray-700" onSubmit={form.handleSubmit}>
       <Block className="space-y-4">
@@ -382,8 +398,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
                     }
                   >
                     <StackLayerPriorities
-                      value={form.formData.stackPriorities}
+                      value={form.formData.stackPriorities ?? []}
                       onChange={onChangePriorities}
+                      layers={availableLayers}
                     />
                   </Field>
                 </>
@@ -425,7 +442,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             "Assign moving speeds to each category of road network and land cover."
           )}
         </p>
-        <div className="w-1/2">
+        <div className="w-3/4">
           <ScenarioEditor
             scenario={form.formData.movingSpeeds}
             onChange={(movingSpeeds) => {

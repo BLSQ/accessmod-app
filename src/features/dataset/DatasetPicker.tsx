@@ -199,7 +199,9 @@ DatasetPicker.fragments = {
         id
         name
         format
+        code
       }
+      metadata
       createdAt
       updatedAt
       status
