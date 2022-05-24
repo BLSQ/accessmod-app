@@ -46,7 +46,7 @@ const EDIT_PROJECT_QUERY = gql`
 `;
 
 const UPDATE_PROJECT_MUTATION = gql`
-  mutation UpdateProject($input: UpdateAccessmodProjectInput) {
+  mutation UpdateProject($input: UpdateAccessmodProjectInput!) {
     updateAccessmodProject(input: $input) {
       success
       errors

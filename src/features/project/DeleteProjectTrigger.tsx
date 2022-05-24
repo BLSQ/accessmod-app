@@ -16,7 +16,7 @@ type Props = {
 };
 
 const DELETE_PROJECT_MUTATION = gql`
-  mutation DeleteProject($input: DeleteAccessmodProjectInput) {
+  mutation DeleteProject($input: DeleteAccessmodProjectInput!) {
     deleteAccessmodProject(input: $input) {
       success
     }
