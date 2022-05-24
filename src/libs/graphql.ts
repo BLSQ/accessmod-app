@@ -1182,7 +1182,7 @@ export type PollDatasetStatusQuery = { __typename?: 'Query', dataset?: { __typen
 
 export type DatasetStatusBadge_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus };
 
-export type DatasetStatusIcon_DatasetFragment = { __typename?: 'AccessmodFileset', status: AccessmodFilesetStatus };
+export type DatasetStatusIcon_DatasetFragment = { __typename?: 'AccessmodFileset', status: AccessmodFilesetStatus, metadata: any };
 
 export type DatasetViewer_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -1625,6 +1625,7 @@ export const AnalysisForm_ProjectFragmentDoc = gql`
 export const DatasetStatusIcon_DatasetFragmentDoc = gql`
     fragment DatasetStatusIcon_dataset on AccessmodFileset {
   status
+  metadata
 }
     `;
 export const DatasetPicker_DatasetFragmentDoc = gql`
