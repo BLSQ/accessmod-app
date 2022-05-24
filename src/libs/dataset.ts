@@ -299,9 +299,8 @@ export async function createDataset(
     project,
     role,
     automatic = false,
-    // FIXME: Comment metadata until the backend supports it in for this mutation.
-    // metadata = {},
     files = [],
+    metadata = {},
   }: CreateDatasetInput,
   { onProgress }: CreateDatasetOptions = {}
 ) {
@@ -311,7 +310,7 @@ export async function createDataset(
     projectId: project.id,
     roleId: role.id,
     automatic,
-    // metadata,
+    metadata,
     name:
       name ??
       `Automatic ${role.name} (${DateTime.now().toLocaleString(

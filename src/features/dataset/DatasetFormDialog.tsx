@@ -194,7 +194,7 @@ const DatasetFormDialog = (props: Props) => {
               </Field>
             )}
 
-            {/* {form.formData.role && form.formData.files?.length ? (
+            {form.formData.role && form.formData.files?.length ? (
               <DatasetMetadataForm
                 roleCode={form.formData.role.code}
                 files={form.formData.files}
@@ -203,7 +203,7 @@ const DatasetFormDialog = (props: Props) => {
                   form.setFieldValue("metadata", metadata)
                 }
               />
-            ) : undefined} */}
+            ) : undefined}
             {form.submitError && (
               <div className="mt-3 text-sm text-danger">{form.submitError}</div>
             )}
