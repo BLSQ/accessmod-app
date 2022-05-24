@@ -23,9 +23,7 @@ const Map = (props: MapProps) => {
   const { t } = useTranslation();
 
   return (
-    <div
-      className={clsx(className, "relative h-full w-full", `h-[${height}px]`)}
-    >
+    <div className={clsx(className, "relative w-full", `h-[${height}px]`)}>
       <MapContainer
         center={center}
         zoom={zoom}
