@@ -146,10 +146,6 @@ const validateForm = (values: Partial<AccessibilityForm>) => {
     }
   }
 
-  if (Object.keys(values.movingSpeeds ?? {}).length === 0) {
-    errors.movingSpeeds = i18n!.t("Enter your scenario");
-  }
-
   return errors;
 };
 

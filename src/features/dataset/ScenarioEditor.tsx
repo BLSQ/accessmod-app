@@ -42,7 +42,6 @@ const ClassCell = ({
   return (
     <>
       <Input
-        list={inputType !== "number" ? "classes" : undefined}
         onBlur={onBlur}
         className="w-full"
         defaultValue={value}
@@ -94,12 +93,6 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     return cols;
   }, [t, scenario, onChange]);
 
-  useEffect(() => {
-    if (!scenario.length) {
-      onChange([{ kls: "", speed: 0 }]);
-    }
-  }, [scenario, onChange]);
-
   const onAddRow = () => {
     onChange(scenario.concat({ kls: "", speed: 0 }));
   };
@@ -121,25 +114,8 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     [onChange, scenario]
   );
 
-  // FIXME: Use actual data from the datasets
-  const listOptions = useMemo(() => {
-    return [
-      ...(getDatasetDefaultMetadata(AccessmodFilesetRoleCode.TransportNetwork)
-        .columns ?? []),
-      ...Object.keys(
-        getDatasetDefaultMetadata(AccessmodFilesetRoleCode.LandCover).labels ??
-          {}
-      ),
-    ];
-  }, []);
-
   return (
     <div>
-      <datalist id="classes">
-        {listOptions.map((opt) => (
-          <option key={opt} value={opt} />
-        ))}
-      </datalist>
       <DataGrid
         data={scenario}
         columns={columns}
