@@ -3,7 +3,7 @@ import { CloudIcon, UploadIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
-import { useFilesetRoles } from "libs/dataset";
+import { getDatasetDefaultMetadata, useFilesetRoles } from "libs/dataset";
 import {
   AccessmodFilesetRoleCode,
   AccessmodProjectAuthorizedActions,
@@ -94,7 +94,12 @@ const DatasetPicker = (props: Props) => {
   const onAcquireClick = useCallback(
     async (close: Function) => {
       if (!role) return;
-      const dataset = await createDataset({ automatic: true, project, role });
+      const dataset = await createDataset({
+        automatic: true,
+        project,
+        role,
+        metadata: getDatasetDefaultMetadata(role.code),
+      });
       onChange(dataset);
       close();
     },
