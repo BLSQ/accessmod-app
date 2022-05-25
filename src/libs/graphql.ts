@@ -1426,7 +1426,7 @@ export type CreateDatasetMutationVariables = Exact<{
 }>;
 
 
-export type CreateDatasetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat } } | null } };
+export type CreateDatasetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, metadata: any, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat } } | null } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -3466,6 +3466,7 @@ export const CreateDatasetDocument = gql`
       id
       name
       status
+      metadata
       role {
         id
         code

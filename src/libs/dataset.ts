@@ -331,6 +331,7 @@ export async function createDataset(
             id
             name
             status
+            metadata
             role {
               id
               code
@@ -410,6 +411,10 @@ export async function createDataset(
 
 export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
   switch (roleCode) {
+    case AccessmodFilesetRoleCode.Dem:
+      return {};
+    case AccessmodFilesetRoleCode.Stack:
+      return {};
     case AccessmodFilesetRoleCode.LandCover:
       return {
         labels: {
@@ -431,24 +436,58 @@ export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
       return {
         columns: ["highway", "surface", "smoothness", "tracktype"],
         category_column: "highway",
-        values: [
-          "primary",
-          "primary_link",
-          "secondary",
-          "secondary_link",
-          "tertiary",
-          "tertiary_link",
-          "trunk",
-          "trunk_link",
-          "unclassified",
-          "residential",
-          "living_street",
-          "service",
-          "track",
-          "path",
-        ],
+        values: {
+          highway: [
+            "primary",
+            "primary_link",
+            "secondary",
+            "secondary_link",
+            "tertiary",
+            "tertiary_link",
+            "trunk",
+            "trunk_link",
+            "unclassified",
+            "residential",
+            "living_street",
+            "service",
+            "track",
+            "path",
+          ],
+        },
       };
     default:
       return {};
   }
+}
+
+export type MetadataFormValues = {
+  category_column?: string | null;
+  columns?: string[];
+  labels?: [string, string][];
+};
+
+export function toMetadataFormValues(
+  metadata: Scalars["AccessmodFilesetMetadata"]
+): MetadataFormValues {
+  return {
+    ...metadata,
+    labels: Object.entries(metadata.labels ?? {}),
+  };
+}
+
+export function toMetadataInput(metadata: any) {
+  const inputMetadata = {
+    ...metadata,
+  };
+  if (metadata["labels"]) {
+    inputMetadata.labels = (metadata.labels as [string, string][]).reduce(
+      (acc, cur) => {
+        acc[cur[0]] = cur[1];
+        return acc;
+      },
+      {} as { [key: string]: string }
+    );
+  }
+
+  return inputMetadata as Scalars["AccessmodFilesetMetadata"];
 }

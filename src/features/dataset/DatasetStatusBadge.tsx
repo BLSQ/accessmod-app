@@ -33,7 +33,7 @@ const DatasetStatusBadge = (props: DatasetStatusBadgeProps) => {
 
   const className = clsx(
     dataset.status === AccessmodFilesetStatus.Invalid &&
-      "bg-amber-300 text-white",
+      "bg-red-400 text-white",
     dataset.status === AccessmodFilesetStatus.Pending &&
       "bg-lochmara-100 text-white",
     dataset.status === AccessmodFilesetStatus.Valid && "bg-teal-400 text-white",
