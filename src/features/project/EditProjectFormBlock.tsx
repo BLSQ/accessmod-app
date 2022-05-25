@@ -114,9 +114,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
       if (!values.name) {
         errors.name = t("Enter a name");
       }
-      if (!values.description) {
-        errors.description = t("Enter a description");
-      }
       return errors;
     },
   });
@@ -156,7 +153,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
         <Field
           className="col-span-4"
           label={t("Description")}
-          required
           name="description"
           error={form.touched.description && form.errors.description}
         >

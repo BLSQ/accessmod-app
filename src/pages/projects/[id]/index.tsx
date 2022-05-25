@@ -32,6 +32,7 @@ import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 const LatestAnalysisBlock = ({
   project,
@@ -141,6 +142,11 @@ const ProjectGeneralInformationBlock = (props: {
 }) => {
   const { project, onEdit } = props;
   const { t } = useTranslation();
+  const descriptionClassNames = clsx(
+    "text-md leading-2 max-w-[100ch]",
+    !project.description && "text-gray-400"
+  );
+
   return (
     <Block className="relative">
       {project.authorizedActions.includes(
@@ -154,8 +160,8 @@ const ProjectGeneralInformationBlock = (props: {
       )}
       <DescriptionList>
         <DescriptionList.Item className="col-span-2" label={t("Description")}>
-          <div className="text-md leading-2 max-w-[100ch]">
-            {project.description}
+          <div className={descriptionClassNames}>
+            {project.description || t("No description")}
           </div>
         </DescriptionList.Item>
         <DescriptionList.Item label={t("Digital elevation model")}>
