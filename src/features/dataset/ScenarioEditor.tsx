@@ -2,8 +2,6 @@ import { PlusIcon, XIcon } from "@heroicons/react/outline";
 import Button from "components/Button";
 import DataGrid, { Column, DATA_GRID_DEFAULT_THEME } from "components/DataGrid";
 import Input from "components/forms/Input";
-import { getDatasetDefaultMetadata } from "libs/dataset";
-import { AccessmodFilesetRoleCode } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { FocusEventHandler, useCallback, useEffect, useMemo } from "react";
 import { Cell, CellProps } from "react-table";

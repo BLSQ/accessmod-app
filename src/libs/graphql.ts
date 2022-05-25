@@ -1473,14 +1473,14 @@ export type ProjectDataPageQueryVariables = Exact<{
 
 export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
@@ -1996,10 +1996,6 @@ export const ProjectPage_ProjectFragmentDoc = gql`
   ...EditProjectFormBlock_project
   ...ChangeProjectOwnerDialog_project
   authorizedActions
-  dem {
-    id
-    name
-  }
   country {
     name
     code

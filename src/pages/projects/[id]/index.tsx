@@ -164,9 +164,6 @@ const ProjectGeneralInformationBlock = (props: {
             {project.description || t("No description")}
           </div>
         </DescriptionList.Item>
-        <DescriptionList.Item label={t("Digital elevation model")}>
-          {project.dem?.name ?? t("Automatic dataset")}
-        </DescriptionList.Item>
         <DescriptionList.Item
           label={t("Spatial Resolution")}
           help={t(
@@ -342,10 +339,6 @@ ProjectPage.fragments = {
       ...EditProjectFormBlock_project
       ...ChangeProjectOwnerDialog_project
       authorizedActions
-      dem {
-        id
-        name
-      }
 
       country {
         name

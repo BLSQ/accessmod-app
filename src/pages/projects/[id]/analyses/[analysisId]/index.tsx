@@ -135,24 +135,29 @@ const AnalysisPage = () => {
               {t("Parameters")}
             </h3>
             <DescriptionList>
-              <DescriptionList.Item label={t("Land Cover")}>
-                {data.analysis.landCover?.name ?? "Automatic"}
+              <DescriptionList.Item label={t("Land cover")}>
+                {data.analysis.landCover?.name ?? "-"}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Transport network")}>
+                {data.analysis.transportNetwork?.name ?? "-"}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Digital elevation model")}>
+                {data.analysis.dem?.name ?? "-"}
               </DescriptionList.Item>
               <DescriptionList.Item label={t("Stack")}>
-                {data.analysis.stack?.name ?? "Automatic"}
+                {data.analysis.stack?.name ?? "-"}
               </DescriptionList.Item>
-              <DescriptionList.Item label={t("Health Facilities")}>
-                {data.analysis.healthFacilities?.name ?? "Automatic"}{" "}
+              <DescriptionList.Item label={t("Health facilities")}>
+                {data.analysis.healthFacilities?.name ?? "-"}
               </DescriptionList.Item>
-              <DescriptionList.Item label={t("Land Cover")}>
-                {data.analysis.landCover?.name ?? "Automatic"}
+              <DescriptionList.Item label={t("Barriers")}>
+                {data.analysis.barrier?.name ?? "-"}
               </DescriptionList.Item>
-              <DescriptionList.Item label={t("Land Cover")}>
-                {data.analysis.landCover?.name ?? "Automatic"}
+              <DescriptionList.Item label={t("Water")}>
+                {data.analysis.water?.name ?? "-"}
               </DescriptionList.Item>
-              <div></div>
               <DescriptionList.Item label={t("Travel Scenario")}>
-                {data.analysis.movingSpeeds ? (
+                {Object.keys(data.analysis.movingSpeeds ?? {}) ? (
                   <table className="who">
                     <thead>
                       <tr>

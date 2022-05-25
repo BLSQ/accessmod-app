@@ -77,7 +77,7 @@ const ProjectDatasetsTable = (props: Props) => {
       variables: { projectId: project.id, term: searchTerm, ...pagination },
     }
   );
-  useCacheKey(["filesets"], () => refetch());
+  useCacheKey(["datasets"], () => refetch());
   useCacheKey(["projects", project.id], () => refetch());
 
   const onSearch = useCallback((term?: string) => {
