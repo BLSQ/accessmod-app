@@ -33,7 +33,7 @@ const DatasetMetadataForm = (props: DatasetMetadataFormProps) => {
             label={t("Category column")}
             type="text"
             help={t(
-              "The exact name of the column in the GPKG file that contains the road category"
+              "The exact name of the column in the file that contains the road category"
             )}
             onChange={(e) => setValues({ category_column: e.target.value })}
             required
