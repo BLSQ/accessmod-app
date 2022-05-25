@@ -8,8 +8,7 @@ import Button from "components/Button";
 import SimpleSelect from "components/forms/SimpleSelect";
 import { SortableList } from "components/Sortable";
 import Tooltip from "components/Tooltip";
-import { getDatasetDefaultMetadata } from "libs/dataset";
-import { AccessmodFilesetRole, AccessmodFilesetRoleCode } from "libs/graphql";
+import { AccessmodFilesetRoleCode } from "libs/graphql";
 import { uniqueId } from "lodash";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -87,21 +86,29 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
 
   function getClassOptions(layerId: string): [string, string][] {
     const layer = layers.find((l) => l.id === layerId);
-    if (!layer) {
+    if (!layer?.metadata || !layer?.role) {
       return [];
     }
-    if (layer.role.code === AccessmodFilesetRoleCode.LandCover) {
-      const labels =
-        layer.metadata?.labels ??
-        getDatasetDefaultMetadata(AccessmodFilesetRoleCode.LandCover).labels;
-      return Object.entries(labels);
+    if (
+      layer.role.code === AccessmodFilesetRoleCode.LandCover &&
+      layer.metadata.labels
+    ) {
+      return Object.entries(layer.metadata.labels);
     }
-    if (layer.role.code === AccessmodFilesetRoleCode.TransportNetwork) {
-      const values =
-        layer.metadata?.values ??
-        getDatasetDefaultMetadata(AccessmodFilesetRoleCode.TransportNetwork)
-          .values;
-      return values.map((v: string) => [v, v] as const);
+    if (
+      layer.role.code === AccessmodFilesetRoleCode.TransportNetwork &&
+      layer.metadata.category_column &&
+      layer.metadata.values
+    ) {
+      try {
+        const values = layer.metadata.values[layer.metadata.category_column];
+        return values.map((v: string) => [v, v] as const);
+      } catch (err) {
+        console.warn(
+          "Dataset metadata are not valid. This may be caused by a dataset created before 25/06/2022",
+          err
+        );
+      }
     }
 
     return [];
