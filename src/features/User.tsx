@@ -20,12 +20,6 @@ const User = ({
   subTextColor = "text-gray-500",
   className,
 }: Props) => {
-  const name = useMemo(() => {
-    if (!user.firstName && !user.lastName) {
-      return "";
-    }
-    return [user.firstName, user.lastName].filter(Boolean).join(" ");
-  }, [user]);
   return (
     <div className={clsx("group flex flex-shrink-0 items-center", className)}>
       <div>
@@ -36,7 +30,9 @@ const User = ({
         />
       </div>
       <div className="ml-2">
-        <p className={clsx("text-sm font-medium", textColor)}>{name}</p>
+        <p className={clsx("text-sm font-medium", textColor)}>
+          {user.displayName}
+        </p>
         {!small && (
           <p className={clsx("text-xs font-medium", subTextColor)}>
             {user.email}
@@ -50,8 +46,7 @@ const User = ({
 User.fragments = {
   user: gql`
     fragment User_user on User {
-      firstName
-      lastName
+      displayName
       email
       id
       avatar {
