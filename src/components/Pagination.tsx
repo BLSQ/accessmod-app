@@ -28,6 +28,7 @@ const PaginationItem = (props: {
     <button
       onClick={onClick}
       aria-current="page"
+      type="button"
       disabled={disabled}
       className={clsx(
         "relative inline-flex cursor-pointer items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50",

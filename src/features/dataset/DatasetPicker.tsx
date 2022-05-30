@@ -1,18 +1,24 @@
-import { gql } from "@apollo/client";
-import { CloudIcon, UploadIcon } from "@heroicons/react/outline";
+import { gql, useQuery } from "@apollo/client";
+import { CloudIcon, PencilIcon, UploadIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
-import { getDatasetDefaultMetadata, useFilesetRoles } from "libs/dataset";
+import Toggle from "components/Toggle";
+import usePrevious from "hooks/usePrevious";
+import {
+  createDataset,
+  getDatasetDefaultMetadata,
+  useFilesetRoles,
+} from "libs/dataset";
 import {
   AccessmodFilesetRoleCode,
   AccessmodProjectAuthorizedActions,
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
 } from "libs/graphql";
-import { createDataset } from "libs/dataset";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { DatasetDialog } from "./DatasetDialog";
 import CreateDatasetDialog from "./DatasetFormDialog";
 import DatasetStatusIcon from "./DatasetStatusIcon";
 
@@ -44,6 +50,7 @@ const DatasetPicker = (props: Props) => {
   const [query, setQuery] = useState("");
   const [isDialogOpen, showCreationDialog] = useState(false);
   const { roles } = useFilesetRoles();
+
   const [fetch, { data, loading }] = useDatasetPickerLazyQuery({
     variables: { projectId: project.id },
     fetchPolicy: "cache-and-network",
@@ -163,7 +170,25 @@ const DatasetPicker = (props: Props) => {
           )
         }
         renderIcon={({ value }) =>
-          value && <DatasetStatusIcon dataset={value} />
+          value && (
+            <Toggle>
+              {({ isToggled, toggle }) => (
+                <>
+                  <button className="group flex items-center " onClick={toggle}>
+                    <PencilIcon className="hidden h-5 text-gray-400 group-hover:block" />
+                    <div className="flex items-center group-hover:hidden">
+                      <DatasetStatusIcon dataset={value} />
+                    </div>
+                  </button>
+                  <DatasetDialog
+                    dataset={value}
+                    onClose={toggle}
+                    open={isToggled}
+                  />
+                </>
+              )}
+            </Toggle>
+          )
         }
         displayValue={(value) => value?.name}
       >
@@ -210,8 +235,10 @@ DatasetPicker.fragments = {
       createdAt
       updatedAt
       status
+      ...DatasetDialog_dataset
       ...DatasetStatusIcon_dataset
     }
+    ${DatasetDialog.fragments.dataset}
     ${DatasetStatusIcon.fragments.dataset}
   `,
   project: gql`

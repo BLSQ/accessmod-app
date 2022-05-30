@@ -23,7 +23,7 @@ import {
 } from "./graphql";
 
 const GET_PRESIGNED_MUTATION = gql`
-  mutation GetUploadUrl($input: PrepareAccessmodFileUploadInput) {
+  mutation GetUploadUrl($input: PrepareAccessmodFileUploadInput!) {
     prepareAccessmodFileUpload(input: $input) {
       success
       uploadUrl
@@ -67,7 +67,7 @@ export async function getPresignedURL(filesetId: string, mimeType: string) {
 }
 
 const CREATE_FILE_MUTATION = gql`
-  mutation CreateFile($input: CreateAccessmodFileInput) {
+  mutation CreateFile($input: CreateAccessmodFileInput!) {
     createFile: createAccessmodFile(input: $input) {
       success
     }
@@ -200,7 +200,7 @@ export async function getFileDownloadUrl(fileId: string): Promise<string> {
   const client = getApolloClient();
   const { data } = await client.mutate<GetFileDownloadUrlMutation>({
     mutation: gql`
-      mutation GetFileDownloadUrl($input: PrepareAccessmodFileDownloadInput) {
+      mutation GetFileDownloadUrl($input: PrepareAccessmodFileDownloadInput!) {
         prepareAccessmodFileDownload(input: $input) {
           success
           downloadUrl
@@ -418,18 +418,18 @@ export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
     case AccessmodFilesetRoleCode.LandCover:
       return {
         labels: {
-          "20": i18n!.t("Shrubs"),
-          "30": i18n!.t("Herbaceous vegetation"),
-          "40": i18n!.t("Cropland"),
-          "50": i18n!.t("Urban"),
-          "60": i18n!.t("Sparse vegetation"),
-          "70": i18n!.t("Snow"),
-          "80": i18n!.t("Permanent water bodies"),
-          "90": i18n!.t("Herbaceous wetland"),
-          "100": i18n!.t("Moss and lichen"),
-          "110": i18n!.t("Closed forest"),
-          "120": i18n!.t("Open forest"),
-          "200": i18n!.t("Open sea"),
+          "20": "Shrubs",
+          "30": "Herbaceous vegetation",
+          "40": "Cropland",
+          "50": "Urban",
+          "60": "Sparse vegetation",
+          "70": "Snow",
+          "80": "Permanent water bodies",
+          "90": "Herbaceous wetland",
+          "100": "Moss and lichen",
+          "110": "Closed forest",
+          "120": "Open forest",
+          "200": "Open sea",
         },
       };
     case AccessmodFilesetRoleCode.TransportNetwork:
@@ -463,15 +463,18 @@ export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
 export type MetadataFormValues = {
   category_column?: string | null;
   columns?: string[];
+  values?: { [key: string]: string[] };
   labels?: [string, string][];
 };
 
 export function toMetadataFormValues(
   metadata: Scalars["AccessmodFilesetMetadata"]
 ): MetadataFormValues {
+  const labels = Object.entries<string>(metadata.labels ?? {});
+  labels.sort((a, b) => (a[0] < b[0] ? 1 : -1));
   return {
     ...metadata,
-    labels: Object.entries(metadata.labels ?? {}),
+    labels,
   };
 }
 

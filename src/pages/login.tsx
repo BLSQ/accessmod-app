@@ -3,13 +3,14 @@ import Button from "components/Button";
 import Field from "components/forms/Field";
 import Spinner from "components/Spinner";
 import useForm from "hooks/useForm";
+import { getApolloClient } from "libs/apollo";
 import { useLoginMutation } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 
 type FormInputs = {
   email: string;
@@ -32,6 +33,9 @@ const Login = (props: Props) => {
   const [login, { data }] = useLoginMutation();
   const router = useRouter();
   const { t } = useTranslation();
+  useEffect(() => {
+    getApolloClient().clearStore();
+  }, []);
   const form = useForm<FormInputs>({
     initialState: {},
     validate: (values) => {

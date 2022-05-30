@@ -95,6 +95,12 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
         },
         AccessmodFileset: {
           merge: true,
+          // We need to tell to Apollo how to handle the metadata scalar
+          fields: {
+            metadata: {
+              merge: true,
+            },
+          },
         },
         Country: {
           // Country code are unique (at least it should). Let's use that for the cache key
