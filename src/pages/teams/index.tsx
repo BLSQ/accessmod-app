@@ -43,11 +43,9 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
   // Update location URL based on the search criteria
   useEffect(() => {
     if (prevVariables && !_.isEqual(prevVariables, variables)) {
-      router.push(
-        { pathname: routes.project_list, query: variables },
-        undefined,
-        { shallow: true }
-      );
+      router.push({ pathname: routes.teams, query: variables }, undefined, {
+        shallow: true,
+      });
     }
   }, [variables, prevVariables, router]);
 
