@@ -1222,6 +1222,10 @@ type AccessibilityAnalysisOutput_Analysis_AccessmodZonalStatistics_Fragment = { 
 
 export type AccessibilityAnalysisOutput_AnalysisFragment = AccessibilityAnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment | AccessibilityAnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment | AccessibilityAnalysisOutput_Analysis_AccessmodZonalStatistics_Fragment;
 
+export type AccessibilityAnalysisParameters_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type AccessibilityAnalysisParameters_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, stackPriorities?: any | null, movingSpeeds?: any | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
 type AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename?: 'AccessmodAccessibilityAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> };
@@ -1563,7 +1567,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', stackPriorities?: any | null, movingSpeeds?: any | null, id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, stackPriorities?: any | null, movingSpeeds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1694,6 +1698,47 @@ export const AccessibilityAnalysisOutput_AnalysisFragmentDoc = gql`
       name
       id
     }
+  }
+}
+    `;
+export const AccessibilityAnalysisParameters_ProjectFragmentDoc = gql`
+    fragment AccessibilityAnalysisParameters_project on AccessmodProject {
+  id
+}
+    `;
+export const AccessibilityAnalysisParameters_AnalysisFragmentDoc = gql`
+    fragment AccessibilityAnalysisParameters_analysis on AccessmodAccessibilityAnalysis {
+  __typename
+  id
+  landCover {
+    id
+    name
+  }
+  transportNetwork {
+    id
+    name
+  }
+  water {
+    id
+    name
+  }
+  barrier {
+    id
+    name
+  }
+  stack {
+    id
+    name
+  }
+  dem {
+    id
+    name
+  }
+  stackPriorities
+  movingSpeeds
+  healthFacilities {
+    id
+    name
   }
 }
     `;
@@ -3760,6 +3805,7 @@ export const AnalysisDetailPageDocument = gql`
     name
     ...AnalysisActionsButton_project
     ...AccessibilityAnalysisOutput_project
+    ...AccessibilityAnalysisParameters_project
   }
   analysis: accessmodAnalysis(id: $analysisId) {
     __typename
@@ -3772,50 +3818,23 @@ export const AnalysisDetailPageDocument = gql`
     ...AnalysisActionsButton_analysis
     ...AnalysisStatus_analysis
     ...AccessibilityAnalysisOutput_analysis
-    ... on AccessmodAccessibilityAnalysis {
+    ...AccessibilityAnalysisParameters_analysis
+    ... on AccessmodOwnership {
       owner {
         __typename
         ...User_user
         ...Team_team
-      }
-      landCover {
-        id
-        name
-      }
-      transportNetwork {
-        id
-        name
-      }
-      water {
-        id
-        name
-      }
-      barrier {
-        id
-        name
-      }
-      stack {
-        id
-        name
-      }
-      dem {
-        id
-        name
-      }
-      stackPriorities
-      movingSpeeds
-      healthFacilities {
-        id
-        name
       }
     }
   }
 }
     ${AnalysisActionsButton_ProjectFragmentDoc}
 ${AccessibilityAnalysisOutput_ProjectFragmentDoc}
+${AccessibilityAnalysisParameters_ProjectFragmentDoc}
 ${AnalysisActionsButton_AnalysisFragmentDoc}
 ${AnalysisStatus_AnalysisFragmentDoc}
 ${AccessibilityAnalysisOutput_AnalysisFragmentDoc}
+${AccessibilityAnalysisParameters_AnalysisFragmentDoc}
 ${User_UserFragmentDoc}
 ${Team_TeamFragmentDoc}`;
 

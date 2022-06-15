@@ -7,6 +7,8 @@ export function getLabelFromAnalysisType(type: AccessmodAnalysisType): string {
   switch (type) {
     case AccessmodAnalysisType.Accessibility:
       return i18n!.t("Accessibility Analysis");
+    case AccessmodAnalysisType.ZonalStatistics:
+      return i18n!.t("Zonal Statistics");
     default:
       return "Analysis";
   }
@@ -65,6 +67,12 @@ export const ANALYSES_OPTIONS = [
   {
     value: AccessmodAnalysisType.Accessibility,
     label: "Accessibility Analysis",
+    description:
+      "Compute the traveling time surface, informing the time needed to reach the nearest health facility.",
+  },
+  {
+    value: AccessmodAnalysisType.ZonalStatistics,
+    label: "Zonal Statistics Analysis",
     description:
       "Compute the traveling time surface, informing the time needed to reach the nearest health facility.",
   },

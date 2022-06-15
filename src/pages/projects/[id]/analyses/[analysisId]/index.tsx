@@ -4,9 +4,11 @@ import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
-import AnalysisActionsButton from "features/analysis/AnalysisActionsButton";
 import AccessibilityAnalysisOutput from "features/analysis/AccessibilityAnalysisOutput";
+import AccessibilityAnalysisParameters from "features/analysis/AccessibilityAnalysisParameters";
+import AnalysisActionsButton from "features/analysis/AnalysisActionsButton";
 import AnalysisStatus from "features/analysis/AnalysisStatus";
+import Team from "features/team/Team";
 import User from "features/User";
 import { getLabelFromAnalysisType } from "libs/analysis";
 import {
@@ -18,8 +20,6 @@ import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import DescriptionList from "components/DescriptionList";
-import Team from "features/team/Team";
 
 const AnalysisPage = () => {
   const router = useRouter();
@@ -34,7 +34,7 @@ const AnalysisPage = () => {
     });
 
   const analysis = data?.analysis;
-
+  console.log(analysis);
   useEffect(() => {
     if (!analysis) {
       return;
@@ -105,7 +105,7 @@ const AnalysisPage = () => {
                 {getLabelFromAnalysisType(data.analysis.type)}
               </div>
 
-              {data.analysis.__typename === "AccessmodAccessibilityAnalysis" &&
+              {"owner" in data.analysis &&
                 data.analysis.owner?.__typename === "User" && (
                   <User
                     small
@@ -113,7 +113,7 @@ const AnalysisPage = () => {
                     textColor="text-white"
                   />
                 )}
-              {data.analysis.__typename === "AccessmodAccessibilityAnalysis" &&
+              {"owner" in data.analysis &&
                 data.analysis.owner?.__typename === "Team" && (
                   <Team
                     team={data.analysis.owner}
@@ -134,53 +134,10 @@ const AnalysisPage = () => {
             <h3 className="mb-4 flex items-center justify-between">
               {t("Parameters")}
             </h3>
-            <DescriptionList>
-              <DescriptionList.Item label={t("Land cover")}>
-                {data.analysis.landCover?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Transport network")}>
-                {data.analysis.transportNetwork?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Digital elevation model")}>
-                {data.analysis.dem?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Stack")}>
-                {data.analysis.stack?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Health facilities")}>
-                {data.analysis.healthFacilities?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Barriers")}>
-                {data.analysis.barrier?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Water")}>
-                {data.analysis.water?.name ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Travel Scenario")}>
-                {Object.keys(data.analysis.movingSpeeds ?? {}) ? (
-                  <table className="who">
-                    <thead>
-                      <tr>
-                        <th>{t("Class")}</th>
-                        <th>{t("Speed (in km/h)")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries<[string, string]>(
-                        data.analysis.movingSpeeds
-                      ).map(([key, value]) => (
-                        <tr key={key}>
-                          <td>{key}</td>
-                          <td>{value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  t("No travel scenario")
-                )}
-              </DescriptionList.Item>
-            </DescriptionList>
+            <AccessibilityAnalysisParameters
+              analysis={data.analysis}
+              project={data.project}
+            />
           </Block>
         )}
         {data.analysis.status === AccessmodAnalysisStatus.Success && (
@@ -218,6 +175,7 @@ export const getServerSideProps = createGetServerSideProps({
             name
             ...AnalysisActionsButton_project
             ...AccessibilityAnalysisOutput_project
+            ...AccessibilityAnalysisParameters_project
           }
           analysis: accessmodAnalysis(id: $analysisId) {
             __typename
@@ -230,43 +188,12 @@ export const getServerSideProps = createGetServerSideProps({
             ...AnalysisActionsButton_analysis
             ...AnalysisStatus_analysis
             ...AccessibilityAnalysisOutput_analysis
-
-            ... on AccessmodAccessibilityAnalysis {
+            ...AccessibilityAnalysisParameters_analysis
+            ... on AccessmodOwnership {
               owner {
                 __typename
                 ...User_user
                 ...Team_team
-              }
-
-              landCover {
-                id
-                name
-              }
-              transportNetwork {
-                id
-                name
-              }
-              water {
-                id
-                name
-              }
-              barrier {
-                id
-                name
-              }
-              stack {
-                id
-                name
-              }
-              dem {
-                id
-                name
-              }
-              stackPriorities
-              movingSpeeds
-              healthFacilities {
-                id
-                name
               }
             }
           }
@@ -276,6 +203,8 @@ export const getServerSideProps = createGetServerSideProps({
         ${AnalysisStatus.fragments.analysis}
         ${AccessibilityAnalysisOutput.fragments.analysis}
         ${AccessibilityAnalysisOutput.fragments.project}
+        ${AccessibilityAnalysisParameters.fragments.analysis}
+        ${AccessibilityAnalysisParameters.fragments.project}
         ${User.fragments.user}
         ${Team.fragments.team}
       `,
