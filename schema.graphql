@@ -149,6 +149,9 @@ enum AccessmodFilesetRoleCode {
   TRAVEL_TIMES
   WATER
   STACK
+  BOUNDARIES
+  ZONAL_STATISTICS
+  ZONAL_STATISTICS_TABLE
 }
 
 enum AccessmodFilesetStatus {
