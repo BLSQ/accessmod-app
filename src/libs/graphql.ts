@@ -168,7 +168,10 @@ export enum AccessmodFilesetRoleCode {
   Stack = 'STACK',
   TransportNetwork = 'TRANSPORT_NETWORK',
   TravelTimes = 'TRAVEL_TIMES',
-  Water = 'WATER'
+  Water = 'WATER',
+  Boundaries = 'BOUNDARIES',
+  ZonalStatistics = 'ZONAL_STATISTICS',
+  ZonalStatisticsTable = 'ZONAL_STATISTICS_TABLE'
 }
 
 export enum AccessmodFilesetStatus {
