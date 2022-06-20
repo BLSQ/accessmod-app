@@ -462,6 +462,7 @@ export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
 
 export type MetadataFormValues = {
   category_column?: string | null;
+  name_column?: string | null;
   columns?: string[];
   values?: { [key: string]: string[] };
   labels?: [string, string][];

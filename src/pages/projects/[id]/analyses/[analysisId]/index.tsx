@@ -8,6 +8,8 @@ import AccessibilityAnalysisOutput from "features/analysis/AccessibilityAnalysis
 import AccessibilityAnalysisParameters from "features/analysis/AccessibilityAnalysisParameters";
 import AnalysisActionsButton from "features/analysis/AnalysisActionsButton";
 import AnalysisStatus from "features/analysis/AnalysisStatus";
+import ZonalStatisticsOutput from "features/analysis/ZonalStatisticsOutput";
+import ZonalStatisticsParameters from "features/analysis/ZonalStatisticsParameters";
 import Team from "features/team/Team";
 import User from "features/User";
 import { getLabelFromAnalysisType } from "libs/analysis";
@@ -34,7 +36,6 @@ const AnalysisPage = () => {
     });
 
   const analysis = data?.analysis;
-  console.log(analysis);
   useEffect(() => {
     if (!analysis) {
       return;
@@ -129,17 +130,23 @@ const AnalysisPage = () => {
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
-        {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
-          <Block>
-            <h3 className="mb-4 flex items-center justify-between">
-              {t("Parameters")}
-            </h3>
+        <Block>
+          <h3 className="mb-4 flex items-center justify-between">
+            {t("Parameters")}
+          </h3>
+          {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
             <AccessibilityAnalysisParameters
               analysis={data.analysis}
               project={data.project}
             />
-          </Block>
-        )}
+          )}
+          {data.analysis.__typename === "AccessmodZonalStatistics" && (
+            <ZonalStatisticsParameters
+              analysis={data.analysis}
+              project={data.project}
+            />
+          )}
+        </Block>
         {data.analysis.status === AccessmodAnalysisStatus.Success && (
           <Block>
             <h3 className="mb-4 flex items-center justify-between">
@@ -147,6 +154,12 @@ const AnalysisPage = () => {
             </h3>
             {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
               <AccessibilityAnalysisOutput
+                analysis={data.analysis}
+                project={data.project}
+              />
+            )}
+            {data.analysis.__typename === "AccessmodZonalStatistics" && (
+              <ZonalStatisticsOutput
                 analysis={data.analysis}
                 project={data.project}
               />
@@ -176,6 +189,8 @@ export const getServerSideProps = createGetServerSideProps({
             ...AnalysisActionsButton_project
             ...AccessibilityAnalysisOutput_project
             ...AccessibilityAnalysisParameters_project
+            ...ZonalStatisticsOutput_project
+            ...ZonalStatisticsParameters_project
           }
           analysis: accessmodAnalysis(id: $analysisId) {
             __typename
@@ -189,6 +204,8 @@ export const getServerSideProps = createGetServerSideProps({
             ...AnalysisStatus_analysis
             ...AccessibilityAnalysisOutput_analysis
             ...AccessibilityAnalysisParameters_analysis
+            ...ZonalStatisticsOutput_analysis
+            ...ZonalStatisticsParameters_analysis
             ... on AccessmodOwnership {
               owner {
                 __typename
@@ -205,6 +222,10 @@ export const getServerSideProps = createGetServerSideProps({
         ${AccessibilityAnalysisOutput.fragments.project}
         ${AccessibilityAnalysisParameters.fragments.analysis}
         ${AccessibilityAnalysisParameters.fragments.project}
+        ${ZonalStatisticsOutput.fragments.analysis}
+        ${ZonalStatisticsOutput.fragments.project}
+        ${ZonalStatisticsParameters.fragments.project}
+        ${ZonalStatisticsParameters.fragments.analysis}
         ${User.fragments.user}
         ${Team.fragments.team}
       `,

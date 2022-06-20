@@ -120,6 +120,18 @@ const DatasetMetadataForm = (props: DatasetMetadataFormProps) => {
 
   return (
     <>
+      {roleCode === AccessmodFilesetRoleCode.Boundaries && (
+        <Field
+          name="name_column"
+          label={t("Area's name column")}
+          type="text"
+          required
+          value={metadata.name_column ?? ""}
+          onChange={(event) =>
+            onChange({ ...metadata, name_column: event.target.value })
+          }
+        />
+      )}
       {roleCode === AccessmodFilesetRoleCode.TransportNetwork && (
         <>
           <Field name="category_column" label={t("Category column")} required>

@@ -265,6 +265,8 @@ type AccessmodZonalStatistics implements AccessmodAnalysis & AccessmodOwnership 
   travelTimes: AccessmodFileset
   boundaries: AccessmodFileset
   timeThresholds: TimeThresholds
+  zonalStatisticsTable: AccessmodFileset
+  zonalStatisticsGeo: AccessmodFileset
 }
 
 type Avatar {

@@ -10,6 +10,7 @@ import ScenarioEditor from "features/dataset/ScenarioEditor";
 import StackLayerPriorities from "features/dataset/StackLayerPriorities";
 import useBeforeUnload from "hooks/useBeforeUnload";
 import useForm from "hooks/useForm";
+import { displayErrorAlert } from "libs/alert";
 import { launchAnalysis } from "libs/analysis";
 import {
   AccessibilityAnalysisForm_AnalysisFragment,
@@ -78,9 +79,6 @@ function getInitialFormState(
 }
 
 function datasetToInput(dataset?: { id: string } | null) {
-  if (dataset?.id === "AUTO") {
-    return undefined;
-  }
   return dataset?.id ?? undefined;
 }
 
@@ -158,7 +156,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
   const { project, analysis } = props;
   const { t } = useTranslation();
   const router = useRouter();
-  const [error, setError] = useState<null | string>(null);
   const [updateAnalysis] = useUpdateAccessibilityAnalysisMutation();
 
   const form = useForm<AccessibilityForm>({
@@ -196,14 +193,14 @@ const AccessibilityAnalysisForm = (props: Props) => {
     if (form.isDirty) {
       await form.handleSubmit();
     }
-
-    if (await launchAnalysis(analysis)) {
+    try {
+      await launchAnalysis(analysis);
       await router.push({
         pathname: routes.project_analysis,
         query: { projectId: project.id, analysisId: analysis.id },
       });
-    } else {
-      setError("Computation failed. Check your input data");
+    } catch (err) {
+      displayErrorAlert("Computation failed. Check your input data.");
     }
   }, [analysis, form, project, router]);
 
@@ -509,9 +506,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       <div className="flex items-center justify-between bg-gray-50">
         <div>
-          {(form.submitError || error) && (
+          {form.submitError && (
             <div className="text-right text-sm text-danger">
-              {form.submitError || error}
+              {form.submitError}
             </div>
           )}
           {analysis.status !== AccessmodAnalysisStatus.Ready && (

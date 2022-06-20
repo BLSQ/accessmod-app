@@ -122,6 +122,8 @@ const DatasetPicker = (props: Props) => {
         AccessmodFilesetRoleCode.TransportNetwork,
         AccessmodFilesetRoleCode.Water,
         AccessmodFilesetRoleCode.LandCover,
+        AccessmodFilesetRoleCode.Boundaries,
+        AccessmodFilesetRoleCode.Population,
       ].includes(role.code),
     [role]
   );
