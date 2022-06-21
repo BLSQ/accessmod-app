@@ -17,7 +17,9 @@ export type Scalars = {
   Date: any;
   DateTime: any;
   MovingSpeeds: any;
+  SimplifiedExtentType: any;
   StackPriorities: any;
+  TimeThresholds: any;
 };
 
 export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & AccessmodOwnership & {
@@ -60,7 +62,6 @@ export type AccessmodAnalysis = {
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
   name: Scalars['String'];
-  owner?: Maybe<AccessmodOwner>;
   status: AccessmodAnalysisStatus;
   type: AccessmodAnalysisType;
   updatedAt: Scalars['DateTime'];
@@ -91,7 +92,8 @@ export enum AccessmodAnalysisStatus {
 
 export enum AccessmodAnalysisType {
   Accessibility = 'ACCESSIBILITY',
-  GeographicCoverage = 'GEOGRAPHIC_COVERAGE'
+  GeographicCoverage = 'GEOGRAPHIC_COVERAGE',
+  ZonalStatistics = 'ZONAL_STATISTICS'
 }
 
 export type AccessmodFile = {
@@ -158,6 +160,7 @@ export type AccessmodFilesetRole = {
 
 export enum AccessmodFilesetRoleCode {
   Barrier = 'BARRIER',
+  Boundaries = 'BOUNDARIES',
   Coverage = 'COVERAGE',
   Dem = 'DEM',
   FrictionSurface = 'FRICTION_SURFACE',
@@ -168,7 +171,9 @@ export enum AccessmodFilesetRoleCode {
   Stack = 'STACK',
   TransportNetwork = 'TRANSPORT_NETWORK',
   TravelTimes = 'TRAVEL_TIMES',
-  Water = 'WATER'
+  Water = 'WATER',
+  ZonalStatistics = 'ZONAL_STATISTICS',
+  ZonalStatisticsTable = 'ZONAL_STATISTICS_TABLE'
 }
 
 export enum AccessmodFilesetStatus {
@@ -273,6 +278,25 @@ export type AccessmodProjectPermissionPage = {
   totalPages: Scalars['Int'];
 };
 
+export type AccessmodZonalStatistics = AccessmodAnalysis & AccessmodOwnership & {
+  __typename?: 'AccessmodZonalStatistics';
+  author: User;
+  authorizedActions: Array<AccessmodAnalysisAuthorizedActions>;
+  boundaries?: Maybe<AccessmodFileset>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  owner?: Maybe<AccessmodOwner>;
+  population?: Maybe<AccessmodFileset>;
+  status: AccessmodAnalysisStatus;
+  timeThresholds?: Maybe<Scalars['TimeThresholds']>;
+  travelTimes?: Maybe<AccessmodFileset>;
+  type: AccessmodAnalysisType;
+  updatedAt: Scalars['DateTime'];
+  zonalStatisticsGeo?: Maybe<AccessmodFileset>;
+  zonalStatisticsTable?: Maybe<AccessmodFileset>;
+};
+
 export type Avatar = {
   __typename?: 'Avatar';
   color: Scalars['String'];
@@ -285,7 +309,7 @@ export type Country = {
   code: Scalars['String'];
   flag: Scalars['String'];
   name: Scalars['String'];
-  whoInfo?: Maybe<WhoInfo>;
+  whoInfo: WhoInfo;
 };
 
 export type CountryInput = {
@@ -386,6 +410,22 @@ export type CreateAccessmodProjectResult = {
   __typename?: 'CreateAccessmodProjectResult';
   errors: Array<CreateAccessmodProjectError>;
   project?: Maybe<AccessmodProject>;
+  success: Scalars['Boolean'];
+};
+
+export enum CreateAccessmodZonalStatisticsError {
+  NameDuplicate = 'NAME_DUPLICATE'
+}
+
+export type CreateAccessmodZonalStatisticsInput = {
+  name: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
+export type CreateAccessmodZonalStatisticsResult = {
+  __typename?: 'CreateAccessmodZonalStatisticsResult';
+  analysis?: Maybe<AccessmodZonalStatistics>;
+  errors: Array<CreateAccessmodZonalStatisticsError>;
   success: Scalars['Boolean'];
 };
 
@@ -592,6 +632,7 @@ export type Mutation = {
   createAccessmodFileset: CreateAccessmodFilesetResult;
   createAccessmodProjectByCountry: CreateAccessmodProjectResult;
   createAccessmodProjectPermission: CreateAccessmodProjectPermissionResult;
+  createAccessmodZonalStatistics: CreateAccessmodZonalStatisticsResult;
   createMembership: CreateMembershipResult;
   createTeam: CreateTeamResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
@@ -611,6 +652,7 @@ export type Mutation = {
   updateAccessmodFileset: UpdateAccessmodFilesetResult;
   updateAccessmodProject: UpdateAccessmodProjectResult;
   updateAccessmodProjectPermission: UpdateAccessmodProjectPermissionResult;
+  updateAccessmodZonalStatistics: UpdateAccessmodZonalStatisticsResult;
   updateMembership: UpdateMembershipResult;
   updateTeam: UpdateTeamResult;
 };
@@ -638,6 +680,11 @@ export type MutationCreateAccessmodProjectByCountryArgs = {
 
 export type MutationCreateAccessmodProjectPermissionArgs = {
   input: CreateAccessmodProjectPermissionInput;
+};
+
+
+export type MutationCreateAccessmodZonalStatisticsArgs = {
+  input?: InputMaybe<CreateAccessmodZonalStatisticsInput>;
 };
 
 
@@ -728,6 +775,11 @@ export type MutationUpdateAccessmodProjectArgs = {
 
 export type MutationUpdateAccessmodProjectPermissionArgs = {
   input: UpdateAccessmodProjectPermissionInput;
+};
+
+
+export type MutationUpdateAccessmodZonalStatisticsArgs = {
+  input?: InputMaybe<UpdateAccessmodZonalStatisticsInput>;
 };
 
 
@@ -959,7 +1011,6 @@ export type UpdateAccessmodAccessibilityAnalysisResult = {
 };
 
 export enum UpdateAccessmodFilesetError {
-  Invalid = 'INVALID',
   NameDuplicate = 'NAME_DUPLICATE',
   NotFound = 'NOT_FOUND',
   PermissionDenied = 'PERMISSION_DENIED'
@@ -969,7 +1020,6 @@ export type UpdateAccessmodFilesetInput = {
   id: Scalars['String'];
   metadata?: InputMaybe<Scalars['AccessmodFilesetMetadata']>;
   name?: InputMaybe<Scalars['String']>;
-  roleId?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateAccessmodFilesetResult = {
@@ -1015,6 +1065,27 @@ export type UpdateAccessmodProjectResult = {
   __typename?: 'UpdateAccessmodProjectResult';
   errors: Array<UpdateAccessmodProjectError>;
   project?: Maybe<AccessmodProject>;
+  success: Scalars['Boolean'];
+};
+
+export enum UpdateAccessmodZonalStatisticsError {
+  NameDuplicate = 'NAME_DUPLICATE',
+  NotFound = 'NOT_FOUND'
+}
+
+export type UpdateAccessmodZonalStatisticsInput = {
+  boundariesId?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+  populationId?: InputMaybe<Scalars['String']>;
+  timeThresholds?: InputMaybe<Scalars['TimeThresholds']>;
+  travelTimesId?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateAccessmodZonalStatisticsResult = {
+  __typename?: 'UpdateAccessmodZonalStatisticsResult';
+  analysis?: Maybe<AccessmodZonalStatistics>;
+  errors: Array<UpdateAccessmodZonalStatisticsError>;
   success: Scalars['Boolean'];
 };
 
@@ -1069,7 +1140,7 @@ export type WhoInfo = {
   __typename?: 'WHOInfo';
   defaultCRS: Scalars['Int'];
   region?: Maybe<WhoRegion>;
-  simplifiedExtent?: Maybe<Array<Array<Scalars['Float']>>>;
+  simplifiedExtent?: Maybe<Scalars['SimplifiedExtentType']>;
 };
 
 export type WhoRegion = {
@@ -1086,13 +1157,6 @@ export type HeaderQuery = { __typename?: 'Query', me: { __typename?: 'Me', autho
 export type Navbar_NavbarFragment = { __typename?: 'Query', teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
 export type UserMenu_UserFragment = { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } };
-
-export type CreateAccessibilityAnalysisMutationVariables = Exact<{
-  input?: InputMaybe<CreateAccessmodAccessibilityAnalysisInput>;
-}>;
-
-
-export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', response: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<CreateAccessmodAccessibilityAnalysisError>, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } | null } };
 
 export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -1149,7 +1213,13 @@ type AccessibilityAnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragmen
 
 type AccessibilityAnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, status: AccessmodAnalysisStatus };
 
-export type AccessibilityAnalysisOutput_AnalysisFragment = AccessibilityAnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment | AccessibilityAnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+type AccessibilityAnalysisOutput_Analysis_AccessmodZonalStatistics_Fragment = { __typename: 'AccessmodZonalStatistics', id: string, status: AccessmodAnalysisStatus };
+
+export type AccessibilityAnalysisOutput_AnalysisFragment = AccessibilityAnalysisOutput_Analysis_AccessmodAccessibilityAnalysis_Fragment | AccessibilityAnalysisOutput_Analysis_AccessmodGeographicCoverageAnalysis_Fragment | AccessibilityAnalysisOutput_Analysis_AccessmodZonalStatistics_Fragment;
+
+export type AccessibilityAnalysisParameters_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type AccessibilityAnalysisParameters_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, stackPriorities?: any | null, movingSpeeds?: any | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -1157,7 +1227,9 @@ type AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment = { 
 
 type AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> };
 
-export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+type AnalysisActionsButton_Analysis_AccessmodZonalStatistics_Fragment = { __typename?: 'AccessmodZonalStatistics', id: string, name: string, status: AccessmodAnalysisStatus, type: AccessmodAnalysisType, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> };
+
+export type AnalysisActionsButton_AnalysisFragment = AnalysisActionsButton_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisActionsButton_Analysis_AccessmodGeographicCoverageAnalysis_Fragment | AnalysisActionsButton_Analysis_AccessmodZonalStatistics_Fragment;
 
 export type AnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
@@ -1165,13 +1237,17 @@ type AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typenam
 
 type AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename?: 'AccessmodGeographicCoverageAnalysis' };
 
-export type AnalysisForm_AnalysisFragment = AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+type AnalysisForm_Analysis_AccessmodZonalStatistics_Fragment = { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, timeThresholds?: any | null, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, boundaries?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, population?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null };
+
+export type AnalysisForm_AnalysisFragment = AnalysisForm_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisForm_Analysis_AccessmodGeographicCoverageAnalysis_Fragment | AnalysisForm_Analysis_AccessmodZonalStatistics_Fragment;
 
 type AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment = { __typename: 'AccessmodAccessibilityAnalysis', status: AccessmodAnalysisStatus };
 
 type AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment = { __typename: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus };
 
-export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment;
+type AnalysisStatus_Analysis_AccessmodZonalStatistics_Fragment = { __typename: 'AccessmodZonalStatistics', status: AccessmodAnalysisStatus };
+
+export type AnalysisStatus_AnalysisFragment = AnalysisStatus_Analysis_AccessmodAccessibilityAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodGeographicCoverageAnalysis_Fragment | AnalysisStatus_Analysis_AccessmodZonalStatistics_Fragment;
 
 export type TabularDatasetEditorQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1181,6 +1257,25 @@ export type TabularDatasetEditorQueryVariables = Exact<{
 export type TabularDatasetEditorQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
 
 export type TabularDatasetEditor_DatasetFragment = { __typename?: 'AccessmodFileset', id: string };
+
+export type ZonalStatisticsForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
+
+export type ZonalStatisticsForm_AnalysisFragment = { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, timeThresholds?: any | null, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, boundaries?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, population?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null };
+
+export type UpdateZonalStatisticsMutationVariables = Exact<{
+  input?: InputMaybe<UpdateAccessmodZonalStatisticsInput>;
+}>;
+
+
+export type UpdateZonalStatisticsMutation = { __typename?: 'Mutation', updateAccessmodZonalStatistics: { __typename?: 'UpdateAccessmodZonalStatisticsResult', success: boolean, errors: Array<UpdateAccessmodZonalStatisticsError>, analysis?: { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, timeThresholds?: any | null, status: AccessmodAnalysisStatus, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, boundaries?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, population?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | null } };
+
+export type ZonalStatisticsOutput_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type ZonalStatisticsOutput_AnalysisFragment = { __typename: 'AccessmodZonalStatistics', id: string, status: AccessmodAnalysisStatus, zonalStatisticsTable?: { __typename?: 'AccessmodFileset', name: string } | null, zonalStatisticsGeo?: { __typename?: 'AccessmodFileset', name: string } | null };
+
+export type ZonalStatisticsParameters_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
+
+export type ZonalStatisticsParameters_AnalysisFragment = { __typename: 'AccessmodZonalStatistics', id: string, timeThresholds?: any | null, population?: { __typename?: 'AccessmodFileset', name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string } | null };
 
 export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
 
@@ -1323,7 +1418,7 @@ export type ProjectAnalysesTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodZonalStatistics', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } };
 
@@ -1410,12 +1505,26 @@ export type TeamProjectsTableQueryVariables = Exact<{
 
 export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } };
 
+export type CreateAccessibilityAnalysisMutationVariables = Exact<{
+  input: CreateAccessmodAccessibilityAnalysisInput;
+}>;
+
+
+export type CreateAccessibilityAnalysisMutation = { __typename?: 'Mutation', result: { __typename?: 'CreateAccessmodAccessibilityAnalysisResult', success: boolean, errors: Array<CreateAccessmodAccessibilityAnalysisError>, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', id: string } | null } };
+
+export type CreateZonalStatisticsMutationVariables = Exact<{
+  input: CreateAccessmodZonalStatisticsInput;
+}>;
+
+
+export type CreateZonalStatisticsMutation = { __typename?: 'Mutation', result: { __typename?: 'CreateAccessmodZonalStatisticsResult', success: boolean, errors: Array<CreateAccessmodZonalStatisticsError>, analysis?: { __typename?: 'AccessmodZonalStatistics', id: string } | null } };
+
 export type LaunchAccessmodAnalysisMutationVariables = Exact<{
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
 }>;
 
 
-export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchAccessmodAnalysis: { __typename?: 'LaunchAccessmodAnalysisResult', success: boolean, errors: Array<LaunchAccessmodAnalysisError>, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', status: AccessmodAnalysisStatus, updatedAt: any } | { __typename?: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus, updatedAt: any } | null } };
+export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchAccessmodAnalysis: { __typename?: 'LaunchAccessmodAnalysisResult', success: boolean, errors: Array<LaunchAccessmodAnalysisError>, analysis?: { __typename?: 'AccessmodAccessibilityAnalysis', status: AccessmodAnalysisStatus, updatedAt: any } | { __typename?: 'AccessmodGeographicCoverageAnalysis', status: AccessmodAnalysisStatus, updatedAt: any } | { __typename?: 'AccessmodZonalStatistics', status: AccessmodAnalysisStatus, updatedAt: any } | null } };
 
 export type MeQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1430,7 +1539,7 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: '
 export type FetchCountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, whoInfo?: { __typename?: 'WHOInfo', defaultCRS: number, region?: { __typename?: 'WHORegion', code: string, name: string } | null } | null }> };
+export type FetchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, alpha3: string, name: string, flag: string, whoInfo: { __typename?: 'WHOInfo', defaultCRS: number, region?: { __typename?: 'WHORegion', code: string, name: string } | null } }> };
 
 export type GetUploadUrlMutationVariables = Exact<{
   input: PrepareAccessmodFileUploadInput;
@@ -1478,7 +1587,7 @@ export type AnalysisEditPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, movingSpeeds?: any | null, waterAllTouched?: boolean | null, stackPriorities?: any | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
+export type AnalysisEditPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, movingSpeeds?: any | null, waterAllTouched?: boolean | null, stackPriorities?: any | null, knightMove?: boolean | null, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, invertDirection?: boolean | null, maxTravelTime?: number | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | { __typename: 'AccessmodZonalStatistics', id: string, type: AccessmodAnalysisType, name: string, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, timeThresholds?: any | null, travelTimes?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, boundaries?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null, population?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | null };
 
 export type AnalysisDetailPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1486,7 +1595,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', stackPriorities?: any | null, movingSpeeds?: any | null, id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions> } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, stackPriorities?: any | null, movingSpeeds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, timeThresholds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, zonalStatisticsTable?: { __typename?: 'AccessmodFileset', name: string } | null, zonalStatisticsGeo?: { __typename?: 'AccessmodFileset', name: string } | null, population?: { __typename?: 'AccessmodFileset', name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string } | null } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1620,6 +1729,47 @@ export const AccessibilityAnalysisOutput_AnalysisFragmentDoc = gql`
   }
 }
     `;
+export const AccessibilityAnalysisParameters_ProjectFragmentDoc = gql`
+    fragment AccessibilityAnalysisParameters_project on AccessmodProject {
+  id
+}
+    `;
+export const AccessibilityAnalysisParameters_AnalysisFragmentDoc = gql`
+    fragment AccessibilityAnalysisParameters_analysis on AccessmodAccessibilityAnalysis {
+  __typename
+  id
+  landCover {
+    id
+    name
+  }
+  transportNetwork {
+    id
+    name
+  }
+  water {
+    id
+    name
+  }
+  barrier {
+    id
+    name
+  }
+  stack {
+    id
+    name
+  }
+  dem {
+    id
+    name
+  }
+  stackPriorities
+  movingSpeeds
+  healthFacilities {
+    id
+    name
+  }
+}
+    `;
 export const AnalysisActionsButton_ProjectFragmentDoc = gql`
     fragment AnalysisActionsButton_project on AccessmodProject {
   id
@@ -1654,11 +1804,19 @@ export const AccessibilityAnalysisForm_ProjectFragmentDoc = gql`
   ...DatasetPicker_project
 }
     ${DatasetPicker_ProjectFragmentDoc}`;
+export const ZonalStatisticsForm_ProjectFragmentDoc = gql`
+    fragment ZonalStatisticsForm_project on AccessmodProject {
+  id
+  ...DatasetPicker_project
+}
+    ${DatasetPicker_ProjectFragmentDoc}`;
 export const AnalysisForm_ProjectFragmentDoc = gql`
     fragment AnalysisForm_project on AccessmodProject {
   ...AccessibilityAnalysisForm_project
+  ...ZonalStatisticsForm_project
 }
-    ${AccessibilityAnalysisForm_ProjectFragmentDoc}`;
+    ${AccessibilityAnalysisForm_ProjectFragmentDoc}
+${ZonalStatisticsForm_ProjectFragmentDoc}`;
 export const DatasetStatusBadge_DatasetFragmentDoc = gql`
     fragment DatasetStatusBadge_dataset on AccessmodFileset {
   id
@@ -1742,11 +1900,35 @@ export const AccessibilityAnalysisForm_AnalysisFragmentDoc = gql`
   }
 }
     ${DatasetPicker_DatasetFragmentDoc}`;
+export const ZonalStatisticsForm_AnalysisFragmentDoc = gql`
+    fragment ZonalStatisticsForm_analysis on AccessmodZonalStatistics {
+  __typename
+  id
+  name
+  type
+  timeThresholds
+  travelTimes {
+    id
+    ...DatasetPicker_dataset
+  }
+  boundaries {
+    id
+    ...DatasetPicker_dataset
+  }
+  population {
+    id
+    ...DatasetPicker_dataset
+  }
+  status
+}
+    ${DatasetPicker_DatasetFragmentDoc}`;
 export const AnalysisForm_AnalysisFragmentDoc = gql`
     fragment AnalysisForm_analysis on AccessmodAnalysis {
   ...AccessibilityAnalysisForm_analysis
+  ...ZonalStatisticsForm_analysis
 }
-    ${AccessibilityAnalysisForm_AnalysisFragmentDoc}`;
+    ${AccessibilityAnalysisForm_AnalysisFragmentDoc}
+${ZonalStatisticsForm_AnalysisFragmentDoc}`;
 export const AnalysisStatus_AnalysisFragmentDoc = gql`
     fragment AnalysisStatus_analysis on AccessmodAnalysis {
   __typename
@@ -1756,6 +1938,45 @@ export const AnalysisStatus_AnalysisFragmentDoc = gql`
 export const TabularDatasetEditor_DatasetFragmentDoc = gql`
     fragment TabularDatasetEditor_dataset on AccessmodFileset {
   id
+}
+    `;
+export const ZonalStatisticsOutput_ProjectFragmentDoc = gql`
+    fragment ZonalStatisticsOutput_project on AccessmodProject {
+  id
+}
+    `;
+export const ZonalStatisticsOutput_AnalysisFragmentDoc = gql`
+    fragment ZonalStatisticsOutput_analysis on AccessmodZonalStatistics {
+  __typename
+  id
+  status
+  zonalStatisticsTable {
+    name
+  }
+  zonalStatisticsGeo {
+    name
+  }
+}
+    `;
+export const ZonalStatisticsParameters_ProjectFragmentDoc = gql`
+    fragment ZonalStatisticsParameters_project on AccessmodProject {
+  id
+}
+    `;
+export const ZonalStatisticsParameters_AnalysisFragmentDoc = gql`
+    fragment ZonalStatisticsParameters_analysis on AccessmodZonalStatistics {
+  __typename
+  id
+  population {
+    name
+  }
+  travelTimes {
+    name
+  }
+  timeThresholds
+  boundaries {
+    name
+  }
 }
     `;
 export const TabularDatasetTable_DatasetFragmentDoc = gql`
@@ -2112,43 +2333,6 @@ export function useHeaderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Hea
 export type HeaderQueryHookResult = ReturnType<typeof useHeaderQuery>;
 export type HeaderLazyQueryHookResult = ReturnType<typeof useHeaderLazyQuery>;
 export type HeaderQueryResult = Apollo.QueryResult<HeaderQuery, HeaderQueryVariables>;
-export const CreateAccessibilityAnalysisDocument = gql`
-    mutation CreateAccessibilityAnalysis($input: CreateAccessmodAccessibilityAnalysisInput) {
-  response: createAccessmodAccessibilityAnalysis(input: $input) {
-    success
-    errors
-    analysis {
-      id
-    }
-  }
-}
-    `;
-export type CreateAccessibilityAnalysisMutationFn = Apollo.MutationFunction<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
-
-/**
- * __useCreateAccessibilityAnalysisMutation__
- *
- * To run a mutation, you first call `useCreateAccessibilityAnalysisMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateAccessibilityAnalysisMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createAccessibilityAnalysisMutation, { data, loading, error }] = useCreateAccessibilityAnalysisMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateAccessibilityAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>(CreateAccessibilityAnalysisDocument, options);
-      }
-export type CreateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useCreateAccessibilityAnalysisMutation>;
-export type CreateAccessibilityAnalysisMutationResult = Apollo.MutationResult<CreateAccessibilityAnalysisMutation>;
-export type CreateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
 export const FilesetRolePickerDocument = gql`
     query FilesetRolePicker {
   accessmodFilesetRoles {
@@ -2394,6 +2578,43 @@ export function useTabularDatasetEditorLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type TabularDatasetEditorQueryHookResult = ReturnType<typeof useTabularDatasetEditorQuery>;
 export type TabularDatasetEditorLazyQueryHookResult = ReturnType<typeof useTabularDatasetEditorLazyQuery>;
 export type TabularDatasetEditorQueryResult = Apollo.QueryResult<TabularDatasetEditorQuery, TabularDatasetEditorQueryVariables>;
+export const UpdateZonalStatisticsDocument = gql`
+    mutation UpdateZonalStatistics($input: UpdateAccessmodZonalStatisticsInput) {
+  updateAccessmodZonalStatistics(input: $input) {
+    success
+    errors
+    analysis {
+      ...ZonalStatisticsForm_analysis
+    }
+  }
+}
+    ${ZonalStatisticsForm_AnalysisFragmentDoc}`;
+export type UpdateZonalStatisticsMutationFn = Apollo.MutationFunction<UpdateZonalStatisticsMutation, UpdateZonalStatisticsMutationVariables>;
+
+/**
+ * __useUpdateZonalStatisticsMutation__
+ *
+ * To run a mutation, you first call `useUpdateZonalStatisticsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateZonalStatisticsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateZonalStatisticsMutation, { data, loading, error }] = useUpdateZonalStatisticsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateZonalStatisticsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateZonalStatisticsMutation, UpdateZonalStatisticsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateZonalStatisticsMutation, UpdateZonalStatisticsMutationVariables>(UpdateZonalStatisticsDocument, options);
+      }
+export type UpdateZonalStatisticsMutationHookResult = ReturnType<typeof useUpdateZonalStatisticsMutation>;
+export type UpdateZonalStatisticsMutationResult = Apollo.MutationResult<UpdateZonalStatisticsMutation>;
+export type UpdateZonalStatisticsMutationOptions = Apollo.BaseMutationOptions<UpdateZonalStatisticsMutation, UpdateZonalStatisticsMutationVariables>;
 export const UpdateDatasetDocument = gql`
     mutation UpdateDataset($input: UpdateAccessmodFilesetInput!) {
   updateAccessmodFileset(input: $input) {
@@ -3249,6 +3470,80 @@ export function useTeamProjectsTableLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type TeamProjectsTableQueryHookResult = ReturnType<typeof useTeamProjectsTableQuery>;
 export type TeamProjectsTableLazyQueryHookResult = ReturnType<typeof useTeamProjectsTableLazyQuery>;
 export type TeamProjectsTableQueryResult = Apollo.QueryResult<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>;
+export const CreateAccessibilityAnalysisDocument = gql`
+    mutation CreateAccessibilityAnalysis($input: CreateAccessmodAccessibilityAnalysisInput!) {
+  result: createAccessmodAccessibilityAnalysis(input: $input) {
+    success
+    analysis {
+      id
+    }
+    errors
+  }
+}
+    `;
+export type CreateAccessibilityAnalysisMutationFn = Apollo.MutationFunction<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
+
+/**
+ * __useCreateAccessibilityAnalysisMutation__
+ *
+ * To run a mutation, you first call `useCreateAccessibilityAnalysisMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAccessibilityAnalysisMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAccessibilityAnalysisMutation, { data, loading, error }] = useCreateAccessibilityAnalysisMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAccessibilityAnalysisMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>(CreateAccessibilityAnalysisDocument, options);
+      }
+export type CreateAccessibilityAnalysisMutationHookResult = ReturnType<typeof useCreateAccessibilityAnalysisMutation>;
+export type CreateAccessibilityAnalysisMutationResult = Apollo.MutationResult<CreateAccessibilityAnalysisMutation>;
+export type CreateAccessibilityAnalysisMutationOptions = Apollo.BaseMutationOptions<CreateAccessibilityAnalysisMutation, CreateAccessibilityAnalysisMutationVariables>;
+export const CreateZonalStatisticsDocument = gql`
+    mutation CreateZonalStatistics($input: CreateAccessmodZonalStatisticsInput!) {
+  result: createAccessmodZonalStatistics(input: $input) {
+    success
+    analysis {
+      id
+    }
+    errors
+  }
+}
+    `;
+export type CreateZonalStatisticsMutationFn = Apollo.MutationFunction<CreateZonalStatisticsMutation, CreateZonalStatisticsMutationVariables>;
+
+/**
+ * __useCreateZonalStatisticsMutation__
+ *
+ * To run a mutation, you first call `useCreateZonalStatisticsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateZonalStatisticsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createZonalStatisticsMutation, { data, loading, error }] = useCreateZonalStatisticsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateZonalStatisticsMutation(baseOptions?: Apollo.MutationHookOptions<CreateZonalStatisticsMutation, CreateZonalStatisticsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateZonalStatisticsMutation, CreateZonalStatisticsMutationVariables>(CreateZonalStatisticsDocument, options);
+      }
+export type CreateZonalStatisticsMutationHookResult = ReturnType<typeof useCreateZonalStatisticsMutation>;
+export type CreateZonalStatisticsMutationResult = Apollo.MutationResult<CreateZonalStatisticsMutation>;
+export type CreateZonalStatisticsMutationOptions = Apollo.BaseMutationOptions<CreateZonalStatisticsMutation, CreateZonalStatisticsMutationVariables>;
 export const LaunchAccessmodAnalysisDocument = gql`
     mutation launchAccessmodAnalysis($input: LaunchAccessmodAnalysisInput) {
   launchAccessmodAnalysis(input: $input) {
@@ -3683,6 +3978,9 @@ export const AnalysisDetailPageDocument = gql`
     name
     ...AnalysisActionsButton_project
     ...AccessibilityAnalysisOutput_project
+    ...AccessibilityAnalysisParameters_project
+    ...ZonalStatisticsOutput_project
+    ...ZonalStatisticsParameters_project
   }
   analysis: accessmodAnalysis(id: $analysisId) {
     __typename
@@ -3695,50 +3993,29 @@ export const AnalysisDetailPageDocument = gql`
     ...AnalysisActionsButton_analysis
     ...AnalysisStatus_analysis
     ...AccessibilityAnalysisOutput_analysis
-    ... on AccessmodAccessibilityAnalysis {
+    ...AccessibilityAnalysisParameters_analysis
+    ...ZonalStatisticsOutput_analysis
+    ...ZonalStatisticsParameters_analysis
+    ... on AccessmodOwnership {
       owner {
         __typename
         ...User_user
         ...Team_team
-      }
-      landCover {
-        id
-        name
-      }
-      transportNetwork {
-        id
-        name
-      }
-      water {
-        id
-        name
-      }
-      barrier {
-        id
-        name
-      }
-      stack {
-        id
-        name
-      }
-      dem {
-        id
-        name
-      }
-      stackPriorities
-      movingSpeeds
-      healthFacilities {
-        id
-        name
       }
     }
   }
 }
     ${AnalysisActionsButton_ProjectFragmentDoc}
 ${AccessibilityAnalysisOutput_ProjectFragmentDoc}
+${AccessibilityAnalysisParameters_ProjectFragmentDoc}
+${ZonalStatisticsOutput_ProjectFragmentDoc}
+${ZonalStatisticsParameters_ProjectFragmentDoc}
 ${AnalysisActionsButton_AnalysisFragmentDoc}
 ${AnalysisStatus_AnalysisFragmentDoc}
 ${AccessibilityAnalysisOutput_AnalysisFragmentDoc}
+${AccessibilityAnalysisParameters_AnalysisFragmentDoc}
+${ZonalStatisticsOutput_AnalysisFragmentDoc}
+${ZonalStatisticsParameters_AnalysisFragmentDoc}
 ${User_UserFragmentDoc}
 ${Team_TeamFragmentDoc}`;
 

@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Menu from "components/Menu";
+import { displayErrorAlert } from "libs/alert";
 import { launchAnalysis } from "libs/analysis";
 import {
   AccessmodAnalysisAuthorizedActions,
@@ -35,8 +36,12 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
     }
   };
 
-  const onRun = () => {
-    launchAnalysis(analysis);
+  const onRun = async () => {
+    try {
+      await launchAnalysis(analysis);
+    } catch (err) {
+      displayErrorAlert(t("Impossible to launch analysis."));
+    }
   };
 
   return (

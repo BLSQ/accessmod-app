@@ -42,7 +42,6 @@ interface AccessmodAnalysis {
   type: AccessmodAnalysisType!
   status: AccessmodAnalysisStatus!
   name: String!
-  owner: AccessmodOwner
   author: User!
   authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
   createdAt: DateTime!
@@ -74,6 +73,7 @@ enum AccessmodAnalysisStatus {
 enum AccessmodAnalysisType {
   ACCESSIBILITY
   GEOGRAPHIC_COVERAGE
+  ZONAL_STATISTICS
 }
 
 type AccessmodFile {
@@ -149,6 +149,9 @@ enum AccessmodFilesetRoleCode {
   TRAVEL_TIMES
   WATER
   STACK
+  BOUNDARIES
+  ZONAL_STATISTICS
+  ZONAL_STATISTICS_TABLE
 }
 
 enum AccessmodFilesetStatus {
@@ -248,6 +251,24 @@ type AccessmodProjectPermissionPage {
   items: [AccessmodProjectPermission!]!
 }
 
+type AccessmodZonalStatistics implements AccessmodAnalysis & AccessmodOwnership {
+  id: String!
+  type: AccessmodAnalysisType!
+  status: AccessmodAnalysisStatus!
+  name: String!
+  owner: AccessmodOwner
+  author: User!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  population: AccessmodFileset
+  travelTimes: AccessmodFileset
+  boundaries: AccessmodFileset
+  timeThresholds: TimeThresholds
+  zonalStatisticsTable: AccessmodFileset
+  zonalStatisticsGeo: AccessmodFileset
+}
+
 type Avatar {
   initials: String!
   color: String!
@@ -258,7 +279,7 @@ type Country {
   alpha3: String!
   name: String!
   flag: String!
-  whoInfo: WHOInfo
+  whoInfo: WHOInfo!
 }
 
 input CountryInput {
@@ -355,6 +376,21 @@ type CreateAccessmodProjectResult {
   success: Boolean!
   project: AccessmodProject
   errors: [CreateAccessmodProjectError!]!
+}
+
+enum CreateAccessmodZonalStatisticsError {
+  NAME_DUPLICATE
+}
+
+input CreateAccessmodZonalStatisticsInput {
+  projectId: String!
+  name: String!
+}
+
+type CreateAccessmodZonalStatisticsResult {
+  success: Boolean!
+  analysis: AccessmodZonalStatistics
+  errors: [CreateAccessmodZonalStatisticsError!]!
 }
 
 enum CreateMembershipError {
@@ -569,7 +605,9 @@ type Mutation {
   prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput!): PrepareAccessmodFileDownloadResult!
   createAccessmodFile(input: CreateAccessmodFileInput!): CreateAccessmodFileResult!
   createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult!
+  createAccessmodZonalStatistics(input: CreateAccessmodZonalStatisticsInput): CreateAccessmodZonalStatisticsResult!
   updateAccessmodAccessibilityAnalysis(input: UpdateAccessmodAccessibilityAnalysisInput): UpdateAccessmodAccessibilityAnalysisResult!
+  updateAccessmodZonalStatistics(input: UpdateAccessmodZonalStatisticsInput): UpdateAccessmodZonalStatisticsResult!
   launchAccessmodAnalysis(input: LaunchAccessmodAnalysisInput): LaunchAccessmodAnalysisResult!
   deleteAccessmodAnalysis(input: DeleteAccessmodAnalysisInput): DeleteAccessmodAnalysisResult!
 }
@@ -621,8 +659,6 @@ type Query {
   team(id: String!): Team
   teams(term: String, page: Int, perPage: Int): TeamPage!
   organizations: [Organization!]!
-  country(code: String, alpha3: String): Country
-  countries: [Country!]!
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int, orderBy: AccessmodProjectOrder): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
@@ -631,6 +667,8 @@ type Query {
   accessmodFilesetRoles: [AccessmodFilesetRole!]!
   accessmodAnalysis(id: String): AccessmodAnalysis
   accessmodAnalyses(projectId: String!, page: Int, perPage: Int): AccessmodAnalysisPage!
+  country(code: String, alpha3: String): Country
+  countries: [Country!]!
 }
 
 input ResetPasswordInput {
@@ -660,6 +698,8 @@ type SetPasswordResult {
   error: SetPasswordError
 }
 
+scalar SimplifiedExtentType
+
 scalar StackPriorities
 
 type Team {
@@ -683,6 +723,8 @@ type TeamPage {
   totalItems: Int!
   items: [Team!]!
 }
+
+scalar TimeThresholds
 
 enum UpdateAccessmodAccessibilityAnalysisError {
   NOT_FOUND
@@ -717,14 +759,12 @@ type UpdateAccessmodAccessibilityAnalysisResult {
 enum UpdateAccessmodFilesetError {
   NOT_FOUND
   NAME_DUPLICATE
-  INVALID
   PERMISSION_DENIED
 }
 
 input UpdateAccessmodFilesetInput {
   id: String!
   name: String
-  roleId: String
   metadata: AccessmodFilesetMetadata
 }
 
@@ -769,6 +809,26 @@ type UpdateAccessmodProjectResult {
   success: Boolean!
   project: AccessmodProject
   errors: [UpdateAccessmodProjectError!]!
+}
+
+enum UpdateAccessmodZonalStatisticsError {
+  NOT_FOUND
+  NAME_DUPLICATE
+}
+
+input UpdateAccessmodZonalStatisticsInput {
+  id: String!
+  name: String
+  populationId: String
+  travelTimesId: String
+  boundariesId: String
+  timeThresholds: TimeThresholds
+}
+
+type UpdateAccessmodZonalStatisticsResult {
+  success: Boolean!
+  analysis: AccessmodZonalStatistics
+  errors: [UpdateAccessmodZonalStatisticsError!]!
 }
 
 enum UpdateMembershipError {
@@ -818,7 +878,7 @@ type User {
 type WHOInfo {
   region: WHORegion
   defaultCRS: Int!
-  simplifiedExtent: [[Float!]!]
+  simplifiedExtent: SimplifiedExtentType
 }
 
 type WHORegion {

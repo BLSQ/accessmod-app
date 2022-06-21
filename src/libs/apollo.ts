@@ -73,6 +73,7 @@ const createApolloClient = (headers: IncomingHttpHeaders | null = null) => {
         AccessmodAnalysis: [
           "AccessmodGeographicCoverageAnalysis",
           "AccessmodAccessibilityAnalysis",
+          "AccessmodZonalStatistics",
         ],
       },
       typePolicies: {

@@ -4,29 +4,16 @@ import Button from "components/Button";
 import Dialog from "components/Dialog";
 import Field from "components/forms/Field";
 import useForm from "hooks/useForm";
+import { createAnalysis } from "libs/analysis";
 import {
   AccessmodAnalysisType,
   CreateAccessmodAccessibilityAnalysisError,
+  CreateAccessmodZonalStatisticsError,
   CreateAnalysisDialog_ProjectFragment,
-  useCreateAccessibilityAnalysisMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import AnalysisTypePicker from "./analysis/AnalysisTypePicker";
-
-const CREATE_ANALYSIS_MUTATION = gql`
-  mutation CreateAccessibilityAnalysis(
-    $input: CreateAccessmodAccessibilityAnalysisInput
-  ) {
-    response: createAccessmodAccessibilityAnalysis(input: $input) {
-      success
-      errors
-      analysis {
-        id
-      }
-    }
-  }
-`;
 
 type Props = {
   onClose: () => void;
@@ -42,7 +29,6 @@ type Form = {
 const CreateAnalysisDialog = ({ onClose, open, project }: Props) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const [createAnalysis] = useCreateAccessibilityAnalysisMutation();
   const form = useForm<Form>({
     validate: (values: Partial<Form>) => {
       const errors = {} as any;
@@ -56,13 +42,14 @@ const CreateAnalysisDialog = ({ onClose, open, project }: Props) => {
     },
     onSubmit: async (values) => {
       // FIXME: Handle multiple analysis' types
-      const { data } = await createAnalysis({
-        variables: { input: { name: values.name, projectId: project.id } },
+      const { data } = await createAnalysis(values.type.value, {
+        name: values.name,
+        projectId: project.id,
       });
       if (!data) {
         throw new Error();
       }
-      const { success, errors, analysis } = data.response;
+      const { success, errors, analysis } = data.result;
       if (success) {
         return router.push(
           `/projects/${encodeURIComponent(project.id)}/analyses/${
@@ -70,7 +57,12 @@ const CreateAnalysisDialog = ({ onClose, open, project }: Props) => {
           }/edit`
         );
       } else if (
-        errors.includes(CreateAccessmodAccessibilityAnalysisError.NameDuplicate)
+        (errors as CreateAccessmodAccessibilityAnalysisError[]).includes(
+          CreateAccessmodAccessibilityAnalysisError.NameDuplicate
+        ) ||
+        (errors as CreateAccessmodZonalStatisticsError[]).includes(
+          CreateAccessmodZonalStatisticsError.NameDuplicate
+        )
       ) {
         throw new Error(t("An analysis with this name already exists."));
       }

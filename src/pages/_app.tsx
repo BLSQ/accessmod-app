@@ -1,4 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
+import AlertManager from "components/AlertManager";
 import Layout from "components/layouts/Layout";
 import { useApollo } from "libs/apollo";
 import { AppPropsWithLayout } from "libs/types";
@@ -25,6 +26,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
           <meta name="description" content="" />
         </Head>
         {getLayout(<Component {...pageProps} />)}
+        <AlertManager />
       </ApolloProvider>
     </>
   );

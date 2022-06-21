@@ -73,7 +73,7 @@ const DatasetDialog = (props: DatasetDialogProps) => {
       if (!data?.updateAccessmodFileset?.success) {
         if (
           data?.updateAccessmodFileset?.errors?.includes(
-            UpdateAccessmodFilesetError.Invalid
+            UpdateAccessmodFilesetError.NotFound
           )
         ) {
           throw new Error(t("This dataset is invalid."));

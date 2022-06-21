@@ -1,12 +1,21 @@
 import { gql } from "@apollo/client";
 import { i18n } from "next-i18next";
 import { getApolloClient } from "./apollo";
-import { AccessmodAnalysisStatus, AccessmodAnalysisType } from "./graphql";
+import {
+  AccessmodAnalysisStatus,
+  AccessmodAnalysisType,
+  CreateAccessibilityAnalysisMutation,
+  CreateAccessmodAccessibilityAnalysisInput,
+  CreateAccessmodZonalStatisticsInput,
+  CreateZonalStatisticsMutation,
+} from "./graphql";
 
 export function getLabelFromAnalysisType(type: AccessmodAnalysisType): string {
   switch (type) {
     case AccessmodAnalysisType.Accessibility:
       return i18n!.t("Accessibility Analysis");
+    case AccessmodAnalysisType.ZonalStatistics:
+      return i18n!.t("Zonal Statistics");
     default:
       return "Analysis";
   }
@@ -31,9 +40,54 @@ export function getAnalysisStatusLabel(
   }
 }
 
-export async function launchAnalysis(analysis: {
-  id: string;
-}): Promise<boolean> {
+export async function createAnalysis(
+  type: AccessmodAnalysisType,
+  input:
+    | CreateAccessmodAccessibilityAnalysisInput
+    | CreateAccessmodZonalStatisticsInput
+) {
+  const client = getApolloClient();
+  switch (type) {
+    case AccessmodAnalysisType.Accessibility:
+      return client.mutate<CreateAccessibilityAnalysisMutation>({
+        mutation: gql`
+          mutation CreateAccessibilityAnalysis(
+            $input: CreateAccessmodAccessibilityAnalysisInput!
+          ) {
+            result: createAccessmodAccessibilityAnalysis(input: $input) {
+              success
+              analysis {
+                id
+              }
+              errors
+            }
+          }
+        `,
+        variables: { input },
+      });
+    case AccessmodAnalysisType.ZonalStatistics:
+      return client.mutate<CreateZonalStatisticsMutation>({
+        mutation: gql`
+          mutation CreateZonalStatistics(
+            $input: CreateAccessmodZonalStatisticsInput!
+          ) {
+            result: createAccessmodZonalStatistics(input: $input) {
+              success
+              analysis {
+                id
+              }
+              errors
+            }
+          }
+        `,
+        variables: { input },
+      });
+    default:
+      throw new Error("Unknown Type");
+  }
+}
+
+export async function launchAnalysis(analysis: { id: string }): Promise<void> {
   const client = getApolloClient();
   try {
     const { data } = await client.mutate({
@@ -53,11 +107,11 @@ export async function launchAnalysis(analysis: {
         input: { id: analysis.id },
       },
     });
-
-    return data.launchAccessmodAnalysis.success;
+    if (!data.launchAccessmodAnalysis.success) {
+      throw new Error("Impossible to launch analysis");
+    }
   } catch (err) {
-    console.error(err);
-    return false;
+    throw err;
   }
 }
 
@@ -67,5 +121,11 @@ export const ANALYSES_OPTIONS = [
     label: "Accessibility Analysis",
     description:
       "Compute the traveling time surface, informing the time needed to reach the nearest health facility.",
+  },
+  {
+    value: AccessmodAnalysisType.ZonalStatistics,
+    label: "Zonal Statistics Analysis",
+    description:
+      "Compute the percentage of the population being covered in each sub national division.",
   },
 ];
