@@ -18,7 +18,7 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
   const [data, setData] = useState([...scenario]);
 
   const handleRowChange = useCallback(
-    (index, key, value) => {
+    (index: number, key: string, value: any) => {
       const newData = [...data];
       newData[index] = { ...newData[index], [key]: value };
       setData(newData);
@@ -27,7 +27,7 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     [data, onChange]
   );
   const handleRowRemove = useCallback(
-    (index) => {
+    (index: number) => {
       const newData = data.filter((_, i) => i !== index);
       setData(newData);
       onChange(newData);

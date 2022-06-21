@@ -205,7 +205,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
   }, [analysis, form, project, router]);
 
   const onChangePriorities = useCallback(
-    (value) => form.setFieldValue("stackPriorities", value),
+    (value: object | null) => form.setFieldValue("stackPriorities", value),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

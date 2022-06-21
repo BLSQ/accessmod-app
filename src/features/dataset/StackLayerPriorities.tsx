@@ -73,7 +73,7 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
   };
 
   const hasSpecificClasses = useCallback(
-    (layerId) => {
+    (layerId: string) => {
       const layer = layers.find((l) => l.id === layerId);
 
       return [
@@ -114,10 +114,10 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
     return [];
   }
 
-  const getItemId = useCallback((item) => item.key, []);
+  const getItemId = useCallback((item: any) => item.key, []);
   const handleSortChange = useCallback(
-    (value) => {
-      onChange(value.map((item: any) => item.item));
+    (items: any) => {
+      onChange(items.map((item: any) => item.item));
     },
     [onChange]
   );
