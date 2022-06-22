@@ -221,7 +221,7 @@ export type AccessmodProject = AccessmodOwnership & {
   crs: Scalars['Int'];
   dem?: Maybe<AccessmodFileset>;
   description: Scalars['String'];
-  extent?: Maybe<Scalars['String']>;
+  extent?: Maybe<Array<Array<Scalars['Float']>>>;
   id: Scalars['String'];
   name: Scalars['String'];
   owner?: Maybe<AccessmodOwner>;
@@ -372,18 +372,19 @@ export type CreateAccessmodFilesetResult = {
   success: Scalars['Boolean'];
 };
 
-export type CreateAccessmodProjectByCountryInput = {
-  country: CountryInput;
-  crs: Scalars['Int'];
-  description?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  spatialResolution: Scalars['Int'];
-};
-
 export enum CreateAccessmodProjectError {
   NameDuplicate = 'NAME_DUPLICATE',
   PermissionDenied = 'PERMISSION_DENIED'
 }
+
+export type CreateAccessmodProjectInput = {
+  country: CountryInput;
+  crs: Scalars['Int'];
+  description?: InputMaybe<Scalars['String']>;
+  extent?: InputMaybe<Array<Array<Scalars['Float']>>>;
+  name: Scalars['String'];
+  spatialResolution: Scalars['Int'];
+};
 
 export enum CreateAccessmodProjectPermissionError {
   AlreadyExists = 'ALREADY_EXISTS',
@@ -630,7 +631,7 @@ export type Mutation = {
   createAccessmodAccessibilityAnalysis: CreateAccessmodAccessibilityAnalysisResult;
   createAccessmodFile: CreateAccessmodFileResult;
   createAccessmodFileset: CreateAccessmodFilesetResult;
-  createAccessmodProjectByCountry: CreateAccessmodProjectResult;
+  createAccessmodProject: CreateAccessmodProjectResult;
   createAccessmodProjectPermission: CreateAccessmodProjectPermissionResult;
   createAccessmodZonalStatistics: CreateAccessmodZonalStatisticsResult;
   createMembership: CreateMembershipResult;
@@ -673,8 +674,8 @@ export type MutationCreateAccessmodFilesetArgs = {
 };
 
 
-export type MutationCreateAccessmodProjectByCountryArgs = {
-  input: CreateAccessmodProjectByCountryInput;
+export type MutationCreateAccessmodProjectArgs = {
+  input: CreateAccessmodProjectInput;
 };
 
 
@@ -1036,9 +1037,7 @@ export enum UpdateAccessmodProjectError {
 }
 
 export type UpdateAccessmodProjectInput = {
-  demId?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  extent?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
 };
@@ -1360,11 +1359,11 @@ export type ChangeProjectOwnershipMutation = { __typename?: 'Mutation', createAc
 export type ChangeProjectOwnerDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
 
 export type CreateProjectMutationVariables = Exact<{
-  input: CreateAccessmodProjectByCountryInput;
+  input: CreateAccessmodProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProjectByCountry: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createAccessmodProject: { __typename?: 'CreateAccessmodProjectResult', success: boolean, errors: Array<CreateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string } | null } };
 
 export type DeleteProjectPermissionMutationVariables = Exact<{
   input: DeleteAccessmodProjectPermissionInput;
@@ -1389,14 +1388,14 @@ export type EditProjectQueryVariables = Exact<{
 }>;
 
 
-export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | null };
+export type EditProjectQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   input: UpdateAccessmodProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string, dem?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null } | null } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodProject: { __typename?: 'UpdateAccessmodProjectResult', success: boolean, errors: Array<UpdateAccessmodProjectError>, project?: { __typename?: 'AccessmodProject', id: string, name: string, description: string } | null } };
 
 export type EditProjectFormBlock_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -2849,8 +2848,8 @@ export type ChangeProjectOwnershipMutationHookResult = ReturnType<typeof useChan
 export type ChangeProjectOwnershipMutationResult = Apollo.MutationResult<ChangeProjectOwnershipMutation>;
 export type ChangeProjectOwnershipMutationOptions = Apollo.BaseMutationOptions<ChangeProjectOwnershipMutation, ChangeProjectOwnershipMutationVariables>;
 export const CreateProjectDocument = gql`
-    mutation CreateProject($input: CreateAccessmodProjectByCountryInput!) {
-  createAccessmodProjectByCountry(input: $input) {
+    mutation CreateProject($input: CreateAccessmodProjectInput!) {
+  createAccessmodProject(input: $input) {
     success
     project {
       id
@@ -2957,15 +2956,10 @@ export const EditProjectDocument = gql`
     id
     name
     description
-    dem {
-      id
-      ...DatasetPicker_dataset
-    }
     ...DatasetPicker_project
   }
 }
-    ${DatasetPicker_DatasetFragmentDoc}
-${DatasetPicker_ProjectFragmentDoc}`;
+    ${DatasetPicker_ProjectFragmentDoc}`;
 
 /**
  * __useEditProjectQuery__
@@ -3003,15 +2997,10 @@ export const UpdateProjectDocument = gql`
       id
       name
       description
-      dem {
-        id
-        name
-        ...DatasetPicker_dataset
-      }
     }
   }
 }
-    ${DatasetPicker_DatasetFragmentDoc}`;
+    `;
 export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
 
 /**

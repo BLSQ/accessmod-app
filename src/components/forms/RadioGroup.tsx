@@ -35,7 +35,7 @@ const RadioGroup = ({
             )}
             value={option.id}
             onChange={onChange}
-            defaultChecked={option.id === value}
+            checked={option.id === value}
           />
           <label
             htmlFor={`${name}-${option.id}`}

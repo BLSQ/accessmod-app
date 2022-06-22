@@ -1,4 +1,5 @@
 import Combobox from "components/forms/Combobox";
+import useDebounce from "hooks/useDebounce";
 import { ensureArray } from "libs/array";
 import { fetchCountries, REGIONS } from "libs/countries";
 import { Country } from "libs/graphql";
@@ -36,18 +37,18 @@ const CountryPicker = (props: CountryPickerProps) => {
 
   const [countries, setCountries] = useState<any | null>(null);
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 150);
 
   useEffect(() => {
     fetchCountries().then(setCountries);
   }, []);
 
-  const filteredCountries = useMemo(
-    () =>
-      countries?.filter((c: Country) =>
-        c.name.toLowerCase().includes(query.toLowerCase())
-      ),
-    [countries, query]
-  );
+  const filteredCountries = useMemo(() => {
+    const lowercaseQuery = debouncedQuery.toLowerCase();
+    return countries?.filter((c: Country) =>
+      c.name.toLowerCase().includes(lowercaseQuery)
+    );
+  }, [countries, debouncedQuery]);
 
   const options: { label: string; options: Country[] }[] = useMemo(() => {
     if (!filteredCountries) {
@@ -100,18 +101,21 @@ const CountryPicker = (props: CountryPickerProps) => {
       onClose={useCallback(() => setQuery(""), [])}
       disabled={disabled || !countries?.length}
     >
-      {options.map((group, idx) => (
-        <li key={idx} className="relative">
+      {options.map((group) => (
+        <li key={group.label} className="relative">
           <div className="sticky top-0 z-10 bg-gray-100 px-3 py-2">
             {group.label}
           </div>
           <ul>
-            {group.options.map((option, i) => (
-              <Combobox.CheckOption key={i} value={option}>
+            {group.options.map((option) => (
+              <Combobox.CheckOption key={option.code} value={option}>
                 <div className="flex items-center">
                   <img
+                    loading="lazy"
                     src={option.flag}
                     className="sr-hidden mr-2"
+                    width={16}
+                    height={11}
                     alt="Country Flag"
                   />
                   {option.name}

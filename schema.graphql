@@ -198,7 +198,7 @@ type AccessmodProject implements AccessmodOwnership {
   country: Country!
   author: User!
   owner: AccessmodOwner
-  extent: String
+  extent: [[Float!]!]
   dem: AccessmodFileset
   authorizedActions: [AccessmodProjectAuthorizedActions!]!
   permissions: [AccessmodProjectPermission!]!
@@ -339,17 +339,18 @@ type CreateAccessmodFilesetResult {
   errors: [CreateAccessmodFilesetError!]!
 }
 
-input CreateAccessmodProjectByCountryInput {
+enum CreateAccessmodProjectError {
+  NAME_DUPLICATE
+  PERMISSION_DENIED
+}
+
+input CreateAccessmodProjectInput {
   name: String!
   description: String
   spatialResolution: Int!
   crs: Int!
   country: CountryInput!
-}
-
-enum CreateAccessmodProjectError {
-  NAME_DUPLICATE
-  PERMISSION_DENIED
+  extent: [[Float!]!]
 }
 
 enum CreateAccessmodProjectPermissionError {
@@ -592,7 +593,7 @@ type Mutation {
   createMembership(input: CreateMembershipInput!): CreateMembershipResult!
   updateMembership(input: UpdateMembershipInput!): UpdateMembershipResult!
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
-  createAccessmodProjectByCountry(input: CreateAccessmodProjectByCountryInput!): CreateAccessmodProjectResult!
+  createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
   updateAccessmodProject(input: UpdateAccessmodProjectInput!): UpdateAccessmodProjectResult!
   deleteAccessmodProject(input: DeleteAccessmodProjectInput!): DeleteAccessmodProjectResult!
   createAccessmodProjectPermission(input: CreateAccessmodProjectPermissionInput!): CreateAccessmodProjectPermissionResult!
@@ -784,8 +785,6 @@ input UpdateAccessmodProjectInput {
   id: String!
   name: String
   description: String
-  extent: String
-  demId: String
 }
 
 enum UpdateAccessmodProjectPermissionError {

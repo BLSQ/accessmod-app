@@ -144,7 +144,7 @@ export const ACCEPTED_MIMETYPES = {
   },
 };
 
-type GeoFileMetadata = {
+export type GeoFileMetadata = {
   crs?: number;
   bounds: number[];
   geoKeys: { [key: string]: unknown };
