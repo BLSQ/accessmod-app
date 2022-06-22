@@ -25,7 +25,6 @@ type EditProjectFormProps = {
 type Form = {
   name: string;
   description: string;
-  dem: { id: string } | null;
 };
 
 const EDIT_PROJECT_QUERY = gql`
@@ -34,10 +33,6 @@ const EDIT_PROJECT_QUERY = gql`
       id
       name
       description
-      dem {
-        id
-        ...DatasetPicker_dataset
-      }
       ...DatasetPicker_project
     }
   }
@@ -54,11 +49,6 @@ const UPDATE_PROJECT_MUTATION = gql`
         id
         name
         description
-        dem {
-          id
-          name
-          ...DatasetPicker_dataset
-        }
       }
     }
   }
@@ -80,7 +70,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
             id: props.project.id,
             name: values.name,
             description: values.description,
-            demId: values.dem?.id ?? undefined,
           },
         },
       });
@@ -105,7 +94,6 @@ const EditProjectFormBlock = (props: EditProjectFormProps) => {
     getInitialState: () => {
       return {
         name: data?.project?.name ?? "",
-        dem: data?.project?.dem,
         description: data?.project?.description ?? "",
       };
     },
