@@ -9,7 +9,7 @@ import CreateDatasetDialog from "features/dataset/DatasetFormDialog";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
 import {
   AccessmodProjectAuthorizedActions,
-  useProjectDataPageQuery,
+  useProjectDatasetsPageQuery,
 } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
@@ -17,18 +17,19 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 
-const ProjectDataPage = () => {
+const ProjectDatasetsPage = () => {
   const [showUploadDialog, toggleUploadDialog] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
 
-  const { loading, data } = useProjectDataPageQuery({
+  const { loading, data, refetch } = useProjectDatasetsPageQuery({
     variables: { id: router.query.id as string },
   });
 
   const onDialogClose = useCallback(
     () => {
       toggleUploadDialog(false);
+      refetch();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [showUploadDialog]
@@ -111,7 +112,7 @@ export const getServerSideProps = createGetServerSideProps({
 
     await client.query({
       query: gql`
-        query ProjectDataPage($id: String!) {
+        query ProjectDatasetsPage($id: String!) {
           accessmodProject(id: $id) {
             id
             name
@@ -133,4 +134,4 @@ export const getServerSideProps = createGetServerSideProps({
   },
 });
 
-export default ProjectDataPage;
+export default ProjectDatasetsPage;

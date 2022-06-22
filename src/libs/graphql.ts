@@ -1278,6 +1278,10 @@ export type ZonalStatisticsParameters_AnalysisFragment = { __typename: 'Accessmo
 
 export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
 
+export type DatasetActionsMenu_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, status: AccessmodFilesetStatus, metadata: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, name: string, mode: AccessmodFilesetMode, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+
+export type DatasetActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
 export type UpdateDatasetMutationVariables = Exact<{
   input: UpdateAccessmodFilesetInput;
 }>;
@@ -1288,6 +1292,8 @@ export type UpdateDatasetMutation = { __typename?: 'Mutation', updateAccessmodFi
 export type DatasetDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, mode: AccessmodFilesetMode, status: AccessmodFilesetStatus, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat } };
 
 export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
+
+export type DatasetMetadataBlock_DatasetFragment = { __typename?: 'AccessmodFileset', metadata: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode } };
 
 export type DatasetPicker_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } };
 
@@ -1609,14 +1615,14 @@ export type DatasetDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, createdAt: any, updatedAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, createdAt: any, uri: string, id: string }>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
+export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, metadata: any, status: AccessmodFilesetStatus, createdAt: any, updatedAt: any, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, mode: AccessmodFilesetMode, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
 
-export type ProjectDataPageQueryVariables = Exact<{
+export type ProjectDatasetsPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectDataPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
+export type ProjectDatasetsPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, authorizedActions: Array<AccessmodProjectAuthorizedActions> } | null };
 
 export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, createdAt: any, updatedAt: any, spatialResolution: number, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
@@ -1978,6 +1984,57 @@ export const ZonalStatisticsParameters_AnalysisFragmentDoc = gql`
   }
 }
     `;
+export const DownloadDatasetButton_DatasetFragmentDoc = gql`
+    fragment DownloadDatasetButton_dataset on AccessmodFileset {
+  id
+  name
+  files {
+    id
+    name
+    mimeType
+  }
+}
+    `;
+export const DeleteDatasetTrigger_DatasetFragmentDoc = gql`
+    fragment DeleteDatasetTrigger_dataset on AccessmodFileset {
+  id
+  authorizedActions
+}
+    `;
+export const DatasetActionsMenu_DatasetFragmentDoc = gql`
+    fragment DatasetActionsMenu_dataset on AccessmodFileset {
+  id
+  status
+  metadata
+  authorizedActions
+  ...DatasetDialog_dataset
+  ...DownloadDatasetButton_dataset
+  ...DeleteDatasetTrigger_dataset
+}
+    ${DatasetDialog_DatasetFragmentDoc}
+${DownloadDatasetButton_DatasetFragmentDoc}
+${DeleteDatasetTrigger_DatasetFragmentDoc}`;
+export const DeleteDatasetTrigger_ProjectFragmentDoc = gql`
+    fragment DeleteDatasetTrigger_project on AccessmodProject {
+  id
+  name
+}
+    `;
+export const DatasetActionsMenu_ProjectFragmentDoc = gql`
+    fragment DatasetActionsMenu_project on AccessmodProject {
+  id
+  ...DeleteDatasetTrigger_project
+}
+    ${DeleteDatasetTrigger_ProjectFragmentDoc}`;
+export const DatasetMetadataBlock_DatasetFragmentDoc = gql`
+    fragment DatasetMetadataBlock_dataset on AccessmodFileset {
+  metadata
+  status
+  role {
+    code
+  }
+}
+    `;
 export const TabularDatasetTable_DatasetFragmentDoc = gql`
     fragment TabularDatasetTable_dataset on AccessmodFileset {
   role {
@@ -2035,23 +2092,6 @@ export const DatasetViewer_DatasetFragmentDoc = gql`
     ${TabularDatasetTable_DatasetFragmentDoc}
 ${VectorDatasetMap_DatasetFragmentDoc}
 ${RasterDatasetMap_DatasetFragmentDoc}`;
-export const DeleteDatasetTrigger_DatasetFragmentDoc = gql`
-    fragment DeleteDatasetTrigger_dataset on AccessmodFileset {
-  id
-  authorizedActions
-}
-    `;
-export const DownloadDatasetButton_DatasetFragmentDoc = gql`
-    fragment DownloadDatasetButton_dataset on AccessmodFileset {
-  id
-  name
-  files {
-    id
-    name
-    mimeType
-  }
-}
-    `;
 export const DatasetViewer_ProjectFragmentDoc = gql`
     fragment DatasetViewer_project on AccessmodProject {
   id
@@ -2203,12 +2243,6 @@ ${ChangeProjectOwnerDialog_ProjectFragmentDoc}`;
 export const ProjectAnalysesTable_ProjectFragmentDoc = gql`
     fragment ProjectAnalysesTable_project on AccessmodProject {
   id
-}
-    `;
-export const DeleteDatasetTrigger_ProjectFragmentDoc = gql`
-    fragment DeleteDatasetTrigger_project on AccessmodProject {
-  id
-  name
 }
     `;
 export const ProjectDatasetsTable_ProjectFragmentDoc = gql`
@@ -4082,27 +4116,27 @@ export const DatasetDetailPageDocument = gql`
     name
     ...DeleteDatasetTrigger_project
     ...DatasetViewer_project
+    ...DatasetActionsMenu_project
   }
   dataset: accessmodFileset(id: $datasetId) {
     __typename
+    ...DatasetStatusBadge_dataset
     ...DatasetViewer_dataset
     ...DownloadDatasetButton_dataset
     ...DeleteDatasetTrigger_dataset
+    ...DatasetActionsMenu_dataset
+    ...DatasetDialog_dataset
+    ...DatasetMetadataBlock_dataset
     id
     name
+    metadata
+    status
     createdAt
     updatedAt
     role {
       id
       name
-      code
       format
-    }
-    files {
-      name
-      mimeType
-      createdAt
-      uri
     }
     owner {
       __typename
@@ -4113,9 +4147,14 @@ export const DatasetDetailPageDocument = gql`
 }
     ${DeleteDatasetTrigger_ProjectFragmentDoc}
 ${DatasetViewer_ProjectFragmentDoc}
+${DatasetActionsMenu_ProjectFragmentDoc}
+${DatasetStatusBadge_DatasetFragmentDoc}
 ${DatasetViewer_DatasetFragmentDoc}
 ${DownloadDatasetButton_DatasetFragmentDoc}
 ${DeleteDatasetTrigger_DatasetFragmentDoc}
+${DatasetActionsMenu_DatasetFragmentDoc}
+${DatasetDialog_DatasetFragmentDoc}
+${DatasetMetadataBlock_DatasetFragmentDoc}
 ${User_UserFragmentDoc}
 ${Team_TeamFragmentDoc}`;
 
@@ -4147,8 +4186,8 @@ export function useDatasetDetailPageLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type DatasetDetailPageQueryHookResult = ReturnType<typeof useDatasetDetailPageQuery>;
 export type DatasetDetailPageLazyQueryHookResult = ReturnType<typeof useDatasetDetailPageLazyQuery>;
 export type DatasetDetailPageQueryResult = Apollo.QueryResult<DatasetDetailPageQuery, DatasetDetailPageQueryVariables>;
-export const ProjectDataPageDocument = gql`
-    query ProjectDataPage($id: String!) {
+export const ProjectDatasetsPageDocument = gql`
+    query ProjectDatasetsPage($id: String!) {
   accessmodProject(id: $id) {
     id
     name
@@ -4161,32 +4200,32 @@ export const ProjectDataPageDocument = gql`
 ${ProjectDatasetsTable_ProjectFragmentDoc}`;
 
 /**
- * __useProjectDataPageQuery__
+ * __useProjectDatasetsPageQuery__
  *
- * To run a query within a React component, call `useProjectDataPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectDataPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProjectDatasetsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectDatasetsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProjectDataPageQuery({
+ * const { data, loading, error } = useProjectDatasetsPageQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useProjectDataPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectDataPageQuery, ProjectDataPageQueryVariables>) {
+export function useProjectDatasetsPageQuery(baseOptions: Apollo.QueryHookOptions<ProjectDatasetsPageQuery, ProjectDatasetsPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectDataPageQuery, ProjectDataPageQueryVariables>(ProjectDataPageDocument, options);
+        return Apollo.useQuery<ProjectDatasetsPageQuery, ProjectDatasetsPageQueryVariables>(ProjectDatasetsPageDocument, options);
       }
-export function useProjectDataPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectDataPageQuery, ProjectDataPageQueryVariables>) {
+export function useProjectDatasetsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectDatasetsPageQuery, ProjectDatasetsPageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectDataPageQuery, ProjectDataPageQueryVariables>(ProjectDataPageDocument, options);
+          return Apollo.useLazyQuery<ProjectDatasetsPageQuery, ProjectDatasetsPageQueryVariables>(ProjectDatasetsPageDocument, options);
         }
-export type ProjectDataPageQueryHookResult = ReturnType<typeof useProjectDataPageQuery>;
-export type ProjectDataPageLazyQueryHookResult = ReturnType<typeof useProjectDataPageLazyQuery>;
-export type ProjectDataPageQueryResult = Apollo.QueryResult<ProjectDataPageQuery, ProjectDataPageQueryVariables>;
+export type ProjectDatasetsPageQueryHookResult = ReturnType<typeof useProjectDatasetsPageQuery>;
+export type ProjectDatasetsPageLazyQueryHookResult = ReturnType<typeof useProjectDatasetsPageLazyQuery>;
+export type ProjectDatasetsPageQueryResult = Apollo.QueryResult<ProjectDatasetsPageQuery, ProjectDatasetsPageQueryVariables>;
 export const ProjectPageDocument = gql`
     query ProjectPage($id: String!) {
   project: accessmodProject(id: $id) {

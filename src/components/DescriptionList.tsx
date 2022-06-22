@@ -1,4 +1,3 @@
-import { QuestionMarkCircleIcon } from "@heroicons/react/outline";
 import { InformationCircleIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import React, { ReactNode } from "react";

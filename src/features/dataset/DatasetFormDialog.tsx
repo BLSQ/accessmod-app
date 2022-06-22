@@ -55,6 +55,7 @@ const DatasetFormDialog = (props: Props) => {
   const { open, onClose, project, role } = props;
   const [progress, setProgress] = useState(0);
   const { t } = useTranslation();
+  const clearCache = useCacheKey(["datasets"]);
   const form = useForm<Form>({
     initialState: {
       role,
@@ -102,6 +103,7 @@ const DatasetFormDialog = (props: Props) => {
         );
 
         form.resetForm();
+        clearCache();
         onClose("submit", dataset);
       }
     },

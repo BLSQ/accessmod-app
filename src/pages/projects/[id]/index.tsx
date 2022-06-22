@@ -273,6 +273,8 @@ const ProjectPage: NextPageWithFragments = () => {
                 <img
                   alt={t("Country Flag")}
                   className="mr-2 h-4"
+                  width={16}
+                  height={11}
                   src={project.country.flag}
                 />
                 <span className="shrink-0">{project.country.name}</span>

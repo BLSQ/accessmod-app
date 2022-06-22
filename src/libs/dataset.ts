@@ -132,11 +132,12 @@ export function useFilesetRoles() {
 // Based on https://www.iana.org/assignments/media-types/media-types.xhtml
 export const ACCEPTED_MIMETYPES = {
   [AccessmodFilesetFormat.Vector]: {
-    "application/geopackage+sqlite3": [".gpkg"],
     "application/geo+json": [".geojson"],
+    "application/geopackage+sqlite3": [".gpkg"],
+    "application/vnd.geo+json": [".geojson"],
   },
   [AccessmodFilesetFormat.Raster]: {
-    "image/tiff": [".tif", ".tiff"],
+    "image/tiff": [".tif", ".tiff", "*.tff"],
   },
   [AccessmodFilesetFormat.Tabular]: {
     "text/plain": [".csv"],
@@ -464,6 +465,7 @@ export type MetadataFormValues = {
   category_column?: string | null;
   name_column?: string | null;
   columns?: string[];
+  validation_error?: string;
   values?: { [key: string]: string[] };
   labels?: [string, string][];
 };
