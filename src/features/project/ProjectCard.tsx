@@ -44,6 +44,8 @@ const ProjectCard = (props: Props) => {
           <div className="flex shrink-0 items-center">
             <img
               alt="Country"
+              width={16}
+              height={11}
               src={project.country.flag}
               title={project.country.name}
               className="mr-1.5 h-3"

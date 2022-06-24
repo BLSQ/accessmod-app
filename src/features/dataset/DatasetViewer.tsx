@@ -1,14 +1,13 @@
 import { gql } from "@apollo/client";
-import Block from "components/Block";
 import {
   AccessmodFilesetFormat,
   DatasetViewer_DatasetFragment,
   DatasetViewer_ProjectFragment,
 } from "libs/graphql";
+import { useTranslation } from "next-i18next";
+import RasterDatasetMap from "./RasterDatasetMap";
 import TabularDatasetTable from "./TabularDatasetTable";
 import VectorDatasetMap from "./VectorDatasetMap";
-import RasterDatasetMap from "./RasterDatasetMap";
-import { useTranslation } from "next-i18next";
 
 type DatasetViewerProps = {
   dataset: DatasetViewer_DatasetFragment;

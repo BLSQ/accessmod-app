@@ -1,76 +1,70 @@
 import { gql } from "@apollo/client";
-import { ClockIcon, DocumentTextIcon } from "@heroicons/react/outline";
+import {
+  ClockIcon,
+  DocumentTextIcon,
+  InformationCircleIcon,
+  XCircleIcon,
+} from "@heroicons/react/outline";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
-import type { Column } from "components/DataGrid";
+import Button from "components/Button";
 import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
-import Time from "components/Time";
+import Toggle from "components/Toggle";
+import DatasetActionsMenu from "features/dataset/DatasetActionsMenu";
+import { DatasetDialog } from "features/dataset/DatasetDialog";
+import DatasetMetadataBlock from "features/dataset/DatasetMetadataBlock";
+import DatasetStatusBadge from "features/dataset/DatasetStatusBadge";
+import DatasetViewer from "features/dataset/DatasetViewer";
 import DeleteDatasetTrigger from "features/dataset/DeleteDatasetTrigger";
-import TabularDatasetTable from "features/dataset/TabularDatasetTable";
-import VectorDatasetMap from "features/dataset/VectorDatasetMap";
 import DownloadDatasetButton from "features/dataset/DownloadDatasetButton";
+import Team from "features/team/Team";
 import User from "features/User";
 import { getFormatLabel } from "libs/constants";
 import {
-  AccessmodFilesetFormat,
+  AccessmodFilesetStatus,
   useDatasetDetailPageQuery,
 } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
-import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
-import { useMemo } from "react";
-import DatasetViewer from "features/dataset/DatasetViewer";
 import { DateTime } from "luxon";
-import Team from "features/team/Team";
+import { useTranslation } from "next-i18next";
+import { useEffect } from "react";
 
 type Props = {
   defaultVariables: { id: string; datasetId: string };
 };
 
-const Classes = {
-  activeTab:
-    "whitespace-nowrap border-b-2 px-1.5 pb-2 text-lg font-medium border-lochmara text-lochmara",
-  inactiveTab:
-    "whitespace-nowrap border-b-2 px-1.5 pb-2 text-lg font-medium border-transparent text-lochmara-500 text-opacity-80 hover:border-lochmara hover:text-opacity-100",
-};
-
 const DatasetPage = ({ defaultVariables }: Props) => {
-  const router = useRouter();
   const { t } = useTranslation();
-  const { loading, data } = useDatasetDetailPageQuery({
-    pollInterval: 0,
-    variables: defaultVariables,
-  });
+  const { loading, data, startPolling, stopPolling } =
+    useDatasetDetailPageQuery({
+      pollInterval: 0,
+      variables: defaultVariables,
+    });
 
   const dataset = data?.dataset;
 
-  const FILES_COLUMNS = useMemo<Column[]>(
-    () => [
-      { Header: t("Name") as string, accessor: "name" },
-      { Header: t("Mimetype") as string, accessor: "mimeType" },
-      {
-        Header: t("Created") as string,
-        accessor: "createdAt",
-        Cell: (cell) => <Time datetime={cell.value} />,
-      },
-    ],
-    [t]
-  );
+  useEffect(() => {
+    if (!dataset) return;
+    if (
+      [
+        AccessmodFilesetStatus.Pending,
+        AccessmodFilesetStatus.Validating,
+      ].includes(dataset.status)
+    ) {
+      startPolling(1000);
+    }
+
+    return () => {
+      stopPolling();
+    };
+  }, [dataset, startPolling, stopPolling]);
 
   if (!data?.project || !dataset || loading) {
     // Unknonwn project or not authorized
     return null;
   }
-
-  const hasTabularData =
-    dataset.role?.format === AccessmodFilesetFormat.Tabular;
-  const hasMapData =
-    dataset.role &&
-    [AccessmodFilesetFormat.Raster, AccessmodFilesetFormat.Vector].includes(
-      dataset.role.format
-    );
 
   return (
     <Page title={dataset.name}>
@@ -111,6 +105,7 @@ const DatasetPage = ({ defaultVariables }: Props) => {
               {dataset.name}
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-10 gap-y-2 text-sm text-white">
+              <DatasetStatusBadge dataset={dataset} />
               {dataset.role && (
                 <div className="flex items-center">
                   <DocumentTextIcon className="mr-1.5 h-4" />
@@ -137,16 +132,56 @@ const DatasetPage = ({ defaultVariables }: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <DeleteDatasetTrigger dataset={dataset} project={data.project} />
-            <DownloadDatasetButton variant="primary" dataset={dataset} />
-          </div>
+          <DatasetActionsMenu dataset={dataset} project={data.project} />
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
-        <Block>
-          <DatasetViewer dataset={dataset} project={data.project} />
-        </Block>
+        {[
+          AccessmodFilesetStatus.Pending,
+          AccessmodFilesetStatus.Validating,
+        ].includes(dataset.status) && (
+          <Block className="flex items-center gap-2 text-gray-600">
+            <InformationCircleIcon className="h-10 w-10 text-picton-blue" />
+            {t("This dataset will be validated soon.")}
+          </Block>
+        )}
+        {dataset.status === AccessmodFilesetStatus.ToAcquire && (
+          <Block className="flex items-center gap-2 text-gray-600">
+            <InformationCircleIcon className="h-10 w-10 text-picton-blue" />
+            {t("This dataset will be downloaded soon.")}
+          </Block>
+        )}
+        {dataset.status === AccessmodFilesetStatus.Invalid && (
+          <Block className="flex items-center gap-2 text-gray-600">
+            <XCircleIcon className="h-10 w-10 text-red-400" />
+            <span className="flex-1">
+              {t("This dataset is invalid. {{error}}", {
+                error: dataset.metadata?.validation_error,
+              })}
+            </span>
+            <Toggle>
+              {({ toggle, isToggled }) => (
+                <>
+                  <Button onClick={toggle} variant="secondary">
+                    {t("Edit")}
+                  </Button>
+                  <DatasetDialog
+                    dataset={dataset}
+                    onClose={toggle}
+                    open={isToggled}
+                  />
+                </>
+              )}
+            </Toggle>
+          </Block>
+        )}
+
+        <DatasetMetadataBlock dataset={dataset} />
+        {dataset.status === AccessmodFilesetStatus.Valid && (
+          <Block>
+            <DatasetViewer dataset={dataset} project={data.project} />
+          </Block>
+        )}
       </PageContent>
     </Page>
   );
@@ -174,27 +209,27 @@ export const getServerSideProps = createGetServerSideProps({
             name
             ...DeleteDatasetTrigger_project
             ...DatasetViewer_project
+            ...DatasetActionsMenu_project
           }
           dataset: accessmodFileset(id: $datasetId) {
             __typename
+            ...DatasetStatusBadge_dataset
             ...DatasetViewer_dataset
             ...DownloadDatasetButton_dataset
             ...DeleteDatasetTrigger_dataset
+            ...DatasetActionsMenu_dataset
+            ...DatasetDialog_dataset
+            ...DatasetMetadataBlock_dataset
             id
             name
+            metadata
+            status
             createdAt
             updatedAt
             role {
               id
               name
-              code
               format
-            }
-            files {
-              name
-              mimeType
-              createdAt
-              uri
             }
             owner {
               __typename
@@ -203,13 +238,18 @@ export const getServerSideProps = createGetServerSideProps({
             }
           }
         }
+        ${DatasetDialog.fragments.dataset}
         ${DownloadDatasetButton.fragments.dataset}
+        ${DatasetActionsMenu.fragments.dataset}
+        ${DatasetActionsMenu.fragments.project}
         ${DeleteDatasetTrigger.fragments.dataset}
         ${DeleteDatasetTrigger.fragments.project}
+        ${DatasetMetadataBlock.fragments.dataset}
         ${User.fragments.user}
         ${Team.fragments.team}
         ${DatasetViewer.fragments.dataset}
         ${DatasetViewer.fragments.project}
+        ${DatasetStatusBadge.fragments.dataset}
       `,
       variables,
     });

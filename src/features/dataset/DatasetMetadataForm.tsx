@@ -1,6 +1,3 @@
-import { PlusIcon, XIcon } from "@heroicons/react/outline";
-import Button from "components/Button";
-import DataGrid, { Column } from "components/DataGrid";
 import Field from "components/forms/Field";
 import Input from "components/forms/Input";
 import SimpleSelect from "components/forms/SimpleSelect";
@@ -8,7 +5,8 @@ import usePrevious from "hooks/usePrevious";
 import { MetadataFormValues } from "libs/dataset";
 import { AccessmodFilesetRoleCode, AccessmodFilesetStatus } from "libs/graphql";
 import { useTranslation } from "next-i18next";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect } from "react";
+import ClassLabelsGrid from "./ClassLabelsGrid";
 
 type DatasetMetadataFormProps = {
   roleCode: AccessmodFilesetRoleCode;
@@ -16,95 +14,6 @@ type DatasetMetadataFormProps = {
   status?: AccessmodFilesetStatus;
   onChange: (values: MetadataFormValues) => void;
   metadata: MetadataFormValues;
-};
-
-const ClassLabelsEditor = ({
-  labels,
-  onChange,
-}: {
-  labels: NonNullable<MetadataFormValues["labels"]>;
-  onChange: (labels: NonNullable<MetadataFormValues["labels"]>) => void;
-}) => {
-  const { t } = useTranslation();
-  const [skipPageReset, setSkipPageReset] = useState(false);
-  const classInputRef = useRef<HTMLInputElement>(null);
-
-  const columns = useMemo(() => {
-    const cols: Column<any>[] = [
-      {
-        id: "class",
-        accessor: (row) => row[0],
-        Header: t("Class"),
-      },
-      {
-        id: "label",
-        accessor: (row) => row[1],
-        Header: t("Label"),
-        Cell: (cell) => (
-          <Input
-            placeholder={t("Class label")}
-            defaultValue={cell.value}
-            onBlur={(event) => {
-              setSkipPageReset(true);
-              const newItems = [...labels];
-              newItems.splice(cell.row.index, 1, [
-                labels[cell.row.index][0],
-                event.target.value,
-              ]);
-              onChange(newItems);
-              setSkipPageReset(false);
-            }}
-          />
-        ),
-      },
-      {
-        id: "actions",
-        Header: "",
-
-        Cell: (cell) => (
-          <div className="flex w-full justify-end">
-            <Button
-              variant="outlined"
-              size="sm"
-              onClick={() => {
-                labels.splice(cell.row.index, 1);
-                onChange([...labels]);
-              }}
-            >
-              <XIcon className="h-4" />
-            </Button>
-          </div>
-        ),
-      },
-    ];
-    return cols;
-  }, [labels, onChange, t]);
-
-  const onAddItem = useCallback(() => {
-    if (!classInputRef.current?.value) return;
-    onChange([[classInputRef.current.value, ""], ...labels]);
-    classInputRef.current.value = "";
-  }, [classInputRef, labels, onChange]);
-
-  return (
-    <div>
-      <div className="mb-1 flex items-center gap-2">
-        <Input ref={classInputRef} placeholder={t("Class name")} />
-        <Button variant="secondary" onClick={onAddItem}>
-          <PlusIcon className="h-4" />
-        </Button>
-      </div>
-      {labels.length > 0 && (
-        <DataGrid
-          data={labels}
-          columns={columns}
-          totalItems={labels.length}
-          skipPageReset={skipPageReset}
-          defaultPageSize={5}
-        />
-      )}
-    </div>
-  );
 };
 
 const DatasetMetadataForm = (props: DatasetMetadataFormProps) => {
@@ -191,7 +100,8 @@ const DatasetMetadataForm = (props: DatasetMetadataFormProps) => {
               AccessmodFilesetStatus.Invalid,
               AccessmodFilesetStatus.Valid,
             ].includes(status) && (
-              <ClassLabelsEditor
+              <ClassLabelsGrid
+                editable
                 labels={metadata.labels ?? []}
                 onChange={(labels) => onChange({ ...metadata, labels })}
               />
