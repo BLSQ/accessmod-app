@@ -1,10 +1,10 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { CloudIcon, PencilIcon, UploadIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
 import Toggle from "components/Toggle";
-import usePrevious from "hooks/usePrevious";
+import useDatasetWatcher from "hooks/useDatasetWatcher";
 import {
   createDataset,
   getDatasetDefaultMetadata,
@@ -13,6 +13,7 @@ import {
 import {
   AccessmodFilesetRoleCode,
   AccessmodProjectAuthorizedActions,
+  DatasetPicker_DatasetFragment,
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
 } from "libs/graphql";
@@ -23,7 +24,7 @@ import CreateDatasetDialog from "./DatasetFormDialog";
 import DatasetStatusIcon from "./DatasetStatusIcon";
 
 type Props = {
-  dataset?: any;
+  dataset?: DatasetPicker_DatasetFragment | null;
   project: DatasetPicker_ProjectFragment;
   roleCode: AccessmodFilesetRoleCode;
   disabled?: boolean;
@@ -60,6 +61,8 @@ const DatasetPicker = (props: Props) => {
     () => roles?.find((r) => r.code === roleCode),
     [roles, roleCode]
   );
+
+  useDatasetWatcher(dataset, onChange);
 
   useEffect(() => {
     if (role) {

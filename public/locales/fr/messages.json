@@ -24,6 +24,7 @@
   "All cells intersecting water are impassable": "",
   "All classes": "",
   "All fields need to be filled in to be able to run the analysis.": "",
+  "All layers have to be valid to be able to set the layer priorities": "",
   "An accessibility analysis computes the traveling time surface, informing the time needed to reach the nearest health facility.": "",
   "An analysis with this name already exists.": "",
   "An error occured": "",
@@ -105,7 +106,6 @@
   "Enter a CRS": "",
   "Enter a name": "",
   "Enter a spatial resolution": "",
-  "Enter layer priorities": "",
   "Enter your email": "",
   "Enter your password": "",
   "Failed": "",
@@ -188,7 +188,6 @@
   "Select a permission": "",
   "Select a project": "",
   "Select a role": "",
-  "Select an existing stack or upload your own": "",
   "Select files": "",
   "Select layers to be able to order them": "",
   "Select the owner of this team project.": "",
@@ -266,5 +265,6 @@
   "You don't have the right to perform this action": "",
   "You have the choice to use an existing stack that you already uploaded or used in another analysis or you can create a new stack by uploading the different layers to merge together.": "",
   "Your new project can be configured manually or initialized from a raster file": "",
+  "Your stack (or its layers) has to be valid.": "",
   "Zonal Statistics": ""
 }

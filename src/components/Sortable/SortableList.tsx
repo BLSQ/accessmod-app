@@ -21,6 +21,7 @@ import SortableItem from "./SortableItem";
 type SortableListProps = {
   items: any[];
   handle?: boolean;
+  disabled?: boolean;
   onChange: (items: any[]) => void;
   renderItem: (item: any, index: number, handleProps: any) => ReactNode;
   getItemId?: (item: any) => string;
@@ -31,6 +32,7 @@ const SortableList = (props: SortableListProps) => {
     items,
     onChange,
     handle,
+    disabled,
     renderItem,
     getItemId = (item) => item?.id ?? "",
   } = props;
@@ -57,7 +59,11 @@ const SortableList = (props: SortableListProps) => {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        disabled={disabled}
+        items={ids}
+        strategy={verticalListSortingStrategy}
+      >
         {ids.map((id, index) => (
           <SortableItem handle={handle} key={id} id={id}>
             {(handleProps) => renderItem(itemsMap[id], index, handleProps)}

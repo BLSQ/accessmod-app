@@ -5,7 +5,7 @@ import Block from "components/Block";
 import { ReactNode } from "react";
 
 const AnalysisStep = (props: {
-  title: string;
+  title: ReactNode;
   children: ReactNode;
   defaultOpen?: boolean;
   disabled?: boolean;
@@ -23,12 +23,12 @@ const AnalysisStep = (props: {
           >
             <div
               className={clsx(
-                "-my-6 flex justify-between py-6 text-lg text-lochmara",
+                "-my-6 flex items-center justify-between py-6 text-lg text-lochmara",
                 props.disabled && "text-gray-300",
                 props.titleClassName
               )}
             >
-              {props.title}
+              <div className="flex-1">{props.title}</div>
               {open ? (
                 <ChevronDownIcon className="h-5" />
               ) : (

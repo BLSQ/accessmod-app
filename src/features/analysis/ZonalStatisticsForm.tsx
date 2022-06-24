@@ -24,7 +24,7 @@ import {
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef } from "react";
 import DatasetPicker from "../dataset/DatasetPicker";
 
 type Form = {
@@ -96,6 +96,12 @@ const ZonalStatisticsForm = (props: Props) => {
   });
 
   useEffect(() => {
+    if (form.isDirty) {
+      form.handleSubmit();
+    }
+  }, [form]);
+
+  useEffect(() => {
     form.resetForm();
     // We only want to reset the form when the analysis changes, regardless of the form object itself
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +161,7 @@ const ZonalStatisticsForm = (props: Props) => {
   );
 
   return (
-    <form className="space-y-5 text-gray-700" onSubmit={form.handleSubmit}>
+    <form className="space-y-5 text-gray-700">
       <Block className="space-y-4">
         <div className="flex items-start">
           <InformationCircleIcon className="mr-2 h-8 w-8 text-gray-500" />
@@ -269,10 +275,6 @@ const ZonalStatisticsForm = (props: Props) => {
           )}
         </div>
         <div className="flex justify-end gap-4">
-          <Button type="submit" disabled={form.isSubmitting || !form.isDirty}>
-            {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
-            {t("Save")}
-          </Button>
           <Button
             type="button"
             onClick={onCompute}
