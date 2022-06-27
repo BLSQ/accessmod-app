@@ -36,8 +36,6 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
     [layers]
   );
 
-  console.log(disabled);
-
   useEffect(() => {
     const layersIds = layers.map((l) => l.id);
     // Check that all items in the value are present in the layers
