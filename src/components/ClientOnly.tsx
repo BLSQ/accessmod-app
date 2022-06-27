@@ -15,7 +15,7 @@ const ClientOnly = (props: ClientOnlyProps) => {
     return null;
   }
 
-  return null;
+  return props.children;
 };
 
 export default ClientOnly;
