@@ -16,6 +16,8 @@ import {
   CreateDatasetMutation,
   CreateDatasetMutationVariables,
   CreateFileMutation,
+  GetDatasetVisualizationUrlMutation,
+  GetDatasetVisualizationUrlMutationVariables,
   GetFileDownloadUrlMutation,
   GetFilesetRolesQuery,
   GetUploadUrlMutation,
@@ -137,7 +139,7 @@ export const ACCEPTED_MIMETYPES = {
     "application/vnd.geo+json": [".geojson"],
   },
   [AccessmodFilesetFormat.Raster]: {
-    "image/tiff": [".tif", ".tiff", "*.tff"],
+    "image/tiff": [".tif", ".tiff", ".tff"],
   },
   [AccessmodFilesetFormat.Tabular]: {
     "text/plain": [".csv"],
@@ -220,6 +222,32 @@ export async function getFileDownloadUrl(fileId: string): Promise<string> {
   } else {
     throw new Error("File cannot be downloaded");
   }
+}
+
+export async function getDatasetVisualizationUrl(
+  datasetId: string
+): Promise<string | null> {
+  const client = getApolloClient();
+  const { data } = await client.mutate<
+    GetDatasetVisualizationUrlMutation,
+    GetDatasetVisualizationUrlMutationVariables
+  >({
+    mutation: gql`
+      mutation GetDatasetVisualizationUrl(
+        $input: PrepareAccessmodFilesetVisualizationInput!
+      ) {
+        prepareAccessmodFilesetVisualization(input: $input) {
+          success
+          url
+        }
+      }
+    `,
+    variables: {
+      input: { id: datasetId },
+    },
+  });
+
+  return data?.prepareAccessmodFilesetVisualization.url ?? null;
 }
 
 export function formatDatasetStatus(status: AccessmodFilesetStatus) {

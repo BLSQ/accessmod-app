@@ -647,6 +647,7 @@ export type Mutation = {
   logout: LogoutResult;
   prepareAccessmodFileDownload: PrepareAccessmodFileDownloadResult;
   prepareAccessmodFileUpload: PrepareAccessmodFileUploadResult;
+  prepareAccessmodFilesetVisualization: PrepareAccessmodFilesetVisualizationResult;
   resetPassword: ResetPasswordResult;
   setPassword: SetPasswordResult;
   updateAccessmodAccessibilityAnalysis: UpdateAccessmodAccessibilityAnalysisResult;
@@ -749,6 +750,11 @@ export type MutationPrepareAccessmodFileUploadArgs = {
 };
 
 
+export type MutationPrepareAccessmodFilesetVisualizationArgs = {
+  input: PrepareAccessmodFilesetVisualizationInput;
+};
+
+
 export type MutationResetPasswordArgs = {
   input: ResetPasswordInput;
 };
@@ -838,6 +844,16 @@ export type PrepareAccessmodFileUploadResult = {
   uploadUrl?: Maybe<Scalars['String']>;
 };
 
+export type PrepareAccessmodFilesetVisualizationInput = {
+  id: Scalars['String'];
+};
+
+export type PrepareAccessmodFilesetVisualizationResult = {
+  __typename?: 'PrepareAccessmodFilesetVisualizationResult';
+  success: Scalars['Boolean'];
+  url?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   accessmodAnalyses: AccessmodAnalysisPage;
@@ -848,6 +864,7 @@ export type Query = {
   accessmodFilesets: AccessmodFilesetPage;
   accessmodProject?: Maybe<AccessmodProject>;
   accessmodProjects: AccessmodProjectPage;
+  boundaries: Array<WhoBoundary>;
   countries: Array<Country>;
   country?: Maybe<Country>;
   me: Me;
@@ -901,6 +918,12 @@ export type QueryAccessmodProjectsArgs = {
   perPage?: InputMaybe<Scalars['Int']>;
   teams?: InputMaybe<Array<Scalars['String']>>;
   term?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryBoundariesArgs = {
+  country_code: Scalars['String'];
+  level: Scalars['String'];
 };
 
 
@@ -1135,6 +1158,16 @@ export type User = {
   lastName?: Maybe<Scalars['String']>;
 };
 
+export type WhoBoundary = {
+  __typename?: 'WHOBoundary';
+  administrative_level: Scalars['Int'];
+  country: Country;
+  extent: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  parent?: Maybe<Scalars['String']>;
+};
+
 export type WhoInfo = {
   __typename?: 'WHOInfo';
   defaultCRS: Scalars['Int'];
@@ -1349,11 +1382,11 @@ export type PreviewDatasetDialog_ProjectFragment = { __typename?: 'AccessmodProj
 
 export type PreviewDatasetDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
 
-export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string };
 
 export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFileset', role: { __typename?: 'AccessmodFilesetRole', format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
-export type VectorDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> };
+export type VectorDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string };
 
 export type ChangeProjectOwnershipMutationVariables = Exact<{
   input: CreateAccessmodProjectPermissionInput;
@@ -1578,6 +1611,13 @@ export type GetFileDownloadUrlMutationVariables = Exact<{
 
 
 export type GetFileDownloadUrlMutation = { __typename?: 'Mutation', prepareAccessmodFileDownload: { __typename?: 'PrepareAccessmodFileDownloadResult', success: boolean, downloadUrl?: string | null } };
+
+export type GetDatasetVisualizationUrlMutationVariables = Exact<{
+  input: PrepareAccessmodFilesetVisualizationInput;
+}>;
+
+
+export type GetDatasetVisualizationUrlMutation = { __typename?: 'Mutation', prepareAccessmodFilesetVisualization: { __typename?: 'PrepareAccessmodFilesetVisualizationResult', success: boolean, url?: string | null } };
 
 export type CreateDatasetMutationVariables = Exact<{
   input: CreateAccessmodFilesetInput;
@@ -2058,29 +2098,11 @@ export const TabularDatasetTable_DatasetFragmentDoc = gql`
 export const VectorDatasetMap_DatasetFragmentDoc = gql`
     fragment VectorDatasetMap_dataset on AccessmodFileset {
   id
-  role {
-    code
-    format
-  }
-  files {
-    id
-    name
-    mimeType
-  }
 }
     `;
 export const RasterDatasetMap_DatasetFragmentDoc = gql`
     fragment RasterDatasetMap_dataset on AccessmodFileset {
   id
-  role {
-    code
-    format
-  }
-  files {
-    id
-    name
-    mimeType
-  }
 }
     `;
 export const DatasetViewer_DatasetFragmentDoc = gql`
@@ -3908,6 +3930,40 @@ export function useGetFileDownloadUrlMutation(baseOptions?: Apollo.MutationHookO
 export type GetFileDownloadUrlMutationHookResult = ReturnType<typeof useGetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationResult = Apollo.MutationResult<GetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationOptions = Apollo.BaseMutationOptions<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>;
+export const GetDatasetVisualizationUrlDocument = gql`
+    mutation GetDatasetVisualizationUrl($input: PrepareAccessmodFilesetVisualizationInput!) {
+  prepareAccessmodFilesetVisualization(input: $input) {
+    success
+    url
+  }
+}
+    `;
+export type GetDatasetVisualizationUrlMutationFn = Apollo.MutationFunction<GetDatasetVisualizationUrlMutation, GetDatasetVisualizationUrlMutationVariables>;
+
+/**
+ * __useGetDatasetVisualizationUrlMutation__
+ *
+ * To run a mutation, you first call `useGetDatasetVisualizationUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGetDatasetVisualizationUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [getDatasetVisualizationUrlMutation, { data, loading, error }] = useGetDatasetVisualizationUrlMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetDatasetVisualizationUrlMutation(baseOptions?: Apollo.MutationHookOptions<GetDatasetVisualizationUrlMutation, GetDatasetVisualizationUrlMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GetDatasetVisualizationUrlMutation, GetDatasetVisualizationUrlMutationVariables>(GetDatasetVisualizationUrlDocument, options);
+      }
+export type GetDatasetVisualizationUrlMutationHookResult = ReturnType<typeof useGetDatasetVisualizationUrlMutation>;
+export type GetDatasetVisualizationUrlMutationResult = Apollo.MutationResult<GetDatasetVisualizationUrlMutation>;
+export type GetDatasetVisualizationUrlMutationOptions = Apollo.BaseMutationOptions<GetDatasetVisualizationUrlMutation, GetDatasetVisualizationUrlMutationVariables>;
 export const CreateDatasetDocument = gql`
     mutation CreateDataset($input: CreateAccessmodFilesetInput!) {
   createAccessmodFileset(input: $input) {

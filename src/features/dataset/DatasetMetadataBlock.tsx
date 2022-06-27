@@ -28,9 +28,11 @@ const DatasetMetadataBlock = ({ dataset }: DatasetMetadataBlockProps) => {
       AccessmodFilesetRoleCode.Stack,
     ].includes(dataset.role.code) && (
       <DescriptionList.Item label={t("Labels")} className="col-span-2">
-        <>
-          {metadata.labels ? <ClassLabelsGrid labels={metadata.labels} /> : "-"}
-        </>
+        {metadata.labels?.length ? (
+          <ClassLabelsGrid labels={metadata.labels} />
+        ) : (
+          "-"
+        )}
       </DescriptionList.Item>
     ),
     dataset.role.code === AccessmodFilesetRoleCode.Boundaries && (

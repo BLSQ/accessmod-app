@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
-import { getVectorFileContent } from "libs/dataset";
+import { getDatasetVisualizationUrl } from "libs/dataset";
 import { VectorDatasetMap_DatasetFragment } from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type VectorDatasetMapProps = {
   dataset: VectorDatasetMap_DatasetFragment;
@@ -14,37 +15,32 @@ const DynamicClientVectorMap = dynamic(() => import("./ClientVectorMap"), {
 
 const VectorDatasetMap = ({ dataset }: VectorDatasetMapProps) => {
   const [geoJSON, setGeoJSON] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  const supportedFile = useMemo(
-    () =>
-      dataset.files.find((file) =>
-        ["application/geo+json"].includes(file.mimeType)
-      ),
-    [dataset]
-  );
+  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    if (supportedFile) {
-      setLoading(true);
-      getVectorFileContent(supportedFile).then(
-        (data) => {
-          setGeoJSON(data);
-          setLoading(false);
-        },
-        () => setLoading(false)
-      );
-    }
-  }, [dataset, supportedFile]);
+    setLoading(true);
+    getDatasetVisualizationUrl(dataset.id).then(async (url) => {
+      if (!url) {
+        setLoading(false);
+        return;
+      }
+      try {
+        setGeoJSON(await fetch(url).then((resp) => resp.json()));
+      } finally {
+        setLoading(false);
+      }
+    });
+  }, [dataset]);
 
   return (
     <div>
-      {!supportedFile ? (
+      {!loading && !geoJSON && (
         <div className="w-full p-2 text-center text-sm italic text-gray-700">
-          We do not support this type of dataset. Only geojson files are
-          supported.
+          {t("We cannot preview this dataset")}
         </div>
-      ) : (
+      )}
+      {(loading || geoJSON) && (
         <DynamicClientVectorMap
           height={600}
           loading={loading}
@@ -60,15 +56,6 @@ VectorDatasetMap.fragments = {
   dataset: gql`
     fragment VectorDatasetMap_dataset on AccessmodFileset {
       id
-      role {
-        code
-        format
-      }
-      files {
-        id
-        name
-        mimeType
-      }
     }
   `,
 };

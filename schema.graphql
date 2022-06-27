@@ -604,6 +604,7 @@ type Mutation {
   deleteAccessmodFileset(input: DeleteAccessmodFilesetInput!): DeleteAccessmodFilesetResult!
   prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput!): PrepareAccessmodFileUploadResult!
   prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput!): PrepareAccessmodFileDownloadResult!
+  prepareAccessmodFilesetVisualization(input: PrepareAccessmodFilesetVisualizationInput!): PrepareAccessmodFilesetVisualizationResult!
   createAccessmodFile(input: CreateAccessmodFileInput!): CreateAccessmodFileResult!
   createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult!
   createAccessmodZonalStatistics(input: CreateAccessmodZonalStatisticsInput): CreateAccessmodZonalStatisticsResult!
@@ -644,6 +645,15 @@ type PrepareAccessmodFileDownloadResult {
   downloadUrl: String
 }
 
+input PrepareAccessmodFilesetVisualizationInput {
+  id: String!
+}
+
+type PrepareAccessmodFilesetVisualizationResult {
+  success: Boolean!
+  url: String
+}
+
 input PrepareAccessmodFileUploadInput {
   filesetId: String!
   mimeType: String!
@@ -669,6 +679,7 @@ type Query {
   accessmodAnalysis(id: String): AccessmodAnalysis
   accessmodAnalyses(projectId: String!, page: Int, perPage: Int): AccessmodAnalysisPage!
   country(code: String, alpha3: String): Country
+  boundaries(country_code: String!, level: String!): [WHOBoundary!]!
   countries: [Country!]!
 }
 
@@ -872,6 +883,15 @@ type User {
   avatar: Avatar!
   dateJoined: DateTime!
   lastLogin: DateTime
+}
+
+type WHOBoundary {
+  id: String!
+  name: String!
+  country: Country!
+  administrative_level: Int!
+  parent: String
+  extent: String!
 }
 
 type WHOInfo {
