@@ -8,6 +8,7 @@ import styles from "./Tooltip.module.css";
 type Props = {
   label: ReactNode;
   as?: string;
+  className?: string;
 } & Config &
   (
     | { children: ReactElement }

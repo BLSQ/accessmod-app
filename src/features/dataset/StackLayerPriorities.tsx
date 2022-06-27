@@ -8,7 +8,7 @@ import Button from "components/Button";
 import SimpleSelect from "components/forms/SimpleSelect";
 import { SortableList } from "components/Sortable";
 import Tooltip from "components/Tooltip";
-import { AccessmodFilesetRoleCode } from "libs/graphql";
+import { AccessmodFilesetRoleCode, AccessmodFilesetStatus } from "libs/graphql";
 import { uniqueId } from "lodash";
 import { useTranslation } from "next-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -16,20 +16,27 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 type StackLayerPrioritiesProps = {
   onChange: (value: object | null) => void;
   className?: string;
-  disabled?: boolean;
   value: { id: string | null; class: string | null }[];
   layers: {
     id: string;
     role: { code: AccessmodFilesetRoleCode };
+    status: AccessmodFilesetStatus;
     metadata: any;
     name: string;
   }[];
 };
 
 const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
-  const { value = [], onChange, className, layers = [], disabled } = props;
+  const { value = [], onChange, className, layers = [] } = props;
   const { t } = useTranslation();
-  const [error, setError] = useState<string | null>(null);
+
+  const disabled = useMemo(
+    () =>
+      !layers.every((layer) => layer.status === AccessmodFilesetStatus.Valid),
+    [layers]
+  );
+
+  console.log(disabled);
 
   useEffect(() => {
     const layersIds = layers.map((l) => l.id);
@@ -129,83 +136,93 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
   return (
     <div className={className}>
       <div className="space-y-2 rounded-md border border-gray-300 px-3 py-4">
-        <div className="w-full text-center text-sm italic text-gray-600">
-          {t("Top of the stack")}
-        </div>
-        <SortableList
-          items={sortableItems}
-          onChange={handleSortChange}
-          getItemId={getItemId}
-          handle
-          renderItem={(item, index, handleProps) => (
-            <div className="flex w-full items-center gap-2 rounded-md border border-gray-300 bg-white py-2 px-2">
-              <Button variant="outlined" {...handleProps} size="sm">
-                <MenuIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
-              </Button>
-              <div className="flex flex-1 items-center gap-2">
-                <SimpleSelect
-                  value={item.item.id}
-                  required
-                  onChange={(event) =>
-                    handleLayerChange(index, { id: event?.target.value })
-                  }
-                  className="w-80"
-                  placeholder={t("Layer name")}
-                >
-                  {layers.map((layer) => (
-                    <option key={layer.id} value={layer.id}>
-                      {layer.name}
-                    </option>
-                  ))}
-                </SimpleSelect>
-                {hasSpecificClasses(item.item.id) && (
-                  <SimpleSelect
-                    className="w-56"
-                    value={item.item.class}
-                    onChange={(event) =>
-                      handleLayerChange(index, {
-                        class: event?.target.value || null,
-                      })
-                    }
-                    placeholder={t("All classes")}
-                  >
-                    {getClassOptions(item.item.id).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
-                      </option>
-                    ))}
-                  </SimpleSelect>
-                )}
-              </div>
-              {item.item?.id && !layers.find((l) => l.id === item.item.id) && (
-                <Tooltip label={t("This layer does not exist anymore")}>
-                  <ExclamationCircleIcon className="h-4 w-4 text-amber-400" />
-                </Tooltip>
-              )}
-              <Button
-                variant="outlined"
-                size="sm"
-                onClick={() => onRemove(index)}
-              >
-                <XIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
-              </Button>
+        {!disabled ? (
+          <>
+            <div className="w-full text-center text-sm italic text-gray-600">
+              {t("Top of the stack")}
             </div>
-          )}
-        />
-        <Button className="w-full" variant="white" onClick={onAddRow}>
-          <PlusIcon className="mr-1.5 h-4 w-4" />
-          {t("Add a layer")}
-        </Button>
-        <div className="w-full text-center text-sm italic text-gray-600">
-          {t("Bottom of the stack")}
-        </div>
+            <SortableList
+              disabled={disabled}
+              items={sortableItems}
+              onChange={handleSortChange}
+              getItemId={getItemId}
+              handle
+              renderItem={(item, index, handleProps) => (
+                <div className="flex w-full items-center gap-2 rounded-md border border-gray-300 bg-white py-2 px-2">
+                  <Button variant="outlined" {...handleProps} size="sm">
+                    <MenuIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
+                  </Button>
+                  <div className="flex flex-1 items-center gap-2">
+                    <SimpleSelect
+                      value={item.item.id}
+                      required
+                      disabled={disabled}
+                      onChange={(event) =>
+                        handleLayerChange(index, { id: event?.target.value })
+                      }
+                      className="w-80"
+                      placeholder={t("Layer name")}
+                    >
+                      {layers.map((layer) => (
+                        <option key={layer.id} value={layer.id}>
+                          {layer.name}
+                        </option>
+                      ))}
+                    </SimpleSelect>
+                    {hasSpecificClasses(item.item.id) && (
+                      <SimpleSelect
+                        className="w-56"
+                        disabled={disabled}
+                        value={item.item.class}
+                        onChange={(event) =>
+                          handleLayerChange(index, {
+                            class: event?.target.value || null,
+                          })
+                        }
+                        placeholder={t("All classes")}
+                      >
+                        {getClassOptions(item.item.id).map(([key, label]) => (
+                          <option key={key} value={key}>
+                            {label}
+                          </option>
+                        ))}
+                      </SimpleSelect>
+                    )}
+                  </div>
+                  {item.item?.id && !layers.find((l) => l.id === item.item.id) && (
+                    <Tooltip label={t("This layer does not exist anymore")}>
+                      <ExclamationCircleIcon className="h-4 w-4 text-amber-400" />
+                    </Tooltip>
+                  )}
+                  {!disabled && (
+                    <Button
+                      variant="outlined"
+                      size="sm"
+                      onClick={() => onRemove(index)}
+                    >
+                      <XIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
+                    </Button>
+                  )}
+                </div>
+              )}
+            />
+            <Button className="w-full" variant="white" onClick={onAddRow}>
+              <PlusIcon className="mr-1.5 h-4 w-4" />
+              {t("Add a layer")}
+            </Button>
+            <div className="w-full text-center text-sm italic text-gray-600">
+              {t("Bottom of the stack")}
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center justify-center gap-1.5 italic text-gray-500">
+            <ExclamationCircleIcon className="h-4 text-amber-400" />
+            {t(
+              "All layers have to be valid to be able to set the layer priorities"
+            )}
+          </div>
+        )}
       </div>
-
-      {error && (
-        <span className="absolute bottom-2 right-2 rounded-md bg-white p-2 text-sm text-red-400">
-          {error}
-        </span>
-      )}
     </div>
   );
 };

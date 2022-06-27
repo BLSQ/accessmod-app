@@ -1510,6 +1510,13 @@ export type TeamProjectsTableQueryVariables = Exact<{
 
 export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } };
 
+export type UseDatasetWatcherQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type UseDatasetWatcherQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', status: AccessmodFilesetStatus, id: string, name: string, metadata: any, createdAt: any, updatedAt: any, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } } | null };
+
 export type CreateAccessibilityAnalysisMutationVariables = Exact<{
   input: CreateAccessmodAccessibilityAnalysisInput;
 }>;
@@ -3493,6 +3500,42 @@ export function useTeamProjectsTableLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type TeamProjectsTableQueryHookResult = ReturnType<typeof useTeamProjectsTableQuery>;
 export type TeamProjectsTableLazyQueryHookResult = ReturnType<typeof useTeamProjectsTableLazyQuery>;
 export type TeamProjectsTableQueryResult = Apollo.QueryResult<TeamProjectsTableQuery, TeamProjectsTableQueryVariables>;
+export const UseDatasetWatcherDocument = gql`
+    query useDatasetWatcher($id: String!) {
+  dataset: accessmodFileset(id: $id) {
+    status
+    ...DatasetPicker_dataset
+  }
+}
+    ${DatasetPicker_DatasetFragmentDoc}`;
+
+/**
+ * __useUseDatasetWatcherQuery__
+ *
+ * To run a query within a React component, call `useUseDatasetWatcherQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUseDatasetWatcherQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUseDatasetWatcherQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUseDatasetWatcherQuery(baseOptions: Apollo.QueryHookOptions<UseDatasetWatcherQuery, UseDatasetWatcherQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UseDatasetWatcherQuery, UseDatasetWatcherQueryVariables>(UseDatasetWatcherDocument, options);
+      }
+export function useUseDatasetWatcherLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UseDatasetWatcherQuery, UseDatasetWatcherQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UseDatasetWatcherQuery, UseDatasetWatcherQueryVariables>(UseDatasetWatcherDocument, options);
+        }
+export type UseDatasetWatcherQueryHookResult = ReturnType<typeof useUseDatasetWatcherQuery>;
+export type UseDatasetWatcherLazyQueryHookResult = ReturnType<typeof useUseDatasetWatcherLazyQuery>;
+export type UseDatasetWatcherQueryResult = Apollo.QueryResult<UseDatasetWatcherQuery, UseDatasetWatcherQueryVariables>;
 export const CreateAccessibilityAnalysisDocument = gql`
     mutation CreateAccessibilityAnalysis($input: CreateAccessmodAccessibilityAnalysisInput!) {
   result: createAccessmodAccessibilityAnalysis(input: $input) {

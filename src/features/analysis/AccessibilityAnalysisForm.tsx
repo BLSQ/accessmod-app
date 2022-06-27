@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { ExclamationCircleIcon } from "@heroicons/react/outline";
 import { InformationCircleIcon } from "@heroicons/react/solid";
 import Block from "components/Block";
 import Button from "components/Button";
@@ -6,6 +7,7 @@ import Checkbox from "components/forms/Checkbox";
 import Field from "components/forms/Field";
 import RadioGroup from "components/forms/RadioGroup";
 import Spinner from "components/Spinner";
+import Tooltip from "components/Tooltip";
 import ScenarioEditor from "features/dataset/ScenarioEditor";
 import StackLayerPriorities from "features/dataset/StackLayerPriorities";
 import useBeforeUnload from "hooks/useBeforeUnload";
@@ -18,6 +20,7 @@ import {
   AccessmodAccessibilityAnalysisAlgorithm,
   AccessmodAnalysisStatus,
   AccessmodFilesetRoleCode,
+  AccessmodFilesetStatus,
   DatasetPicker_DatasetFragment,
   UpdateAccessmodAccessibilityAnalysisError,
   UpdateAccessmodAccessibilityAnalysisInput,
@@ -25,9 +28,9 @@ import {
 } from "libs/graphql";
 import { routes } from "libs/router";
 import { isTruthy } from "libs/types";
-import { i18n, useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { LegacyRef, useCallback, useEffect, useMemo } from "react";
 import DatasetPicker from "../dataset/DatasetPicker";
 import AnalysisStep from "./AnalysisStep";
 
@@ -119,34 +122,6 @@ function getMutationInput(
   return input;
 }
 
-const validateForm = (values: Partial<AccessibilityForm>) => {
-  const errors = {} as any;
-
-  ["dem", "healthFacilities"].forEach((dataset) => {
-    if (!(values as any)[dataset]) {
-      errors[dataset] = i18n!.t("Select a dataset");
-    }
-  });
-
-  if (!values.stack && values.useExistingStack === "y") {
-    errors.stack = i18n!.t("Select an existing stack or upload your own");
-  }
-
-  if (values.useExistingStack === "n") {
-    ["landCover", "water", "barrier", "transportNetwork"].forEach((dataset) => {
-      if (!(values as any)[dataset]) {
-        errors[dataset] = i18n!.t("Select a dataset");
-      }
-    });
-
-    if (!values.stackPriorities) {
-      errors.stackPriorities = i18n!.t("Enter layer priorities");
-    }
-  }
-
-  return errors;
-};
-
 interface Props {
   project: AccessibilityAnalysisForm_ProjectFragment;
   analysis: AccessibilityAnalysisForm_AnalysisFragment;
@@ -179,6 +154,12 @@ const AccessibilityAnalysisForm = (props: Props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (form.isDirty) {
+      form.handleSubmit();
+    }
+  }, [form]);
 
   useEffect(() => {
     form.resetForm();
@@ -224,8 +205,21 @@ const AccessibilityAnalysisForm = (props: Props) => {
     form.formData.landCover,
   ]);
 
+  const isScenarioStepDisabled = useMemo(() => {
+    if (form.formData.stack) {
+      return form.formData.stack.status === AccessmodFilesetStatus.Valid;
+    } else {
+      return !availableLayers.every((l) =>
+        [
+          AccessmodFilesetStatus.Valid,
+          AccessmodFilesetStatus.ToAcquire,
+        ].includes(l.status)
+      );
+    }
+  }, [form.formData, availableLayers]);
+
   return (
-    <form className="space-y-5 text-gray-700" onSubmit={form.handleSubmit}>
+    <form className="space-y-5 text-gray-700">
       <Block className="space-y-4">
         <div className="flex items-start">
           <InformationCircleIcon className="mr-2 h-8 w-8 text-gray-500" />
@@ -427,7 +421,27 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
       {/* Step 3 */}
 
-      <AnalysisStep id="travelScenario" title={t("Travel Scenario")}>
+      <AnalysisStep
+        id="travelScenario"
+        title={
+          <div className="flex items-center">
+            <div className="flex-1">{t("Travel Scenario")}</div>
+            {isScenarioStepDisabled && (
+              <Tooltip
+                className="mr-2"
+                label={t("Your stack (or its layers) has to be valid.")}
+                renderTrigger={(ref: LegacyRef<any>) => (
+                  <ExclamationCircleIcon
+                    ref={ref}
+                    className="mr-2 h-5 w-5 cursor-pointer text-amber-400"
+                  />
+                )}
+              />
+            )}
+          </div>
+        }
+        disabled={isScenarioStepDisabled}
+      >
         <p className="mb-4">
           {t(
             "Assign moving speeds to each category of road network and land cover."
@@ -520,10 +534,6 @@ const AccessibilityAnalysisForm = (props: Props) => {
           )}
         </div>
         <div className="flex justify-end gap-4">
-          <Button type="submit" disabled={form.isSubmitting || !form.isDirty}>
-            {form.isSubmitting && <Spinner className="mr-2" size="xs" />}
-            {t("Save")}
-          </Button>
           <Button
             type="button"
             onClick={onCompute}
