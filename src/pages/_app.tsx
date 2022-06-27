@@ -3,12 +3,16 @@ import AlertManager from "components/AlertManager";
 import Layout from "components/layouts/Layout";
 import { useApollo } from "libs/apollo";
 import { AppPropsWithLayout } from "libs/types";
+import { Settings } from "luxon";
 import { appWithTranslation } from "next-i18next";
 import Head from "next/head";
 import NavigationProgress from "nextjs-progressbar";
 import "../styles/globals.css";
 
-function App({ Component, pageProps }: AppPropsWithLayout) {
+Settings.defaultLocale = "en";
+Settings.defaultZone = "Europe/Brussels";
+
+function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const apolloClient = useApollo(pageProps);
 
   const getLayout =
@@ -32,4 +36,4 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-export default appWithTranslation(App);
+export default appWithTranslation(CustomApp);
