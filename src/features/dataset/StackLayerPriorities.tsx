@@ -32,7 +32,12 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
 
   const disabled = useMemo(
     () =>
-      !layers.every((layer) => layer.status === AccessmodFilesetStatus.Valid),
+      !layers.every((layer) =>
+        [
+          AccessmodFilesetStatus.Valid,
+          AccessmodFilesetStatus.ToAcquire,
+        ].includes(layer.status)
+      ),
     [layers]
   );
 
