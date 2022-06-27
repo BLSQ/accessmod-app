@@ -74,7 +74,6 @@ const DatasetFileInput = (props: DatasetFileInputProps) => {
       </div>
     );
   }
-
   return (
     <Dropzone
       disabled={disabled || !role}
@@ -84,7 +83,6 @@ const DatasetFileInput = (props: DatasetFileInputProps) => {
       onChange={setSelectedFiles}
       accept={role?.format ? ACCEPTED_MIMETYPES[role.format] : undefined}
     >
-      {JSON.stringify(ACCEPTED_MIMETYPES[role?.format])}
       {children}
     </Dropzone>
   );
