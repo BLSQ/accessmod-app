@@ -11,6 +11,7 @@ interface BigGeoJSONOptions extends GeoJSONOptions {
   promoteId?: string | null; // name of a feature property to be promoted to feature.id
   generateId?: boolean; // whether to generate feature ids. Cannot be used with promoteId
   debug?: number;
+  style?: ((feature: any) => object) | object;
 }
 
 declare module "leaflet" {

@@ -39,7 +39,7 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
   const columns = useMemo<Column<any>[]>(() => {
     if (data?.length > 0) {
       return Object.keys(data[0]).map((key) => ({
-        accessor: key,
+        accessor: (cell) => cell[key],
         Header: key,
       }));
     } else {

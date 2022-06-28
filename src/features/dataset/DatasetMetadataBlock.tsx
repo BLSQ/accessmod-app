@@ -27,25 +27,41 @@ const DatasetMetadataBlock = ({ dataset }: DatasetMetadataBlockProps) => {
       AccessmodFilesetRoleCode.LandCover,
       AccessmodFilesetRoleCode.Stack,
     ].includes(dataset.role.code) && (
-      <DescriptionList.Item label={t("Labels")} className="col-span-2">
-        {metadata.labels?.length ? (
-          <ClassLabelsGrid labels={metadata.labels} />
-        ) : (
-          "-"
-        )}
+      <DescriptionList.Item
+        key="labels"
+        label={t("Labels")}
+        className="col-span-2"
+      >
+        <div className="w-1/2">
+          {metadata.labels?.length ? (
+            <ClassLabelsGrid labels={metadata.labels} />
+          ) : (
+            "-"
+          )}
+        </div>
       </DescriptionList.Item>
     ),
     dataset.role.code === AccessmodFilesetRoleCode.Boundaries && (
-      <DescriptionList.Item label={t("Area's name column")}>
+      <DescriptionList.Item key="area_column" label={t("Area's name column")}>
         {dataset.metadata.name_column ?? "-"}
       </DescriptionList.Item>
     ),
 
     dataset.role.code === AccessmodFilesetRoleCode.TransportNetwork && (
-      <DescriptionList.Item label={t("Category column")}>
+      <DescriptionList.Item key="category_column" label={t("Category column")}>
         {dataset.metadata.category_column}
       </DescriptionList.Item>
     ),
+    dataset.metadata.category_column &&
+      dataset.metadata.values?.[dataset.metadata.category_column] && (
+        <DescriptionList.Item label={t("Category values")}>
+          <span className="text-ellipsis">
+            {dataset.metadata.values[dataset.metadata.category_column].join(
+              ", "
+            )}
+          </span>
+        </DescriptionList.Item>
+      ),
   ].filter(Boolean);
 
   if (

@@ -265,26 +265,36 @@ export function formatDatasetStatus(status: AccessmodFilesetStatus) {
   }
 }
 
+function detectDelimiter(text: string) {
+  const delimiters = [",", ";", "\t"];
+  const rows = text.split("\n");
+  if (rows.length >= 2) {
+    for (const delimiter of delimiters) {
+      if (
+        rows[0].split(delimiter) === rows[1].split(delimiter) &&
+        rows[0].split(delimiter).length > 0
+      ) {
+        return delimiter;
+      }
+    }
+  } else {
+    const repeats = delimiters.map((delimiter) => ({
+      delimiter,
+      times: rows[0].split(delimiter).length,
+    }));
+    repeats.sort((a, b) => b.times - a.times);
+    return repeats[0].delimiter;
+  }
+  return ",";
+}
+
 export async function getTabularFileContent(
   file: Pick<AccessmodFile, "id" | "mimeType">
 ) {
-  let textContent;
-  try {
-    textContent = sessionStorage.getItem(file.id);
-  } catch (err) {
-    console.error(err);
-  }
-  if (!textContent) {
-    const downloadUrl = await getFileDownloadUrl(file.id);
-    textContent = await fetch(downloadUrl).then((resp) => resp.text());
-  }
-
-  try {
-    sessionStorage.setItem(file.id, textContent);
-  } catch (err) {
-    console.error(err);
-  }
-  return parse(textContent, { delimiter: ",", columns: true });
+  const downloadUrl = await getFileDownloadUrl(file.id);
+  const textContent = await fetch(downloadUrl).then((resp) => resp.text());
+  const delimiter = detectDelimiter(textContent);
+  return parse(textContent, { delimiter, columns: true });
 }
 
 export async function getVectorFileContent(

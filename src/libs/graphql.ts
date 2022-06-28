@@ -1356,7 +1356,7 @@ export type DatasetStatusIcon_DatasetFragment = { __typename?: 'AccessmodFileset
 
 export type DatasetViewer_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type DatasetViewer_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
+export type DatasetViewer_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, metadata: any, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
 export type DeleteDatasetMutationVariables = Exact<{
   input: DeleteAccessmodFilesetInput;
@@ -1376,13 +1376,13 @@ export type PreviewDatasetDialogQueryVariables = Exact<{
 }>;
 
 
-export type PreviewDatasetDialogQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
+export type PreviewDatasetDialogQuery = { __typename?: 'Query', dataset?: { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }> } | null };
 
 export type PreviewDatasetDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
 export type PreviewDatasetDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
 
-export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string };
+export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, metadata: any };
 
 export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFileset', role: { __typename?: 'AccessmodFilesetRole', format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
@@ -2103,6 +2103,7 @@ export const VectorDatasetMap_DatasetFragmentDoc = gql`
 export const RasterDatasetMap_DatasetFragmentDoc = gql`
     fragment RasterDatasetMap_dataset on AccessmodFileset {
   id
+  metadata
 }
     `;
 export const DatasetViewer_DatasetFragmentDoc = gql`
