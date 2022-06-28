@@ -219,7 +219,6 @@ export { uploader };
 export async function downloadURL(url: string, name: string) {
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = name;
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);
