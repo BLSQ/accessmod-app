@@ -40,6 +40,7 @@ const Dropzone = (props: DropzoneProps) => {
       accept,
       maxFiles,
       disabled,
+      useFsAccessApi: false,
       multiple: maxFiles !== 1,
     });
 
@@ -57,12 +58,12 @@ const Dropzone = (props: DropzoneProps) => {
   return (
     <div
       className={clsx(
-        "font flex w-full items-center justify-center rounded-md border border-dashed border-gray-300  px-5 py-5 text-sm text-gray-500 shadow-sm hover:border-gray-400",
+        "font flex w-full cursor-pointer items-center justify-center rounded-md border border-dashed border-gray-300 px-5 py-5 text-sm text-gray-500 shadow-sm hover:border-gray-500",
         className
       )}
       {...getRootProps()}
     >
-      <input type="hidden" {...getInputProps()} />
+      <input {...getInputProps()} />
       <div className="flex flex-col items-center gap-2">
         {(!fileRejections.length && children) ?? (
           <>

@@ -28,11 +28,7 @@ const Tooltip = (props: Props) => {
   return (
     <>
       {"children" in props
-        ? React.createElement(
-            as,
-            { type: "button", ref: setTriggerRef },
-            props.children
-          )
+        ? React.createElement(as, { ref: setTriggerRef }, props.children)
         : props.renderTrigger(setTriggerRef)}
       {typeof window !== "undefined" &&
         ReactDOM.createPortal(

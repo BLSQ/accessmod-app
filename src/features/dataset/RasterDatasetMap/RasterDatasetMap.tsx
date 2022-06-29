@@ -1,6 +1,10 @@
 import { gql } from "@apollo/client";
-import { getFileDownloadUrl } from "libs/dataset";
-import { RasterDatasetMap_DatasetFragment } from "libs/graphql";
+import { getDatasetVisualizationUrl } from "libs/dataset";
+import {
+  AccessmodFilesetRoleCode,
+  RasterDatasetMap_DatasetFragment,
+} from "libs/graphql";
+import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 
@@ -8,46 +12,69 @@ type RasterDatasetMapProps = {
   dataset: RasterDatasetMap_DatasetFragment;
 };
 
-const DynamicClientRasterMap = dynamic(() => import("./ClientRasterMap"), {
-  ssr: false,
-});
+const DynamicClientContinuousRasterMap = dynamic(
+  () => import("./ClientContinuousRasterMap"),
+  {
+    ssr: false,
+  }
+);
+const DynamicClientDiscreteRasterMap = dynamic(
+  () => import("./ClientDiscreteRasterMap"),
+  {
+    ssr: false,
+  }
+);
 
 const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
   const [url, setUrl] = useState<string>();
-  const [loading, setLoading] = useState(false);
-  const supportedFile = useMemo(
-    () =>
-      dataset.files.find((file) =>
-        ["image/geotiff", "image/tiff", "image/geo+tiff"].includes(
-          file.mimeType
-        )
-      ),
-    [dataset]
-  );
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (supportedFile) {
-      setLoading(true);
-      getFileDownloadUrl(supportedFile.id).then(
-        (url) => {
-          setUrl(url);
-          setLoading(false);
-        },
-        () => setLoading(false)
-      );
-    } else {
-      console.warn("No supported raster file");
-    }
-  }, [supportedFile]);
+    setLoading(true);
+    getDatasetVisualizationUrl(dataset.id).then(async (url) => {
+      setLoading(false);
+      if (url) {
+        setUrl(url);
+      }
+    });
+  }, [dataset]);
+
+  const isContinuous = useMemo(() => {
+    return [
+      AccessmodFilesetRoleCode.Dem,
+      AccessmodFilesetRoleCode.Population,
+      AccessmodFilesetRoleCode.ZonalStatistics,
+      AccessmodFilesetRoleCode.TravelTimes,
+    ].includes(dataset.role.code);
+  }, [dataset]);
 
   return (
     <div>
-      {!supportedFile ? (
+      {!url && !loading && (
         <div className="w-full p-2 text-center text-sm italic text-gray-700">
-          We do not support this type of dataset. Only tiff files are supported.
+          {t("The preview of this dataset is not yet ready")}
         </div>
-      ) : (
-        <DynamicClientRasterMap loading={loading} url={url} zoom={4} />
+      )}
+      {url && isContinuous && (
+        <DynamicClientContinuousRasterMap
+          url={url}
+          zoom={4}
+          nodata={dataset.metadata.nodata}
+          min={dataset.metadata.min}
+          max={dataset.metadata.max}
+          scale="RdPu"
+        />
+      )}
+      {url && !isContinuous && (
+        <DynamicClientDiscreteRasterMap
+          url={url}
+          zoom={4}
+          nodata={dataset.metadata.nodata}
+          values={dataset.metadata.unique_values}
+          labels={dataset.metadata.labels}
+          scale="Paired"
+        />
       )}
     </div>
   );
@@ -57,14 +84,9 @@ RasterDatasetMap.fragments = {
   dataset: gql`
     fragment RasterDatasetMap_dataset on AccessmodFileset {
       id
+      metadata
       role {
         code
-        format
-      }
-      files {
-        id
-        name
-        mimeType
       }
     }
   `,

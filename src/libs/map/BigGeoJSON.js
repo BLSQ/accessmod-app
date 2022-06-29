@@ -1,6 +1,6 @@
 // @ts-nocheck
-import L from "leaflet";
 import geojsonvt from "geojson-vt";
+import L from "leaflet";
 
 L.BigGeoJSON = L.GridLayer.extend({
   options: {
@@ -34,10 +34,11 @@ L.BigGeoJSON = L.GridLayer.extend({
 
   drawFeature: function (ctx, feature) {
     ctx.beginPath();
-    if (this.options.style)
+    if (this.options.style) {
       this.options.style instanceof Function
-        ? this.setStyle(ctx, this.options.style(feature.tags))
+        ? this.setStyle(ctx, this.options.style(feature))
         : this.setStyle(ctx, this.options.style);
+    }
     if (feature.type === 2 || feature.type === 3) {
       for (var j = 0; j < feature.geometry.length; j++) {
         var ring = feature.geometry[j];

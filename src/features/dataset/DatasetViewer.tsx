@@ -15,7 +15,7 @@ type DatasetViewerProps = {
 };
 
 const DatasetViewer = (props: DatasetViewerProps) => {
-  const { dataset, project } = props;
+  const { dataset } = props;
   const { t } = useTranslation();
   if (dataset.role.format === AccessmodFilesetFormat.Tabular) {
     return <TabularDatasetTable dataset={dataset} />;

@@ -1,23 +1,47 @@
 import chroma from "chroma-js";
 import GeoRasterLayer from "components/map/GeoRasterLayer";
+import Legend from "components/map/Legend";
 import Map, { MapProps } from "components/map/Map";
+import { PixelValuesToColorFn } from "georaster-layer-for-leaflet";
+import { FeatureGroup as LeafletFeatureGroup } from "leaflet";
+import { ReactNode, useCallback, useMemo, useRef } from "react";
+import { FeatureGroup } from "react-leaflet";
 
-type Props = {
+type Props = MapProps & {
   url?: string;
   loading?: boolean;
-} & MapProps;
+  children?: ReactNode;
+  pixelValuesToColorFn: PixelValuesToColorFn;
+};
 
 const ClientRasterMap = (props: Props) => {
-  const { url, loading, ...delegated } = props;
+  const { url, loading, pixelValuesToColorFn, children, ...delegated } = props;
+  const featureGroupRef = useRef<LeafletFeatureGroup>(null);
+
+  const onLayerAdd = useCallback(
+    ({ layer }: { layer: any }) => {
+      if (featureGroupRef.current) {
+        layer._map.fitBounds(featureGroupRef.current.getBounds());
+      }
+    },
+    [featureGroupRef]
+  );
+
   return (
     <Map loading={loading} {...delegated}>
       {url && (
-        <GeoRasterLayer
-          path={url}
-          colors={chroma.brewer.BuGn}
-          opacity={0.7}
-          resolution={64}
-        />
+        <FeatureGroup
+          ref={featureGroupRef}
+          eventHandlers={{ layeradd: onLayerAdd }}
+        >
+          <GeoRasterLayer
+            path={url}
+            pixelValuesToColorFn={pixelValuesToColorFn}
+            opacity={0.85}
+            resolution={64}
+          />
+          {children}
+        </FeatureGroup>
       )}
     </Map>
   );

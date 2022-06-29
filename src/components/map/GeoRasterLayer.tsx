@@ -19,7 +19,7 @@ const useGeoraster = (path: string) => {
   const [georaster, setGeoraster] = React.useState<GeoRaster>();
 
   React.useEffect(() => {
-    parseGeoraster(path, undefined, true)
+    parseGeoraster(path, undefined, false)
       .then((res: GeoRaster) => {
         setGeoraster(res);
       })
@@ -33,18 +33,16 @@ const useGeoraster = (path: string) => {
 
 type Props = {
   path: string;
-  colors?: string[];
 } & Omit<GeoRasterLayerOptions, "georaster" | "georasters">;
 
 function GeoRasterLayer({
   path,
-  colors,
   ...options
 }: Props): React.ReactElement | null {
   const georaster = useGeoraster(path);
 
   return georaster ? (
-    <GeoRasterComponent {...options} debugLevel={0} georaster={georaster} />
+    <GeoRasterComponent {...options} georaster={georaster} />
   ) : null;
 }
 

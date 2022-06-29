@@ -68,7 +68,7 @@ export const DATA_GRID_DEFAULT_THEME = {
   thead: "",
   tbody: "",
   th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-3 py-3",
-  td: "whitespace-nowrap text-sm font-medium text-gray-800 px-3 py-1 md:py-2 flex items-center",
+  td: "whitespace-wrap text-sm font-medium text-gray-800 px-3 py-1 md:py-2 flex items-center",
   tr: "hover:bg-gray-200",
   pagination: "px-3",
 };
@@ -203,54 +203,59 @@ const DataGrid = (props: DataGridProps) => {
   }, [onFetchData, pageIndex, pageSize, sortBy]);
   return (
     <div className={className}>
-      <table className={clsx(theme.table)} {...getTableProps()}>
-        <thead className={clsx(theme.thead)}>
-          {headerGroups.map((headerGroup, i) => (
-            <tr className={theme.tr} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  className={clsx(theme.th, column.className)}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                >
-                  {column.render("Header")}
-                  {column.isSorted && i === headerGroups.length - 1 && (
-                    <span
-                      className={clsx(
-                        "ml-2 inline-block w-4 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300"
-                      )}
-                    >
-                      {column.isSortedDesc ? (
-                        <ChevronDownIcon
-                          className="h-4 w-4"
-                          aria-hidden="true"
-                        />
-                      ) : (
-                        <ChevronUpIcon className="h-4 w-4" aria-hidden="true" />
-                      )}
-                    </span>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody className={theme.tbody} {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr className={theme.tr} {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td className={theme.td} {...cell.getCellProps()}>
-                      {cell.render("Cell")}
-                    </td>
-                  );
-                })}
+      <div className="overflow-x-auto">
+        <table className={clsx(theme.table)} {...getTableProps()}>
+          <thead className={clsx(theme.thead)}>
+            {headerGroups.map((headerGroup, i) => (
+              <tr className={theme.tr} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th
+                    className={clsx(theme.th, column.className)}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                  >
+                    {column.render("Header")}
+                    {column.isSorted && i === headerGroups.length - 1 && (
+                      <span
+                        className={clsx(
+                          "ml-2 inline-block w-4 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300"
+                        )}
+                      >
+                        {column.isSortedDesc ? (
+                          <ChevronDownIcon
+                            className="h-4 w-4"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <ChevronUpIcon
+                            className="h-4 w-4"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </span>
+                    )}
+                  </th>
+                ))}
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ))}
+          </thead>
+          <tbody className={theme.tbody} {...getTableBodyProps()}>
+            {page.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr className={theme.tr} {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return (
+                      <td className={theme.td} {...cell.getCellProps()}>
+                        {cell.render("Cell")}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       {totalItems !== undefined && (
         <Pagination
           onChange={onPaginationChange}
