@@ -234,9 +234,9 @@ export async function getDatasetVisualizationUrl(
   >({
     mutation: gql`
       mutation GetDatasetVisualizationUrl(
-        $input: PrepareAccessmodFilesetVisualizationInput!
+        $input: PrepareAccessmodFilesetVisualizationDownloadInput!
       ) {
-        prepareAccessmodFilesetVisualization(input: $input) {
+        prepareAccessmodFilesetVisualizationDownload(input: $input) {
           success
           url
         }
@@ -247,7 +247,7 @@ export async function getDatasetVisualizationUrl(
     },
   });
 
-  return data?.prepareAccessmodFilesetVisualization.url ?? null;
+  return data?.prepareAccessmodFilesetVisualizationDownload.url ?? null;
 }
 
 export function formatDatasetStatus(status: AccessmodFilesetStatus) {
@@ -500,12 +500,16 @@ export function getDatasetDefaultMetadata(roleCode: AccessmodFilesetRoleCode) {
 }
 
 export type MetadataFormValues = {
+  [key: string]: any;
   category_column?: string | null;
   name_column?: string | null;
   columns?: string[];
   validation_error?: string;
   values?: { [key: string]: string[] };
   labels?: [string, string][];
+  min?: number;
+  max?: number;
+  unique_values?: number[];
 };
 
 export function toMetadataFormValues(

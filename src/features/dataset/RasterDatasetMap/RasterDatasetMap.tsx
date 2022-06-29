@@ -1,17 +1,29 @@
 import { gql } from "@apollo/client";
 import { getDatasetVisualizationUrl } from "libs/dataset";
-import { RasterDatasetMap_DatasetFragment } from "libs/graphql";
+import {
+  AccessmodFilesetRoleCode,
+  RasterDatasetMap_DatasetFragment,
+} from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type RasterDatasetMapProps = {
   dataset: RasterDatasetMap_DatasetFragment;
 };
 
-const DynamicClientRasterMap = dynamic(() => import("./ClientRasterMap"), {
-  ssr: false,
-});
+const DynamicClientContinuousRasterMap = dynamic(
+  () => import("./ClientContinuousRasterMap"),
+  {
+    ssr: false,
+  }
+);
+const DynamicClientDiscreteRasterMap = dynamic(
+  () => import("./ClientDiscreteRasterMap"),
+  {
+    ssr: false,
+  }
+);
 
 const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
   const [url, setUrl] = useState<string>();
@@ -28,6 +40,15 @@ const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
     });
   }, [dataset]);
 
+  const isContinuous = useMemo(() => {
+    return [
+      AccessmodFilesetRoleCode.Dem,
+      AccessmodFilesetRoleCode.Population,
+      AccessmodFilesetRoleCode.ZonalStatistics,
+      AccessmodFilesetRoleCode.TravelTimes,
+    ].includes(dataset.role.code);
+  }, [dataset]);
+
   return (
     <div>
       {!url && !loading && (
@@ -35,13 +56,24 @@ const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
           {t("The preview of this dataset is not yet ready")}
         </div>
       )}
-      {url && (
-        <DynamicClientRasterMap
+      {url && isContinuous && (
+        <DynamicClientContinuousRasterMap
+          url={url}
+          zoom={4}
+          nodata={dataset.metadata.nodata}
+          min={dataset.metadata.min}
+          max={dataset.metadata.max}
+          scale="RdPu"
+        />
+      )}
+      {url && !isContinuous && (
+        <DynamicClientDiscreteRasterMap
           url={url}
           zoom={4}
           nodata={dataset.metadata.nodata}
           values={dataset.metadata.unique_values}
-          scale="YlOrBr"
+          labels={dataset.metadata.labels}
+          scale="Paired"
         />
       )}
     </div>
@@ -53,6 +85,9 @@ RasterDatasetMap.fragments = {
     fragment RasterDatasetMap_dataset on AccessmodFileset {
       id
       metadata
+      role {
+        code
+      }
     }
   `,
 };

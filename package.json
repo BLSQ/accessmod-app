@@ -50,7 +50,6 @@
     "clsx": "^1.1.1",
     "csv-parse": "^5.2.0",
     "deepmerge": "^4.2.2",
-    "dropzone": "^6.0.0-beta.2",
     "eslint": "^8.18.0",
     "eslint-config-next": "^12.1.6",
     "eslint-config-prettier": "^8.5.0",

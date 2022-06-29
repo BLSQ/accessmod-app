@@ -604,7 +604,7 @@ type Mutation {
   deleteAccessmodFileset(input: DeleteAccessmodFilesetInput!): DeleteAccessmodFilesetResult!
   prepareAccessmodFileUpload(input: PrepareAccessmodFileUploadInput!): PrepareAccessmodFileUploadResult!
   prepareAccessmodFileDownload(input: PrepareAccessmodFileDownloadInput!): PrepareAccessmodFileDownloadResult!
-  prepareAccessmodFilesetVisualization(input: PrepareAccessmodFilesetVisualizationInput!): PrepareAccessmodFilesetVisualizationResult!
+  prepareAccessmodFilesetVisualizationDownload(input: PrepareAccessmodFilesetVisualizationDownloadInput!): PrepareAccessmodFilesetVisualizationDownloadResult!
   createAccessmodFile(input: CreateAccessmodFileInput!): CreateAccessmodFileResult!
   createAccessmodAccessibilityAnalysis(input: CreateAccessmodAccessibilityAnalysisInput): CreateAccessmodAccessibilityAnalysisResult!
   createAccessmodZonalStatistics(input: CreateAccessmodZonalStatisticsInput): CreateAccessmodZonalStatisticsResult!
@@ -645,11 +645,11 @@ type PrepareAccessmodFileDownloadResult {
   downloadUrl: String
 }
 
-input PrepareAccessmodFilesetVisualizationInput {
+input PrepareAccessmodFilesetVisualizationDownloadInput {
   id: String!
 }
 
-type PrepareAccessmodFilesetVisualizationResult {
+type PrepareAccessmodFilesetVisualizationDownloadResult {
   success: Boolean!
   url: String
 }

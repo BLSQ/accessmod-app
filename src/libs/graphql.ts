@@ -647,7 +647,7 @@ export type Mutation = {
   logout: LogoutResult;
   prepareAccessmodFileDownload: PrepareAccessmodFileDownloadResult;
   prepareAccessmodFileUpload: PrepareAccessmodFileUploadResult;
-  prepareAccessmodFilesetVisualization: PrepareAccessmodFilesetVisualizationResult;
+  prepareAccessmodFilesetVisualizationDownload: PrepareAccessmodFilesetVisualizationDownloadResult;
   resetPassword: ResetPasswordResult;
   setPassword: SetPasswordResult;
   updateAccessmodAccessibilityAnalysis: UpdateAccessmodAccessibilityAnalysisResult;
@@ -750,8 +750,8 @@ export type MutationPrepareAccessmodFileUploadArgs = {
 };
 
 
-export type MutationPrepareAccessmodFilesetVisualizationArgs = {
-  input: PrepareAccessmodFilesetVisualizationInput;
+export type MutationPrepareAccessmodFilesetVisualizationDownloadArgs = {
+  input: PrepareAccessmodFilesetVisualizationDownloadInput;
 };
 
 
@@ -844,12 +844,12 @@ export type PrepareAccessmodFileUploadResult = {
   uploadUrl?: Maybe<Scalars['String']>;
 };
 
-export type PrepareAccessmodFilesetVisualizationInput = {
+export type PrepareAccessmodFilesetVisualizationDownloadInput = {
   id: Scalars['String'];
 };
 
-export type PrepareAccessmodFilesetVisualizationResult = {
-  __typename?: 'PrepareAccessmodFilesetVisualizationResult';
+export type PrepareAccessmodFilesetVisualizationDownloadResult = {
+  __typename?: 'PrepareAccessmodFilesetVisualizationDownloadResult';
   success: Scalars['Boolean'];
   url?: Maybe<Scalars['String']>;
 };
@@ -1382,7 +1382,7 @@ export type PreviewDatasetDialog_ProjectFragment = { __typename?: 'AccessmodProj
 
 export type PreviewDatasetDialog_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string };
 
-export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, metadata: any };
+export type RasterDatasetMap_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, metadata: any, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode } };
 
 export type TabularDatasetTable_DatasetFragment = { __typename?: 'AccessmodFileset', role: { __typename?: 'AccessmodFilesetRole', format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
@@ -1613,11 +1613,11 @@ export type GetFileDownloadUrlMutationVariables = Exact<{
 export type GetFileDownloadUrlMutation = { __typename?: 'Mutation', prepareAccessmodFileDownload: { __typename?: 'PrepareAccessmodFileDownloadResult', success: boolean, downloadUrl?: string | null } };
 
 export type GetDatasetVisualizationUrlMutationVariables = Exact<{
-  input: PrepareAccessmodFilesetVisualizationInput;
+  input: PrepareAccessmodFilesetVisualizationDownloadInput;
 }>;
 
 
-export type GetDatasetVisualizationUrlMutation = { __typename?: 'Mutation', prepareAccessmodFilesetVisualization: { __typename?: 'PrepareAccessmodFilesetVisualizationResult', success: boolean, url?: string | null } };
+export type GetDatasetVisualizationUrlMutation = { __typename?: 'Mutation', prepareAccessmodFilesetVisualizationDownload: { __typename?: 'PrepareAccessmodFilesetVisualizationDownloadResult', success: boolean, url?: string | null } };
 
 export type CreateDatasetMutationVariables = Exact<{
   input: CreateAccessmodFilesetInput;
@@ -2104,6 +2104,9 @@ export const RasterDatasetMap_DatasetFragmentDoc = gql`
     fragment RasterDatasetMap_dataset on AccessmodFileset {
   id
   metadata
+  role {
+    code
+  }
 }
     `;
 export const DatasetViewer_DatasetFragmentDoc = gql`
@@ -3932,8 +3935,8 @@ export type GetFileDownloadUrlMutationHookResult = ReturnType<typeof useGetFileD
 export type GetFileDownloadUrlMutationResult = Apollo.MutationResult<GetFileDownloadUrlMutation>;
 export type GetFileDownloadUrlMutationOptions = Apollo.BaseMutationOptions<GetFileDownloadUrlMutation, GetFileDownloadUrlMutationVariables>;
 export const GetDatasetVisualizationUrlDocument = gql`
-    mutation GetDatasetVisualizationUrl($input: PrepareAccessmodFilesetVisualizationInput!) {
-  prepareAccessmodFilesetVisualization(input: $input) {
+    mutation GetDatasetVisualizationUrl($input: PrepareAccessmodFilesetVisualizationDownloadInput!) {
+  prepareAccessmodFilesetVisualizationDownload(input: $input) {
     success
     url
   }

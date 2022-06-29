@@ -1,6 +1,6 @@
 // @ts-nocheck
-import L from "leaflet";
 import geojsonvt from "geojson-vt";
+import L from "leaflet";
 
 L.BigGeoJSON = L.GridLayer.extend({
   options: {
