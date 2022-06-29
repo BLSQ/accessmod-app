@@ -63,7 +63,7 @@ const Dropzone = (props: DropzoneProps) => {
       )}
       {...getRootProps()}
     >
-      <input type="hidden" {...getInputProps()} />
+      <input {...getInputProps()} />
       <div className="flex flex-col items-center gap-2">
         {(!fileRejections.length && children) ?? (
           <>
