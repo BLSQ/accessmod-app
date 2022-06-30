@@ -5,6 +5,7 @@ import {
   InformationCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/outline";
+import { ErrorBoundary } from "@sentry/nextjs";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
@@ -175,12 +176,15 @@ const DatasetPage = ({ defaultVariables }: Props) => {
             </Toggle>
           </Block>
         )}
-
-        <DatasetMetadataBlock dataset={dataset} />
+        <ErrorBoundary>
+          <DatasetMetadataBlock dataset={dataset} />
+        </ErrorBoundary>
         {dataset.status === AccessmodFilesetStatus.Valid && (
-          <Block>
-            <DatasetViewer dataset={dataset} project={data.project} />
-          </Block>
+          <ErrorBoundary>
+            <Block>
+              <DatasetViewer dataset={dataset} project={data.project} />
+            </Block>
+          </ErrorBoundary>
         )}
       </PageContent>
     </Page>

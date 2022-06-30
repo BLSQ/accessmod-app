@@ -49,6 +49,18 @@ const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
     ].includes(dataset.role.code);
   }, [dataset]);
 
+  const isContinuousValid = useMemo(() => {
+    return (
+      "min" in dataset.metadata &&
+      "max" in dataset.metadata &&
+      "nodata" in dataset.metadata
+    );
+  }, [dataset]);
+
+  const isDiscreteValid = useMemo(() => {
+    return "unique_values" in dataset.metadata && "nodata" in dataset.metadata;
+  }, [dataset]);
+
   return (
     <div>
       {!url && !loading && (
@@ -56,7 +68,7 @@ const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
           {t("The preview of this dataset is not yet ready")}
         </div>
       )}
-      {url && isContinuous && (
+      {url && isContinuous && isContinuousValid && (
         <DynamicClientContinuousRasterMap
           url={url}
           zoom={4}
@@ -66,7 +78,7 @@ const RasterDatasetMap = ({ dataset }: RasterDatasetMapProps) => {
           scale="RdPu"
         />
       )}
-      {url && !isContinuous && (
+      {url && !isContinuous && isDiscreteValid && (
         <DynamicClientDiscreteRasterMap
           url={url}
           zoom={4}
