@@ -144,7 +144,7 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
                         size="sm"
                       >
                         <XIcon className="mr-1 h-3 w-3" />
-                        {t("Remove")} ({i})
+                        {t("Remove")}
                       </Button>
                     </div>
                   </td>
