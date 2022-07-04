@@ -54,12 +54,27 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
             if (typeof reader.result !== "string") {
               return abort(t("Expected string, got ArrayBuffer"));
             }
-            let rows = reader.result.split("\n").map((row) => row.split(";"));
+            const rawRows = reader.result
+              .split("\n")
+              .filter((row) => row.replace(" ", "") !== "");
 
             // Make sure that the file is not empty and has two columns
-            if (rows.length === 0) {
+            if (rawRows.length === 0) {
               return abort(t("File is empty"));
             }
+
+            // Split by comma or semicolon
+            let rows;
+            if (rawRows[0].indexOf(";") !== -1) {
+              rows = rawRows.map((row) => row.split(";"));
+            } else if (rawRows[0].indexOf(",") !== -1) {
+              rows = rawRows.map((row) => row.split(","));
+            } else {
+              return abort(
+                t("Values must be separated either by commas or semicolon")
+              );
+            }
+
             if (rows.find((row) => row.length !== 2)) {
               return abort(t("The file must have two columns"));
             }
