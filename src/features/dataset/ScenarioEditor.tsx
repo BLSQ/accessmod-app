@@ -1,8 +1,9 @@
+import { ChangeEvent, useCallback, useState } from "react";
 import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import { useTranslation } from "next-i18next";
 import Button from "components/Button";
 import Input from "components/forms/Input";
-import { useTranslation } from "next-i18next";
-import { useCallback, useState } from "react";
+import Field from "components/forms/Field";
 
 type ScenarioEntry = { kls: string; speed: number };
 type Scenario = ScenarioEntry[];
@@ -35,10 +36,62 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     [data, onChange]
   );
   const handleRowAdd = useCallback(() => {
-    const newData = data.concat({ kls: "", speed: 0 });
+    const newData = data.concat({ kls: `class ${data.length + 1}`, speed: 0 });
     setData(newData);
     onChange(newData);
   }, [data, onChange]);
+  const handleUpload = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files.length === 1) {
+        const reader = new FileReader();
+        const abort = (message: string) => {
+          alert(message);
+          event.target.value = "";
+        };
+        reader.addEventListener(
+          "load",
+          () => {
+            if (typeof reader.result !== "string") {
+              return abort(t("Expected string, got ArrayBuffer"));
+            }
+            let rows = reader.result.split("\n").map((row) => row.split(";"));
+
+            // Make sure that the file is not empty and has two columns
+            if (rows.length === 0) {
+              return abort(t("File is empty"));
+            }
+            if (rows.find((row) => row.length !== 2)) {
+              return abort(t("The file must have two columns"));
+            }
+
+            // Exclude the header row if any, and validate that the second column can be parsed as an integer
+            if (isNaN(parseInt(rows[0][1]))) {
+              rows = rows.slice(1);
+            }
+            if (rows.find((row) => isNaN(parseInt(row[1])))) {
+              return abort(
+                t("The second column may only contain integer numbers")
+              );
+            }
+
+            // Set scenario data
+            const newData = rows.map((row) => ({
+              kls: row[0],
+              speed: parseInt(row[1]),
+            }));
+            setData(newData);
+            onChange(newData);
+
+            // Reset the file input
+            event.target.value = "";
+          },
+          false
+        );
+        reader.readAsText(event.target.files[0]);
+      }
+    },
+    [t, onChange]
+  );
 
   return (
     <div>
@@ -101,11 +154,34 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
           </tbody>
         </table>
       </div>
-      <div className="mt-2 flex justify-start gap-2">
-        <Button onClick={handleRowAdd} variant="secondary" size="sm">
-          <PlusIcon className="mr-1 h-4 w-4" />
-          {t("Add a row")}
-        </Button>
+      <div className="mt-2 flex flex-col justify-start gap-4">
+        <div>
+          <Button onClick={handleRowAdd} variant="secondary" size="sm">
+            <PlusIcon className="mr-1 h-4 w-4" />
+            {t("Add a row")}
+          </Button>
+        </div>
+        <div className="flex w-full max-w-lg flex-col gap-2">
+          <Field
+            name="raster"
+            label={t("Fill from CSV")}
+            required
+            error={false}
+          >
+            <Input
+              type="file"
+              accept={".csv"}
+              required
+              onChange={handleUpload}
+            />
+          </Field>
+          <div className="text-sm text-gray-500">
+            {t(
+              "You may upload a CSV file with two columns (the first one should contain a class name, the second one should contain a speed expressed in km/h)." +
+                "The scenario table above will be replaced with the file content."
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
