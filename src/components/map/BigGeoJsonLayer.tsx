@@ -9,9 +9,8 @@ type BigGeoJsonLayerProps = {
   style?: object | Function;
 };
 
-const BigGeoJsonLayer = (props: BigGeoJsonLayerProps) => {
+const BigGeoJsonLayer = ({ data, style = {} }: BigGeoJsonLayerProps) => {
   const context = useLeafletContext();
-  const { data, style } = props;
   useEffect(() => {
     const container = context.layerContainer || context.map;
     const layer = L.bigGeoJson(data, {
