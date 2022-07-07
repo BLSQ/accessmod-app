@@ -59,6 +59,7 @@ interface IDataGridProps {
   className?: string;
   defaultSortBy?: SortingRule<object>[];
   pageSizeOptions?: number[];
+  wide?: boolean;
 }
 
 type DataGridProps = IDataGridProps;
@@ -71,12 +72,6 @@ export const DATA_GRID_DEFAULT_THEME = {
   td: "whitespace-wrap text-sm font-medium text-gray-800 px-3 py-1 md:py-2 flex items-center",
   tr: "hover:bg-gray-200",
   pagination: "px-3",
-};
-
-const DEFAULT_COLUMN = {
-  minWidth: 30,
-  width: 150,
-  maxWidth: 400,
 };
 
 const DataGrid = (props: DataGridProps) => {
@@ -95,6 +90,7 @@ const DataGrid = (props: DataGridProps) => {
     extraTableProps = {},
     defaultSortBy = [],
     defaultPageSize = 10,
+    wide = false,
   } = props;
 
   const [loading, setLoading] = useState(false);
@@ -137,7 +133,11 @@ const DataGrid = (props: DataGridProps) => {
       autoResetSelectedRows: false,
 
       // Column width
-      defaultColumn: DEFAULT_COLUMN,
+      defaultColumn: {
+        minWidth: 30,
+        width: wide ? 220 : 150,
+        maxWidth: 400,
+      },
 
       // Sort
       autoResetSortBy: false,
