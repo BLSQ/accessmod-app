@@ -179,7 +179,13 @@ const DatasetPicker = (props: Props) => {
             <Toggle>
               {({ isToggled, toggle }) => (
                 <>
-                  <button className="group flex items-center " onClick={toggle}>
+                  <button
+                    className="group flex items-center "
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggle();
+                    }}
+                  >
                     <PencilIcon className="hidden h-5 text-gray-400 group-hover:block" />
                     <div className="flex items-center group-hover:hidden">
                       <DatasetStatusIcon dataset={value} />
