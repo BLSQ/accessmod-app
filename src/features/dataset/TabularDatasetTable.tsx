@@ -60,6 +60,7 @@ const TabularDatasetTable = (props: TabularDatasetTableProps) => {
           totalItems={data?.length ?? 0}
           theme={GRID_THEME}
           sortable
+          wide
         />
       )}
       {isLoading && (
