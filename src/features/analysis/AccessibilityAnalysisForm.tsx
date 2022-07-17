@@ -207,7 +207,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
 
   const isScenarioStepDisabled = useMemo(() => {
     if (form.formData.stack) {
-      return form.formData.stack.status === AccessmodFilesetStatus.Valid;
+      return form.formData.stack.status !== AccessmodFilesetStatus.Valid;
     } else {
       return !availableLayers.every((l) =>
         [
