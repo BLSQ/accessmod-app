@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.21
+------------
+
+July 19, 2022
+
+### Fixed
+
+- Fixed issue with scenario editor in stack mode
+
 Version 0.20
 ------------
 
