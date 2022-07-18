@@ -109,6 +109,8 @@
   "Expected string, got ArrayBuffer": "Expected string, got ArrayBuffer",
   "Failed": "Failed",
   "File is empty": "File is empty",
+  "Filename___one": "Filename",
+  "Filename___other": "Filename",
   "Files": "Files",
   "Fill from CSV": "Fill from CSV",
   "Filter by country": "Filter by country",

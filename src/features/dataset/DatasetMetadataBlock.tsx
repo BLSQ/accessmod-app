@@ -24,6 +24,12 @@ const DatasetMetadataBlock = ({ dataset }: DatasetMetadataBlockProps) => {
   );
 
   const items = [
+    <DescriptionList.Item
+      key="filename"
+      label={t("Filename", { count: dataset.files.length })}
+    >
+      {dataset.files.map((f) => f.name).join(", ")}
+    </DescriptionList.Item>,
     [
       AccessmodFilesetRoleCode.LandCover,
       AccessmodFilesetRoleCode.Stack,
@@ -129,6 +135,9 @@ DatasetMetadataBlock.fragments = {
     fragment DatasetMetadataBlock_dataset on AccessmodFileset {
       metadata
       status
+      files {
+        name
+      }
       role {
         code
       }

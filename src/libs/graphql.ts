@@ -1326,7 +1326,7 @@ export type DatasetDialog_DatasetFragment = { __typename?: 'AccessmodFileset', i
 
 export type DatasetFormDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
-export type DatasetMetadataBlock_DatasetFragment = { __typename?: 'AccessmodFileset', metadata: any, status: AccessmodFilesetStatus, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode } };
+export type DatasetMetadataBlock_DatasetFragment = { __typename?: 'AccessmodFileset', metadata: any, status: AccessmodFilesetStatus, files: Array<{ __typename?: 'AccessmodFile', name: string }>, role: { __typename?: 'AccessmodFilesetRole', code: AccessmodFilesetRoleCode } };
 
 export type DatasetPicker_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, name: string, metadata: any, createdAt: any, updatedAt: any, status: AccessmodFilesetStatus, mode: AccessmodFilesetMode, authorizedActions: Array<AccessmodFilesetAuthorizedActions>, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode } };
 
@@ -2079,6 +2079,9 @@ export const DatasetMetadataBlock_DatasetFragmentDoc = gql`
     fragment DatasetMetadataBlock_dataset on AccessmodFileset {
   metadata
   status
+  files {
+    name
+  }
   role {
     code
   }
