@@ -21,6 +21,11 @@ type UseFormResult<T> = {
   handleInputChange: ChangeEventHandler<
     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
   >;
+  setDebouncedFieldValue: (
+    fieldName: keyof T,
+    value: any,
+    delay?: number
+  ) => void;
   setFieldValue: (fieldName: keyof T, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
   handleSubmit: (event?: {
@@ -48,6 +53,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   const { t } = useTranslation();
   const { initialState = {}, getInitialState, validate, onSubmit } = options;
   const [isSubmitting, setSubmitting] = useState(false);
+  const timeouts = useRef<{ [key in keyof T]?: any }>({});
   const [hasBeenSubmitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [touched, setTouched] = useState<
@@ -76,6 +82,8 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
 
   const resetForm = useCallback(() => {
     setSubmitted(false);
+    Object.values(timeouts).forEach((timeout) => clearTimeout(timeout));
+    timeouts.current = {};
     setTouched({});
     setSubmitError(null);
     setInitialState();
@@ -114,6 +122,23 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     []
   );
 
+  const setDebouncedFieldValue = useCallback(
+    (field: keyof T, value: any, delay: number = 200) => {
+      clearTimeout(timeouts.current[field]);
+      timeouts.current = {
+        ...timeouts.current,
+        [field]: setTimeout(() => {
+          delete timeouts.current[field];
+          timeouts.current = {
+            ...timeouts.current,
+          };
+          setFieldValue(field, value);
+        }, delay),
+      };
+    },
+    [setFieldValue]
+  );
+
   const errors = useMemo(() => {
     if (!validate) {
       return {};
@@ -124,10 +149,17 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]);
 
-  const isValid = useMemo(
-    () => Object.values(errors).filter(Boolean).length === 0, // Ignore {myField: null | undefined}
-    [errors]
-  );
+  const isValid = useMemo(() => {
+    if (Object.values(errors).filter(Boolean).length > 0) {
+      // Ignore {myField: null | undefined}
+      return false;
+    }
+    if (Object.keys(timeouts.current).length > 0) {
+      // Some changes are not processed yet
+      return false;
+    }
+    return true;
+  }, [errors, timeouts]);
 
   const handleSubmit = useCallback(
     async (event?: { preventDefault: Function; stopPropagation: Function }) => {
@@ -182,6 +214,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     touched: allTouched,
     handleInputChange,
     setFieldValue,
+    setDebouncedFieldValue,
     resetForm,
     isValid,
     isSubmitting,
