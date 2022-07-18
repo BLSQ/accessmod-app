@@ -236,8 +236,8 @@ const AccessibilityAnalysisForm = (props: Props) => {
           required
           type="text"
           className="md:w-1/2 xl:w-1/3"
-          value={form.formData.name}
-          onChange={form.handleInputChange}
+          defaultValue={form.formData.name}
+          onChange={(e) => form.setDebouncedFieldValue("name", e.target.value)}
         />
       </Block>
 

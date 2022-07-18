@@ -178,8 +178,8 @@ const ZonalStatisticsForm = (props: Props) => {
           required
           type="text"
           className="w-1/2"
-          value={form.formData.name}
-          onChange={form.handleInputChange}
+          defaultValue={form.formData.name}
+          onChange={(e) => form.setDebouncedFieldValue("name", e.target.value)}
         />
         <div className="grid grid-cols-4 gap-2">
           <div className="col-span-4"></div>
