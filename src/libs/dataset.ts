@@ -423,10 +423,6 @@ export async function createDataset(
 
       return {
         url: data!.uploadUrl as string,
-        headers: {
-          // FIXME: This header should be passed by the backend somehow
-          "x-amz-acl": "private",
-        },
       };
     },
     onAfterFileUpload: async (
