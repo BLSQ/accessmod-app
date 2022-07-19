@@ -38,7 +38,7 @@ const ClientRasterMap = (props: Props) => {
             path={url}
             pixelValuesToColorFn={pixelValuesToColorFn}
             opacity={0.85}
-            resolution={64}
+            resolution={512}
           />
           {children}
         </FeatureGroup>
