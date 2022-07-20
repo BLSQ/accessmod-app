@@ -1251,7 +1251,7 @@ export type AccessibilityAnalysisOutput_AnalysisFragment = AccessibilityAnalysis
 
 export type AccessibilityAnalysisParameters_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type AccessibilityAnalysisParameters_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, stackPriorities?: any | null, movingSpeeds?: any | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
+export type AccessibilityAnalysisParameters_AnalysisFragment = { __typename: 'AccessmodAccessibilityAnalysis', id: string, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, stackPriorities?: any | null, movingSpeeds?: any | null, knightMove?: boolean | null, maxTravelTime?: number | null, invertDirection?: boolean | null, waterAllTouched?: boolean | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null };
 
 export type AnalysisActionsButton_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -1307,7 +1307,7 @@ export type ZonalStatisticsOutput_AnalysisFragment = { __typename: 'AccessmodZon
 
 export type ZonalStatisticsParameters_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type ZonalStatisticsParameters_AnalysisFragment = { __typename: 'AccessmodZonalStatistics', id: string, timeThresholds?: any | null, population?: { __typename?: 'AccessmodFileset', name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string } | null };
+export type ZonalStatisticsParameters_AnalysisFragment = { __typename: 'AccessmodZonalStatistics', id: string, timeThresholds?: any | null, population?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string, id: string } | null };
 
 export type CreateDatasetTrigger_ProjectFragment = { __typename?: 'AccessmodProject', authorizedActions: Array<AccessmodProjectAuthorizedActions>, id: string, name: string };
 
@@ -1647,7 +1647,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, stackPriorities?: any | null, movingSpeeds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, timeThresholds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, zonalStatisticsTable?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, zonalStatisticsGeo?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, population?: { __typename?: 'AccessmodFileset', name: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string } | null } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, stackPriorities?: any | null, movingSpeeds?: any | null, knightMove?: boolean | null, maxTravelTime?: number | null, invertDirection?: boolean | null, waterAllTouched?: boolean | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, authorizedActions: Array<AccessmodAnalysisAuthorizedActions>, timeThresholds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, zonalStatisticsTable?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, zonalStatisticsGeo?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, population?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1814,8 +1814,13 @@ export const AccessibilityAnalysisParameters_AnalysisFragmentDoc = gql`
     id
     name
   }
+  algorithm
   stackPriorities
   movingSpeeds
+  knightMove
+  maxTravelTime
+  invertDirection
+  waterAllTouched
   healthFacilities {
     id
     name
@@ -2023,13 +2028,16 @@ export const ZonalStatisticsParameters_AnalysisFragmentDoc = gql`
   id
   population {
     name
+    id
   }
   travelTimes {
     name
+    id
   }
   timeThresholds
   boundaries {
     name
+    id
   }
 }
     `;

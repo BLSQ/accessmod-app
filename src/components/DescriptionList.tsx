@@ -20,7 +20,7 @@ DescriptionList.Item = function Item({
   help,
   className,
 }: {
-  label: ReactNode;
+  label?: ReactNode;
   children: ReactNode;
   help?: ReactNode;
   className?: string;
@@ -28,7 +28,7 @@ DescriptionList.Item = function Item({
   return (
     <div className={clsx("col-span-1", className)}>
       <dt className="flex text-sm font-medium text-gray-500">
-        <span>{label}</span>
+        {label && <span>{label}</span>}
         {help && (
           <Tooltip
             placement="top"
