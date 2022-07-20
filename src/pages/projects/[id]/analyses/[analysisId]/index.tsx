@@ -130,23 +130,6 @@ const AnalysisPage = () => {
         </div>
       </PageHeader>
       <PageContent className="space-y-4">
-        <Block>
-          <h3 className="mb-4 flex items-center justify-between">
-            {t("Parameters")}
-          </h3>
-          {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
-            <AccessibilityAnalysisParameters
-              analysis={data.analysis}
-              project={data.project}
-            />
-          )}
-          {data.analysis.__typename === "AccessmodZonalStatistics" && (
-            <ZonalStatisticsParameters
-              analysis={data.analysis}
-              project={data.project}
-            />
-          )}
-        </Block>
         {data.analysis.status === AccessmodAnalysisStatus.Success && (
           <Block>
             <h3 className="mb-4 flex items-center justify-between">
@@ -166,6 +149,23 @@ const AnalysisPage = () => {
             )}
           </Block>
         )}
+        <Block>
+          <h3 className="mb-4 flex items-center justify-between">
+            {t("Parameters")}
+          </h3>
+          {data.analysis.__typename === "AccessmodAccessibilityAnalysis" && (
+            <AccessibilityAnalysisParameters
+              analysis={data.analysis}
+              project={data.project}
+            />
+          )}
+          {data.analysis.__typename === "AccessmodZonalStatistics" && (
+            <ZonalStatisticsParameters
+              analysis={data.analysis}
+              project={data.project}
+            />
+          )}
+        </Block>
       </PageContent>
     </Page>
   );

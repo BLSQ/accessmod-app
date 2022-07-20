@@ -494,7 +494,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
             onChange={form.handleInputChange}
             value={form.formData.travelDirection}
             options={[
-              { id: "towards", label: t("Towards Facilities") },
+              { id: "towards", label: t("Towards facilities") },
               { id: "from", label: t("From facilities") },
             ]}
           />
