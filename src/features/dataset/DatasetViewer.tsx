@@ -29,9 +29,9 @@ const DatasetViewer = (props: DatasetViewerProps) => {
     );
   } else if (dataset.role.format === AccessmodFilesetFormat.Raster) {
     return (
-      <div className="relative flex w-full items-center gap-x-2 text-gray-600">
+      <div className="relative flex w-full items-center justify-between gap-x-2 text-gray-600">
         <InformationCircleIcon className="text-picton-yellow h-10 w-10" />
-        <div className="flex flex-col items-start gap-y-1">
+        <div className="flex flex-col gap-y-1">
           <p>
             {t(
               "Due to a technical issue, we are unable to display a preview of raster files for now."
@@ -42,8 +42,8 @@ const DatasetViewer = (props: DatasetViewerProps) => {
               "The technical team is working on the issue. In the meantime, you can download the file and open it in another tool."
             )}
           </p>
-          <DownloadDatasetButton variant="primary" dataset={dataset} />
         </div>
+        <DownloadDatasetButton variant="primary" dataset={dataset} />
       </div>
     );
   }
