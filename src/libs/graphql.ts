@@ -1356,7 +1356,7 @@ export type DatasetStatusIcon_DatasetFragment = { __typename?: 'AccessmodFileset
 
 export type DatasetViewer_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type DatasetViewer_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, metadata: any, name: string, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
+export type DatasetViewer_DatasetFragment = { __typename?: 'AccessmodFileset', id: string, metadata: any, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat }, files: Array<{ __typename?: 'AccessmodFile', name: string, mimeType: string, id: string }> };
 
 export type DeleteDatasetMutationVariables = Exact<{
   input: DeleteAccessmodFilesetInput;
@@ -2131,12 +2131,10 @@ export const DatasetViewer_DatasetFragmentDoc = gql`
   ...TabularDatasetTable_dataset
   ...VectorDatasetMap_dataset
   ...RasterDatasetMap_dataset
-  ...DownloadDatasetButton_dataset
 }
     ${TabularDatasetTable_DatasetFragmentDoc}
 ${VectorDatasetMap_DatasetFragmentDoc}
-${RasterDatasetMap_DatasetFragmentDoc}
-${DownloadDatasetButton_DatasetFragmentDoc}`;
+${RasterDatasetMap_DatasetFragmentDoc}`;
 export const DatasetViewer_ProjectFragmentDoc = gql`
     fragment DatasetViewer_project on AccessmodProject {
   id
