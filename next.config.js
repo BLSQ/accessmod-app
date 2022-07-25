@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-
+const path = require("path");
 const { withSentryConfig } = require("@sentry/nextjs");
 const { i18n } = require("./next-i18next.config");
 
@@ -13,6 +13,17 @@ const config = {
   i18n,
 
   swcMinify: true,
+
+  webpack: (config, options) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "georaster-layer-for-leaflet": path.resolve(
+        __dirname,
+        "georaster-layer-for-leaflet.min.js"
+      ),
+    };
+    return config;
+  },
 };
 
 const sentryWebpackPluginOptions = {
