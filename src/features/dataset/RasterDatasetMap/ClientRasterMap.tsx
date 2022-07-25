@@ -1,10 +1,8 @@
-import chroma from "chroma-js";
 import GeoRasterLayer from "components/map/GeoRasterLayer";
-import Legend from "components/map/Legend";
 import Map, { MapProps } from "components/map/Map";
 import { PixelValuesToColorFn } from "georaster-layer-for-leaflet";
 import { FeatureGroup as LeafletFeatureGroup } from "leaflet";
-import { ReactNode, useCallback, useMemo, useRef } from "react";
+import { ReactNode, useCallback, useRef } from "react";
 import { FeatureGroup } from "react-leaflet";
 
 type Props = MapProps & {
