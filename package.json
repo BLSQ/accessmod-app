@@ -20,7 +20,7 @@
     "i18n:extract": "i18next"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
+    "src/*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ]
