@@ -1,6 +1,20 @@
 Changelog
 =========
 
+Version 0.22
+------------
+
+July 26, 2022
+
+### Added
+
+- Display all input parameters on analysis detail pages
+
+### Fixed
+
+- Fixed major crash in raster visualization
+- Increased raster resolution
+
 Version 0.21
 ------------
 
