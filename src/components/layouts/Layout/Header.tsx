@@ -4,26 +4,21 @@ import Toggle from "components/Toggle";
 import CreateProjectDialog from "features/project/CreateProjectDialog";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
-import {
-  MeAuthorizedActions,
-  useHeaderQuery,
-  UserMenu_UserFragment,
-} from "libs/graphql";
+import { MeAuthorizedActions, useHeaderQuery } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "./Navbar";
 import UserMenu from "./UserMenu";
 
-type Props = {
-  user: UserMenu_UserFragment;
-};
-
-const Header = ({ user }: Props) => {
+const Header = () => {
   const { t } = useTranslation();
   const { data, refetch } = useHeaderQuery();
 
   useCacheKey("projects", () => refetch());
+  if (!data) {
+    return null;
+  }
   return (
     <>
       <nav className="bg-lochmara">
@@ -72,7 +67,7 @@ const Header = ({ user }: Props) => {
                     </Toggle>
                   )}
 
-                  <UserMenu user={user} />
+                  <UserMenu me={data.me} />
                 </div>
               </div>
             </div>
@@ -89,9 +84,11 @@ Header.prefetch = async (client: CustomApolloClient) => {
       query Header {
         me {
           authorizedActions
+          ...UserMenu_me
         }
         ...Navbar_navbar
       }
+      ${UserMenu.fragments.me}
       ${Navbar.fragments.navbar}
     `,
   });

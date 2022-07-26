@@ -37,6 +37,30 @@ enum AccessmodAccessibilityAnalysisAlgorithm {
   ISOTROPIC
 }
 
+type AccessmodAccessRequest {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  acceptedTos: Boolean!
+  status: AccessmodAccessRequestStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AccessmodAccessRequestPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [AccessmodAccessRequest!]!
+}
+
+enum AccessmodAccessRequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
 interface AccessmodAnalysis {
   id: String!
   type: AccessmodAnalysisType!
@@ -269,6 +293,19 @@ type AccessmodZonalStatistics implements AccessmodAnalysis & AccessmodOwnership 
   zonalStatisticsGeo: AccessmodFileset
 }
 
+enum ApproveAccessmodAccessRequestError {
+  INVALID
+}
+
+input ApproveAccessmodAccessRequestInput {
+  id: String!
+}
+
+type ApproveAccessmodAccessRequestResult {
+  success: Boolean!
+  errors: [ApproveAccessmodAccessRequestError!]!
+}
+
 type Avatar {
   initials: String!
   color: String!
@@ -395,6 +432,7 @@ type CreateAccessmodZonalStatisticsResult {
 }
 
 enum CreateMembershipError {
+  ALREADY_EXISTS
   PERMISSION_DENIED
   NOT_FOUND
 }
@@ -515,6 +553,19 @@ type DeleteTeamResult {
   errors: [DeleteTeamError!]!
 }
 
+enum DenyAccessmodAccessRequestError {
+  INVALID
+}
+
+input DenyAccessmodAccessRequestInput {
+  id: String!
+}
+
+type DenyAccessmodAccessRequestResult {
+  success: Boolean!
+  errors: [DenyAccessmodAccessRequestError!]!
+}
+
 enum LaunchAccessmodAnalysisError {
   LAUNCH_FAILED
 }
@@ -551,6 +602,7 @@ type Me {
 enum MeAuthorizedActions {
   CREATE_TEAM
   CREATE_ACCESSMOD_PROJECT
+  MANAGE_ACCESSMOD_ACCESS_REQUESTS
 }
 
 type Membership {
@@ -612,6 +664,9 @@ type Mutation {
   updateAccessmodZonalStatistics(input: UpdateAccessmodZonalStatisticsInput): UpdateAccessmodZonalStatisticsResult!
   launchAccessmodAnalysis(input: LaunchAccessmodAnalysisInput): LaunchAccessmodAnalysisResult!
   deleteAccessmodAnalysis(input: DeleteAccessmodAnalysisInput): DeleteAccessmodAnalysisResult!
+  requestAccessmodAccess(input: RequestAccessmodAccessInput!): RequestAccessmodAccessInputResult!
+  approveAccessmodAccessRequest(input: ApproveAccessmodAccessRequestInput!): ApproveAccessmodAccessRequestResult!
+  denyAccessmodAccessRequest(input: DenyAccessmodAccessRequestInput!): DenyAccessmodAccessRequestResult!
 }
 
 type Organization {
@@ -678,9 +733,28 @@ type Query {
   accessmodFilesetRoles: [AccessmodFilesetRole!]!
   accessmodAnalysis(id: String): AccessmodAnalysis
   accessmodAnalyses(projectId: String!, page: Int, perPage: Int): AccessmodAnalysisPage!
+  accessmodAccessRequests(page: Int, perPage: Int): AccessmodAccessRequestPage!
   country(code: String, alpha3: String): Country
   boundaries(country_code: String!, level: String!): [WHOBoundary!]!
   countries: [Country!]!
+}
+
+enum RequestAccessmodAccessError {
+  ALREADY_EXISTS
+  MUST_ACCEPT_TOS
+  INVALID
+}
+
+input RequestAccessmodAccessInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  acceptTos: Boolean!
+}
+
+type RequestAccessmodAccessInputResult {
+  success: Boolean!
+  errors: [RequestAccessmodAccessError!]!
 }
 
 input ResetPasswordInput {
@@ -844,6 +918,7 @@ type UpdateAccessmodZonalStatisticsResult {
 enum UpdateMembershipError {
   PERMISSION_DENIED
   NOT_FOUND
+  INVALID_ROLE
 }
 
 input UpdateMembershipInput {

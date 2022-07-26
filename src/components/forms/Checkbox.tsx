@@ -1,8 +1,8 @@
-import { InputHTMLAttributes, useEffect, useRef } from "react";
+import { InputHTMLAttributes, ReactNode, useEffect, useRef } from "react";
 import clsx from "clsx";
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label?: ReactNode;
   description?: string;
   indeterminate?: boolean;
 }

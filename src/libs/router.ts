@@ -1,6 +1,9 @@
 export const routes = {
   homepage: "/",
   settings: "/settings",
+  signup: "/account/signup",
+  set_password: "/account/set-password",
+  admin_access_requests: "/admin/access-requests",
   project_list: "/projects",
   project: "/projects/[projectId]",
   team: "/teams/[teamId]",

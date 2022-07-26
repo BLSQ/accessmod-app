@@ -6,13 +6,13 @@ type MenuLinkProps = {
   className?: string | undefined;
 } & React.PropsWithChildren<LinkProps>;
 
-const MenuLink = (props: MenuLinkProps) => {
-  const { href, children, ...rest } = props;
-  return (
-    <Link href={href}>
-      <a {...rest}>{children}</a>
-    </Link>
-  );
-};
-
-export default MenuLink;
+export default React.forwardRef<HTMLAnchorElement, MenuLinkProps>(
+  function MenuLink(props, ref) {
+    const { href, children, ...rest } = props;
+    return (
+      <Link href={href} ref={ref}>
+        <a {...rest}>{children}</a>
+      </Link>
+    );
+  }
+);

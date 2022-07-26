@@ -9,7 +9,7 @@ import Input from "components/forms/Input";
 import Spinner from "components/Spinner";
 import useBeforeUnload from "hooks/useBeforeUnload";
 import useForm from "hooks/useForm";
-import { displayErrorAlert } from "libs/alert";
+import { displayAlert } from "libs/alert";
 import { launchAnalysis } from "libs/analysis";
 import {
   AccessmodAnalysisStatus,
@@ -122,9 +122,9 @@ const ZonalStatisticsForm = (props: Props) => {
         query: { projectId: project.id, analysisId: analysis.id },
       });
     } catch (err) {
-      displayErrorAlert("Computation failed. Check your input data.");
+      displayAlert(t("Computation failed. Check your input data."), "error");
     }
-  }, [analysis, form, project, router]);
+  }, [analysis, form, project, router, t]);
 
   const onThresholdAdd = useCallback(
     () => {

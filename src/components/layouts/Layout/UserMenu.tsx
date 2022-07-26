@@ -3,27 +3,30 @@ import { Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import Avatar from "components/Avatar";
 import MenuLink from "components/MenuLink";
-import { UserMenu_UserFragment } from "libs/graphql";
+import { MeAuthorizedActions, UserMenu_MeFragment } from "libs/graphql";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { Fragment } from "react";
 
 type UserMenuProps = {
-  user: UserMenu_UserFragment;
+  me: UserMenu_MeFragment;
   className?: string;
 };
 
 const UserMenu = (props: UserMenuProps) => {
-  const { user, className } = props;
+  const { me, className } = props;
   const { t } = useTranslation();
+
+  if (!me.user) return null;
+
   return (
     <Menu as="div" className={clsx("relative", className)}>
       <Menu.Button className="flex max-w-xs items-center text-sm focus:outline-none ">
         <span className="sr-only">{t("Open user menu")}</span>
         <Avatar
           size="sm"
-          color={user.avatar.color}
-          initials={user.avatar.initials}
+          color={me.user.avatar.color}
+          initials={me.user.avatar.initials}
         />
       </Menu.Button>
       <Transition
@@ -49,6 +52,24 @@ const UserMenu = (props: UserMenuProps) => {
               </MenuLink>
             )}
           </Menu.Item>
+          {me.authorizedActions.includes(
+            MeAuthorizedActions.ManageAccessmodAccessRequests
+          ) && (
+            <Menu.Item>
+              {({ active }) => (
+                <MenuLink
+                  href={routes.admin_access_requests}
+                  className={clsx(
+                    "mx-1 block rounded px-4 py-2 text-sm",
+                    active && "bg-gray-200"
+                  )}
+                >
+                  {t("Access Requests")}
+                </MenuLink>
+              )}
+            </Menu.Item>
+          )}
+
           <Menu.Item>
             {({ active }) => (
               <MenuLink
@@ -69,11 +90,14 @@ const UserMenu = (props: UserMenuProps) => {
 };
 
 UserMenu.fragments = {
-  user: gql`
-    fragment UserMenu_user on User {
-      avatar {
-        initials
-        color
+  me: gql`
+    fragment UserMenu_me on Me {
+      authorizedActions
+      user {
+        avatar {
+          initials
+          color
+        }
       }
     }
   `,
