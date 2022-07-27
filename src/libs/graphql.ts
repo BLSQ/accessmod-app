@@ -1763,6 +1763,11 @@ export type SetPasswordMutationVariables = Exact<{
 
 export type SetPasswordMutation = { __typename?: 'Mutation', setPassword: { __typename?: 'SetPasswordResult', success: boolean, error?: SetPasswordError | null } };
 
+export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null } };
+
 export type RequestAccessMutationVariables = Exact<{
   input: RequestAccessmodAccessInput;
 }>;
@@ -1834,11 +1839,6 @@ export type ProjectsPageQueryVariables = Exact<{
 
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } }> } };
-
-export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null } };
 
 export type TeamPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -4349,6 +4349,45 @@ export function useSetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<
 export type SetPasswordMutationHookResult = ReturnType<typeof useSetPasswordMutation>;
 export type SetPasswordMutationResult = Apollo.MutationResult<SetPasswordMutation>;
 export type SetPasswordMutationOptions = Apollo.BaseMutationOptions<SetPasswordMutation, SetPasswordMutationVariables>;
+export const SettingsPageDocument = gql`
+    query SettingsPage {
+  me {
+    user {
+      id
+      email
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useSettingsPageQuery__
+ *
+ * To run a query within a React component, call `useSettingsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSettingsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSettingsPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSettingsPageQuery(baseOptions?: Apollo.QueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
+      }
+export function useSettingsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
+        }
+export type SettingsPageQueryHookResult = ReturnType<typeof useSettingsPageQuery>;
+export type SettingsPageLazyQueryHookResult = ReturnType<typeof useSettingsPageLazyQuery>;
+export type SettingsPageQueryResult = Apollo.QueryResult<SettingsPageQuery, SettingsPageQueryVariables>;
 export const RequestAccessDocument = gql`
     mutation RequestAccess($input: RequestAccessmodAccessInput!) {
   requestAccessmodAccess(input: $input) {
@@ -4785,45 +4824,6 @@ export function useProjectsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ProjectsPageQueryHookResult = ReturnType<typeof useProjectsPageQuery>;
 export type ProjectsPageLazyQueryHookResult = ReturnType<typeof useProjectsPageLazyQuery>;
 export type ProjectsPageQueryResult = Apollo.QueryResult<ProjectsPageQuery, ProjectsPageQueryVariables>;
-export const SettingsPageDocument = gql`
-    query SettingsPage {
-  me {
-    user {
-      id
-      email
-      firstName
-      lastName
-    }
-  }
-}
-    `;
-
-/**
- * __useSettingsPageQuery__
- *
- * To run a query within a React component, call `useSettingsPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useSettingsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSettingsPageQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSettingsPageQuery(baseOptions?: Apollo.QueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
-      }
-export function useSettingsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
-        }
-export type SettingsPageQueryHookResult = ReturnType<typeof useSettingsPageQuery>;
-export type SettingsPageLazyQueryHookResult = ReturnType<typeof useSettingsPageLazyQuery>;
-export type SettingsPageQueryResult = Apollo.QueryResult<SettingsPageQuery, SettingsPageQueryVariables>;
 export const TeamPageDocument = gql`
     query TeamPage($id: String!) {
   team(id: $id) {

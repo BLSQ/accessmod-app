@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Field from "components/forms/Field";
 import useForm from "hooks/useForm";
+import { displayAlert } from "libs/alert";
 import { useSetPasswordMutation } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { useTranslation } from "next-i18next";
@@ -42,7 +43,7 @@ const SetPasswordPage = () => {
       return errors;
     },
     onSubmit: async (values) => {
-      await setPassword({
+      const { data } = await setPassword({
         variables: {
           input: {
             password1: values.password1,
@@ -52,7 +53,13 @@ const SetPasswordPage = () => {
           },
         },
       });
-      setDone(false);
+      if (data?.setPassword.success) {
+        setDone(true);
+      } else {
+        displayAlert(
+          t("We encountered an error while changing your password.")
+        );
+      }
     },
   });
 
