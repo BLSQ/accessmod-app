@@ -6,6 +6,7 @@ import useForm from "hooks/useForm";
 import { getApolloClient } from "libs/apollo";
 import { useLoginMutation } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
+import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";
@@ -77,7 +78,12 @@ const Login = (props: Props) => {
           />
         </div>
         <h2 className="text-center font-medium text-white">AccessMod</h2>
-        <p className="text-center text-white">Description</p>
+        <p className="px-4 text-white">
+          {t("No account yet?")}{" "}
+          <Link href={routes.signup}>
+            <a className="hover:underline">{t("Request an access")}</a>
+          </Link>
+        </p>
         <form className="space-y-4 px-4" onSubmit={form.handleSubmit}>
           <Field
             name="email"

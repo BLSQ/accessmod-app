@@ -1,4 +1,5 @@
 import { HomeIcon } from "@heroicons/react/outline";
+import clsx from "clsx";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -33,7 +34,10 @@ export const Part = ({
           </Link>
         ) : (
           <span
-            className="text-md ml-1 font-medium text-white hover:text-gray-50 hover:underline"
+            className={clsx(
+              "text-md ml-1 font-medium text-white",
+              onClick && "hover:text-gray-50 hover:underline"
+            )}
             onClick={onClick}
           >
             {children}

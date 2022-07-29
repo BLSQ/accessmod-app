@@ -12,7 +12,7 @@ import ScenarioEditor from "features/dataset/ScenarioEditor";
 import StackLayerPriorities from "features/dataset/StackLayerPriorities";
 import useBeforeUnload from "hooks/useBeforeUnload";
 import useForm from "hooks/useForm";
-import { displayErrorAlert } from "libs/alert";
+import { displayAlert } from "libs/alert";
 import { launchAnalysis } from "libs/analysis";
 import {
   AccessibilityAnalysisForm_AnalysisFragment,
@@ -181,9 +181,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
         query: { projectId: project.id, analysisId: analysis.id },
       });
     } catch (err) {
-      displayErrorAlert("Computation failed. Check your input data.");
+      displayAlert(t("Computation failed. Check your input data."), "error");
     }
-  }, [analysis, form, project, router]);
+  }, [analysis, form, project, router, t]);
 
   const onChangePriorities = useCallback(
     (value: object | null) => form.setFieldValue("stackPriorities", value),

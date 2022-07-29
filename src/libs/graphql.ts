@@ -22,6 +22,32 @@ export type Scalars = {
   TimeThresholds: any;
 };
 
+export type AccessmodAccessRequest = {
+  __typename?: 'AccessmodAccessRequest';
+  acceptedTos: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['String'];
+  lastName: Scalars['String'];
+  status: AccessmodAccessRequestStatus;
+  updatedAt: Scalars['DateTime'];
+};
+
+export type AccessmodAccessRequestPage = {
+  __typename?: 'AccessmodAccessRequestPage';
+  items: Array<AccessmodAccessRequest>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export enum AccessmodAccessRequestStatus {
+  Approved = 'APPROVED',
+  Denied = 'DENIED',
+  Pending = 'PENDING'
+}
+
 export type AccessmodAccessibilityAnalysis = AccessmodAnalysis & AccessmodOwnership & {
   __typename?: 'AccessmodAccessibilityAnalysis';
   algorithm?: Maybe<AccessmodAccessibilityAnalysisAlgorithm>;
@@ -297,6 +323,20 @@ export type AccessmodZonalStatistics = AccessmodAnalysis & AccessmodOwnership & 
   zonalStatisticsTable?: Maybe<AccessmodFileset>;
 };
 
+export enum ApproveAccessmodAccessRequestError {
+  Invalid = 'INVALID'
+}
+
+export type ApproveAccessmodAccessRequestInput = {
+  id: Scalars['String'];
+};
+
+export type ApproveAccessmodAccessRequestResult = {
+  __typename?: 'ApproveAccessmodAccessRequestResult';
+  errors: Array<ApproveAccessmodAccessRequestError>;
+  success: Scalars['Boolean'];
+};
+
 export type Avatar = {
   __typename?: 'Avatar';
   color: Scalars['String'];
@@ -431,6 +471,7 @@ export type CreateAccessmodZonalStatisticsResult = {
 };
 
 export enum CreateMembershipError {
+  AlreadyExists = 'ALREADY_EXISTS',
   NotFound = 'NOT_FOUND',
   PermissionDenied = 'PERMISSION_DENIED'
 }
@@ -555,6 +596,20 @@ export type DeleteTeamResult = {
   success: Scalars['Boolean'];
 };
 
+export enum DenyAccessmodAccessRequestError {
+  Invalid = 'INVALID'
+}
+
+export type DenyAccessmodAccessRequestInput = {
+  id: Scalars['String'];
+};
+
+export type DenyAccessmodAccessRequestResult = {
+  __typename?: 'DenyAccessmodAccessRequestResult';
+  errors: Array<DenyAccessmodAccessRequestError>;
+  success: Scalars['Boolean'];
+};
+
 export enum LaunchAccessmodAnalysisError {
   LaunchFailed = 'LAUNCH_FAILED'
 }
@@ -594,7 +649,8 @@ export type Me = {
 
 export enum MeAuthorizedActions {
   CreateAccessmodProject = 'CREATE_ACCESSMOD_PROJECT',
-  CreateTeam = 'CREATE_TEAM'
+  CreateTeam = 'CREATE_TEAM',
+  ManageAccessmodAccessRequests = 'MANAGE_ACCESSMOD_ACCESS_REQUESTS'
 }
 
 export type Membership = {
@@ -628,6 +684,7 @@ export enum MembershipRole {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  approveAccessmodAccessRequest: ApproveAccessmodAccessRequestResult;
   createAccessmodAccessibilityAnalysis: CreateAccessmodAccessibilityAnalysisResult;
   createAccessmodFile: CreateAccessmodFileResult;
   createAccessmodFileset: CreateAccessmodFilesetResult;
@@ -642,12 +699,14 @@ export type Mutation = {
   deleteAccessmodProjectPermission: DeleteAccessmodProjectPermissionResult;
   deleteMembership: DeleteMembershipResult;
   deleteTeam: DeleteTeamResult;
+  denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
   login: LoginResult;
   logout: LogoutResult;
   prepareAccessmodFileDownload: PrepareAccessmodFileDownloadResult;
   prepareAccessmodFileUpload: PrepareAccessmodFileUploadResult;
   prepareAccessmodFilesetVisualizationDownload: PrepareAccessmodFilesetVisualizationDownloadResult;
+  requestAccessmodAccess: RequestAccessmodAccessInputResult;
   resetPassword: ResetPasswordResult;
   setPassword: SetPasswordResult;
   updateAccessmodAccessibilityAnalysis: UpdateAccessmodAccessibilityAnalysisResult;
@@ -657,6 +716,11 @@ export type Mutation = {
   updateAccessmodZonalStatistics: UpdateAccessmodZonalStatisticsResult;
   updateMembership: UpdateMembershipResult;
   updateTeam: UpdateTeamResult;
+};
+
+
+export type MutationApproveAccessmodAccessRequestArgs = {
+  input: ApproveAccessmodAccessRequestInput;
 };
 
 
@@ -730,6 +794,11 @@ export type MutationDeleteTeamArgs = {
 };
 
 
+export type MutationDenyAccessmodAccessRequestArgs = {
+  input: DenyAccessmodAccessRequestInput;
+};
+
+
 export type MutationLaunchAccessmodAnalysisArgs = {
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
 };
@@ -752,6 +821,11 @@ export type MutationPrepareAccessmodFileUploadArgs = {
 
 export type MutationPrepareAccessmodFilesetVisualizationDownloadArgs = {
   input: PrepareAccessmodFilesetVisualizationDownloadInput;
+};
+
+
+export type MutationRequestAccessmodAccessArgs = {
+  input: RequestAccessmodAccessInput;
 };
 
 
@@ -856,6 +930,7 @@ export type PrepareAccessmodFilesetVisualizationDownloadResult = {
 
 export type Query = {
   __typename?: 'Query';
+  accessmodAccessRequests: AccessmodAccessRequestPage;
   accessmodAnalyses: AccessmodAnalysisPage;
   accessmodAnalysis?: Maybe<AccessmodAnalysis>;
   accessmodFileset?: Maybe<AccessmodFileset>;
@@ -871,6 +946,12 @@ export type Query = {
   organizations: Array<Organization>;
   team?: Maybe<Team>;
   teams: TeamPage;
+};
+
+
+export type QueryAccessmodAccessRequestsArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -942,6 +1023,25 @@ export type QueryTeamsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   term?: InputMaybe<Scalars['String']>;
+};
+
+export enum RequestAccessmodAccessError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  Invalid = 'INVALID',
+  MustAcceptTos = 'MUST_ACCEPT_TOS'
+}
+
+export type RequestAccessmodAccessInput = {
+  acceptTos: Scalars['Boolean'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+};
+
+export type RequestAccessmodAccessInputResult = {
+  __typename?: 'RequestAccessmodAccessInputResult';
+  errors: Array<RequestAccessmodAccessError>;
+  success: Scalars['Boolean'];
 };
 
 export type ResetPasswordInput = {
@@ -1112,6 +1212,7 @@ export type UpdateAccessmodZonalStatisticsResult = {
 };
 
 export enum UpdateMembershipError {
+  InvalidRole = 'INVALID_ROLE',
   NotFound = 'NOT_FOUND',
   PermissionDenied = 'PERMISSION_DENIED'
 }
@@ -1184,11 +1285,11 @@ export type WhoRegion = {
 export type HeaderQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HeaderQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions> }, teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
+export type HeaderQuery = { __typename?: 'Query', me: { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions>, user?: { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }, teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
 export type Navbar_NavbarFragment = { __typename?: 'Query', teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
-export type UserMenu_UserFragment = { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } };
+export type UserMenu_MeFragment = { __typename?: 'Me', authorizedActions: Array<MeAuthorizedActions>, user?: { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
 export type CreateAnalysisDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
@@ -1227,6 +1328,28 @@ export type TeamMembersTableQueryVariables = Exact<{
 export type TeamMembersTableQuery = { __typename?: 'Query', team?: { __typename?: 'Team', memberships: { __typename?: 'MembershipPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'Membership', id: string, authorizedActions: Array<MembershipAuthorizedActions>, createdAt: any, updatedAt: any, role: MembershipRole, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null, displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, team: { __typename?: 'Team', id: string, name: string } }> } } | null };
 
 export type User_UserFragment = { __typename?: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
+
+export type ApproveAccessRequestMutationVariables = Exact<{
+  input: ApproveAccessmodAccessRequestInput;
+}>;
+
+
+export type ApproveAccessRequestMutation = { __typename?: 'Mutation', approveAccessmodAccessRequest: { __typename?: 'ApproveAccessmodAccessRequestResult', success: boolean, errors: Array<ApproveAccessmodAccessRequestError> } };
+
+export type DenyAccessmodAccessRequestMutationVariables = Exact<{
+  input: DenyAccessmodAccessRequestInput;
+}>;
+
+
+export type DenyAccessmodAccessRequestMutation = { __typename?: 'Mutation', denyAccessmodAccessRequest: { __typename?: 'DenyAccessmodAccessRequestResult', success: boolean, errors: Array<DenyAccessmodAccessRequestError> } };
+
+export type AccessRequestsTableQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type AccessRequestsTableQuery = { __typename?: 'Query', accessRequests: { __typename?: 'AccessmodAccessRequestPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodAccessRequest', id: string, firstName: string, lastName: string, acceptedTos: boolean, email: string, status: AccessmodAccessRequestStatus, createdAt: any, updatedAt: any }> } };
 
 export type AccessibilityAnalysisForm_ProjectFragment = { __typename?: 'AccessmodProject', id: string, authorizedActions: Array<AccessmodProjectAuthorizedActions>, name: string };
 
@@ -1626,6 +1749,32 @@ export type CreateDatasetMutationVariables = Exact<{
 
 export type CreateDatasetMutation = { __typename?: 'Mutation', createAccessmodFileset: { __typename?: 'CreateAccessmodFilesetResult', success: boolean, errors: Array<CreateAccessmodFilesetError>, fileset?: { __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, metadata: any, role: { __typename?: 'AccessmodFilesetRole', id: string, code: AccessmodFilesetRoleCode, name: string, format: AccessmodFilesetFormat } } | null } };
 
+export type ResetPasswordMutationVariables = Exact<{
+  input: ResetPasswordInput;
+}>;
+
+
+export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'ResetPasswordResult', success: boolean } };
+
+export type SetPasswordMutationVariables = Exact<{
+  input: SetPasswordInput;
+}>;
+
+
+export type SetPasswordMutation = { __typename?: 'Mutation', setPassword: { __typename?: 'SetPasswordResult', success: boolean, error?: SetPasswordError | null } };
+
+export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null } };
+
+export type RequestAccessMutationVariables = Exact<{
+  input: RequestAccessmodAccessInput;
+}>;
+
+
+export type RequestAccessMutation = { __typename?: 'Mutation', requestAccessmodAccess: { __typename?: 'RequestAccessmodAccessInputResult', success: boolean, errors: Array<RequestAccessmodAccessError> } };
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -1691,18 +1840,6 @@ export type ProjectsPageQueryVariables = Exact<{
 
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, permissions: Array<{ __typename?: 'AccessmodProjectPermission', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } }> } };
 
-export type ResetPasswordMutationVariables = Exact<{
-  input: ResetPasswordInput;
-}>;
-
-
-export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'ResetPasswordResult', success: boolean } };
-
-export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null } };
-
 export type TeamPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1734,11 +1871,14 @@ export const Navbar_NavbarFragmentDoc = gql`
   }
 }
     `;
-export const UserMenu_UserFragmentDoc = gql`
-    fragment UserMenu_user on User {
-  avatar {
-    initials
-    color
+export const UserMenu_MeFragmentDoc = gql`
+    fragment UserMenu_me on Me {
+  authorizedActions
+  user {
+    avatar {
+      initials
+      color
+    }
   }
 }
     `;
@@ -2378,10 +2518,12 @@ export const HeaderDocument = gql`
     query Header {
   me {
     authorizedActions
+    ...UserMenu_me
   }
   ...Navbar_navbar
 }
-    ${Navbar_NavbarFragmentDoc}`;
+    ${UserMenu_MeFragmentDoc}
+${Navbar_NavbarFragmentDoc}`;
 
 /**
  * __useHeaderQuery__
@@ -2570,6 +2712,122 @@ export function useTeamMembersTableLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type TeamMembersTableQueryHookResult = ReturnType<typeof useTeamMembersTableQuery>;
 export type TeamMembersTableLazyQueryHookResult = ReturnType<typeof useTeamMembersTableLazyQuery>;
 export type TeamMembersTableQueryResult = Apollo.QueryResult<TeamMembersTableQuery, TeamMembersTableQueryVariables>;
+export const ApproveAccessRequestDocument = gql`
+    mutation ApproveAccessRequest($input: ApproveAccessmodAccessRequestInput!) {
+  approveAccessmodAccessRequest(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type ApproveAccessRequestMutationFn = Apollo.MutationFunction<ApproveAccessRequestMutation, ApproveAccessRequestMutationVariables>;
+
+/**
+ * __useApproveAccessRequestMutation__
+ *
+ * To run a mutation, you first call `useApproveAccessRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApproveAccessRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [approveAccessRequestMutation, { data, loading, error }] = useApproveAccessRequestMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useApproveAccessRequestMutation(baseOptions?: Apollo.MutationHookOptions<ApproveAccessRequestMutation, ApproveAccessRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ApproveAccessRequestMutation, ApproveAccessRequestMutationVariables>(ApproveAccessRequestDocument, options);
+      }
+export type ApproveAccessRequestMutationHookResult = ReturnType<typeof useApproveAccessRequestMutation>;
+export type ApproveAccessRequestMutationResult = Apollo.MutationResult<ApproveAccessRequestMutation>;
+export type ApproveAccessRequestMutationOptions = Apollo.BaseMutationOptions<ApproveAccessRequestMutation, ApproveAccessRequestMutationVariables>;
+export const DenyAccessmodAccessRequestDocument = gql`
+    mutation DenyAccessmodAccessRequest($input: DenyAccessmodAccessRequestInput!) {
+  denyAccessmodAccessRequest(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type DenyAccessmodAccessRequestMutationFn = Apollo.MutationFunction<DenyAccessmodAccessRequestMutation, DenyAccessmodAccessRequestMutationVariables>;
+
+/**
+ * __useDenyAccessmodAccessRequestMutation__
+ *
+ * To run a mutation, you first call `useDenyAccessmodAccessRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDenyAccessmodAccessRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [denyAccessmodAccessRequestMutation, { data, loading, error }] = useDenyAccessmodAccessRequestMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDenyAccessmodAccessRequestMutation(baseOptions?: Apollo.MutationHookOptions<DenyAccessmodAccessRequestMutation, DenyAccessmodAccessRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DenyAccessmodAccessRequestMutation, DenyAccessmodAccessRequestMutationVariables>(DenyAccessmodAccessRequestDocument, options);
+      }
+export type DenyAccessmodAccessRequestMutationHookResult = ReturnType<typeof useDenyAccessmodAccessRequestMutation>;
+export type DenyAccessmodAccessRequestMutationResult = Apollo.MutationResult<DenyAccessmodAccessRequestMutation>;
+export type DenyAccessmodAccessRequestMutationOptions = Apollo.BaseMutationOptions<DenyAccessmodAccessRequestMutation, DenyAccessmodAccessRequestMutationVariables>;
+export const AccessRequestsTableDocument = gql`
+    query AccessRequestsTable($page: Int = 1, $perPage: Int = 10) {
+  accessRequests: accessmodAccessRequests(page: $page, perPage: $perPage) {
+    pageNumber
+    items {
+      id
+      firstName
+      lastName
+      acceptedTos
+      email
+      status
+      createdAt
+      updatedAt
+    }
+    totalPages
+    totalItems
+  }
+}
+    `;
+
+/**
+ * __useAccessRequestsTableQuery__
+ *
+ * To run a query within a React component, call `useAccessRequestsTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccessRequestsTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccessRequestsTableQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useAccessRequestsTableQuery(baseOptions?: Apollo.QueryHookOptions<AccessRequestsTableQuery, AccessRequestsTableQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AccessRequestsTableQuery, AccessRequestsTableQueryVariables>(AccessRequestsTableDocument, options);
+      }
+export function useAccessRequestsTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AccessRequestsTableQuery, AccessRequestsTableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AccessRequestsTableQuery, AccessRequestsTableQueryVariables>(AccessRequestsTableDocument, options);
+        }
+export type AccessRequestsTableQueryHookResult = ReturnType<typeof useAccessRequestsTableQuery>;
+export type AccessRequestsTableLazyQueryHookResult = ReturnType<typeof useAccessRequestsTableLazyQuery>;
+export type AccessRequestsTableQueryResult = Apollo.QueryResult<AccessRequestsTableQuery, AccessRequestsTableQueryVariables>;
 export const UpdateAccessibilityAnalysisDocument = gql`
     mutation UpdateAccessibilityAnalysis($input: UpdateAccessmodAccessibilityAnalysisInput) {
   updateAccessmodAccessibilityAnalysis(input: $input) {
@@ -4024,6 +4282,146 @@ export function useCreateDatasetMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateDatasetMutationHookResult = ReturnType<typeof useCreateDatasetMutation>;
 export type CreateDatasetMutationResult = Apollo.MutationResult<CreateDatasetMutation>;
 export type CreateDatasetMutationOptions = Apollo.BaseMutationOptions<CreateDatasetMutation, CreateDatasetMutationVariables>;
+export const ResetPasswordDocument = gql`
+    mutation ResetPassword($input: ResetPasswordInput!) {
+  resetPassword(input: $input) {
+    success
+  }
+}
+    `;
+export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;
+
+/**
+ * __useResetPasswordMutation__
+ *
+ * To run a mutation, you first call `useResetPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetPasswordMutation, { data, loading, error }] = useResetPasswordMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ResetPasswordMutation, ResetPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResetPasswordMutation, ResetPasswordMutationVariables>(ResetPasswordDocument, options);
+      }
+export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
+export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
+export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const SetPasswordDocument = gql`
+    mutation setPassword($input: SetPasswordInput!) {
+  setPassword(input: $input) {
+    success
+    error
+  }
+}
+    `;
+export type SetPasswordMutationFn = Apollo.MutationFunction<SetPasswordMutation, SetPasswordMutationVariables>;
+
+/**
+ * __useSetPasswordMutation__
+ *
+ * To run a mutation, you first call `useSetPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setPasswordMutation, { data, loading, error }] = useSetPasswordMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<SetPasswordMutation, SetPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetPasswordMutation, SetPasswordMutationVariables>(SetPasswordDocument, options);
+      }
+export type SetPasswordMutationHookResult = ReturnType<typeof useSetPasswordMutation>;
+export type SetPasswordMutationResult = Apollo.MutationResult<SetPasswordMutation>;
+export type SetPasswordMutationOptions = Apollo.BaseMutationOptions<SetPasswordMutation, SetPasswordMutationVariables>;
+export const SettingsPageDocument = gql`
+    query SettingsPage {
+  me {
+    user {
+      id
+      email
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useSettingsPageQuery__
+ *
+ * To run a query within a React component, call `useSettingsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSettingsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSettingsPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSettingsPageQuery(baseOptions?: Apollo.QueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
+      }
+export function useSettingsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
+        }
+export type SettingsPageQueryHookResult = ReturnType<typeof useSettingsPageQuery>;
+export type SettingsPageLazyQueryHookResult = ReturnType<typeof useSettingsPageLazyQuery>;
+export type SettingsPageQueryResult = Apollo.QueryResult<SettingsPageQuery, SettingsPageQueryVariables>;
+export const RequestAccessDocument = gql`
+    mutation RequestAccess($input: RequestAccessmodAccessInput!) {
+  requestAccessmodAccess(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type RequestAccessMutationFn = Apollo.MutationFunction<RequestAccessMutation, RequestAccessMutationVariables>;
+
+/**
+ * __useRequestAccessMutation__
+ *
+ * To run a mutation, you first call `useRequestAccessMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestAccessMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestAccessMutation, { data, loading, error }] = useRequestAccessMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRequestAccessMutation(baseOptions?: Apollo.MutationHookOptions<RequestAccessMutation, RequestAccessMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RequestAccessMutation, RequestAccessMutationVariables>(RequestAccessDocument, options);
+      }
+export type RequestAccessMutationHookResult = ReturnType<typeof useRequestAccessMutation>;
+export type RequestAccessMutationResult = Apollo.MutationResult<RequestAccessMutation>;
+export type RequestAccessMutationOptions = Apollo.BaseMutationOptions<RequestAccessMutation, RequestAccessMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
@@ -4426,78 +4824,6 @@ export function useProjectsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ProjectsPageQueryHookResult = ReturnType<typeof useProjectsPageQuery>;
 export type ProjectsPageLazyQueryHookResult = ReturnType<typeof useProjectsPageLazyQuery>;
 export type ProjectsPageQueryResult = Apollo.QueryResult<ProjectsPageQuery, ProjectsPageQueryVariables>;
-export const ResetPasswordDocument = gql`
-    mutation ResetPassword($input: ResetPasswordInput!) {
-  resetPassword(input: $input) {
-    success
-  }
-}
-    `;
-export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;
-
-/**
- * __useResetPasswordMutation__
- *
- * To run a mutation, you first call `useResetPasswordMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useResetPasswordMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [resetPasswordMutation, { data, loading, error }] = useResetPasswordMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ResetPasswordMutation, ResetPasswordMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ResetPasswordMutation, ResetPasswordMutationVariables>(ResetPasswordDocument, options);
-      }
-export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
-export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
-export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const SettingsPageDocument = gql`
-    query SettingsPage {
-  me {
-    user {
-      id
-      email
-      firstName
-      lastName
-    }
-  }
-}
-    `;
-
-/**
- * __useSettingsPageQuery__
- *
- * To run a query within a React component, call `useSettingsPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useSettingsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSettingsPageQuery({
- *   variables: {
- *   },
- * });
- */
-export function useSettingsPageQuery(baseOptions?: Apollo.QueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
-      }
-export function useSettingsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SettingsPageQuery, SettingsPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SettingsPageQuery, SettingsPageQueryVariables>(SettingsPageDocument, options);
-        }
-export type SettingsPageQueryHookResult = ReturnType<typeof useSettingsPageQuery>;
-export type SettingsPageLazyQueryHookResult = ReturnType<typeof useSettingsPageLazyQuery>;
-export type SettingsPageQueryResult = Apollo.QueryResult<SettingsPageQuery, SettingsPageQueryVariables>;
 export const TeamPageDocument = gql`
     query TeamPage($id: String!) {
   team(id: $id) {

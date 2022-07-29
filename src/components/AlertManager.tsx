@@ -7,9 +7,9 @@ const AlertManager = () => {
   const [alert, setAlert] = useState<null | {
     message: string;
     type?: "error" | "info" | "warning";
-  }>(null);
+  }>();
 
-  useListener("displayErrorAlert", (event) => {
+  useListener("displayAlert", (event) => {
     setAlert(event.detail);
   });
 
