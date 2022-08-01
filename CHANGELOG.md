@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Version 0.23
+------------
+
+August 1, 2022
+
+### Added
+
+- User can request an access to the platform
+
+
 Version 0.22
 ------------
 
