@@ -92,14 +92,17 @@ const CreateProjectDialog = (props: Props) => {
         if (!values.crs) {
           errors.crs = t("Enter a CRS");
         }
-      } else {
-        if (
-          !values.raster?.crs ||
-          !values.raster?.bounds ||
-          !values.raster?.resolution
+      } else if (values.raster) {
+        if (!values.raster.crs) {
+          errors.raster = t("Unsupported CRS found in raster.");
+        } else if (!values.raster.bounds) {
+          errors.raster = t("Invalid bounds found in raster.");
+        } else if (
+          !values.raster.resolution ||
+          !Number.isInteger(values.raster.resolution)
         ) {
           errors.raster = t(
-            "Unsupported raster. We are not able to extract metadata."
+            "Invalid resolution found in raster. Resolution must be an integer"
           );
         }
       }
