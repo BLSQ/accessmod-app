@@ -118,7 +118,7 @@ const Login = (props: Props) => {
             </div>
           )}
           <div className="flex items-center justify-between">
-            <Link href="/reset-password">
+            <Link href="/account/reset-password">
               <a className="text-xs text-gray-100 hover:underline">
                 {t("Forgot your password ?")}
               </a>
