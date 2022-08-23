@@ -80,11 +80,17 @@ const ClassLabelsGrid = ({ labels, editable, onChange }: Props) => {
     return cols;
   }, [labels, onChange, t, editable]);
 
-  const onAddItem = useCallback(() => {
-    if (!classInputRef.current?.value || !editable) return;
+  const onAddItem = () => {
+    if (
+      !classInputRef.current?.value ||
+      !editable ||
+      !classInputRef.current?.checkValidity()
+    ) {
+      return;
+    }
     onChange([[classInputRef.current.value, ""], ...labels]);
     classInputRef.current.value = "";
-  }, [classInputRef, labels, onChange, editable]);
+  };
 
   return (
     <div>
@@ -92,7 +98,11 @@ const ClassLabelsGrid = ({ labels, editable, onChange }: Props) => {
         <div className="mb-1 flex items-center gap-2">
           <Input
             ref={classInputRef}
-            placeholder={t("Class value")}
+            placeholder={t("Class id")}
+            min={0}
+            step={1}
+            required
+            pattern="\d*"
             type="number"
           />
           <Button variant="secondary" onClick={onAddItem}>
