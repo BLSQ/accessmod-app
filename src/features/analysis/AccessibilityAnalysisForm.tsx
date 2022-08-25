@@ -30,7 +30,7 @@ import { routes } from "libs/router";
 import { isTruthy } from "libs/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { LegacyRef, useCallback, useEffect, useMemo } from "react";
+import { LegacyRef, useCallback, useEffect, useMemo, useState } from "react";
 import DatasetPicker from "../dataset/DatasetPicker";
 import AnalysisStep from "./AnalysisStep";
 
@@ -39,7 +39,6 @@ type AccessibilityForm = {
   maxTravelTime: string;
   dem: DatasetPicker_DatasetFragment | null;
   stack?: DatasetPicker_DatasetFragment | null;
-  useExistingStack: "y" | "n";
   water?: DatasetPicker_DatasetFragment | null;
   barrier?: DatasetPicker_DatasetFragment | null;
   landCover?: DatasetPicker_DatasetFragment | null;
@@ -60,7 +59,6 @@ function getInitialFormState(
   return {
     name: analysis?.name,
     maxTravelTime: analysis?.maxTravelTime?.toString() ?? "120",
-    useExistingStack: analysis.stack ? "y" : "n",
     stack: analysis?.stack,
     algorithm:
       analysis?.algorithm ??
@@ -82,12 +80,13 @@ function getInitialFormState(
 }
 
 function datasetToInput(dataset?: { id: string } | null) {
-  return dataset?.id ?? undefined;
+  return dataset?.id ?? null;
 }
 
 function getMutationInput(
   analysis: AccessibilityAnalysisForm_AnalysisFragment,
-  formData: Partial<AccessibilityForm>
+  formData: Partial<AccessibilityForm>,
+  compositeStackMode: boolean
 ): UpdateAccessmodAccessibilityAnalysisInput {
   let input: UpdateAccessmodAccessibilityAnalysisInput = {
     id: analysis.id,
@@ -105,9 +104,7 @@ function getMutationInput(
     algorithm: formData.algorithm,
   };
 
-  if (formData.useExistingStack === "y") {
-    input.stackId = datasetToInput(formData.stack);
-  } else {
+  if (compositeStackMode) {
     input = {
       ...input,
       landCoverId: datasetToInput(formData.landCover),
@@ -117,6 +114,8 @@ function getMutationInput(
       waterAllTouched: formData.waterAllTouched,
       stackPriorities: formData.stackPriorities,
     };
+  } else {
+    input.stackId = datasetToInput(formData.stack);
   }
 
   return input;
@@ -131,6 +130,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
   const { project, analysis } = props;
   const { t } = useTranslation();
   const router = useRouter();
+  const [compositeStackMode, setCompositeStackMode] = useState(!analysis.stack);
   const [updateAnalysis] = useUpdateAccessibilityAnalysisMutation();
 
   const form = useForm<AccessibilityForm>({
@@ -138,7 +138,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
     getInitialState: () => getInitialFormState(analysis),
     onSubmit: async (values) => {
       const { data } = await updateAnalysis({
-        variables: { input: getMutationInput(analysis, values) },
+        variables: {
+          input: getMutationInput(analysis, values, compositeStackMode),
+        },
       });
       if (!data) {
         throw new Error();
@@ -274,39 +276,25 @@ const AccessibilityAnalysisForm = (props: Props) => {
             </p>
             <RadioGroup
               className="col-span-2 mb-2"
-              value={form.formData.useExistingStack ?? "n"}
+              value={compositeStackMode ? "true" : "false"}
               required
               onChange={(event) =>
-                form.setFieldValue("useExistingStack", event.target.value)
+                setCompositeStackMode(event.target.value === "true")
               }
-              name="useExistingStack"
+              name="compositeStackMode"
               options={[
                 {
-                  id: "n",
+                  id: "true",
                   label: t("Create a new stack by selecting the layers"),
                 },
                 {
-                  id: "y",
+                  id: "false",
                   label: t("Use an existing stack or upload your own"),
                 },
               ]}
             />
             <div className="grid gap-4  md:grid-cols-2">
-              {form.formData.useExistingStack === "y" ? (
-                <Field
-                  label={t("Stack")}
-                  name="stack"
-                  required
-                  error={form.errors.stack}
-                >
-                  <DatasetPicker
-                    project={project}
-                    roleCode={AccessmodFilesetRoleCode.Stack}
-                    dataset={form.formData.stack}
-                    onChange={(value) => form.setFieldValue("stack", value)}
-                  />
-                </Field>
-              ) : (
+              {compositeStackMode ? (
                 <>
                   <Field
                     label={t("Land Cover")}
@@ -389,6 +377,20 @@ const AccessibilityAnalysisForm = (props: Props) => {
                     />
                   </Field>
                 </>
+              ) : (
+                <Field
+                  label={t("Stack")}
+                  name="stack"
+                  required
+                  error={form.errors.stack}
+                >
+                  <DatasetPicker
+                    project={project}
+                    roleCode={AccessmodFilesetRoleCode.Stack}
+                    dataset={form.formData.stack}
+                    onChange={(value) => form.setFieldValue("stack", value)}
+                  />
+                </Field>
               )}
             </div>
           </div>
