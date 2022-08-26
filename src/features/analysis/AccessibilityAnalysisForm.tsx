@@ -147,7 +147,9 @@ const AccessibilityAnalysisForm = (props: Props) => {
       }
       const { success, errors } = data.updateAccessmodAccessibilityAnalysis;
 
-      if (success) return;
+      if (success) {
+        return;
+      }
 
       if (
         errors.includes(UpdateAccessmodAccessibilityAnalysisError.NameDuplicate)
@@ -158,7 +160,7 @@ const AccessibilityAnalysisForm = (props: Props) => {
   });
 
   useEffect(() => {
-    if (form.isDirty) {
+    if (form.isDirty && form.previousFormData !== form.formData) {
       form.handleSubmit();
     }
   }, [form]);

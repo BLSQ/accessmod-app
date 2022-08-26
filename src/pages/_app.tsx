@@ -7,6 +7,9 @@ import { Settings } from "luxon";
 import { appWithTranslation } from "next-i18next";
 import Head from "next/head";
 import NavigationProgress from "nextjs-progressbar";
+import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
+
 import "../styles/globals.css";
 
 Settings.defaultLocale = "en";
@@ -18,6 +21,14 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =
     Component.getLayout ??
     ((page) => <Layout pageProps={pageProps}>{page}</Layout>);
+
+  useEffect(() => {
+    Sentry.setUser(
+      pageProps.user
+        ? { email: pageProps.user.email, id: pageProps.user.id }
+        : null
+    );
+  }, [pageProps.user]);
 
   return (
     <>
