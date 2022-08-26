@@ -27,6 +27,7 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     },
     [data, onChange]
   );
+
   const handleRowRemove = useCallback(
     (index: number) => {
       const newData = data.filter((_, i) => i !== index);
@@ -35,11 +36,13 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
     },
     [data, onChange]
   );
+
   const handleRowAdd = useCallback(() => {
     const newData = data.concat({ kls: `class ${data.length + 1}`, speed: 0 });
     setData(newData);
     onChange(newData);
   }, [data, onChange]);
+
   const handleUpload = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files.length === 1) {
@@ -126,13 +129,13 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
             </tr>
           </thead>
           <tbody>
-            {scenario.map((row, i) => {
+            {data.map((row, i) => {
               return (
                 <tr key={i}>
                   <td className="whitespace-nowrap px-3 py-1 text-sm font-medium text-gray-800 md:py-2">
                     <Input
                       className="w-full"
-                      value={data[i].kls}
+                      value={row.kls}
                       onChange={(e) =>
                         handleRowChange(i, "kls", e.target.value)
                       }
@@ -142,7 +145,7 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
                   <td className="whitespace-nowrap px-3 py-1 text-sm font-medium text-gray-800 md:py-2">
                     <Input
                       className="w-full"
-                      value={data[i].speed}
+                      value={row.speed}
                       onChange={(e) =>
                         handleRowChange(i, "speed", e.target.value)
                       }
