@@ -29,7 +29,7 @@ const TravelScenarioTable = ({
         id: "speed",
         accessor: (row) => row[0],
         width: 100,
-        Header: t("Class"),
+        Header: t("Speed (in km/h)"),
       },
     ];
     return cols;
