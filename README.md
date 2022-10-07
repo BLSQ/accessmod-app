@@ -25,6 +25,7 @@ The following environment variables should be provided at build time (for the `d
 The following environment variables should be provided at run time:
 - `GRAPHQL_ENDPOINT`: the URL of the OpenHexa GraphQL API
 - `SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
+- `SENTRY_TRACES_SAMPLE_RATE`: the [Sentry](https://sentry.io/) sampling rate of traces
 - `SENTRY_ENVIRONMENT`: the [Sentry](https://sentry.io/) environment tag
 
 ## Local development

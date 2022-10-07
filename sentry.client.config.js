@@ -11,7 +11,12 @@ Sentry.init({
   dsn: publicRuntimeConfig.SENTRY_DSN,
   environment: publicRuntimeConfig.SENTRY_ENVIRONMENT,
   // Adjust this value in production, or use tracesSampler for greater control
-  tracesSampleRate: 0.005,
+  tracesSampler(context) {
+    if (context.location?.pathname === "/ready") {
+      return 0;
+    }
+    return publicRuntimeConfig.SENTRY_TRACES_SAMPLE_RATE;
+  },
   // ...
   // Note: if you want to override the automatic release value, do not set a
   // `release` value here - use the environment variable `SENTRY_RELEASE`, so
