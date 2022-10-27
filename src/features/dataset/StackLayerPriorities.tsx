@@ -1,9 +1,9 @@
 import {
   ExclamationCircleIcon,
-  MenuIcon,
+  Bars3Icon,
   PlusIcon,
-  XIcon,
-} from "@heroicons/react/outline";
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Button from "components/Button";
 import SimpleSelect from "components/forms/SimpleSelect";
 import { SortableList } from "components/Sortable";
@@ -153,7 +153,7 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
               renderItem={(item, index, handleProps) => (
                 <div className="flex w-full items-center gap-2 rounded-md border border-gray-300 bg-white py-2 px-2">
                   <Button variant="outlined" {...handleProps} size="sm">
-                    <MenuIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
+                    <Bars3Icon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
                   </Button>
                   <div className="flex flex-1 items-center gap-2">
                     <SimpleSelect
@@ -203,7 +203,7 @@ const StackLayerPriorities = (props: StackLayerPrioritiesProps) => {
                       size="sm"
                       onClick={() => onRemove(index)}
                     >
-                      <XIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
+                      <XMarkIcon className="h-4 w-4 text-gray-500 hover:text-gray-600" />
                     </Button>
                   )}
                 </div>

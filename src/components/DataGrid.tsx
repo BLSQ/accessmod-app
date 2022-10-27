@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 /* react-table already manages the key */
 
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { useCheckboxColumn } from "hooks/useCheckboxColumn";
 import { useCallback, useEffect, useMemo, useState } from "react";

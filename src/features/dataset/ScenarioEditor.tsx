@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
-import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "next-i18next";
 import Button from "components/Button";
 import Input from "components/forms/Input";
@@ -161,7 +161,7 @@ const ScenarioEditor = (props: ScenarioEditorProps) => {
                         variant="white"
                         size="sm"
                       >
-                        <XIcon className="mr-1 h-3 w-3" />
+                        <XMarkIcon className="mr-1 h-3 w-3" />
                         {t("Remove")}
                       </Button>
                     </div>

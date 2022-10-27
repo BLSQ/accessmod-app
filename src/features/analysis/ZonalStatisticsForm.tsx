@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
-import { PlusIcon } from "@heroicons/react/outline";
-import { InformationCircleIcon } from "@heroicons/react/solid";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import Badge from "components/Badge";
 import Block from "components/Block";
 import Button from "components/Button";

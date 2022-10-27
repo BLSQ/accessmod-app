@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { PlusIcon } from "@heroicons/react/outline";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";

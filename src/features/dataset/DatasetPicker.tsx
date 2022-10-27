@@ -1,5 +1,9 @@
 import { gql } from "@apollo/client";
-import { CloudIcon, PencilIcon, UploadIcon } from "@heroicons/react/outline";
+import {
+  CloudIcon,
+  PencilIcon,
+  ArrowUpTrayIcon,
+} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Button from "components/Button";
 import Combobox from "components/forms/Combobox";
@@ -157,7 +161,7 @@ const DatasetPicker = (props: Props) => {
                 size="sm"
                 variant="secondary"
                 onClick={() => showCreationDialog(true)}
-                leadingIcon={<UploadIcon className="h-4" />}
+                leadingIcon={<ArrowUpTrayIcon className="h-4" />}
               >
                 {t("Upload a dataset")}
               </Button>

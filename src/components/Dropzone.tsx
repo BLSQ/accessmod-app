@@ -1,4 +1,7 @@
-import { ExclamationIcon, UploadIcon } from "@heroicons/react/solid";
+import {
+  ExclamationTriangleIcon,
+  ArrowUpTrayIcon,
+} from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { useTranslation } from "next-i18next";
 import { ReactNode, useEffect, useState } from "react";
@@ -68,7 +71,7 @@ const Dropzone = (props: DropzoneProps) => {
         {(!fileRejections.length && children) ?? (
           <>
             <div className="flex items-center gap-1">
-              <UploadIcon className="h-4 w-4" />
+              <ArrowUpTrayIcon className="h-4 w-4" />
               <div>{label}</div>
             </div>
             {help && <div className="italic text-gray-600">{help}</div>}
@@ -76,7 +79,7 @@ const Dropzone = (props: DropzoneProps) => {
         )}
         {fileRejections?.length > 0 && (
           <div className="flex items-center">
-            <ExclamationIcon className="mr-1 h-4 text-amber-400" />
+            <ExclamationTriangleIcon className="mr-1 h-4 text-amber-400" />
             <span className="font-semibold">
               {t("{{files}} is not a valid file", {
                 count: fileRejections.length,

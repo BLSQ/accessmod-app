@@ -1,4 +1,4 @@
-import { SearchIcon, XIcon } from "@heroicons/react/outline";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import usePrevious from "hooks/usePrevious";
 import { useTranslation } from "next-i18next";
 import {
@@ -83,12 +83,12 @@ const SearchInput = (props: Props) => {
           {loading && <Spinner size="xs" />}
           {!loading && !(internalValue || defaultValue) && (
             <button onClick={() => onChange(internalValue)}>
-              <SearchIcon className={Classes.icon} />
+              <MagnifyingGlassIcon className={Classes.icon} />
             </button>
           )}
           {!loading && (internalValue || defaultValue) && (
             <button onClick={clearInput}>
-              <XIcon className={Classes.icon} />
+              <XMarkIcon className={Classes.icon} />
             </button>
           )}
         </>

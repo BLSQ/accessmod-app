@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { ClockIcon } from "@heroicons/react/outline";
+import { ClockIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { PermissionMode, ProjectCard_ProjectFragment } from "libs/graphql";
 import { DateTime } from "luxon";

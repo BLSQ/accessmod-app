@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { UserGroupIcon } from "@heroicons/react/outline";
+import { UserGroupIcon } from "@heroicons/react/24/outline";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
 import User from "features/User";

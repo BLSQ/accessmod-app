@@ -1,5 +1,9 @@
 import { Combobox as UICombobox, Portal } from "@headlessui/react";
-import { CheckIcon, SelectorIcon, XIcon } from "@heroicons/react/outline";
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { Modifier } from "@popperjs/core";
 import clsx from "clsx";
 import Spinner from "components/Spinner";
@@ -161,7 +165,7 @@ const Combobox = (props: ComboboxProps) => {
             <UICombobox.Button ref={btnRef}>
               <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
                 {!required && (multiple ? value?.length > 0 : value) && (
-                  <XIcon
+                  <XMarkIcon
                     onClick={onClear}
                     className="h-4 w-4 cursor-pointer hover:text-gray-500"
                     aria-hidden="true"
@@ -170,7 +174,7 @@ const Combobox = (props: ComboboxProps) => {
                 {loading ? (
                   <Spinner aria-hidden="true" size="sm" />
                 ) : (
-                  <SelectorIcon
+                  <ChevronUpDownIcon
                     className="h-5 w-5 hover:text-gray-500"
                     aria-hidden="true"
                   />

@@ -1,5 +1,5 @@
 import { Disclosure, Transition } from "@headlessui/react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Block from "components/Block";
 import { ReactNode } from "react";

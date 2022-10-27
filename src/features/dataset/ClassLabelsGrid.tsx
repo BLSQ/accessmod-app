@@ -1,4 +1,4 @@
-import { PlusIcon, XIcon } from "@heroicons/react/outline";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Button from "components/Button";
 import DataGrid, { Column } from "components/DataGrid";
 import Input from "components/forms/Input";
@@ -71,7 +71,7 @@ const ClassLabelsGrid = ({ labels, editable, onChange }: Props) => {
                 onChange([...labels]);
               }}
             >
-              <XIcon className="h-4" />
+              <XMarkIcon className="h-4" />
             </Button>
           </div>
         ),

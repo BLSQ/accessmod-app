@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { UserGroupIcon } from "@heroicons/react/outline";
+import { UserGroupIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { Team_TeamFragment } from "libs/graphql";
 

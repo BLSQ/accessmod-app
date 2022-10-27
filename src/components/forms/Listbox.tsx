@@ -1,5 +1,5 @@
 import { Listbox as UIListbox, Portal } from "@headlessui/react";
-import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { Modifier } from "@popperjs/core";
 import clsx from "clsx";
 import { sameWidthModifier } from "libs/popper";
@@ -114,7 +114,7 @@ const Listbox = (props: ListboxProps) => {
               )}
             </div>
             <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
-              <SelectorIcon
+              <ChevronUpDownIcon
                 className="h-5 w-5 hover:text-gray-500"
                 aria-hidden="true"
               />

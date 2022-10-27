@@ -1,4 +1,4 @@
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import Dropzone from "components/Dropzone";
 import { filesize } from "filesize";
 import { ACCEPTED_MIMETYPES, getRasterMetadata } from "libs/dataset";

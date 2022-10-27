@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { DocumentReportIcon } from "@heroicons/react/solid";
+import { DocumentChartBarIcon } from "@heroicons/react/24/solid";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Layout, { Page } from "components/layouts/Layout";
@@ -102,7 +102,7 @@ const AnalysisPage = () => {
             <div className="mt-2 flex flex-wrap items-center gap-10 gap-y-2 text-sm text-white">
               <AnalysisStatus analysis={data.analysis} />
               <div className="flex items-center">
-                <DocumentReportIcon className="mr-1.5 h-5" />
+                <DocumentChartBarIcon className="mr-1.5 h-5" />
                 {getLabelFromAnalysisType(data.analysis.type)}
               </div>
 

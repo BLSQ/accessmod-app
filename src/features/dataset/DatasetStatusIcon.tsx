@@ -3,8 +3,8 @@ import {
   CheckCircleIcon,
   PauseIcon,
   CloudIcon,
-} from "@heroicons/react/outline";
-import { ExclamationIcon } from "@heroicons/react/solid";
+} from "@heroicons/react/24/outline";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import Tooltip from "components/Tooltip";
 import {
   AccessmodFilesetStatus,
@@ -27,7 +27,7 @@ const DatasetStatusIcon = ({
             message: dataset.metadata?.validation_error ?? t("Unknown error"),
           })}
         >
-          <ExclamationIcon className="h-5 text-red-400" />
+          <ExclamationTriangleIcon className="h-5 text-red-400" />
         </Tooltip>
       );
     case AccessmodFilesetStatus.Valid:

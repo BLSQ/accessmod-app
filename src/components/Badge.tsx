@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from "react";
 import clsx from "clsx";
-import { XIcon } from "@heroicons/react/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface Props extends ComponentPropsWithoutRef<"span"> {
   size?: "xs" | "sm" | "md";
@@ -32,7 +32,7 @@ const Badge = ({ children, className, size = "xs", onRemove }: Props) => {
           className={Classes[size].button}
           onClick={onRemove}
         >
-          <XIcon className="w-3" />
+          <XMarkIcon className="w-3" />
         </button>
       )}
     </span>

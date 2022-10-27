@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { gql } from "@apollo/client";
-import { LinkIcon } from "@heroicons/react/outline";
+import { LinkIcon } from "@heroicons/react/24/outline";
 import DescriptionList from "components/DescriptionList";
 import {
   ZonalStatisticsOutput_AnalysisFragment,

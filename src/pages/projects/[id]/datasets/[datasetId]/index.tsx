@@ -4,7 +4,7 @@ import {
   DocumentTextIcon,
   InformationCircleIcon,
   XCircleIcon,
-} from "@heroicons/react/outline";
+} from "@heroicons/react/24/outline";
 import { ErrorBoundary } from "@sentry/nextjs";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";

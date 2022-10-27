@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { PencilIcon, TrashIcon } from "@heroicons/react/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Menu from "components/Menu";
 import {
   TeamActionsMenu_TeamFragment,

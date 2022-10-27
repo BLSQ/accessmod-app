@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { LinkIcon } from "@heroicons/react/outline";
+import { LinkIcon } from "@heroicons/react/24/outline";
 import DataGrid, { Column } from "components/DataGrid";
 import DescriptionList from "components/DescriptionList";
 import {

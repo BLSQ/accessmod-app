@@ -1,7 +1,6 @@
-import React, { ReactNode } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { MenuIcon } from "@heroicons/react/outline";
+import { ReactNode } from "react";
 
 type SortableItemProps = {
   id: string;

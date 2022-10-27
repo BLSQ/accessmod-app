@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
-import { ExclamationCircleIcon } from "@heroicons/react/outline";
-import { InformationCircleIcon } from "@heroicons/react/solid";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import Block from "components/Block";
 import Button from "components/Button";
 import Checkbox from "components/forms/Checkbox";
