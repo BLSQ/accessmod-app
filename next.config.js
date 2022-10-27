@@ -18,6 +18,10 @@ const config = {
 
   swcMinify: true,
 
+  sentry: {
+    hideSourceMaps: true,
+  },
+
   webpack: (config, options) => {
     config.resolve.alias = {
       ...config.resolve.alias,

@@ -94,8 +94,8 @@ class Job<T extends JobFile = JobFile> {
         const response = await axios.request({
           data: file,
           ...options,
-          onUploadProgress: (progressEvent: ProgressEvent) => {
-            if (!progressEvent.lengthComputable) {
+          onUploadProgress: (progressEvent) => {
+            if (!progressEvent.estimated) {
               console.log(
                 "Length is not computable. No upload progress available."
               );

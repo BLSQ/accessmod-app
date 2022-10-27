@@ -1,6 +1,6 @@
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import Dropzone from "components/Dropzone";
-import fileSize from "filesize";
+import { filesize } from "filesize";
 import { ACCEPTED_MIMETYPES, getRasterMetadata } from "libs/dataset";
 import { AccessmodFilesetFormat, AccessmodFilesetRole } from "libs/graphql";
 import { useTranslation } from "next-i18next";
@@ -70,7 +70,7 @@ const DatasetFileInput = (props: DatasetFileInputProps) => {
     children = (
       <div className="flex items-center">
         <CheckCircleIcon className="mr-2 h-4 text-teal-400" />
-        {selectedFiles.map((f) => `${f.name} (${fileSize(f.size)})`).join(", ")}
+        {selectedFiles.map((f) => `${f.name} (${filesize(f.size)})`).join(", ")}
       </div>
     );
   }
