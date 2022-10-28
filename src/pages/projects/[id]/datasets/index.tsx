@@ -75,9 +75,7 @@ const ProjectDatasetsPage = () => {
           <div className="flex space-x-4">
             <h1 className="text-3xl font-bold text-white">{t("Datasets")}</h1>
           </div>
-          {data.accessmodProject.authorizedActions.includes(
-            AccessmodProjectAuthorizedActions.CreateFileset
-          ) && (
+          {data.accessmodProject.permissions.createFileset && (
             <Button
               variant="primary"
               onClick={() => toggleUploadDialog(true)}
@@ -116,7 +114,9 @@ export const getServerSideProps = createGetServerSideProps({
           accessmodProject(id: $id) {
             id
             name
-            authorizedActions
+            permissions {
+              createFileset
+            }
             ...DatasetFormDialog_project
             ...ProjectDatasetsTable_project
           }

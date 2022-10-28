@@ -100,7 +100,6 @@ export const getServerSideProps = createGetServerSideProps({
             id
             name
             createdAt
-            authorizedActions
             ...TeamMembersTable_team
             ...InviteTeamMemberTrigger_team
             ...TeamFormDialog_team

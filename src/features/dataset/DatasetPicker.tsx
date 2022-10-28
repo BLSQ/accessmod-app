@@ -98,11 +98,8 @@ const DatasetPicker = (props: Props) => {
   }, [data, dataset]);
 
   const canCreate = useMemo(
-    () =>
-      project.authorizedActions.includes(
-        AccessmodProjectAuthorizedActions.CreateFileset
-      ) && creatable,
-    [creatable, project.authorizedActions]
+    () => project.permissions.createFileset && creatable,
+    [creatable, project.permissions]
   );
 
   const onAcquireClick = useCallback(
@@ -259,7 +256,9 @@ DatasetPicker.fragments = {
   project: gql`
     fragment DatasetPicker_project on AccessmodProject {
       id
-      authorizedActions
+      permissions {
+        createFileset
+      }
       ...DatasetFormDialog_project
     }
     ${CreateDatasetDialog.fragments.project}

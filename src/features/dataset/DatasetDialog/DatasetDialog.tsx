@@ -175,7 +175,6 @@ DatasetDialog.fragments = {
       ...DatasetStatusBadge_dataset
       mode
       status
-      authorizedActions
     }
     ${DatasetStatusBadge.fragments.dataset}
   `,

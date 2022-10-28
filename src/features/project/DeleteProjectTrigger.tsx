@@ -47,11 +47,7 @@ const DeleteProjectTrigger = ({ project, children, className }: Props) => {
     }
   }, [project, router, deleteProject, t, clearCache]);
 
-  if (
-    !project.authorizedActions.includes(
-      AccessmodProjectAuthorizedActions.Delete
-    )
-  ) {
+  if (!project.permissions.delete) {
     return null;
   } else if (children) {
     return children({ onClick: onDeleteClick });
@@ -69,7 +65,9 @@ DeleteProjectTrigger.fragments = {
     fragment DeleteProjectTrigger_project on AccessmodProject {
       id
       name
-      authorizedActions
+      permissions {
+        delete
+      }
     }
   `,
 };

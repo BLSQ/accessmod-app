@@ -12,11 +12,7 @@ type Props = {
 const CreateDatasetTrigger = ({ project, children }: Props) => {
   const [isOpen, { toggle }] = useToggle();
 
-  if (
-    !project.authorizedActions.includes(
-      AccessmodProjectAuthorizedActions.CreateFileset
-    )
-  ) {
+  if (!project.permissions.createFileset) {
     return null;
   }
   return (
@@ -31,7 +27,9 @@ CreateDatasetTrigger.fragments = {
   project: gql`
     fragment CreateDatasetTrigger_project on AccessmodProject {
       ...DatasetFormDialog_project
-      authorizedActions
+      permissions {
+        createFileset
+      }
     }
     ${DatasetFormDialog.fragments.project}
   `,

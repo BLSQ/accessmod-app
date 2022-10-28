@@ -12,9 +12,7 @@ type Props = {
 const InviteTeamMemberTrigger = ({ team, children }: Props) => {
   const [isOpen, { toggle }] = useToggle();
 
-  if (
-    !team.authorizedActions.includes(TeamAuthorizedActions.CreateMembership)
-  ) {
+  if (!team.permissions.createMembership) {
     return null;
   }
   return (
@@ -29,7 +27,9 @@ InviteTeamMemberTrigger.fragments = {
   team: gql`
     fragment InviteTeamMemberTrigger_team on Team {
       ...InviteTeamMemberDialog_team
-      authorizedActions
+      permissions {
+        createMembership
+      }
     }
 
     ${InviteTeamMemberDialog.fragments.team}

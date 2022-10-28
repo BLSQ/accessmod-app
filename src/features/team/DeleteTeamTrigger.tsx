@@ -46,6 +46,8 @@ const DeleteTeamTrigger = ({ team, children, className }: Props) => {
     }
   }, [team, router, deleteTeam, t, clearCache]);
 
+  if (!team.permissions.delete) return null;
+
   if (children) {
     return children({ onClick: onDeleteClick });
   } else {
@@ -62,7 +64,9 @@ DeleteTeamTrigger.fragments = {
     fragment DeleteTeamTrigger_team on Team {
       id
       name
-      authorizedActions
+      permissions {
+        delete
+      }
     }
   `,
 };

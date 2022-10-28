@@ -29,7 +29,6 @@ EditTeamTrigger.fragments = {
   team: gql`
     fragment EditTeamTrigger_team on Team {
       ...TeamFormDialog_team
-      authorizedActions
     }
     ${TeamFormDialog.fragments.team}
   `,

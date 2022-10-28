@@ -25,34 +25,28 @@ const DatasetActionsMenu = (props: DatasetActionsMenuProps) => {
   return (
     <div className="flex gap-2">
       <DownloadDatasetButton variant="primary" dataset={dataset} />
-      {dataset.authorizedActions.some((x) =>
-        [
-          AccessmodFilesetAuthorizedActions.Delete,
-          AccessmodFilesetAuthorizedActions.Update,
-        ].includes(x)
-      ) && (
-        <Menu label={t("Actions")}>
-          {dataset.authorizedActions.includes(
-            AccessmodFilesetAuthorizedActions.Update
-          ) && (
-            <Menu.Item onClick={() => setEditing(true)}>
-              <PencilIcon className="mr-2 h-4 w-4" />
-              {t("Edit")}
-            </Menu.Item>
-          )}
-          <DeleteDatasetTrigger dataset={dataset} project={project}>
-            {({ onClick }) => (
-              <Menu.Item
-                activeClassName="bg-red-500 text-white"
-                onClick={onClick}
-              >
-                <TrashIcon className="mr-2 h-4 w-4" />
-                {t("Delete")}
+      {dataset.permissions.delete ||
+        (dataset.permissions.update && (
+          <Menu label={t("Actions")}>
+            {dataset.permissions.update && (
+              <Menu.Item onClick={() => setEditing(true)}>
+                <PencilIcon className="mr-2 h-4 w-4" />
+                {t("Edit")}
               </Menu.Item>
             )}
-          </DeleteDatasetTrigger>
-        </Menu>
-      )}
+            <DeleteDatasetTrigger dataset={dataset} project={project}>
+              {({ onClick }) => (
+                <Menu.Item
+                  activeClassName="bg-red-500 text-white"
+                  onClick={onClick}
+                >
+                  <TrashIcon className="mr-2 h-4 w-4" />
+                  {t("Delete")}
+                </Menu.Item>
+              )}
+            </DeleteDatasetTrigger>
+          </Menu>
+        ))}
       <DatasetDialog
         dataset={dataset}
         onClose={() => setEditing(false)}
@@ -68,7 +62,10 @@ DatasetActionsMenu.fragments = {
       id
       status
       metadata
-      authorizedActions
+      permissions {
+        update
+        delete
+      }
       ...DatasetDialog_dataset
       ...DownloadDatasetButton_dataset
       ...DeleteDatasetTrigger_dataset

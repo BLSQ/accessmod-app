@@ -20,9 +20,7 @@ const ProjectActionsMenu = ({
   return (
     <>
       <Menu label={t("Actions")}>
-        {project.authorizedActions.includes(
-          AccessmodProjectAuthorizedActions.CreatePermission
-        ) && (
+        {project.permissions.createPermission && (
           <Menu.Item onClick={toggleDialog}>
             <UserIcon className="mr-2 h-4 w-4" />
             {t("Change owner")}
@@ -54,6 +52,9 @@ ProjectActionsMenu.fragments = {
     fragment ProjectActionsMenu_project on AccessmodProject {
       id
       name
+      permissions {
+        createPermission
+      }
       ...DeleteProjectTrigger_project
       ...ChangeProjectOwnerDialog_project
     }

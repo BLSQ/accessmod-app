@@ -45,7 +45,7 @@ const CACHE_CONFIG: InMemoryCacheConfig = {
     AccessmodProject: {
       merge: true,
     },
-    AccessmodProjectPermission: {
+    AccessmodProjectMember: {
       merge: true,
     },
     User: {
