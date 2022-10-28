@@ -112,7 +112,9 @@ export const getServerSideProps = createGetServerSideProps({
             type
             name
             status
-            authorizedActions
+            permissions {
+              update
+            }
             ...AnalysisStatus_analysis
             ...AnalysisForm_analysis
           }
@@ -130,9 +132,7 @@ export const getServerSideProps = createGetServerSideProps({
         AccessmodAnalysisStatus.Ready,
         undefined,
       ].includes(response.data?.analysis?.status) ||
-      !response.data?.analysis?.authorizedActions.includes(
-        AccessmodAnalysisAuthorizedActions.Update
-      )
+      !response.data?.analysis?.permissions.update
     ) {
       return {
         notFound: true,

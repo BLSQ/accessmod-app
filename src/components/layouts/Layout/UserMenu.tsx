@@ -52,9 +52,7 @@ const UserMenu = (props: UserMenuProps) => {
               </MenuLink>
             )}
           </Menu.Item>
-          {me.authorizedActions.includes(
-            MeAuthorizedActions.ManageAccessmodAccessRequests
-          ) && (
+          {me.permissions.manageAccessmodAccessRequests && (
             <Menu.Item>
               {({ active }) => (
                 <MenuLink
@@ -92,7 +90,9 @@ const UserMenu = (props: UserMenuProps) => {
 UserMenu.fragments = {
   me: gql`
     fragment UserMenu_me on Me {
-      authorizedActions
+      permissions {
+        manageAccessmodAccessRequests
+      }
       user {
         avatar {
           initials

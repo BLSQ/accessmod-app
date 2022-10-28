@@ -13,11 +13,7 @@ type Props = {
 const CreateAnalysisTrigger = ({ project, children }: Props) => {
   const [isOpen, { toggle }] = useToggle();
 
-  if (
-    !project.authorizedActions.includes(
-      AccessmodProjectAuthorizedActions.CreateAnalysis
-    )
-  ) {
+  if (!project.permissions.createAnalysis) {
     return null;
   }
   return (
@@ -32,7 +28,9 @@ CreateAnalysisTrigger.fragments = {
   project: gql`
     fragment CreateAnalysisTrigger_project on AccessmodProject {
       ...CreateAnalysisDialog_project
-      authorizedActions
+      permissions {
+        createAnalysis
+      }
     }
     ${CreateAnalysisDialog.fragments.project}
   `,

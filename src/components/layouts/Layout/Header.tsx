@@ -45,9 +45,7 @@ const Header = () => {
               </div>
               <div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                  {data?.me.authorizedActions.includes(
-                    MeAuthorizedActions.CreateAccessmodProject
-                  ) && (
+                  {data?.me.permissions.createAccessmodProject && (
                     <Toggle>
                       {({ isToggled, toggle }) => (
                         <>
@@ -83,7 +81,9 @@ Header.prefetch = async (client: CustomApolloClient) => {
     query: gql`
       query Header {
         me {
-          authorizedActions
+          permissions {
+            createAccessmodProject
+          }
           ...UserMenu_me
         }
         ...Navbar_navbar

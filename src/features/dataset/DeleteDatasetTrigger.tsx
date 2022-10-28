@@ -58,11 +58,7 @@ const DeleteDatasetTrigger = ({
     }
   }, [project, dataset, router, deleteDataset, t, clearCache]);
 
-  if (
-    !dataset.authorizedActions.includes(
-      AccessmodFilesetAuthorizedActions.Delete
-    )
-  ) {
+  if (!dataset.permissions.delete) {
     return null;
   } else if (children) {
     return children({ onClick: onDeleteClick });
@@ -85,7 +81,9 @@ DeleteDatasetTrigger.fragments = {
   dataset: gql`
     fragment DeleteDatasetTrigger_dataset on AccessmodFileset {
       id
-      authorizedActions
+      permissions {
+        delete
+      }
     }
   `,
 };

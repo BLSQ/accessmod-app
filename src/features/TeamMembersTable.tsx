@@ -55,9 +55,6 @@ const TeamMembersTable = ({ team }: Props) => {
   }
 
   const { memberships } = data.team;
-  const canUpdateMember = (member: Pick<Membership, "authorizedActions">) =>
-    member.authorizedActions.includes(MembershipAuthorizedActions.Update);
-
   const onMemberRoleChange = async (
     member: Pick<Membership, "id">,
     role: MembershipRole
@@ -88,7 +85,7 @@ const TeamMembersTable = ({ team }: Props) => {
                 <Time datetime={member.createdAt} />
               </td>
               <td>
-                {canUpdateMember(member) ? (
+                {member.permissions.update ? (
                   <MembershipRolePicker
                     onChange={(role) => onMemberRoleChange(member, role)}
                     value={member.role}
@@ -100,9 +97,7 @@ const TeamMembersTable = ({ team }: Props) => {
               </td>
               <td>
                 <div className="flex justify-end gap-3">
-                  {member.authorizedActions.includes(
-                    MembershipAuthorizedActions.Delete
-                  ) && (
+                  {member.permissions.delete && (
                     <DeleteMembershipTrigger membership={member}>
                       {({ onClick }) => (
                         <button
@@ -155,7 +150,10 @@ TeamMembersTable.prefetch = async (
             items {
               ...DeleteMembershipTrigger_membership
               id
-              authorizedActions
+              permissions {
+                update
+                delete
+              }
               createdAt
               updatedAt
               role

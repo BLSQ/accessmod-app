@@ -47,9 +47,7 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
   return (
     <div className="flex items-center gap-2">
       {analysis.status === AccessmodAnalysisStatus.Ready &&
-        analysis.authorizedActions.includes(
-          AccessmodAnalysisAuthorizedActions.Run
-        ) && (
+        analysis.permissions.run && (
           <Button onClick={onRun} variant="primary">
             {t("Run")}
           </Button>
@@ -60,9 +58,7 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
           AccessmodAnalysisStatus.Ready,
           AccessmodAnalysisStatus.Draft,
         ].includes(analysis.status) &&
-          analysis.authorizedActions.includes(
-            AccessmodAnalysisAuthorizedActions.Update
-          ) && (
+          analysis.permissions.update && (
             <Menu.Item>
               <Link
                 href={{
@@ -81,9 +77,7 @@ const AnalysisActionsButton = ({ project, analysis }: Props) => {
           AccessmodAnalysisStatus.Running,
           AccessmodAnalysisStatus.Queued,
         ].includes(analysis.status) &&
-          analysis.authorizedActions.includes(
-            AccessmodAnalysisAuthorizedActions.Delete
-          ) && (
+          analysis.permissions.delete && (
             <Menu.Item
               onClick={onDeleteClick}
               activeClassName="bg-red-500 text-white"
@@ -109,7 +103,11 @@ AnalysisActionsButton.fragments = {
       name
       status
       type
-      authorizedActions
+      permissions {
+        update
+        delete
+        run
+      }
     }
   `,
 };

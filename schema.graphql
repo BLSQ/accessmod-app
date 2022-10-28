@@ -11,7 +11,8 @@ type AccessmodAccessibilityAnalysis implements AccessmodAnalysis & AccessmodOwne
   name: String!
   owner: AccessmodOwner
   author: User!
-  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodAnalysisPermissions!
   createdAt: DateTime!
   updatedAt: DateTime!
   landCover: AccessmodFileset
@@ -67,7 +68,8 @@ interface AccessmodAnalysis {
   status: AccessmodAnalysisStatus!
   name: String!
   author: User!
-  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodAnalysisPermissions!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -83,6 +85,12 @@ type AccessmodAnalysisPage {
   totalPages: Int!
   totalItems: Int!
   items: [AccessmodAnalysis!]!
+}
+
+type AccessmodAnalysisPermissions {
+  update: Boolean!
+  delete: Boolean!
+  run: Boolean!
 }
 
 enum AccessmodAnalysisStatus {
@@ -120,7 +128,8 @@ type AccessmodFileset implements AccessmodOwnership {
   owner: AccessmodOwner
   files: [AccessmodFile!]!
   metadata: AccessmodFilesetMetadata!
-  authorizedActions: [AccessmodFilesetAuthorizedActions!]!
+  authorizedActions: [AccessmodFilesetAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodFilesetPermissions!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -149,6 +158,12 @@ type AccessmodFilesetPage {
   totalPages: Int!
   totalItems: Int!
   items: [AccessmodFileset!]!
+}
+
+type AccessmodFilesetPermissions {
+  update: Boolean!
+  delete: Boolean!
+  createFile: Boolean!
 }
 
 type AccessmodFilesetRole {
@@ -193,7 +208,8 @@ type AccessmodGeographicCoverageAnalysis implements AccessmodAnalysis & Accessmo
   name: String!
   owner: AccessmodOwner
   author: User!
-  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodAnalysisPermissions!
   createdAt: DateTime!
   updatedAt: DateTime!
   population: AccessmodFileset
@@ -224,8 +240,9 @@ type AccessmodProject implements AccessmodOwnership {
   owner: AccessmodOwner
   extent: [[Float!]!]
   dem: AccessmodFileset
-  authorizedActions: [AccessmodProjectAuthorizedActions!]!
-  permissions: [AccessmodProjectPermission!]!
+  authorizedActions: [AccessmodProjectAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodProjectPermissions!
+  members: [AccessmodProjectMember!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -236,6 +253,23 @@ enum AccessmodProjectAuthorizedActions {
   CREATE_FILESET
   CREATE_ANALYSIS
   CREATE_PERMISSION
+}
+
+type AccessmodProjectMember {
+  id: String!
+  user: User
+  team: Team
+  project: AccessmodProject!
+  mode: PermissionMode!
+  authorizedActions: [AccessmodProjectPermissionAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodProjectMemberPermissions!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AccessmodProjectMemberPermissions {
+  update: Boolean!
+  delete: Boolean!
 }
 
 enum AccessmodProjectOrder {
@@ -252,27 +286,18 @@ type AccessmodProjectPage {
   items: [AccessmodProject!]!
 }
 
-type AccessmodProjectPermission {
-  id: String!
-  user: User
-  team: Team
-  project: AccessmodProject!
-  mode: PermissionMode!
-  authorizedActions: [AccessmodProjectPermissionAuthorizedActions!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 enum AccessmodProjectPermissionAuthorizedActions {
   UPDATE
   DELETE
 }
 
-type AccessmodProjectPermissionPage {
-  pageNumber: Int!
-  totalPages: Int!
-  totalItems: Int!
-  items: [AccessmodProjectPermission!]!
+type AccessmodProjectPermissions {
+  update: Boolean!
+  delete: Boolean!
+  createFileset: Boolean!
+  createAnalysis: Boolean!
+  createMember: Boolean!
+  createPermission: Boolean!
 }
 
 type AccessmodZonalStatistics implements AccessmodAnalysis & AccessmodOwnership {
@@ -282,7 +307,8 @@ type AccessmodZonalStatistics implements AccessmodAnalysis & AccessmodOwnership 
   name: String!
   owner: AccessmodOwner
   author: User!
-  authorizedActions: [AccessmodAnalysisAuthorizedActions!]!
+  authorizedActions: [AccessmodAnalysisAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: AccessmodAnalysisPermissions!
   createdAt: DateTime!
   updatedAt: DateTime!
   population: AccessmodFileset
@@ -309,6 +335,89 @@ type ApproveAccessmodAccessRequestResult {
 type Avatar {
   initials: String!
   color: String!
+}
+
+type CatalogEntry {
+  id: String!
+  name: String!
+  description: String
+  countries: [Country!]!
+  lastSyncedAt: DateTime
+  symbol: URL
+  externalId: String
+  externalType: String
+  externalSubtype: String
+  externalName: String
+  externalDescription: String
+  type: CatalogEntryType!
+  objectId: String!
+  objectUrl: URL!
+  datasource: Datasource
+}
+
+type CatalogEntryType {
+  id: String!
+  app: String!
+  model: String!
+  name: String!
+}
+
+type CatalogPage {
+  items: [CatalogEntry!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+type Collection {
+  id: String!
+  name: String!
+  author: User
+  countries: [Country!]!
+  tags: [Tag!]!
+  description: String
+  summary: String
+  elements(page: Int, perPage: Int): CollectionElementPage!
+  authorizedActions: CollectionAuthorizedActions! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: CollectionPermissions!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CollectionAuthorizedActions {
+  canUpdate: Boolean!
+  canDelete: Boolean!
+}
+
+type CollectionElement {
+  id: String!
+  app: String!
+  model: String!
+  type: String!
+  name: String!
+  objectId: String!
+  url: URL
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CollectionElementPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [CollectionElement!]!
+}
+
+type CollectionPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [Collection!]!
+}
+
+type CollectionPermissions {
+  update: Boolean!
+  delete: Boolean!
 }
 
 type Country {
@@ -390,24 +499,24 @@ input CreateAccessmodProjectInput {
   extent: [[Float!]!]
 }
 
-enum CreateAccessmodProjectPermissionError {
+enum CreateAccessmodProjectMemberError {
   ALREADY_EXISTS
   PERMISSION_DENIED
   NOT_FOUND
   NOT_IMPLEMENTED
 }
 
-input CreateAccessmodProjectPermissionInput {
+input CreateAccessmodProjectMemberInput {
   userId: String
   teamId: String
   projectId: String!
   mode: PermissionMode!
 }
 
-type CreateAccessmodProjectPermissionResult {
+type CreateAccessmodProjectMemberResult {
   success: Boolean!
-  permission: AccessmodProjectPermission
-  errors: [CreateAccessmodProjectPermissionError!]!
+  member: AccessmodProjectMember
+  errors: [CreateAccessmodProjectMemberError!]!
 }
 
 type CreateAccessmodProjectResult {
@@ -429,6 +538,44 @@ type CreateAccessmodZonalStatisticsResult {
   success: Boolean!
   analysis: AccessmodZonalStatistics
   errors: [CreateAccessmodZonalStatisticsError!]!
+}
+
+enum CreateCollectionElementError {
+  COLLECTION_NOT_FOUND
+  OBJECT_NOT_FOUND
+  INVALID
+}
+
+input CreateCollectionElementInput {
+  collectionId: String!
+  app: String!
+  model: String!
+  objectId: String!
+}
+
+type CreateCollectionElementResult {
+  success: Boolean!
+  errors: [CreateCollectionElementError!]!
+  element: CollectionElement
+}
+
+enum CreateCollectionError {
+  INVALID
+}
+
+input CreateCollectionInput {
+  name: String!
+  authorId: String
+  countries: [CountryInput!]
+  tagIds: [String!]
+  summary: String
+  description: String
+}
+
+type CreateCollectionResult {
+  success: Boolean!
+  errors: [CreateCollectionError!]!
+  collection: Collection
 }
 
 enum CreateMembershipError {
@@ -462,6 +609,93 @@ type CreateTeamResult {
   team: Team
   success: Boolean!
   errors: [CreateTeamError!]!
+}
+
+type DAG {
+  id: String!
+  label: String!
+  tags: [Tag!]!
+  formCode: String
+  countries: [Country!]!
+  externalId: String!
+  description: String
+  user: User
+  template: DAGTemplate!
+  schedule: String
+  externalUrl: URL
+  runs(page: Int, perPage: Int, orderBy: DAGRunOrderBy): DAGRunPage!
+}
+
+type DAGPage {
+  items: [DAG!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+type DAGRun {
+  id: String!
+  label: String
+  externalId: String
+  externalUrl: URL
+  user: User
+  config: JSON
+  status: DAGRunStatus!
+  executionDate: DateTime
+  lastRefreshedAt: DateTime
+  duration: Int
+  progress: Int!
+  triggerMode: DAGRunTrigger
+  messages: [DAGRunMessage!]!
+  logs: String
+  outputs: [DAGRunOutput!]!
+  isFavorite: Boolean!
+}
+
+type DAGRunMessage {
+  message: String!
+  priority: String!
+  timestamp: DateTime
+}
+
+enum DAGRunOrderBy {
+  EXECUTION_DATE_DESC
+  EXECUTION_DATE_ASC
+}
+
+type DAGRunOutput {
+  title: String!
+  uri: String!
+}
+
+type DAGRunPage {
+  items: [DAGRun!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+enum DAGRunStatus {
+  success
+  running
+  failed
+  queued
+}
+
+enum DAGRunTrigger {
+  SCHEDULED
+  MANUAL
+}
+
+type DAGTemplate {
+  code: String!
+  description: String
+  sampleConfig: JSON
+}
+
+type Datasource {
+  id: String!
+  name: String!
 }
 
 scalar Date
@@ -505,24 +739,52 @@ input DeleteAccessmodProjectInput {
   id: String!
 }
 
-enum DeleteAccessmodProjectPermissionError {
+enum DeleteAccessmodProjectMemberError {
   PERMISSION_DENIED
   NOT_FOUND
   NOT_IMPLEMENTED
 }
 
-input DeleteAccessmodProjectPermissionInput {
+input DeleteAccessmodProjectMemberInput {
   id: String!
 }
 
-type DeleteAccessmodProjectPermissionResult {
+type DeleteAccessmodProjectMemberResult {
   success: Boolean!
-  errors: [DeleteAccessmodProjectPermissionError!]!
+  errors: [DeleteAccessmodProjectMemberError!]!
 }
 
 type DeleteAccessmodProjectResult {
   success: Boolean!
   errors: [DeleteAccessmodProjectError!]!
+}
+
+enum DeleteCollectionElementError {
+  NOT_FOUND
+  INVALID
+}
+
+input DeleteCollectionElementInput {
+  id: String!
+}
+
+type DeleteCollectionElementResult {
+  success: Boolean!
+  errors: [DeleteCollectionElementError!]!
+  collection: Collection
+}
+
+enum DeleteCollectionError {
+  INVALID
+}
+
+input DeleteCollectionInput {
+  id: String!
+}
+
+type DeleteCollectionResult {
+  success: Boolean!
+  errors: [DeleteCollectionError!]!
 }
 
 enum DeleteMembershipError {
@@ -566,6 +828,35 @@ type DenyAccessmodAccessRequestResult {
   errors: [DenyAccessmodAccessRequestError!]!
 }
 
+type DHIS2DataElement {
+  id: String!
+  name: String!
+  code: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  instance: DHIS2Instance!
+}
+
+type DHIS2DataElementPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [DHIS2DataElement!]!
+}
+
+type DHIS2Instance {
+  id: String!
+  name: String!
+  url: String
+}
+
+type FeatureFlag {
+  code: String!
+  config: JSON!
+}
+
+scalar JSON
+
 enum LaunchAccessmodAnalysisError {
   LAUNCH_FAILED
 }
@@ -596,11 +887,15 @@ type LogoutResult {
 
 type Me {
   user: User
-  authorizedActions: [MeAuthorizedActions!]!
+  features: [FeatureFlag!]!
+  authorizedActions: [MeAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: MePermissions!
 }
 
 enum MeAuthorizedActions {
   CREATE_TEAM
+  ADMIN_PANEL
+  SUPER_USER
   CREATE_ACCESSMOD_PROJECT
   MANAGE_ACCESSMOD_ACCESS_REQUESTS
 }
@@ -609,7 +904,8 @@ type Membership {
   id: String!
   user: User!
   team: Team!
-  authorizedActions: [MembershipAuthorizedActions!]!
+  authorizedActions: [MembershipAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: MembershipPermissions!
   role: MembershipRole!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -627,9 +923,23 @@ type MembershipPage {
   items: [Membership!]!
 }
 
+type MembershipPermissions {
+  update: Boolean!
+  delete: Boolean!
+}
+
 enum MembershipRole {
   ADMIN
   REGULAR
+}
+
+type MePermissions {
+  createTeam: Boolean!
+  adminPanel: Boolean!
+  superUser: Boolean!
+  createCollection: Boolean!
+  createAccessmodProject: Boolean!
+  manageAccessmodAccessRequests: Boolean!
 }
 
 scalar MovingSpeeds
@@ -645,12 +955,21 @@ type Mutation {
   createMembership(input: CreateMembershipInput!): CreateMembershipResult!
   updateMembership(input: UpdateMembershipInput!): UpdateMembershipResult!
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
+  createCollection(input: CreateCollectionInput!): CreateCollectionResult!
+  updateCollection(input: UpdateCollectionInput!): UpdateCollectionResult!
+  deleteCollection(input: DeleteCollectionInput!): DeleteCollectionResult!
+  createCollectionElement(input: CreateCollectionElementInput!): CreateCollectionElementResult!
+  deleteCollectionElement(input: DeleteCollectionElementInput!): DeleteCollectionElementResult!
+  runDAG(input: RunDAGInput!): RunDAGResult!
+  updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
+  prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
+  setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
   updateAccessmodProject(input: UpdateAccessmodProjectInput!): UpdateAccessmodProjectResult!
   deleteAccessmodProject(input: DeleteAccessmodProjectInput!): DeleteAccessmodProjectResult!
-  createAccessmodProjectPermission(input: CreateAccessmodProjectPermissionInput!): CreateAccessmodProjectPermissionResult!
-  updateAccessmodProjectPermission(input: UpdateAccessmodProjectPermissionInput!): UpdateAccessmodProjectPermissionResult!
-  deleteAccessmodProjectPermission(input: DeleteAccessmodProjectPermissionInput!): DeleteAccessmodProjectPermissionResult!
+  createAccessmodProjectMember(input: CreateAccessmodProjectMemberInput!): CreateAccessmodProjectMemberResult!
+  updateAccessmodProjectMember(input: UpdateAccessmodProjectMemberInput!): UpdateAccessmodProjectMemberResult!
+  deleteAccessmodProjectMember(input: DeleteAccessmodProjectMemberInput!): DeleteAccessmodProjectMemberResult!
   createAccessmodFileset(input: CreateAccessmodFilesetInput!): CreateAccessmodFilesetResult!
   updateAccessmodFileset(input: UpdateAccessmodFilesetInput!): UpdateAccessmodFilesetResult!
   deleteAccessmodFileset(input: DeleteAccessmodFilesetInput!): DeleteAccessmodFilesetResult!
@@ -720,11 +1039,27 @@ type PrepareAccessmodFileUploadResult {
   fileUri: String
 }
 
+input PrepareDownloadURLInput {
+  uri: URL!
+}
+
+type PrepareDownloadURLResult {
+  success: Boolean!
+  url: URL
+}
+
 type Query {
+  search(query: String, page: Int, perPage: Int, datasourceIds: [String!], types: [String!]): SearchQueryResult!
+  catalog(path: String, page: Int, perPage: Int): CatalogPage!
   me: Me!
   team(id: String!): Team
   teams(term: String, page: Int, perPage: Int): TeamPage!
   organizations: [Organization!]!
+  collection(id: String!): Collection
+  collections(page: Int, perPage: Int): CollectionPage!
+  dags(page: Int, perPage: Int): DAGPage!
+  dag(id: String!): DAG
+  dagRun(id: String!): DAGRun
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int, orderBy: AccessmodProjectOrder): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
@@ -765,6 +1100,88 @@ type ResetPasswordResult {
   success: Boolean!
 }
 
+enum RunDAGError {
+  DAG_NOT_FOUND
+  INVALID_CONFIG
+}
+
+input RunDAGInput {
+  dagId: String!
+  config: JSON!
+}
+
+type RunDAGResult {
+  success: Boolean!
+  errors: [RunDAGError!]!
+  dagRun: DAGRun
+  dag: DAG
+}
+
+type S3Bucket {
+  id: String!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type S3Object {
+  id: String!
+  bucket: S3Bucket!
+  filename: String!
+  key: String!
+  parentKey: String!
+  size: Int!
+  storageClass: String!
+  type: String!
+  lastModified: DateTime!
+  etag: String!
+  collections: [Collection!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type S3ObjectPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [S3Object!]!
+}
+
+type SearchQueryResult {
+  results: [SearchResult!]!
+  types: [SearchType!]!
+}
+
+type SearchResult {
+  object: SearchResultObject!
+  rank: Float!
+}
+
+union SearchResultObject = CatalogEntry | Collection
+
+type SearchType {
+  value: String!
+  label: String!
+}
+
+enum SetDAGRunFavoriteError {
+  NOT_FOUND
+  INVALID
+  MISSING_LABEL
+}
+
+input SetDAGRunFavoriteInput {
+  id: String!
+  label: String
+  isFavorite: Boolean!
+}
+
+type SetDAGRunFavoriteResult {
+  success: Boolean!
+  errors: [SetDAGRunFavoriteError!]!
+  dagRun: DAGRun
+}
+
 enum SetPasswordError {
   USER_NOT_FOUND
   PASSWORD_MISMATCH
@@ -788,11 +1205,17 @@ scalar SimplifiedExtentType
 
 scalar StackPriorities
 
+type Tag {
+  id: String!
+  name: String!
+}
+
 type Team {
   id: String!
   name: String!
   memberships(page: Int, perPage: Int): MembershipPage!
-  authorizedActions: [TeamAuthorizedActions!]!
+  authorizedActions: [TeamAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
+  permissions: TeamPermissions!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -808,6 +1231,12 @@ type TeamPage {
   totalPages: Int!
   totalItems: Int!
   items: [Team!]!
+}
+
+type TeamPermissions {
+  update: Boolean!
+  createMembership: Boolean!
+  delete: Boolean!
 }
 
 scalar TimeThresholds
@@ -872,21 +1301,21 @@ input UpdateAccessmodProjectInput {
   description: String
 }
 
-enum UpdateAccessmodProjectPermissionError {
+enum UpdateAccessmodProjectMemberError {
   PERMISSION_DENIED
   NOT_FOUND
   NOT_IMPLEMENTED
 }
 
-input UpdateAccessmodProjectPermissionInput {
+input UpdateAccessmodProjectMemberInput {
   id: String!
   mode: PermissionMode!
 }
 
-type UpdateAccessmodProjectPermissionResult {
+type UpdateAccessmodProjectMemberResult {
   success: Boolean!
-  permission: AccessmodProjectPermission
-  errors: [UpdateAccessmodProjectPermissionError!]!
+  member: AccessmodProjectMember
+  errors: [UpdateAccessmodProjectMemberError!]!
 }
 
 type UpdateAccessmodProjectResult {
@@ -913,6 +1342,46 @@ type UpdateAccessmodZonalStatisticsResult {
   success: Boolean!
   analysis: AccessmodZonalStatistics
   errors: [UpdateAccessmodZonalStatisticsError!]!
+}
+
+enum UpdateCollectionError {
+  NOT_FOUND
+  INVALID
+}
+
+input UpdateCollectionInput {
+  id: String!
+  name: String
+  summary: String
+  authorId: String
+  countries: [CountryInput!]
+  tagIds: [String!]
+  description: String
+}
+
+type UpdateCollectionResult {
+  success: Boolean!
+  errors: [CreateCollectionError!]!
+  collection: Collection
+}
+
+enum UpdateDAGError {
+  NOT_FOUND
+  INVALID
+}
+
+input UpdateDAGInput {
+  id: String!
+  label: String
+  description: String
+  schedule: String
+  countries: [CountryInput!]
+}
+
+type UpdateDAGResult {
+  success: Boolean!
+  errors: [UpdateDAGError!]!
+  dag: DAG
 }
 
 enum UpdateMembershipError {
@@ -948,6 +1417,8 @@ type UpdateTeamResult {
   success: Boolean!
   errors: [UpdateTeamError!]!
 }
+
+scalar URL
 
 type User {
   id: String!

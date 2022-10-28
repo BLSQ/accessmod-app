@@ -74,9 +74,7 @@ const TeamsPage = ({ defaultVariables }: { defaultVariables: Variables }) => {
         <h1 className="flex justify-between gap-4 text-3xl font-bold text-white">
           {t("Teams")}
 
-          {data?.me?.authorizedActions.includes(
-            MeAuthorizedActions.CreateTeam
-          ) && (
+          {data?.me?.permissions.createTeam && (
             <Toggle>
               {({ toggle, isToggled }) => (
                 <>
@@ -178,7 +176,9 @@ export const getServerSideProps = createGetServerSideProps({
       query: gql`
         query TeamsPage($page: Int = 1, $perPage: Int = 20) {
           me {
-            authorizedActions
+            permissions {
+              createTeam
+            }
           }
           teams(page: $page, perPage: $perPage) {
             pageNumber

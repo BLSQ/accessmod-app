@@ -11,17 +11,14 @@ import EditTeamTrigger from "./EditTeamTrigger";
 
 const TeamActionsMenu = ({ team }: { team: TeamActionsMenu_TeamFragment }) => {
   const { t } = useTranslation();
-  if (
-    !team.authorizedActions.includes(TeamAuthorizedActions.Update) &&
-    !team.authorizedActions.includes(TeamAuthorizedActions.Delete)
-  ) {
+  if (!team.permissions.update && !team.permissions.delete) {
     return null;
   }
 
   return (
     <>
       <Menu label={t("Actions")}>
-        {team.authorizedActions.includes(TeamAuthorizedActions.Update) && (
+        {team.permissions.update && (
           <EditTeamTrigger team={team}>
             {({ onClick }) => (
               <Menu.Item onClick={onClick}>
@@ -31,7 +28,7 @@ const TeamActionsMenu = ({ team }: { team: TeamActionsMenu_TeamFragment }) => {
             )}
           </EditTeamTrigger>
         )}
-        {team.authorizedActions.includes(TeamAuthorizedActions.Delete) && (
+        {team.permissions.delete && (
           <DeleteTeamTrigger team={team}>
             {({ onClick }) => (
               <Menu.Item
@@ -54,6 +51,10 @@ TeamActionsMenu.fragments = {
     fragment TeamActionsMenu_team on Team {
       id
       name
+      permissions {
+        update
+        delete
+      }
       ...DeleteTeamTrigger_team
     }
     ${DeleteTeamTrigger.fragments.team}

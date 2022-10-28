@@ -17,13 +17,11 @@ type ChangeProjectOwnerDialogProps = {
 };
 
 const MUTATION = gql`
-  mutation ChangeProjectOwnership(
-    $input: CreateAccessmodProjectPermissionInput!
-  ) {
-    createAccessmodProjectPermission(input: $input) {
+  mutation ChangeProjectOwnership($input: CreateAccessmodProjectMemberInput!) {
+    createAccessmodProjectMember(input: $input) {
       success
       errors
-      permission {
+      member {
         id
       }
     }

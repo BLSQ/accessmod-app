@@ -17,8 +17,7 @@ const ProjectCard = (props: Props) => {
   const { project, className, onClick } = props;
   const { t } = useTranslation();
   const owner = useMemo(
-    () =>
-      project.permissions.find((perm) => perm.mode === PermissionMode.Owner),
+    () => project.members.find((m) => m.mode === PermissionMode.Owner),
     [project]
   );
 
@@ -92,7 +91,7 @@ ProjectCard.fragments = {
       spatialResolution
       description
       updatedAt
-      permissions {
+      members {
         user {
           firstName
           lastName

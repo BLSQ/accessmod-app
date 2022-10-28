@@ -149,9 +149,7 @@ const ProjectGeneralInformationBlock = (props: {
 
   return (
     <Block className="relative">
-      {project.authorizedActions.includes(
-        AccessmodProjectAuthorizedActions.Update
-      ) && (
+      {project.permissions.update && (
         <div className="absolute top-3 right-4">
           <Button size="sm" variant="white" onClick={onEdit}>
             {t("Edit")}
@@ -198,9 +196,7 @@ const ProjectGeneralInformationBlock = (props: {
             {project.owner?.__typename === "Team" && (
               <Team team={project.owner} />
             )}
-            {project.authorizedActions.includes(
-              AccessmodProjectAuthorizedActions.CreatePermission
-            ) && (
+            {project.permissions.createPermission && (
               <Toggle>
                 {({ isToggled, toggle }) => (
                   <>
@@ -340,7 +336,11 @@ ProjectPage.fragments = {
       ...CreateDatasetTrigger_project
       ...EditProjectFormBlock_project
       ...ChangeProjectOwnerDialog_project
-      authorizedActions
+
+      permissions {
+        createPermission
+        update
+      }
 
       country {
         name

@@ -49,9 +49,7 @@ const DeleteMembershipTrigger = ({
     }
   }, [membership, deleteMembership, t, clearCache]);
 
-  if (
-    !membership.authorizedActions.includes(MembershipAuthorizedActions.Delete)
-  ) {
+  if (!membership.permissions.delete) {
     return null;
   }
 
@@ -70,7 +68,9 @@ DeleteMembershipTrigger.fragments = {
   membership: gql`
     fragment DeleteMembershipTrigger_membership on Membership {
       id
-      authorizedActions
+      permissions {
+        delete
+      }
       user {
         firstName
         lastName
