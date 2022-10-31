@@ -1,7 +1,7 @@
+import { getMe } from "libs/auth";
 import { createContext, ReactNode, useContext } from "react";
-import { getUser } from "../libs/auth";
 
-export const MeCtx = createContext<null | Awaited<ReturnType<typeof getUser>>>(
+export const MeCtx = createContext<null | Awaited<ReturnType<typeof getMe>>>(
   null
 );
 

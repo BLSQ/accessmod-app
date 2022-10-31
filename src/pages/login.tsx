@@ -139,7 +139,7 @@ Login.getLayout = (page: ReactElement) => page;
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: false,
   getServerSideProps: (ctx) => {
-    if (ctx.user) {
+    if (ctx.me?.user) {
       return {
         redirect: {
           permanent: false,
