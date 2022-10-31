@@ -2,7 +2,7 @@ import Router from "next/router";
 import { getApolloClient } from "./apollo";
 import { gql } from "@apollo/client";
 import { GetServerSidePropsContext } from "next";
-import { MeQueryQuery } from "./graphql";
+import { MeQuery, UserQueryQuery } from "./graphql";
 
 export type AuthenticatedUser = {
   id: string;
@@ -12,13 +12,39 @@ export type AuthenticatedUser = {
   avatar: { initials: string; color: string };
 };
 
+export async function getMe(ctx?: GetServerSidePropsContext) {
+  const client = getApolloClient({ headers: ctx?.req.headers });
+  const payload = await client.query<MeQuery>({
+    query: gql`
+      query Me {
+        me {
+          user {
+            email
+            id
+            firstName
+            lastName
+            avatar {
+              initials
+              color
+            }
+          }
+        }
+      }
+    `,
+  });
+
+  const me = payload?.data.me;
+  if (!me) return null;
+  return me;
+}
+
 export async function getUser(
   ctx?: GetServerSidePropsContext
 ): Promise<AuthenticatedUser | null> {
   const client = getApolloClient({ headers: ctx?.req.headers });
-  const payload = await client.query<MeQueryQuery>({
+  const payload = await client.query<UserQueryQuery>({
     query: gql`
-      query MeQuery {
+      query UserQuery {
         me {
           user {
             email
