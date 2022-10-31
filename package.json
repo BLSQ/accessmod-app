@@ -1,7 +1,7 @@
 {
   "name": "accessmod-app",
   "private": true,
-  "version": "0.12.0",
+  "version": "0.23.9",
   "engines": {
     "node": ">= 16"
   },
