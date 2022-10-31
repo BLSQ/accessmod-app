@@ -22,6 +22,7 @@ import useCacheKey from "hooks/useCacheKey";
 import useToggle from "hooks/useToggle";
 import {
   AccessmodProjectAuthorizedActions,
+  ProjectPageQuery,
   ProjectPage_ProjectFragment,
   useProjectPageQuery,
 } from "libs/graphql";
@@ -380,7 +381,7 @@ export const getServerSideProps = createGetServerSideProps({
       return { notFound: true };
     }
     await Layout.prefetch(client);
-    await client.query({
+    const { data } = await client.query<ProjectPageQuery>({
       query: gql`
         query ProjectPage($id: String!) {
           project: accessmodProject(id: $id) {
@@ -391,6 +392,9 @@ export const getServerSideProps = createGetServerSideProps({
       `,
       variables: { id: params.id },
     });
+    if (!data?.project) {
+      return { notFound: true };
+    }
     await ProjectAnalysesTable.prefetch(client, {
       projectId: params.id as string,
     });
