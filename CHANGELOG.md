@@ -1,3 +1,12 @@
+# Changelog
+
+## [0.23.9](https://github.com/BLSQ/accessmod-app/compare/0.23.8...0.23.9) (2022-10-31)
+
+
+### Bug Fixes
+
+* **i18n:** Do not redirect french users to /fr on login ([9146f8c](https://github.com/BLSQ/accessmod-app/commit/9146f8c11c371de93fed5262622307145cb4b892))
+
 Changelog
 =========
 
