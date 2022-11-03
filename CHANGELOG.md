@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.0](https://github.com/BLSQ/accessmod-app/compare/0.23.9...0.24.0) (2022-11-03)
+
+
+### Features
+
+* **Permissions:** Use &lt;object&gt;.permissions instead of authorizedActions ([302c3aa](https://github.com/BLSQ/accessmod-app/commit/302c3aac0c71b06a3e7c2bfa46095c534bf0bca4))
+
 ## [0.23.9](https://github.com/BLSQ/accessmod-app/compare/0.23.8...0.23.9) (2022-10-31)
 
 
