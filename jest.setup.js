@@ -8,6 +8,11 @@ import { faker } from "@faker-js/faker";
 import { setConfig } from "next/config";
 // @ts-ignore
 import { publicRuntimeConfig } from "./next.config";
+import { Settings } from "luxon";
+
+Settings.defaultLocale = "en";
+Settings.defaultZone = "Europe/Brussels";
+Settings.now = jest.fn().mockImplementation(() => Date.now());
 
 // Make sure you can use "publicRuntimeConfig" within tests.
 setConfig({
