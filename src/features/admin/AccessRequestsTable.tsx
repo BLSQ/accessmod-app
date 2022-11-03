@@ -135,23 +135,27 @@ const AccessRequestsTable: NextPageWithPrefetch = (
                 </td>
                 <td>{formatStatus(row.status)}</td>
                 <td>
-                  {row.status === AccessmodAccessRequestStatus.Pending && (
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="outlined"
-                        size="sm"
-                        onClick={() => onDenyClick(row)}
-                      >
-                        {t("Deny")}
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => onApproveClick(row)}
-                      >
-                        {t("Accept")}
-                      </Button>
-                    </div>
+                  {row.status === AccessmodAccessRequestStatus.Pending &&
+                    row.acceptedTos && (
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="outlined"
+                          size="sm"
+                          onClick={() => onDenyClick(row)}
+                        >
+                          {t("Deny")}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => onApproveClick(row)}
+                        >
+                          {t("Accept")}
+                        </Button>
+                      </div>
+                    )}
+                  {!row.acceptedTos && (
+                    <span className="text-right">{t("ToS not accepted")}</span>
                   )}
                 </td>
               </tr>
