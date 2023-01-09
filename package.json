@@ -68,7 +68,7 @@
     "leaflet-geotiff-2": "^1.1.0",
     "lodash.isequal": "^4.5.0",
     "lodash.merge": "^4.6.2",
-    "luxon": "^3.0.4",
+    "luxon": "^3.2.1",
     "next": "^12",
     "next-i18next": "^12.1.0",
     "nextjs-progressbar": "^0.0.16",
