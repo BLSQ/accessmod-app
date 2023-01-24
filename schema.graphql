@@ -1,3 +1,5 @@
+directive @loginRequired(withoutTwoFactor: Boolean) on FIELD_DEFINITION
+
 """Exposes a URL that specifies the behaviour of this scalar."""
 directive @specifiedBy(
   """The URL that specifies the behaviour of this scalar."""
@@ -319,6 +321,31 @@ type AccessmodZonalStatistics implements AccessmodAnalysis & AccessmodOwnership 
   zonalStatisticsGeo: AccessmodFileset
 }
 
+type Activity {
+  description: String!
+  occurredAt: DateTime!
+  url: URL!
+  status: ActivityStatus!
+}
+
+enum ActivityStatus {
+  SUCCESS
+  PENDING
+  RUNNING
+  ERROR
+  UNKNOWN
+}
+
+input AddPipelineOutputInput {
+  output_type: String!
+  output_uri: String!
+}
+
+type AddPipelineOutputResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+}
+
 enum ApproveAccessmodAccessRequestError {
   INVALID
 }
@@ -338,7 +365,7 @@ type Avatar {
 }
 
 type CatalogEntry {
-  id: String!
+  id: UUID!
   name: String!
   description: String
   countries: [Country!]!
@@ -356,7 +383,7 @@ type CatalogEntry {
 }
 
 type CatalogEntryType {
-  id: String!
+  id: UUID!
   app: String!
   model: String!
   name: String!
@@ -586,7 +613,7 @@ enum CreateMembershipError {
 
 input CreateMembershipInput {
   userEmail: String!
-  teamId: String!
+  teamId: UUID!
   role: MembershipRole!
 }
 
@@ -594,6 +621,18 @@ type CreateMembershipResult {
   success: Boolean!
   membership: Membership
   errors: [CreateMembershipError!]!
+}
+
+input CreatePipelineInput {
+  name: String!
+  entrypoint: String!
+  parameters: JSON!
+}
+
+type CreatePipelineResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+  pipeline: Pipeline
 }
 
 enum CreateTeamError {
@@ -611,8 +650,24 @@ type CreateTeamResult {
   errors: [CreateTeamError!]!
 }
 
+enum CreateWorkspaceError {
+  PERMISSION_DENIED
+}
+
+input CreateWorkspaceInput {
+  name: String!
+  description: String
+  countries: [CountryInput!]
+}
+
+type CreateWorkspaceResult {
+  success: Boolean!
+  errors: [CreateWorkspaceError!]!
+  workspace: Workspace
+}
+
 type DAG {
-  id: String!
+  id: UUID!
   label: String!
   tags: [Tag!]!
   formCode: String
@@ -634,7 +689,7 @@ type DAGPage {
 }
 
 type DAGRun {
-  id: String!
+  id: UUID!
   label: String
   externalId: String
   externalUrl: URL
@@ -694,7 +749,7 @@ type DAGTemplate {
 }
 
 type Datasource {
-  id: String!
+  id: UUID!
   name: String!
 }
 
@@ -793,12 +848,21 @@ enum DeleteMembershipError {
 }
 
 input DeleteMembershipInput {
-  id: String!
+  id: UUID!
 }
 
 type DeleteMembershipResult {
   success: Boolean!
   errors: [DeleteMembershipError!]!
+}
+
+input DeletePipelineInput {
+  id: UUID!
+}
+
+type DeletePipelineResult {
+  success: Boolean!
+  errors: [PipelineError!]!
 }
 
 enum DeleteTeamError {
@@ -807,12 +871,40 @@ enum DeleteTeamError {
 }
 
 input DeleteTeamInput {
-  id: String!
+  id: UUID!
 }
 
 type DeleteTeamResult {
   success: Boolean!
   errors: [DeleteTeamError!]!
+}
+
+enum DeleteWorkspaceError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input DeleteWorkspaceInput {
+  id: String!
+}
+
+enum DeleteWorkspaceMemberError {
+  MEMBERSHIP_NOT_FOUND
+  PERMISSION_DENIED
+}
+
+input DeleteWorkspaceMemberInput {
+  membershipId: UUID!
+}
+
+type DeleteWorkspaceMemberResult {
+  success: Boolean!
+  errors: [DeleteWorkspaceMemberError!]!
+}
+
+type DeleteWorkspaceResult {
+  success: Boolean!
+  errors: [DeleteWorkspaceError!]!
 }
 
 enum DenyAccessmodAccessRequestError {
@@ -850,9 +942,85 @@ type DHIS2Instance {
   url: String
 }
 
+enum DisableTwoFactorError {
+  INVALID_OTP
+  NOT_ENABLED
+}
+
+input DisableTwoFactorInput {
+  token: String!
+}
+
+type DisableTwoFactorResult {
+  success: Boolean!
+  errors: [DisableTwoFactorError!]
+}
+
+enum EnableTwoFactorError {
+  ALREADY_ENABLED
+  EMAIL_MISMATCH
+}
+
+input EnableTwoFactorInput {
+  email: String
+}
+
+type EnableTwoFactorResult {
+  success: Boolean!
+  errors: [EnableTwoFactorError!]
+}
+
+type ExternalDashboard {
+  id: UUID!
+  name: String!
+  url: URL!
+  pictureUrl: URL!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String
+  countries: [Country!]!
+  tags: [Tag!]!
+}
+
+type ExternalDashboardPage {
+  items: [ExternalDashboard!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
 type FeatureFlag {
   code: String!
   config: JSON!
+}
+
+enum GenerateChallengeError {
+  DEVICE_NOT_FOUND
+  CHALLENGE_ERROR
+}
+
+type GenerateChallengeResult {
+  success: Boolean!
+  errors: [GenerateChallengeError!]
+}
+
+input InviteWorkspaceMemberInput {
+  workspaceId: UUID!
+  userEmail: String!
+  role: WorkspaceMembershipRole!
+}
+
+type InviteWorkspaceMemberResult {
+  success: Boolean!
+  errors: [InviteWorkspaceMembershipError!]!
+  workspaceMembership: WorkspaceMembership
+}
+
+enum InviteWorkspaceMembershipError {
+  ALREADY_EXISTS
+  PERMISSION_DENIED
+  USER_NOT_FOUND
+  WORKSPACE_NOT_FOUND
 }
 
 scalar JSON
@@ -871,18 +1039,35 @@ type LaunchAccessmodAnalysisResult {
   errors: [LaunchAccessmodAnalysisError!]!
 }
 
+enum LoginError {
+  OTP_REQUIRED
+  INVALID_CREDENTIALS
+  INVALID_OTP
+}
+
 input LoginInput {
   email: String!
   password: String!
+  token: String
 }
 
 type LoginResult {
   success: Boolean!
-  me: Me
+  errors: [LoginError!]
 }
 
 type LogoutResult {
   success: Boolean!
+}
+
+input LogPipelineMessageInput {
+  priority: MessagePriority!
+  message: String!
+}
+
+type LogPipelineMessageResult {
+  success: Boolean!
+  errors: [PipelineError!]!
 }
 
 type Me {
@@ -890,6 +1075,7 @@ type Me {
   features: [FeatureFlag!]!
   authorizedActions: [MeAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
   permissions: MePermissions!
+  hasTwoFactorEnabled: Boolean!
 }
 
 enum MeAuthorizedActions {
@@ -901,7 +1087,7 @@ enum MeAuthorizedActions {
 }
 
 type Membership {
-  id: String!
+  id: UUID!
   user: User!
   team: Team!
   authorizedActions: [MembershipAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
@@ -940,6 +1126,15 @@ type MePermissions {
   createCollection: Boolean!
   createAccessmodProject: Boolean!
   manageAccessmodAccessRequests: Boolean!
+  createWorkspace: Boolean!
+}
+
+enum MessagePriority {
+  DEBUG
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
 }
 
 scalar MovingSpeeds
@@ -949,6 +1144,10 @@ type Mutation {
   logout: LogoutResult!
   resetPassword(input: ResetPasswordInput!): ResetPasswordResult!
   setPassword(input: SetPasswordInput!): SetPasswordResult!
+  verifyToken(input: VerifyTokenInput!): VerifyTokenResult!
+  generateChallenge: GenerateChallengeResult!
+  enableTwoFactor(input: EnableTwoFactorInput): EnableTwoFactorResult!
+  disableTwoFactor(input: DisableTwoFactorInput): DisableTwoFactorResult!
   createTeam(input: CreateTeamInput!): CreateTeamResult!
   updateTeam(input: UpdateTeamInput!): UpdateTeamResult!
   deleteTeam(input: DeleteTeamInput!): DeleteTeamResult!
@@ -986,10 +1185,25 @@ type Mutation {
   requestAccessmodAccess(input: RequestAccessmodAccessInput!): RequestAccessmodAccessInputResult!
   approveAccessmodAccessRequest(input: ApproveAccessmodAccessRequestInput!): ApproveAccessmodAccessRequestResult!
   denyAccessmodAccessRequest(input: DenyAccessmodAccessRequestInput!): DenyAccessmodAccessRequestResult!
+  updateExternalDashboard(input: UpdateExternalDashboardInput!): UpdateExternalDashboardResult!
+  createPipeline(input: CreatePipelineInput): CreatePipelineResult!
+  deletePipeline(input: DeletePipelineInput): DeletePipelineResult!
+  runPipeline(input: RunPipelineInput): RunPipelineResult!
+  pipelineToken(input: PipelineTokenInput): PipelineTokenResult!
+  uploadPipeline(input: UploadPipelineInput): UploadPipelineResult!
+  logPipelineMessage(input: LogPipelineMessageInput): LogPipelineMessageResult!
+  updatePipelineProgress(input: UpdatePipelineProgressInput): UpdatePipelineProgressResult!
+  addPipelineOutput(input: AddPipelineOutputInput): AddPipelineOutputResult!
+  createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
+  updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
+  deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspaceResult!
+  inviteWorkspaceMember(input: InviteWorkspaceMemberInput!): InviteWorkspaceMemberResult!
+  updateWorkspaceMember(input: UpdateWorkspaceMemberInput!): UpdateWorkspaceMemberResult!
+  deleteWorkspaceMember(input: DeleteWorkspaceMemberInput!): DeleteWorkspaceMemberResult!
 }
 
 type Organization {
-  id: String!
+  id: UUID!
   name: String!
   type: String!
   url: String!
@@ -997,7 +1211,7 @@ type Organization {
 }
 
 input OrganizationInput {
-  id: String!
+  id: UUID!
   name: String
   type: String
   url: String
@@ -1008,6 +1222,102 @@ enum PermissionMode {
   OWNER
   EDITOR
   VIEWER
+}
+
+type Pipeline {
+  id: UUID!
+  name: String!
+  entrypoint: String!
+  parameters: JSON!
+  config: String!
+  schedule: String
+  user: User
+  runs(page: Int, perPage: Int, orderBy: PipelineRunOrderBy): PipelineRunPage!
+}
+
+enum PipelineError {
+  PIPELINE_NOT_FOUND
+  PIPELINE_VERSION_NOT_FOUND
+  INVALID_CONFIG
+  PIPELINE_ALREADY_COMPLETED
+}
+
+type PipelineRun {
+  id: UUID!
+  run_id: UUID!
+  user: User
+  pipeline: Pipeline!
+  version: PipelineVersion!
+  config: String!
+  status: PipelineRunStatus!
+  executionDate: DateTime
+  duration: Int
+  progress: Int!
+  triggerMode: PipelineRunTrigger
+  messages: [PipelineRunMessage!]!
+  logs: String
+  outputs: [PipelineRunOutput!]!
+  code: String!
+}
+
+type PipelineRunMessage {
+  message: String!
+  priority: MessagePriority!
+  timestamp: DateTime
+}
+
+enum PipelineRunOrderBy {
+  EXECUTION_DATE_DESC
+  EXECUTION_DATE_ASC
+}
+
+type PipelineRunOutput {
+  title: String!
+  uri: String!
+}
+
+type PipelineRunPage {
+  items: [PipelineRun!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+enum PipelineRunStatus {
+  success
+  running
+  failed
+  queued
+}
+
+enum PipelineRunTrigger {
+  SCHEDULED
+  MANUAL
+}
+
+type PipelinesPage {
+  items: [Pipeline!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+input PipelineTokenInput {
+  name: String!
+}
+
+type PipelineTokenResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+  token: String
+}
+
+type PipelineVersion {
+  id: UUID!
+  user: User
+  pipeline: Pipeline!
+  number: Int!
+  zipfile: String!
 }
 
 input PrepareAccessmodFileDownloadInput {
@@ -1049,17 +1359,17 @@ type PrepareDownloadURLResult {
 }
 
 type Query {
-  search(query: String, page: Int, perPage: Int, datasourceIds: [String!], types: [String!]): SearchQueryResult!
+  search(query: String, page: Int, perPage: Int, datasourceIds: [UUID!], types: [String!]): SearchQueryResult!
   catalog(path: String, page: Int, perPage: Int): CatalogPage!
   me: Me!
-  team(id: String!): Team
+  team(id: UUID!): Team
   teams(term: String, page: Int, perPage: Int): TeamPage!
   organizations: [Organization!]!
   collection(id: String!): Collection
   collections(page: Int, perPage: Int): CollectionPage!
   dags(page: Int, perPage: Int): DAGPage!
-  dag(id: String!): DAG
-  dagRun(id: String!): DAGRun
+  dag(id: UUID!): DAG
+  dagRun(id: UUID!): DAGRun
   accessmodProject(id: String): AccessmodProject
   accessmodProjects(term: String, countries: [String!], teams: [String!], page: Int, perPage: Int, orderBy: AccessmodProjectOrder): AccessmodProjectPage!
   accessmodFileset(id: String): AccessmodFileset
@@ -1072,6 +1382,17 @@ type Query {
   country(code: String, alpha3: String): Country
   boundaries(country_code: String!, level: String!): [WHOBoundary!]!
   countries: [Country!]!
+  externalDashboards(page: Int, perPage: Int): ExternalDashboardPage!
+  externalDashboard(id: UUID!): ExternalDashboard
+  notebooksUrl: URL!
+  totalNotebooks: Int!
+  lastActivities: [Activity!]!
+  pipelines(page: Int, perPage: Int): PipelinesPage!
+  pipeline(id: UUID, name: String): Pipeline
+  pipelineRun(id: UUID!): PipelineRun
+  pipelineRunCode(id: UUID): String
+  workspace(id: UUID!): Workspace
+  workspaces(page: Int, perPage: Int): WorkspacePage!
 }
 
 enum RequestAccessmodAccessError {
@@ -1106,7 +1427,7 @@ enum RunDAGError {
 }
 
 input RunDAGInput {
-  dagId: String!
+  dagId: UUID!
   config: JSON!
 }
 
@@ -1115,6 +1436,18 @@ type RunDAGResult {
   errors: [RunDAGError!]!
   dagRun: DAGRun
   dag: DAG
+}
+
+input RunPipelineInput {
+  id: UUID!
+  version: Int
+  config: String
+}
+
+type RunPipelineResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+  run: PipelineRun
 }
 
 type S3Bucket {
@@ -1171,7 +1504,7 @@ enum SetDAGRunFavoriteError {
 }
 
 input SetDAGRunFavoriteInput {
-  id: String!
+  id: UUID!
   label: String
   isFavorite: Boolean!
 }
@@ -1211,7 +1544,7 @@ type Tag {
 }
 
 type Team {
-  id: String!
+  id: UUID!
   name: String!
   memberships(page: Int, perPage: Int): MembershipPage!
   authorizedActions: [TeamAuthorizedActions!]! @deprecated(reason: "authorizedActions is deprecated. Use permissions instead.")
@@ -1371,7 +1704,7 @@ enum UpdateDAGError {
 }
 
 input UpdateDAGInput {
-  id: String!
+  id: UUID!
   label: String
   description: String
   schedule: String
@@ -1384,6 +1717,24 @@ type UpdateDAGResult {
   dag: DAG
 }
 
+enum UpdateExternalDashboardError {
+  INVALID
+  NOT_FOUND
+}
+
+input UpdateExternalDashboardInput {
+  id: UUID!
+  description: String
+  name: String
+  countries: [CountryInput!]
+}
+
+type UpdateExternalDashboardResult {
+  success: Boolean!
+  errors: [UpdateExternalDashboardError!]!
+  externalDashboard: ExternalDashboard
+}
+
 enum UpdateMembershipError {
   PERMISSION_DENIED
   NOT_FOUND
@@ -1391,7 +1742,7 @@ enum UpdateMembershipError {
 }
 
 input UpdateMembershipInput {
-  id: String!
+  id: UUID!
   role: MembershipRole!
 }
 
@@ -1401,6 +1752,15 @@ type UpdateMembershipResult {
   errors: [UpdateMembershipError!]!
 }
 
+input UpdatePipelineProgressInput {
+  percent: Int!
+}
+
+type UpdatePipelineProgressResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+}
+
 enum UpdateTeamError {
   NOT_FOUND
   PERMISSION_DENIED
@@ -1408,7 +1768,7 @@ enum UpdateTeamError {
 }
 
 input UpdateTeamInput {
-  id: String!
+  id: UUID!
   name: String
 }
 
@@ -1418,10 +1778,56 @@ type UpdateTeamResult {
   errors: [UpdateTeamError!]!
 }
 
+enum UpdateWorkspaceError {
+  PERMISSION_DENIED
+  NOT_FOUND
+  INVALID
+}
+
+input UpdateWorkspaceInput {
+  id: UUID!
+  name: String
+  description: String
+  countries: [CountryInput!]
+}
+
+enum UpdateWorkspaceMemberError {
+  MEMBERSHIP_NOT_FOUND
+  PERMISSION_DENIED
+}
+
+input UpdateWorkspaceMemberInput {
+  membershipId: UUID!
+  role: WorkspaceMembershipRole!
+}
+
+type UpdateWorkspaceMemberResult {
+  success: Boolean!
+  errors: [UpdateWorkspaceMemberError!]!
+  workspaceMembership: WorkspaceMembership
+}
+
+type UpdateWorkspaceResult {
+  success: Boolean!
+  errors: [UpdateWorkspaceError!]!
+  workspace: Workspace
+}
+
+input UploadPipelineInput {
+  name: String!
+  zipfile: String!
+}
+
+type UploadPipelineResult {
+  success: Boolean!
+  version: Int
+  errors: [PipelineError!]!
+}
+
 scalar URL
 
 type User {
-  id: String!
+  id: UUID!
   email: String!
   firstName: String
   lastName: String
@@ -1429,6 +1835,21 @@ type User {
   avatar: Avatar!
   dateJoined: DateTime!
   lastLogin: DateTime
+}
+
+scalar UUID
+
+enum VerifyTokenError {
+  INVALID_OTP_OR_DEVICE
+}
+
+input VerifyTokenInput {
+  token: String!
+}
+
+type VerifyTokenResult {
+  success: Boolean!
+  errors: [VerifyTokenError!]
 }
 
 type WHOBoundary {
@@ -1449,5 +1870,52 @@ type WHOInfo {
 type WHORegion {
   code: String!
   name: String!
+}
+
+type Workspace {
+  id: UUID!
+  name: String!
+  description: String
+  members(page: Int, perPage: Int): WorkspaceMembershipPage!
+  permissions: WorkspacePermissions!
+  countries: [Country!]!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  createdBy: User!
+}
+
+type WorkspaceMembership {
+  id: UUID!
+  user: User!
+  workspace: Workspace!
+  role: WorkspaceMembershipRole!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type WorkspaceMembershipPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [WorkspaceMembership!]!
+}
+
+enum WorkspaceMembershipRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+type WorkspacePage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [Workspace!]!
+}
+
+type WorkspacePermissions {
+  update: Boolean!
+  delete: Boolean!
+  manageMembers: Boolean!
 }
 
