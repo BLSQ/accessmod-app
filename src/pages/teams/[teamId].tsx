@@ -95,7 +95,7 @@ export const getServerSideProps = createGetServerSideProps({
 
     await client.query({
       query: gql`
-        query TeamPage($id: String!) {
+        query TeamPage($id: UUID!) {
           team(id: $id) {
             id
             name

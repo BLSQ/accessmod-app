@@ -22,6 +22,7 @@ export type Scalars = {
   StackPriorities: any;
   TimeThresholds: any;
   URL: any;
+  UUID: any;
 };
 
 export type AccessmodAccessRequest = {
@@ -361,6 +362,33 @@ export type AccessmodZonalStatistics = AccessmodAnalysis & AccessmodOwnership & 
   zonalStatisticsTable?: Maybe<AccessmodFileset>;
 };
 
+export type Activity = {
+  __typename?: 'Activity';
+  description: Scalars['String'];
+  occurredAt: Scalars['DateTime'];
+  status: ActivityStatus;
+  url: Scalars['URL'];
+};
+
+export enum ActivityStatus {
+  Error = 'ERROR',
+  Pending = 'PENDING',
+  Running = 'RUNNING',
+  Success = 'SUCCESS',
+  Unknown = 'UNKNOWN'
+}
+
+export type AddPipelineOutputInput = {
+  output_type: Scalars['String'];
+  output_uri: Scalars['String'];
+};
+
+export type AddPipelineOutputResult = {
+  __typename?: 'AddPipelineOutputResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+};
+
 export enum ApproveAccessmodAccessRequestError {
   Invalid = 'INVALID'
 }
@@ -391,7 +419,7 @@ export type CatalogEntry = {
   externalName?: Maybe<Scalars['String']>;
   externalSubtype?: Maybe<Scalars['String']>;
   externalType?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   lastSyncedAt?: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   objectId: Scalars['String'];
@@ -403,7 +431,7 @@ export type CatalogEntry = {
 export type CatalogEntryType = {
   __typename?: 'CatalogEntryType';
   app: Scalars['String'];
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   model: Scalars['String'];
   name: Scalars['String'];
 };
@@ -655,7 +683,7 @@ export enum CreateMembershipError {
 
 export type CreateMembershipInput = {
   role: MembershipRole;
-  teamId: Scalars['String'];
+  teamId: Scalars['UUID'];
   userEmail: Scalars['String'];
 };
 
@@ -663,6 +691,19 @@ export type CreateMembershipResult = {
   __typename?: 'CreateMembershipResult';
   errors: Array<CreateMembershipError>;
   membership?: Maybe<Membership>;
+  success: Scalars['Boolean'];
+};
+
+export type CreatePipelineInput = {
+  entrypoint: Scalars['String'];
+  name: Scalars['String'];
+  parameters: Scalars['JSON'];
+};
+
+export type CreatePipelineResult = {
+  __typename?: 'CreatePipelineResult';
+  errors: Array<PipelineError>;
+  pipeline?: Maybe<Pipeline>;
   success: Scalars['Boolean'];
 };
 
@@ -682,6 +723,23 @@ export type CreateTeamResult = {
   team?: Maybe<Team>;
 };
 
+export enum CreateWorkspaceError {
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type CreateWorkspaceInput = {
+  countries?: InputMaybe<Array<CountryInput>>;
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+};
+
+export type CreateWorkspaceResult = {
+  __typename?: 'CreateWorkspaceResult';
+  errors: Array<CreateWorkspaceError>;
+  success: Scalars['Boolean'];
+  workspace?: Maybe<Workspace>;
+};
+
 export type Dag = {
   __typename?: 'DAG';
   countries: Array<Country>;
@@ -689,7 +747,7 @@ export type Dag = {
   externalId: Scalars['String'];
   externalUrl?: Maybe<Scalars['URL']>;
   formCode?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   label: Scalars['String'];
   runs: DagRunPage;
   schedule?: Maybe<Scalars['String']>;
@@ -720,7 +778,7 @@ export type DagRun = {
   executionDate?: Maybe<Scalars['DateTime']>;
   externalId?: Maybe<Scalars['String']>;
   externalUrl?: Maybe<Scalars['URL']>;
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   isFavorite: Scalars['Boolean'];
   label?: Maybe<Scalars['String']>;
   lastRefreshedAt?: Maybe<Scalars['DateTime']>;
@@ -805,7 +863,7 @@ export type Dhis2Instance = {
 
 export type Datasource = {
   __typename?: 'Datasource';
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   name: Scalars['String'];
 };
 
@@ -906,12 +964,22 @@ export enum DeleteMembershipError {
 }
 
 export type DeleteMembershipInput = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 };
 
 export type DeleteMembershipResult = {
   __typename?: 'DeleteMembershipResult';
   errors: Array<DeleteMembershipError>;
+  success: Scalars['Boolean'];
+};
+
+export type DeletePipelineInput = {
+  id: Scalars['UUID'];
+};
+
+export type DeletePipelineResult = {
+  __typename?: 'DeletePipelineResult';
+  errors: Array<PipelineError>;
   success: Scalars['Boolean'];
 };
 
@@ -921,12 +989,42 @@ export enum DeleteTeamError {
 }
 
 export type DeleteTeamInput = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 };
 
 export type DeleteTeamResult = {
   __typename?: 'DeleteTeamResult';
   errors: Array<DeleteTeamError>;
+  success: Scalars['Boolean'];
+};
+
+export enum DeleteWorkspaceError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteWorkspaceInput = {
+  id: Scalars['String'];
+};
+
+export enum DeleteWorkspaceMemberError {
+  MembershipNotFound = 'MEMBERSHIP_NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteWorkspaceMemberInput = {
+  membershipId: Scalars['UUID'];
+};
+
+export type DeleteWorkspaceMemberResult = {
+  __typename?: 'DeleteWorkspaceMemberResult';
+  errors: Array<DeleteWorkspaceMemberError>;
+  success: Scalars['Boolean'];
+};
+
+export type DeleteWorkspaceResult = {
+  __typename?: 'DeleteWorkspaceResult';
+  errors: Array<DeleteWorkspaceError>;
   success: Scalars['Boolean'];
 };
 
@@ -944,11 +1042,93 @@ export type DenyAccessmodAccessRequestResult = {
   success: Scalars['Boolean'];
 };
 
+export enum DisableTwoFactorError {
+  InvalidOtp = 'INVALID_OTP',
+  NotEnabled = 'NOT_ENABLED'
+}
+
+export type DisableTwoFactorInput = {
+  token: Scalars['String'];
+};
+
+export type DisableTwoFactorResult = {
+  __typename?: 'DisableTwoFactorResult';
+  errors?: Maybe<Array<DisableTwoFactorError>>;
+  success: Scalars['Boolean'];
+};
+
+export enum EnableTwoFactorError {
+  AlreadyEnabled = 'ALREADY_ENABLED',
+  EmailMismatch = 'EMAIL_MISMATCH'
+}
+
+export type EnableTwoFactorInput = {
+  email?: InputMaybe<Scalars['String']>;
+};
+
+export type EnableTwoFactorResult = {
+  __typename?: 'EnableTwoFactorResult';
+  errors?: Maybe<Array<EnableTwoFactorError>>;
+  success: Scalars['Boolean'];
+};
+
+export type ExternalDashboard = {
+  __typename?: 'ExternalDashboard';
+  countries: Array<Country>;
+  createdAt: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['UUID'];
+  name: Scalars['String'];
+  pictureUrl: Scalars['URL'];
+  tags: Array<Tag>;
+  updatedAt: Scalars['DateTime'];
+  url: Scalars['URL'];
+};
+
+export type ExternalDashboardPage = {
+  __typename?: 'ExternalDashboardPage';
+  items: Array<ExternalDashboard>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
 export type FeatureFlag = {
   __typename?: 'FeatureFlag';
   code: Scalars['String'];
   config: Scalars['JSON'];
 };
+
+export enum GenerateChallengeError {
+  ChallengeError = 'CHALLENGE_ERROR',
+  DeviceNotFound = 'DEVICE_NOT_FOUND'
+}
+
+export type GenerateChallengeResult = {
+  __typename?: 'GenerateChallengeResult';
+  errors?: Maybe<Array<GenerateChallengeError>>;
+  success: Scalars['Boolean'];
+};
+
+export type InviteWorkspaceMemberInput = {
+  role: WorkspaceMembershipRole;
+  userEmail: Scalars['String'];
+  workspaceId: Scalars['UUID'];
+};
+
+export type InviteWorkspaceMemberResult = {
+  __typename?: 'InviteWorkspaceMemberResult';
+  errors: Array<InviteWorkspaceMembershipError>;
+  success: Scalars['Boolean'];
+  workspaceMembership?: Maybe<WorkspaceMembership>;
+};
+
+export enum InviteWorkspaceMembershipError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  PermissionDenied = 'PERMISSION_DENIED',
+  UserNotFound = 'USER_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
 
 export enum LaunchAccessmodAnalysisError {
   LaunchFailed = 'LAUNCH_FAILED'
@@ -965,14 +1145,32 @@ export type LaunchAccessmodAnalysisResult = {
   success: Scalars['Boolean'];
 };
 
+export type LogPipelineMessageInput = {
+  message: Scalars['String'];
+  priority: MessagePriority;
+};
+
+export type LogPipelineMessageResult = {
+  __typename?: 'LogPipelineMessageResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+};
+
+export enum LoginError {
+  InvalidCredentials = 'INVALID_CREDENTIALS',
+  InvalidOtp = 'INVALID_OTP',
+  OtpRequired = 'OTP_REQUIRED'
+}
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+  token?: InputMaybe<Scalars['String']>;
 };
 
 export type LoginResult = {
   __typename?: 'LoginResult';
-  me?: Maybe<Me>;
+  errors?: Maybe<Array<LoginError>>;
   success: Scalars['Boolean'];
 };
 
@@ -986,6 +1184,7 @@ export type Me = {
   /** @deprecated authorizedActions is deprecated. Use permissions instead. */
   authorizedActions: Array<MeAuthorizedActions>;
   features: Array<FeatureFlag>;
+  hasTwoFactorEnabled: Scalars['Boolean'];
   permissions: MePermissions;
   user?: Maybe<User>;
 };
@@ -1004,6 +1203,7 @@ export type MePermissions = {
   createAccessmodProject: Scalars['Boolean'];
   createCollection: Scalars['Boolean'];
   createTeam: Scalars['Boolean'];
+  createWorkspace: Scalars['Boolean'];
   manageAccessmodAccessRequests: Scalars['Boolean'];
   superUser: Scalars['Boolean'];
 };
@@ -1013,7 +1213,7 @@ export type Membership = {
   /** @deprecated authorizedActions is deprecated. Use permissions instead. */
   authorizedActions: Array<MembershipAuthorizedActions>;
   createdAt: Scalars['DateTime'];
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   permissions: MembershipPermissions;
   role: MembershipRole;
   team: Team;
@@ -1045,8 +1245,17 @@ export enum MembershipRole {
   Regular = 'REGULAR'
 }
 
+export enum MessagePriority {
+  Critical = 'CRITICAL',
+  Debug = 'DEBUG',
+  Error = 'ERROR',
+  Info = 'INFO',
+  Warning = 'WARNING'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addPipelineOutput: AddPipelineOutputResult;
   approveAccessmodAccessRequest: ApproveAccessmodAccessRequestResult;
   createAccessmodAccessibilityAnalysis: CreateAccessmodAccessibilityAnalysisResult;
   createAccessmodFile: CreateAccessmodFileResult;
@@ -1057,7 +1266,9 @@ export type Mutation = {
   createCollection: CreateCollectionResult;
   createCollectionElement: CreateCollectionElementResult;
   createMembership: CreateMembershipResult;
+  createPipeline: CreatePipelineResult;
   createTeam: CreateTeamResult;
+  createWorkspace: CreateWorkspaceResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
@@ -1065,11 +1276,20 @@ export type Mutation = {
   deleteCollection: DeleteCollectionResult;
   deleteCollectionElement: DeleteCollectionElementResult;
   deleteMembership: DeleteMembershipResult;
+  deletePipeline: DeletePipelineResult;
   deleteTeam: DeleteTeamResult;
+  deleteWorkspace: DeleteWorkspaceResult;
+  deleteWorkspaceMember: DeleteWorkspaceMemberResult;
   denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
+  disableTwoFactor: DisableTwoFactorResult;
+  enableTwoFactor: EnableTwoFactorResult;
+  generateChallenge: GenerateChallengeResult;
+  inviteWorkspaceMember: InviteWorkspaceMemberResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
+  logPipelineMessage: LogPipelineMessageResult;
   login: LoginResult;
   logout: LogoutResult;
+  pipelineToken: PipelineTokenResult;
   prepareAccessmodFileDownload: PrepareAccessmodFileDownloadResult;
   prepareAccessmodFileUpload: PrepareAccessmodFileUploadResult;
   prepareAccessmodFilesetVisualizationDownload: PrepareAccessmodFilesetVisualizationDownloadResult;
@@ -1077,6 +1297,7 @@ export type Mutation = {
   requestAccessmodAccess: RequestAccessmodAccessInputResult;
   resetPassword: ResetPasswordResult;
   runDAG: RunDagResult;
+  runPipeline: RunPipelineResult;
   setDAGRunFavorite?: Maybe<SetDagRunFavoriteResult>;
   setPassword: SetPasswordResult;
   updateAccessmodAccessibilityAnalysis: UpdateAccessmodAccessibilityAnalysisResult;
@@ -1086,8 +1307,19 @@ export type Mutation = {
   updateAccessmodZonalStatistics: UpdateAccessmodZonalStatisticsResult;
   updateCollection: UpdateCollectionResult;
   updateDAG: UpdateDagResult;
+  updateExternalDashboard: UpdateExternalDashboardResult;
   updateMembership: UpdateMembershipResult;
+  updatePipelineProgress: UpdatePipelineProgressResult;
   updateTeam: UpdateTeamResult;
+  updateWorkspace: UpdateWorkspaceResult;
+  updateWorkspaceMember: UpdateWorkspaceMemberResult;
+  uploadPipeline: UploadPipelineResult;
+  verifyToken: VerifyTokenResult;
+};
+
+
+export type MutationAddPipelineOutputArgs = {
+  input?: InputMaybe<AddPipelineOutputInput>;
 };
 
 
@@ -1141,8 +1373,18 @@ export type MutationCreateMembershipArgs = {
 };
 
 
+export type MutationCreatePipelineArgs = {
+  input?: InputMaybe<CreatePipelineInput>;
+};
+
+
 export type MutationCreateTeamArgs = {
   input: CreateTeamInput;
+};
+
+
+export type MutationCreateWorkspaceArgs = {
+  input: CreateWorkspaceInput;
 };
 
 
@@ -1181,8 +1423,23 @@ export type MutationDeleteMembershipArgs = {
 };
 
 
+export type MutationDeletePipelineArgs = {
+  input?: InputMaybe<DeletePipelineInput>;
+};
+
+
 export type MutationDeleteTeamArgs = {
   input: DeleteTeamInput;
+};
+
+
+export type MutationDeleteWorkspaceArgs = {
+  input: DeleteWorkspaceInput;
+};
+
+
+export type MutationDeleteWorkspaceMemberArgs = {
+  input: DeleteWorkspaceMemberInput;
 };
 
 
@@ -1191,13 +1448,38 @@ export type MutationDenyAccessmodAccessRequestArgs = {
 };
 
 
+export type MutationDisableTwoFactorArgs = {
+  input?: InputMaybe<DisableTwoFactorInput>;
+};
+
+
+export type MutationEnableTwoFactorArgs = {
+  input?: InputMaybe<EnableTwoFactorInput>;
+};
+
+
+export type MutationInviteWorkspaceMemberArgs = {
+  input: InviteWorkspaceMemberInput;
+};
+
+
 export type MutationLaunchAccessmodAnalysisArgs = {
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
 };
 
 
+export type MutationLogPipelineMessageArgs = {
+  input?: InputMaybe<LogPipelineMessageInput>;
+};
+
+
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationPipelineTokenArgs = {
+  input?: InputMaybe<PipelineTokenInput>;
 };
 
 
@@ -1233,6 +1515,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationRunDagArgs = {
   input: RunDagInput;
+};
+
+
+export type MutationRunPipelineArgs = {
+  input?: InputMaybe<RunPipelineInput>;
 };
 
 
@@ -1281,8 +1568,18 @@ export type MutationUpdateDagArgs = {
 };
 
 
+export type MutationUpdateExternalDashboardArgs = {
+  input: UpdateExternalDashboardInput;
+};
+
+
 export type MutationUpdateMembershipArgs = {
   input: UpdateMembershipInput;
+};
+
+
+export type MutationUpdatePipelineProgressArgs = {
+  input?: InputMaybe<UpdatePipelineProgressInput>;
 };
 
 
@@ -1290,10 +1587,30 @@ export type MutationUpdateTeamArgs = {
   input: UpdateTeamInput;
 };
 
+
+export type MutationUpdateWorkspaceArgs = {
+  input: UpdateWorkspaceInput;
+};
+
+
+export type MutationUpdateWorkspaceMemberArgs = {
+  input: UpdateWorkspaceMemberInput;
+};
+
+
+export type MutationUploadPipelineArgs = {
+  input?: InputMaybe<UploadPipelineInput>;
+};
+
+
+export type MutationVerifyTokenArgs = {
+  input: VerifyTokenInput;
+};
+
 export type Organization = {
   __typename?: 'Organization';
   contactInfo: Scalars['String'];
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   name: Scalars['String'];
   type: Scalars['String'];
   url: Scalars['String'];
@@ -1301,7 +1618,7 @@ export type Organization = {
 
 export type OrganizationInput = {
   contactInfo?: InputMaybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   name?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Scalars['String']>;
   url?: InputMaybe<Scalars['String']>;
@@ -1312,6 +1629,117 @@ export enum PermissionMode {
   Owner = 'OWNER',
   Viewer = 'VIEWER'
 }
+
+export type Pipeline = {
+  __typename?: 'Pipeline';
+  config: Scalars['String'];
+  entrypoint: Scalars['String'];
+  id: Scalars['UUID'];
+  name: Scalars['String'];
+  parameters: Scalars['JSON'];
+  runs: PipelineRunPage;
+  schedule?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
+};
+
+
+export type PipelineRunsArgs = {
+  orderBy?: InputMaybe<PipelineRunOrderBy>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+export enum PipelineError {
+  InvalidConfig = 'INVALID_CONFIG',
+  PipelineAlreadyCompleted = 'PIPELINE_ALREADY_COMPLETED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND'
+}
+
+export type PipelineRun = {
+  __typename?: 'PipelineRun';
+  code: Scalars['String'];
+  config: Scalars['String'];
+  duration?: Maybe<Scalars['Int']>;
+  executionDate?: Maybe<Scalars['DateTime']>;
+  id: Scalars['UUID'];
+  logs?: Maybe<Scalars['String']>;
+  messages: Array<PipelineRunMessage>;
+  outputs: Array<PipelineRunOutput>;
+  pipeline: Pipeline;
+  progress: Scalars['Int'];
+  run_id: Scalars['UUID'];
+  status: PipelineRunStatus;
+  triggerMode?: Maybe<PipelineRunTrigger>;
+  user?: Maybe<User>;
+  version: PipelineVersion;
+};
+
+export type PipelineRunMessage = {
+  __typename?: 'PipelineRunMessage';
+  message: Scalars['String'];
+  priority: MessagePriority;
+  timestamp?: Maybe<Scalars['DateTime']>;
+};
+
+export enum PipelineRunOrderBy {
+  ExecutionDateAsc = 'EXECUTION_DATE_ASC',
+  ExecutionDateDesc = 'EXECUTION_DATE_DESC'
+}
+
+export type PipelineRunOutput = {
+  __typename?: 'PipelineRunOutput';
+  title: Scalars['String'];
+  uri: Scalars['String'];
+};
+
+export type PipelineRunPage = {
+  __typename?: 'PipelineRunPage';
+  items: Array<PipelineRun>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export enum PipelineRunStatus {
+  Failed = 'failed',
+  Queued = 'queued',
+  Running = 'running',
+  Success = 'success'
+}
+
+export enum PipelineRunTrigger {
+  Manual = 'MANUAL',
+  Scheduled = 'SCHEDULED'
+}
+
+export type PipelineTokenInput = {
+  name: Scalars['String'];
+};
+
+export type PipelineTokenResult = {
+  __typename?: 'PipelineTokenResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+  token?: Maybe<Scalars['String']>;
+};
+
+export type PipelineVersion = {
+  __typename?: 'PipelineVersion';
+  id: Scalars['UUID'];
+  number: Scalars['Int'];
+  pipeline: Pipeline;
+  user?: Maybe<User>;
+  zipfile: Scalars['String'];
+};
+
+export type PipelinesPage = {
+  __typename?: 'PipelinesPage';
+  items: Array<Pipeline>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
 
 export type PrepareAccessmodFileDownloadInput = {
   fileId: Scalars['String'];
@@ -1375,11 +1803,22 @@ export type Query = {
   dag?: Maybe<Dag>;
   dagRun?: Maybe<DagRun>;
   dags: DagPage;
+  externalDashboard?: Maybe<ExternalDashboard>;
+  externalDashboards: ExternalDashboardPage;
+  lastActivities: Array<Activity>;
   me: Me;
+  notebooksUrl: Scalars['URL'];
   organizations: Array<Organization>;
+  pipeline?: Maybe<Pipeline>;
+  pipelineRun?: Maybe<PipelineRun>;
+  pipelineRunCode?: Maybe<Scalars['String']>;
+  pipelines: PipelinesPage;
   search: SearchQueryResult;
   team?: Maybe<Team>;
   teams: TeamPage;
+  totalNotebooks: Scalars['Int'];
+  workspace?: Maybe<Workspace>;
+  workspaces: WorkspacePage;
 };
 
 
@@ -1467,12 +1906,12 @@ export type QueryCountryArgs = {
 
 
 export type QueryDagArgs = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 };
 
 
 export type QueryDagRunArgs = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 };
 
 
@@ -1482,8 +1921,41 @@ export type QueryDagsArgs = {
 };
 
 
+export type QueryExternalDashboardArgs = {
+  id: Scalars['UUID'];
+};
+
+
+export type QueryExternalDashboardsArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryPipelineArgs = {
+  id?: InputMaybe<Scalars['UUID']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryPipelineRunArgs = {
+  id: Scalars['UUID'];
+};
+
+
+export type QueryPipelineRunCodeArgs = {
+  id?: InputMaybe<Scalars['UUID']>;
+};
+
+
+export type QueryPipelinesArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type QuerySearchArgs = {
-  datasourceIds?: InputMaybe<Array<Scalars['String']>>;
+  datasourceIds?: InputMaybe<Array<Scalars['UUID']>>;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
@@ -1492,7 +1964,7 @@ export type QuerySearchArgs = {
 
 
 export type QueryTeamArgs = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 };
 
 
@@ -1500,6 +1972,17 @@ export type QueryTeamsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
   term?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryWorkspaceArgs = {
+  id: Scalars['UUID'];
+};
+
+
+export type QueryWorkspacesArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
 };
 
 export enum RequestAccessmodAccessError {
@@ -1537,7 +2020,7 @@ export enum RunDagError {
 
 export type RunDagInput = {
   config: Scalars['JSON'];
-  dagId: Scalars['String'];
+  dagId: Scalars['UUID'];
 };
 
 export type RunDagResult = {
@@ -1545,6 +2028,19 @@ export type RunDagResult = {
   dag?: Maybe<Dag>;
   dagRun?: Maybe<DagRun>;
   errors: Array<RunDagError>;
+  success: Scalars['Boolean'];
+};
+
+export type RunPipelineInput = {
+  config?: InputMaybe<Scalars['String']>;
+  id: Scalars['UUID'];
+  version?: InputMaybe<Scalars['Int']>;
+};
+
+export type RunPipelineResult = {
+  __typename?: 'RunPipelineResult';
+  errors: Array<PipelineError>;
+  run?: Maybe<PipelineRun>;
   success: Scalars['Boolean'];
 };
 
@@ -1608,7 +2104,7 @@ export enum SetDagRunFavoriteError {
 }
 
 export type SetDagRunFavoriteInput = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   isFavorite: Scalars['Boolean'];
   label?: InputMaybe<Scalars['String']>;
 };
@@ -1651,7 +2147,7 @@ export type Team = {
   /** @deprecated authorizedActions is deprecated. Use permissions instead. */
   authorizedActions: Array<TeamAuthorizedActions>;
   createdAt: Scalars['DateTime'];
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   memberships: MembershipPage;
   name: Scalars['String'];
   permissions: TeamPermissions;
@@ -1823,7 +2319,7 @@ export enum UpdateDagError {
 export type UpdateDagInput = {
   countries?: InputMaybe<Array<CountryInput>>;
   description?: InputMaybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   label?: InputMaybe<Scalars['String']>;
   schedule?: InputMaybe<Scalars['String']>;
 };
@@ -1835,6 +2331,25 @@ export type UpdateDagResult = {
   success: Scalars['Boolean'];
 };
 
+export enum UpdateExternalDashboardError {
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND'
+}
+
+export type UpdateExternalDashboardInput = {
+  countries?: InputMaybe<Array<CountryInput>>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['UUID'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateExternalDashboardResult = {
+  __typename?: 'UpdateExternalDashboardResult';
+  errors: Array<UpdateExternalDashboardError>;
+  externalDashboard?: Maybe<ExternalDashboard>;
+  success: Scalars['Boolean'];
+};
+
 export enum UpdateMembershipError {
   InvalidRole = 'INVALID_ROLE',
   NotFound = 'NOT_FOUND',
@@ -1842,7 +2357,7 @@ export enum UpdateMembershipError {
 }
 
 export type UpdateMembershipInput = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   role: MembershipRole;
 };
 
@@ -1853,6 +2368,16 @@ export type UpdateMembershipResult = {
   success: Scalars['Boolean'];
 };
 
+export type UpdatePipelineProgressInput = {
+  percent: Scalars['Int'];
+};
+
+export type UpdatePipelineProgressResult = {
+  __typename?: 'UpdatePipelineProgressResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+};
+
 export enum UpdateTeamError {
   NameDuplicate = 'NAME_DUPLICATE',
   NotFound = 'NOT_FOUND',
@@ -1860,7 +2385,7 @@ export enum UpdateTeamError {
 }
 
 export type UpdateTeamInput = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -1871,6 +2396,55 @@ export type UpdateTeamResult = {
   team?: Maybe<Team>;
 };
 
+export enum UpdateWorkspaceError {
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateWorkspaceInput = {
+  countries?: InputMaybe<Array<CountryInput>>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['UUID'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export enum UpdateWorkspaceMemberError {
+  MembershipNotFound = 'MEMBERSHIP_NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateWorkspaceMemberInput = {
+  membershipId: Scalars['UUID'];
+  role: WorkspaceMembershipRole;
+};
+
+export type UpdateWorkspaceMemberResult = {
+  __typename?: 'UpdateWorkspaceMemberResult';
+  errors: Array<UpdateWorkspaceMemberError>;
+  success: Scalars['Boolean'];
+  workspaceMembership?: Maybe<WorkspaceMembership>;
+};
+
+export type UpdateWorkspaceResult = {
+  __typename?: 'UpdateWorkspaceResult';
+  errors: Array<UpdateWorkspaceError>;
+  success: Scalars['Boolean'];
+  workspace?: Maybe<Workspace>;
+};
+
+export type UploadPipelineInput = {
+  name: Scalars['String'];
+  zipfile: Scalars['String'];
+};
+
+export type UploadPipelineResult = {
+  __typename?: 'UploadPipelineResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+  version?: Maybe<Scalars['Int']>;
+};
+
 export type User = {
   __typename?: 'User';
   avatar: Avatar;
@@ -1878,9 +2452,23 @@ export type User = {
   displayName: Scalars['String'];
   email: Scalars['String'];
   firstName?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['UUID'];
   lastLogin?: Maybe<Scalars['DateTime']>;
   lastName?: Maybe<Scalars['String']>;
+};
+
+export enum VerifyTokenError {
+  InvalidOtpOrDevice = 'INVALID_OTP_OR_DEVICE'
+}
+
+export type VerifyTokenInput = {
+  token: Scalars['String'];
+};
+
+export type VerifyTokenResult = {
+  __typename?: 'VerifyTokenResult';
+  errors?: Maybe<Array<VerifyTokenError>>;
+  success: Scalars['Boolean'];
 };
 
 export type WhoBoundary = {
@@ -1906,12 +2494,70 @@ export type WhoRegion = {
   name: Scalars['String'];
 };
 
+export type Workspace = {
+  __typename?: 'Workspace';
+  countries: Array<Country>;
+  createdAt: Scalars['DateTime'];
+  createdBy: User;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['UUID'];
+  members: WorkspaceMembershipPage;
+  name: Scalars['String'];
+  permissions: WorkspacePermissions;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+
+export type WorkspaceMembersArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+export type WorkspaceMembership = {
+  __typename?: 'WorkspaceMembership';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['UUID'];
+  role: WorkspaceMembershipRole;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user: User;
+  workspace: Workspace;
+};
+
+export type WorkspaceMembershipPage = {
+  __typename?: 'WorkspaceMembershipPage';
+  items: Array<WorkspaceMembership>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export enum WorkspaceMembershipRole {
+  Admin = 'ADMIN',
+  Editor = 'EDITOR',
+  Viewer = 'VIEWER'
+}
+
+export type WorkspacePage = {
+  __typename?: 'WorkspacePage';
+  items: Array<Workspace>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
+export type WorkspacePermissions = {
+  __typename?: 'WorkspacePermissions';
+  delete: Scalars['Boolean'];
+  manageMembers: Scalars['Boolean'];
+  update: Scalars['Boolean'];
+};
+
 export type HeaderQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HeaderQuery = { __typename?: 'Query', me: { __typename?: 'Me', permissions: { __typename?: 'MePermissions', createAccessmodProject: boolean, manageAccessmodAccessRequests: boolean }, user?: { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }, teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
+export type HeaderQuery = { __typename?: 'Query', me: { __typename?: 'Me', permissions: { __typename?: 'MePermissions', createAccessmodProject: boolean, manageAccessmodAccessRequests: boolean }, user?: { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }, teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: any, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
-export type Navbar_NavbarFragment = { __typename?: 'Query', teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: string, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
+export type Navbar_NavbarFragment = { __typename?: 'Query', teams: { __typename?: 'TeamPage', items: Array<{ __typename?: 'Team', id: any, name: string }> }, projects: { __typename?: 'AccessmodProjectPage', items: Array<{ __typename?: 'AccessmodProject', id: string, name: string }> } };
 
 export type UserMenu_MeFragment = { __typename?: 'Me', permissions: { __typename?: 'MePermissions', manageAccessmodAccessRequests: boolean }, user?: { __typename?: 'User', avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
@@ -1931,27 +2577,27 @@ export type CreateMembershipMutationVariables = Exact<{
 
 export type CreateMembershipMutation = { __typename?: 'Mutation', createMembership: { __typename?: 'CreateMembershipResult', success: boolean, errors: Array<CreateMembershipError> } };
 
-export type InviteTeamMemberDialog_TeamFragment = { __typename?: 'Team', id: string, name: string };
+export type InviteTeamMemberDialog_TeamFragment = { __typename?: 'Team', id: any, name: string };
 
-export type InviteTeamMemberTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string, permissions: { __typename?: 'TeamPermissions', createMembership: boolean } };
+export type InviteTeamMemberTrigger_TeamFragment = { __typename?: 'Team', id: any, name: string, permissions: { __typename?: 'TeamPermissions', createMembership: boolean } };
 
 export type UpdateMembershipMutationVariables = Exact<{
   input: UpdateMembershipInput;
 }>;
 
 
-export type UpdateMembershipMutation = { __typename?: 'Mutation', updateMembership: { __typename?: 'UpdateMembershipResult', success: boolean, errors: Array<UpdateMembershipError>, membership?: { __typename?: 'Membership', id: string, role: MembershipRole } | null } };
+export type UpdateMembershipMutation = { __typename?: 'Mutation', updateMembership: { __typename?: 'UpdateMembershipResult', success: boolean, errors: Array<UpdateMembershipError>, membership?: { __typename?: 'Membership', id: any, role: MembershipRole } | null } };
 
-export type TeamMembersTable_TeamFragment = { __typename?: 'Team', id: string };
+export type TeamMembersTable_TeamFragment = { __typename?: 'Team', id: any };
 
 export type TeamMembersTableQueryVariables = Exact<{
-  teamId: Scalars['String'];
+  teamId: Scalars['UUID'];
 }>;
 
 
-export type TeamMembersTableQuery = { __typename?: 'Query', team?: { __typename?: 'Team', memberships: { __typename?: 'MembershipPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'Membership', id: string, createdAt: any, updatedAt: any, role: MembershipRole, permissions: { __typename?: 'MembershipPermissions', update: boolean, delete: boolean }, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null, displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, team: { __typename?: 'Team', id: string, name: string } }> } } | null };
+export type TeamMembersTableQuery = { __typename?: 'Query', team?: { __typename?: 'Team', memberships: { __typename?: 'MembershipPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'Membership', id: any, createdAt: any, updatedAt: any, role: MembershipRole, permissions: { __typename?: 'MembershipPermissions', update: boolean, delete: boolean }, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null, displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } }, team: { __typename?: 'Team', id: any, name: string } }> } } | null };
 
-export type User_UserFragment = { __typename?: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } };
+export type User_UserFragment = { __typename?: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } };
 
 export type ApproveAccessRequestMutationVariables = Exact<{
   input: ApproveAccessmodAccessRequestInput;
@@ -2142,7 +2788,7 @@ export type ChangeProjectOwnershipMutationVariables = Exact<{
 
 export type ChangeProjectOwnershipMutation = { __typename?: 'Mutation', createAccessmodProjectMember: { __typename?: 'CreateAccessmodProjectMemberResult', success: boolean, errors: Array<CreateAccessmodProjectMemberError>, member?: { __typename?: 'AccessmodProjectMember', id: string } | null } };
 
-export type ChangeProjectOwnerDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
+export type ChangeProjectOwnerDialog_ProjectFragment = { __typename?: 'AccessmodProject', id: string, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User' } | null };
 
 export type CreateProjectMutationVariables = Exact<{
   input: CreateAccessmodProjectInput;
@@ -2176,7 +2822,7 @@ export type UpdateProjectMutation = { __typename?: 'Mutation', updateAccessmodPr
 
 export type EditProjectFormBlock_ProjectFragment = { __typename?: 'AccessmodProject', id: string };
 
-export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, permissions: { __typename?: 'AccessmodProjectPermissions', createPermission: boolean, delete: boolean }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User' } | null };
+export type ProjectActionsMenu_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, permissions: { __typename?: 'AccessmodProjectPermissions', createPermission: boolean, delete: boolean }, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User' } | null };
 
 export type DeleteAnalysisMutationVariables = Exact<{
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
@@ -2194,7 +2840,7 @@ export type ProjectAnalysesTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodZonalStatistics', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
+export type ProjectAnalysesTableQuery = { __typename?: 'Query', analyses: { __typename?: 'AccessmodAnalysisPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodAccessibilityAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } } | { __typename: 'AccessmodZonalStatistics', id: string, type: AccessmodAnalysisType, name: string, createdAt: any, status: AccessmodAnalysisStatus, author: { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } };
 
 export type ProjectCard_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, members: Array<{ __typename?: 'AccessmodProjectMember', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } };
 
@@ -2206,7 +2852,7 @@ export type ProjectDatasetsTableQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, createdAt: any, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, permissions: { __typename?: 'AccessmodFilesetPermissions', delete: boolean } }> } };
+export type ProjectDatasetsTableQuery = { __typename?: 'Query', accessmodFilesets: { __typename?: 'AccessmodFilesetPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodFileset', id: string, name: string, status: AccessmodFilesetStatus, createdAt: any, role: { __typename?: 'AccessmodFilesetRole', name: string, id: string, format: AccessmodFilesetFormat }, author: { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } }, permissions: { __typename?: 'AccessmodFilesetPermissions', delete: boolean } }> } };
 
 export type ProjectDatasetsTable_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string };
 
@@ -2224,7 +2870,7 @@ export type DeleteMembershipMutationVariables = Exact<{
 
 export type DeleteMembershipMutation = { __typename?: 'Mutation', deleteMembership: { __typename?: 'DeleteMembershipResult', success: boolean, errors: Array<DeleteMembershipError> } };
 
-export type DeleteMembershipTrigger_MembershipFragment = { __typename?: 'Membership', id: string, permissions: { __typename?: 'MembershipPermissions', delete: boolean }, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null }, team: { __typename?: 'Team', id: string, name: string } };
+export type DeleteMembershipTrigger_MembershipFragment = { __typename?: 'Membership', id: any, permissions: { __typename?: 'MembershipPermissions', delete: boolean }, user: { __typename?: 'User', firstName?: string | null, lastName?: string | null }, team: { __typename?: 'Team', id: any, name: string } };
 
 export type DeleteTeamMutationVariables = Exact<{
   input: DeleteTeamInput;
@@ -2233,29 +2879,29 @@ export type DeleteTeamMutationVariables = Exact<{
 
 export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'DeleteTeamResult', success: boolean, errors: Array<DeleteTeamError> } };
 
-export type DeleteTeamTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string, permissions: { __typename?: 'TeamPermissions', delete: boolean } };
+export type DeleteTeamTrigger_TeamFragment = { __typename?: 'Team', id: any, name: string, permissions: { __typename?: 'TeamPermissions', delete: boolean } };
 
-export type EditTeamTrigger_TeamFragment = { __typename?: 'Team', id: string, name: string };
+export type EditTeamTrigger_TeamFragment = { __typename?: 'Team', id: any, name: string };
 
-export type Team_TeamFragment = { __typename?: 'Team', id: string, name: string };
+export type Team_TeamFragment = { __typename?: 'Team', id: any, name: string };
 
-export type TeamActionsMenu_TeamFragment = { __typename?: 'Team', id: string, name: string, permissions: { __typename?: 'TeamPermissions', update: boolean, delete: boolean } };
+export type TeamActionsMenu_TeamFragment = { __typename?: 'Team', id: any, name: string, permissions: { __typename?: 'TeamPermissions', update: boolean, delete: boolean } };
 
 export type CreateTeamMutationVariables = Exact<{
   input: CreateTeamInput;
 }>;
 
 
-export type CreateTeamMutation = { __typename?: 'Mutation', result: { __typename?: 'CreateTeamResult', success: boolean, errors: Array<CreateTeamError>, team?: { __typename?: 'Team', id: string } | null } };
+export type CreateTeamMutation = { __typename?: 'Mutation', result: { __typename?: 'CreateTeamResult', success: boolean, errors: Array<CreateTeamError>, team?: { __typename?: 'Team', id: any } | null } };
 
 export type UpdateTeamMutationVariables = Exact<{
   input: UpdateTeamInput;
 }>;
 
 
-export type UpdateTeamMutation = { __typename?: 'Mutation', result: { __typename?: 'UpdateTeamResult', success: boolean, errors: Array<UpdateTeamError>, team?: { __typename?: 'Team', id: string, name: string } | null } };
+export type UpdateTeamMutation = { __typename?: 'Mutation', result: { __typename?: 'UpdateTeamResult', success: boolean, errors: Array<UpdateTeamError>, team?: { __typename?: 'Team', id: any, name: string } | null } };
 
-export type TeamFormDialog_TeamFragment = { __typename?: 'Team', id: string, name: string };
+export type TeamFormDialog_TeamFragment = { __typename?: 'Team', id: any, name: string };
 
 export type TeamPickerQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -2264,9 +2910,9 @@ export type TeamPickerQueryVariables = Exact<{
 }>;
 
 
-export type TeamPickerQuery = { __typename?: 'Query', teams: { __typename?: 'TeamPage', totalItems: number, items: Array<{ __typename?: 'Team', id: string, name: string }> } };
+export type TeamPickerQuery = { __typename?: 'Query', teams: { __typename?: 'TeamPage', totalItems: number, items: Array<{ __typename?: 'Team', id: any, name: string }> } };
 
-export type TeamProjectsTable_TeamFragment = { __typename?: 'Team', id: string };
+export type TeamProjectsTable_TeamFragment = { __typename?: 'Team', id: any };
 
 export type TeamProjectsTableQueryVariables = Exact<{
   page?: Scalars['Int'];
@@ -2275,7 +2921,7 @@ export type TeamProjectsTableQueryVariables = Exact<{
 }>;
 
 
-export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } };
+export type TeamProjectsTableQuery = { __typename?: 'Query', projects: { __typename?: 'AccessmodProjectPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'AccessmodProject', id: string, name: string, createdAt: any, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } };
 
 export type UseDatasetWatcherQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2308,7 +2954,7 @@ export type LaunchAccessmodAnalysisMutation = { __typename?: 'Mutation', launchA
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', email: string, id: string, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', email: string, id: any, firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -2377,7 +3023,7 @@ export type SetPasswordMutation = { __typename?: 'Mutation', setPassword: { __ty
 export type SettingsPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null } | null } };
+export type SettingsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', user?: { __typename?: 'User', id: any, email: string, firstName?: string | null, lastName?: string | null } | null } };
 
 export type RequestAccessMutationVariables = Exact<{
   input: RequestAccessmodAccessInput;
@@ -2407,7 +3053,7 @@ export type AnalysisDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, stackPriorities?: any | null, movingSpeeds?: any | null, knightMove?: boolean | null, maxTravelTime?: number | null, invertDirection?: boolean | null, waterAllTouched?: boolean | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, permissions: { __typename?: 'AccessmodAnalysisPermissions', update: boolean, delete: boolean, run: boolean }, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, permissions: { __typename?: 'AccessmodAnalysisPermissions', update: boolean, delete: boolean, run: boolean } } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, timeThresholds?: any | null, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, permissions: { __typename?: 'AccessmodAnalysisPermissions', update: boolean, delete: boolean, run: boolean }, zonalStatisticsTable?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, zonalStatisticsGeo?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, population?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | null };
+export type AnalysisDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, analysis?: { __typename: 'AccessmodAccessibilityAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, algorithm?: AccessmodAccessibilityAnalysisAlgorithm | null, stackPriorities?: any | null, movingSpeeds?: any | null, knightMove?: boolean | null, maxTravelTime?: number | null, invertDirection?: boolean | null, waterAllTouched?: boolean | null, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, permissions: { __typename?: 'AccessmodAnalysisPermissions', update: boolean, delete: boolean, run: boolean }, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, frictionSurface?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, landCover?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, transportNetwork?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, water?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, barrier?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, stack?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, dem?: { __typename?: 'AccessmodFileset', id: string, name: string } | null, healthFacilities?: { __typename?: 'AccessmodFileset', id: string, name: string } | null } | { __typename: 'AccessmodGeographicCoverageAnalysis', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, permissions: { __typename?: 'AccessmodAnalysisPermissions', update: boolean, delete: boolean, run: boolean } } | { __typename: 'AccessmodZonalStatistics', id: string, name: string, type: AccessmodAnalysisType, createdAt: any, updatedAt: any, status: AccessmodAnalysisStatus, timeThresholds?: any | null, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, permissions: { __typename?: 'AccessmodAnalysisPermissions', update: boolean, delete: boolean, run: boolean }, zonalStatisticsTable?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, zonalStatisticsGeo?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, population?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, travelTimes?: { __typename?: 'AccessmodFileset', name: string, id: string } | null, boundaries?: { __typename?: 'AccessmodFileset', name: string, id: string } | null } | null };
 
 export type ProjectAnalysesPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2422,7 +3068,7 @@ export type DatasetDetailPageQueryVariables = Exact<{
 }>;
 
 
-export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, metadata: any, status: AccessmodFilesetStatus, createdAt: any, updatedAt: any, mode: AccessmodFilesetMode, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }>, permissions: { __typename?: 'AccessmodFilesetPermissions', delete: boolean, update: boolean } } | null };
+export type DatasetDetailPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string } | null, dataset?: { __typename: 'AccessmodFileset', id: string, name: string, metadata: any, status: AccessmodFilesetStatus, createdAt: any, updatedAt: any, mode: AccessmodFilesetMode, role: { __typename?: 'AccessmodFilesetRole', id: string, name: string, format: AccessmodFilesetFormat, code: AccessmodFilesetRoleCode }, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, files: Array<{ __typename?: 'AccessmodFile', id: string, name: string, mimeType: string }>, permissions: { __typename?: 'AccessmodFilesetPermissions', delete: boolean, update: boolean } } | null };
 
 export type ProjectDatasetsPageQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2431,14 +3077,14 @@ export type ProjectDatasetsPageQueryVariables = Exact<{
 
 export type ProjectDatasetsPageQuery = { __typename?: 'Query', accessmodProject?: { __typename?: 'AccessmodProject', id: string, name: string, permissions: { __typename?: 'AccessmodProjectPermissions', createFileset: boolean } } | null };
 
-export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, createdAt: any, updatedAt: any, spatialResolution: number, permissions: { __typename?: 'AccessmodProjectPermissions', createPermission: boolean, update: boolean, createAnalysis: boolean, createFileset: boolean, delete: boolean }, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
+export type ProjectPage_ProjectFragment = { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, createdAt: any, updatedAt: any, spatialResolution: number, permissions: { __typename?: 'AccessmodProjectPermissions', createPermission: boolean, update: boolean, createAnalysis: boolean, createFileset: boolean, delete: boolean }, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null };
 
 export type ProjectPageQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, createdAt: any, updatedAt: any, spatialResolution: number, permissions: { __typename?: 'AccessmodProjectPermissions', createPermission: boolean, update: boolean, createAnalysis: boolean, createFileset: boolean, delete: boolean }, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: string, name: string } | { __typename: 'User', displayName: string, email: string, id: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
+export type ProjectPageQuery = { __typename?: 'Query', project?: { __typename?: 'AccessmodProject', id: string, name: string, crs: number, description: string, createdAt: any, updatedAt: any, spatialResolution: number, permissions: { __typename?: 'AccessmodProjectPermissions', createPermission: boolean, update: boolean, createAnalysis: boolean, createFileset: boolean, delete: boolean }, country: { __typename?: 'Country', name: string, code: string, flag: string }, author: { __typename?: 'User', email: string, displayName: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } }, owner?: { __typename: 'Team', id: any, name: string } | { __typename: 'User', displayName: string, email: string, id: any, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null };
 
 export type ProjectsPageQueryVariables = Exact<{
   term?: InputMaybe<Scalars['String']>;
@@ -2452,11 +3098,11 @@ export type ProjectsPageQueryVariables = Exact<{
 export type ProjectsPageQuery = { __typename?: 'Query', accessmodProjects: { __typename?: 'AccessmodProjectPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'AccessmodProject', id: string, name: string, spatialResolution: number, description: string, updatedAt: any, members: Array<{ __typename?: 'AccessmodProjectMember', mode: PermissionMode, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, team?: { __typename?: 'Team', name: string } | null }>, country: { __typename?: 'Country', name: string, flag: string, code: string } }> } };
 
 export type TeamPageQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 }>;
 
 
-export type TeamPageQuery = { __typename?: 'Query', team?: { __typename?: 'Team', id: string, name: string, createdAt: any, permissions: { __typename?: 'TeamPermissions', createMembership: boolean, update: boolean, delete: boolean } } | null };
+export type TeamPageQuery = { __typename?: 'Query', team?: { __typename?: 'Team', id: any, name: string, createdAt: any, permissions: { __typename?: 'TeamPermissions', createMembership: boolean, update: boolean, delete: boolean } } | null };
 
 export type TeamsPageQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -2464,7 +3110,7 @@ export type TeamsPageQueryVariables = Exact<{
 }>;
 
 
-export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', permissions: { __typename?: 'MePermissions', createTeam: boolean } }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: string, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', role: MembershipRole, user: { __typename?: 'User', id: string, email: string, firstName?: string | null, lastName?: string | null, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
+export type TeamsPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', permissions: { __typename?: 'MePermissions', createTeam: boolean } }, teams: { __typename?: 'TeamPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename: 'Team', name: string, id: any, memberships: { __typename?: 'MembershipPage', totalItems: number, items: Array<{ __typename?: 'Membership', role: MembershipRole, user: { __typename?: 'User', id: any, email: string, firstName?: string | null, lastName?: string | null, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } }> } }> } };
 
 export const Navbar_NavbarFragmentDoc = gql`
     fragment Navbar_navbar on Query {
@@ -3288,7 +3934,7 @@ export type UpdateMembershipMutationHookResult = ReturnType<typeof useUpdateMemb
 export type UpdateMembershipMutationResult = Apollo.MutationResult<UpdateMembershipMutation>;
 export type UpdateMembershipMutationOptions = Apollo.BaseMutationOptions<UpdateMembershipMutation, UpdateMembershipMutationVariables>;
 export const TeamMembersTableDocument = gql`
-    query TeamMembersTable($teamId: String!) {
+    query TeamMembersTable($teamId: UUID!) {
   team(id: $teamId) {
     memberships(page: 1, perPage: 10) {
       totalItems
@@ -5425,7 +6071,7 @@ export type ProjectsPageQueryHookResult = ReturnType<typeof useProjectsPageQuery
 export type ProjectsPageLazyQueryHookResult = ReturnType<typeof useProjectsPageLazyQuery>;
 export type ProjectsPageQueryResult = Apollo.QueryResult<ProjectsPageQuery, ProjectsPageQueryVariables>;
 export const TeamPageDocument = gql`
-    query TeamPage($id: String!) {
+    query TeamPage($id: UUID!) {
   team(id: $id) {
     id
     name

@@ -141,7 +141,7 @@ TeamMembersTable.prefetch = async (
 ) => {
   await client.query({
     query: gql`
-      query TeamMembersTable($teamId: String!) {
+      query TeamMembersTable($teamId: UUID!) {
         team(id: $teamId) {
           memberships(page: 1, perPage: 10) {
             totalItems
