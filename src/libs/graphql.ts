@@ -3646,8 +3646,10 @@ export const TeamActionsMenu_TeamFragmentDoc = gql`
     delete
   }
   ...DeleteTeamTrigger_team
+  ...TeamFormDialog_team
 }
-    ${DeleteTeamTrigger_TeamFragmentDoc}`;
+    ${DeleteTeamTrigger_TeamFragmentDoc}
+${TeamFormDialog_TeamFragmentDoc}`;
 export const TeamProjectsTable_TeamFragmentDoc = gql`
     fragment TeamProjectsTable_team on Team {
   id
