@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import useToggle from "hooks/useToggle";
-import { TeamAuthorizedActions } from "libs/graphql";
 import { ReactNode } from "react";
 import InviteTeamMemberDialog from "./InviteTeamMemberDialog";
 

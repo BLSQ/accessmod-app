@@ -2,7 +2,6 @@ import { gql } from "@apollo/client";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Menu from "components/Menu";
 import {
-  AccessmodFilesetAuthorizedActions,
   DatasetActionsMenu_DatasetFragment,
   DatasetActionsMenu_ProjectFragment,
 } from "libs/graphql";

@@ -3,10 +3,7 @@ import { TrashIcon, UserIcon } from "@heroicons/react/24/outline";
 import Menu from "components/Menu";
 import DeleteProjectTrigger from "features/project/DeleteProjectTrigger";
 import useToggle from "hooks/useToggle";
-import {
-  AccessmodProjectAuthorizedActions,
-  ProjectActionsMenu_ProjectFragment,
-} from "libs/graphql";
+import { ProjectActionsMenu_ProjectFragment } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import ChangeProjectOwnerDialog from "./ChangeProjectOwnerDialog";
 

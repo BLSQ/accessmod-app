@@ -4,7 +4,6 @@ import Menu from "components/Menu";
 import { displayAlert } from "libs/alert";
 import { launchAnalysis } from "libs/analysis";
 import {
-  AccessmodAnalysisAuthorizedActions,
   AccessmodAnalysisStatus,
   AnalysisActionsButton_AnalysisFragment,
   AnalysisActionsButton_ProjectFragment,

@@ -10,11 +10,7 @@ import Toggle from "components/Toggle";
 import CreateTeamDialog from "features/team/TeamFormDialog";
 import useCacheKey from "hooks/useCacheKey";
 import usePrevious from "hooks/usePrevious";
-import {
-  MeAuthorizedActions,
-  MembershipRole,
-  useTeamsPageQuery,
-} from "libs/graphql";
+import { MembershipRole, useTeamsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import _ from "lodash";

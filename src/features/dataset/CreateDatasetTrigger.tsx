@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import useToggle from "hooks/useToggle";
-import { AccessmodProjectAuthorizedActions } from "libs/graphql";
 import { ReactNode } from "react";
 import DatasetFormDialog from "./DatasetFormDialog";
 

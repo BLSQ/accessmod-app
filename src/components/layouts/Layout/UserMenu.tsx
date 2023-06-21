@@ -3,7 +3,7 @@ import { Menu, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import Avatar from "components/Avatar";
 import MenuLink from "components/MenuLink";
-import { MeAuthorizedActions, UserMenu_MeFragment } from "libs/graphql";
+import { UserMenu_MeFragment } from "libs/graphql";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";
 import { Fragment } from "react";

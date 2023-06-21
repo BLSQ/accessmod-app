@@ -1,9 +1,6 @@
 import { gql } from "@apollo/client";
 import Toggle from "components/Toggle";
-import {
-  EditTeamTrigger_TeamFragment,
-  TeamAuthorizedActions,
-} from "libs/graphql";
+import { EditTeamTrigger_TeamFragment } from "libs/graphql";
 import { ReactNode } from "react";
 import TeamFormDialog from "./TeamFormDialog";
 

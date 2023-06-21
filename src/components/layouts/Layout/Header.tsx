@@ -4,7 +4,7 @@ import Toggle from "components/Toggle";
 import CreateProjectDialog from "features/project/CreateProjectDialog";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
-import { MeAuthorizedActions, useHeaderQuery } from "libs/graphql";
+import { useHeaderQuery } from "libs/graphql";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import Link from "next/link";

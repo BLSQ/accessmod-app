@@ -7,7 +7,6 @@ import AnalysisForm from "features/analysis/AnalysisForm";
 import AnalysisStatus from "features/analysis/AnalysisStatus";
 import { getLabelFromAnalysisType } from "libs/analysis";
 import {
-  AccessmodAnalysisAuthorizedActions,
   AccessmodAnalysisStatus,
   AnalysisEditPageQuery,
   useAnalysisEditPageQuery,

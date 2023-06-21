@@ -1,7 +1,5 @@
 import { gql } from "@apollo/client";
-import Button from "components/Button";
 import useToggle from "hooks/useToggle";
-import { AccessmodProjectAuthorizedActions } from "libs/graphql";
 import { ReactNode } from "react";
 import CreateAnalysisDialog from "./CreateAnalysisDialog";
 

@@ -3,7 +3,6 @@ import Button from "components/Button";
 import useCacheKey from "hooks/useCacheKey";
 import {
   DeleteMembershipTrigger_MembershipFragment,
-  MembershipAuthorizedActions,
   useDeleteMembershipMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";

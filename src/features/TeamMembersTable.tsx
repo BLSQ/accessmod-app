@@ -1,12 +1,10 @@
 import { gql } from "@apollo/client";
-import SimpleSelect from "components/forms/SimpleSelect";
 import Pagination from "components/Pagination";
 import Time from "components/Time";
 import useCacheKey from "hooks/useCacheKey";
 import { CustomApolloClient } from "libs/apollo";
 import {
   Membership,
-  MembershipAuthorizedActions,
   MembershipRole,
   useTeamMembersTableQuery,
   useUpdateMembershipMutation,
@@ -15,8 +13,8 @@ import { formatMembershipRole } from "libs/team";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import MembershipRolePicker from "./MembershipRolePicker";
-import DeleteMembershipTrigger from "./team/DeleteMembershipTrigger";
 import User from "./User";
+import DeleteMembershipTrigger from "./team/DeleteMembershipTrigger";
 
 type Props = {
   team: any;

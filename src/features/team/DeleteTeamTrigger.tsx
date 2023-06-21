@@ -3,7 +3,6 @@ import Button from "components/Button";
 import useCacheKey from "hooks/useCacheKey";
 import {
   DeleteTeamTrigger_TeamFragment,
-  TeamAuthorizedActions,
   useDeleteTeamMutation,
 } from "libs/graphql";
 import { useTranslation } from "next-i18next";

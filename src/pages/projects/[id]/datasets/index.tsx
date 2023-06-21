@@ -7,10 +7,7 @@ import Layout, { Page } from "components/layouts/Layout";
 import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateDatasetDialog from "features/dataset/DatasetFormDialog";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
-import {
-  AccessmodProjectAuthorizedActions,
-  useProjectDatasetsPageQuery,
-} from "libs/graphql";
+import { useProjectDatasetsPageQuery } from "libs/graphql";
 import { createGetServerSideProps } from "libs/page";
 import { routes } from "libs/router";
 import { useTranslation } from "next-i18next";

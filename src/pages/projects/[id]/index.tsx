@@ -1,15 +1,17 @@
 import { gql } from "@apollo/client";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { ClockIcon } from "@heroicons/react/24/solid";
+import clsx from "clsx";
 import Block from "components/Block";
 import Breadcrumbs from "components/Breadcrumbs";
 import Button from "components/Button";
 import DescriptionList from "components/DescriptionList";
-import Layout, { Page } from "components/layouts/Layout";
-import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import Time from "components/Time";
 import Toggle from "components/Toggle";
+import Layout, { Page } from "components/layouts/Layout";
+import { PageContent, PageHeader } from "components/layouts/Layout/PageContent";
 import CreateAnalysisTrigger from "features/CreateAnalysisTrigger";
+import User from "features/User";
 import CreateDatasetTrigger from "features/dataset/CreateDatasetTrigger";
 import ChangeProjectOwnerDialog from "features/project/ChangeProjectOwnerDialog";
 import EditProjectFormBlock from "features/project/EditProjectFormBlock";
@@ -17,11 +19,9 @@ import ProjectActionsMenu from "features/project/ProjectActionsMenu";
 import ProjectAnalysesTable from "features/project/ProjectAnalysesTable";
 import ProjectDatasetsTable from "features/project/ProjectDatasetsTable";
 import Team from "features/team/Team";
-import User from "features/User";
 import useCacheKey from "hooks/useCacheKey";
 import useToggle from "hooks/useToggle";
 import {
-  AccessmodProjectAuthorizedActions,
   ProjectPageQuery,
   ProjectPage_ProjectFragment,
   useProjectPageQuery,
@@ -33,7 +33,6 @@ import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import clsx from "clsx";
 
 const LatestAnalysisBlock = ({
   project,

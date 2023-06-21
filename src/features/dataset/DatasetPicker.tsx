@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
 import {
+  ArrowUpTrayIcon,
   CloudIcon,
   PencilIcon,
-  ArrowUpTrayIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Button from "components/Button";
-import Combobox from "components/forms/Combobox";
 import Toggle from "components/Toggle";
+import Combobox from "components/forms/Combobox";
 import useDatasetWatcher from "hooks/useDatasetWatcher";
 import {
   createDataset,
@@ -16,7 +16,6 @@ import {
 } from "libs/dataset";
 import {
   AccessmodFilesetRoleCode,
-  AccessmodProjectAuthorizedActions,
   DatasetPicker_DatasetFragment,
   DatasetPicker_ProjectFragment,
   useDatasetPickerLazyQuery,
